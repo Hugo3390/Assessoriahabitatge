@@ -17,7 +17,7 @@
   --shadow-lg:0 10px 40px rgba(0,0,0,.3);
   --shadow-xl:0 20px 60px rgba(0,0,0,.4);
 }
-html,body{height:auto}
+html,body{height:100%}
 body{margin:0;background:#020617;position:relative;overflow-x:hidden}
 body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
   background:radial-gradient(1400px 700px at 20% -10%,rgba(56,189,248,.18),transparent 60%),
@@ -28,7 +28,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
 @keyframes pulse{0%,100%{opacity:.8}50%{opacity:1}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(56,189,248,.3)}50%{box-shadow:0 0 30px rgba(56,189,248,.6)}}
+@keyframes glow{0%,100%{box-shadow:0 0 18px rgba(56,189,248,.25)}50%{box-shadow:0 0 28px rgba(56,189,248,.45)}}
 
 #hx{color:var(--t);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;-webkit-font-smoothing:antialiased}
 #hx *{box-sizing:border-box}
@@ -41,7 +41,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
 .c:hover{border-color:rgba(56,189,248,.4);box-shadow:var(--shadow-xl)}
 .r{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .pill{background:var(--gradient-3);color:#001018;border-radius:24px;padding:10px 18px;font-weight:900;
-  box-shadow:0 4px 15px rgba(56,189,248,.4);animation:glow 3s ease-in-out infinite;
+  box-shadow:0 4px 15px rgba(56,189,248,.35);animation:glow 6s ease-in-out infinite;
   letter-spacing:.5px;text-transform:uppercase;font-size:.9rem}
 .n{opacity:.95;font-size:.95rem;color:#cbd5e1;line-height:1.6}
 .small{font-size:.88rem;color:#b6c2d3;line-height:1.5}
@@ -64,50 +64,60 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
   cursor:pointer;font-weight:900;transition:all .2s ease;box-shadow:0 4px 15px rgba(56,189,248,.3);
   font-size:.95rem;letter-spacing:.3px;position:relative;overflow:hidden}
 .b::before{content:"";position:absolute;top:50%;left:50%;width:0;height:0;
-  border-radius:50%;background:rgba(255,255,255,.3);transform:translate(-50%,-50%);
+  border-radius:50%;background:rgba(255,255,255,.28);transform:translate(-50%,-50%);
   transition:width .5s,height .5s}
 .b:hover::before{width:300px;height:300px}
-.b:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(56,189,248,.5)}
-.b.ok{background:var(--gradient-4);color:#001018;box-shadow:0 4px 15px rgba(67,233,123,.3)}
-.b.ok:hover{box-shadow:0 6px 20px rgba(67,233,123,.5)}
+.b:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(56,189,248,.45)}
+.b.ok{background:var(--gradient-4);color:#001018;box-shadow:0 4px 15px rgba(67,233,123,.25)}
+.b.ok:hover{box-shadow:0 6px 20px rgba(67,233,123,.45)}
 .b.dis{opacity:.4;cursor:not-allowed;filter:grayscale(.3);transform:none;pointer-events:none}
 
 .g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 @media(max-width:800px){.g{grid-template-columns:1fr}}
-#hx input[type=text],#hx input[type=number],#hx select{width:100%;padding:12px 14px;border:1px solid rgba(148,163,184,.3);border-radius:12px;background:rgba(2,6,23,.85);color:var(--t);outline:none;transition:all .2s ease;font-size:.95rem}
-#hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus{border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.15);background:rgba(2,6,23,.95)}
+#hx input[type=text],#hx input[type=number],#hx select{
+  width:100%;padding:12px 14px;border:1px solid rgba(148,163,184,.3);border-radius:12px;
+  background:rgba(2,6,23,.85);color:var(--t);outline:none;transition:all .2s ease;font-size:.95rem
+}
+#hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus{
+  border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.15);background:rgba(2,6,23,.95)
+}
 #hx input[type=checkbox]{width:auto;margin-right:8px;accent-color:#38bdf8;width:18px;height:18px;cursor:pointer}
 #hx label{color:#cbd5e1;font-weight:600;margin-bottom:6px;display:block;font-size:.9rem;letter-spacing:.3px}
 
-.gu{margin-top:12px;padding:14px 16px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);border-radius:14px;color:#dbeafe;display:flex;gap:12px;align-items:flex-start;border-left:4px solid #38bdf8}
+.gu{margin-top:12px;padding:14px 16px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);
+  border-radius:14px;color:#dbeafe;display:flex;gap:12px;align-items:flex-start;border-left:4px solid #38bdf8}
 .gu .a{font-weight:900;line-height:1.2;margin-top:1px;font-size:1.2rem}
 
 .k{background:linear-gradient(145deg,rgba(14,165,233,.12),rgba(6,182,212,.08));
   border:1px solid rgba(56,189,248,.35);border-radius:18px;padding:20px 16px;text-align:center;
   transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.2)}
 .k::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(circle,rgba(56,189,248,.1),transparent 70%);
-  transition:transform .6s ease;pointer-events:none}
+  background:radial-gradient(circle,rgba(56,189,248,.1),transparent 70%);transition:transform .6s ease;pointer-events:none}
 .k:hover::before{transform:scale(1.2)}
 .k:hover{border-color:rgba(56,189,248,.6);transform:translateY(-4px);box-shadow:0 8px 25px rgba(56,189,248,.25)}
-.k span{color:#94a3b8;font-size:.82rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.8px;display:block;position:relative;z-index:1}
-.k b{font-size:32px;display:block;color:#f1f5f9;margin-top:10px;font-weight:900;
-  position:relative;z-index:1;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+.k span{color:#94a3b8;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;display:block;position:relative;z-index:1}
+.k b{font-size:32px;display:block;color:#f1f5f9;margin-top:10px;font-weight:900;position:relative;z-index:1;text-shadow:0 2px 10px rgba(0,0,0,.3)}
 
-.tst{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(2,6,23,.92);border:1px solid rgba(148,163,184,.35);color:var(--t);padding:10px 14px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;z-index:99999}
+.tst{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(2,6,23,.92);
+  border:1px solid rgba(148,163,184,.35);color:var(--t);padding:10px 14px;border-radius:12px;opacity:0;
+  pointer-events:none;transition:.2s;z-index:99999}
 .tst.s{opacity:1}
 
-.sig{max-width:1100px;margin:10px auto 18px;padding:10px 12px;color:#a5b4fc;background:rgba(10,16,28,.65);border:1px solid rgba(148,163,184,.25);border-radius:12px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:.95rem}
+.sig{max-width:1100px;margin:10px auto 18px;padding:10px 12px;color:#a5b4fc;background:rgba(10,16,28,.65);
+  border:1px solid rgba(148,163,184,.25);border-radius:12px;display:flex;gap:12px;align-items:center;
+  justify-content:space-between;font-size:.95rem}
 .sig .br{font-weight:950;color:#e2e8f0}
 .sig a{color:#93c5fd;text-decoration:none}.sig a:hover{text-decoration:underline}
 
 /* cards */
-.cardx{margin-top:16px;background:linear-gradient(135deg,rgba(15,23,42,.85),rgba(11,18,32,.9));border:1px solid rgba(148,163,184,.25);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.2)}
-.cardx .top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid rgba(148,163,184,.15)}
+.cardx{margin-top:16px;background:linear-gradient(135deg,rgba(15,23,42,.85),rgba(11,18,32,.9));
+  border:1px solid rgba(148,163,184,.25);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.cardx .top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  padding-bottom:16px;border-bottom:1px solid rgba(148,163,184,.15)}
 .cardx .title{font-weight:950;color:#f1f5f9;font-size:1.15rem}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1px solid rgba(148,163,184,.3);background:rgba(11,18,32,.8);color:#cbd5e1;border-radius:999px;padding:8px 14px;font-weight:700;font-size:.85rem;transition:.15s}
+.chip{border:1px solid rgba(148,163,184,.3);background:rgba(11,18,32,.8);color:#cbd5e1;border-radius:999px;
+  padding:8px 14px;font-weight:700;font-size:.85rem;transition:.15s}
 .chip:hover{transform:translateY(-1px)}
 .chip.good{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.12);color:#86efac}
 .chip.bad{border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12);color:#fca5a5}
@@ -117,79 +127,101 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
 .body b{color:#f8fafc;font-weight:700}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
 @media(max-width:900px){.grid3{grid-template-columns:1fr}}
-.mini{background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(6,182,212,.05));border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:14px;transition:.15s}
+.mini{background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(6,182,212,.05));border:1px solid rgba(148,163,184,.25);
+  border-radius:14px;padding:14px;transition:.15s}
 .mini:hover{border-color:rgba(56,189,248,.4);transform:translateY(-1px)}
 .mini .h{color:#94a3b8;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .mini .v{font-weight:900;color:#f8fafc;margin-top:6px;font-size:1.1rem}
-.note{margin-top:16px;color:#cbd5e1;white-space:pre-wrap;background:rgba(2,6,23,.6);padding:16px;border-radius:12px;border:1px solid rgba(148,163,184,.2);line-height:1.7;font-size:.92rem}
+.note{margin-top:16px;color:#cbd5e1;white-space:pre-wrap;background:rgba(2,6,23,.6);padding:16px;border-radius:12px;
+  border:1px solid rgba(148,163,184,.2);line-height:1.7;font-size:.92rem}
 
 /* mapa real */
 #zoneWrap{margin-top:12px}
 #zmap{height:380px;border-radius:12px;border:1px solid rgba(148,163,184,.22);overflow:hidden;max-width:100%}
 .pchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.pchip{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.7);color:#cbd5e1;border-radius:999px;padding:6px 10px;font-weight:950;font-size:.85rem;cursor:pointer}
+.pchip{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.7);color:#cbd5e1;border-radius:999px;
+  padding:6px 10px;font-weight:950;font-size:.85rem;cursor:pointer}
 .pchip.on{border-color:#38bdf8;color:#dbeafe}
 .pchip.off{opacity:.75}
 
-/* "pin" */
+/* pin */
 .pinWrap{position:relative;width:26px;height:26px;transform:translate(-50%,-100%)}
 .pin{
   width:18px;height:18px;background:#ef4444;border:2px solid #7f1d1d;border-radius:18px 18px 18px 0;
-  transform:rotate(-45deg);position:absolute;left:4px;top:4px;
-  box-shadow:0 2px 10px rgba(0,0,0,.35);
+  transform:rotate(-45deg);position:absolute;left:4px;top:4px;box-shadow:0 2px 10px rgba(0,0,0,.35);
 }
-.pin::after{content:"";width:7px;height:7px;background:#fff;border-radius:999px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg)}
+.pin::after{content:"";width:7px;height:7px;background:#fff;border-radius:999px;position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) rotate(45deg)}
 .pin.off{opacity:.42;filter:grayscale(.15)}
 .pin.on{opacity:1}
 
 /* header row */
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .lang{display:flex;gap:10px;align-items:center}
-.langbtn{border:1px solid rgba(148,163,184,.3);background:rgba(11,18,32,.85);color:#cbd5e1;border-radius:999px;padding:8px 14px;font-weight:800;cursor:pointer;transition:all .2s ease;font-size:.85rem;letter-spacing:.5px}
+.langbtn{border:1px solid rgba(148,163,184,.3);background:rgba(11,18,32,.85);color:#cbd5e1;border-radius:999px;
+  padding:8px 14px;font-weight:800;cursor:pointer;transition:all .2s ease;font-size:.85rem;letter-spacing:.5px}
 .langbtn:hover{border-color:rgba(56,189,248,.5);transform:translateY(-1px)}
 .langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 4px 15px rgba(56,189,248,.3)}
-/* progress bars DTI/RTI */
+
+/* progress bars */
 .pbar-wrap{margin-top:8px;background:rgba(255,255,255,.07);border-radius:999px;height:8px;overflow:hidden}
 .pbar{height:8px;border-radius:999px;transition:width .9s cubic-bezier(.4,0,.2,1)}
 .pbar.good{background:linear-gradient(90deg,#22c55e,#4ade80)}
 .pbar.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
 .pbar.bad{background:linear-gradient(90deg,#ef4444,#f87171)}
+
 /* tooltip */
 .tip{position:relative;display:inline-flex;align-items:center;gap:4px}
-.tip-icon{width:16px;height:16px;border-radius:50%;background:rgba(148,163,184,.25);color:#94a3b8;font-size:10px;font-weight:900;cursor:help;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(148,163,184,.3);flex-shrink:0;user-select:none}
-.tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0f172a;border:1px solid rgba(56,189,248,.35);border-radius:10px;padding:10px 14px;color:#cbd5e1;font-size:.82rem;line-height:1.5;width:220px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .15s}
+.tip-icon{width:16px;height:16px;border-radius:50%;background:rgba(148,163,184,.25);color:#94a3b8;font-size:10px;font-weight:900;
+  cursor:help;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(148,163,184,.3);flex-shrink:0;user-select:none}
+.tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0f172a;border:1px solid rgba(56,189,248,.35);
+  border-radius:10px;padding:10px 14px;color:#cbd5e1;font-size:.82rem;line-height:1.5;width:220px;z-index:9999;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .15s}
 .tip:hover .tip-box,.tip:focus-within .tip-box{opacity:1}
+
 /* step indicator */
 .steps{display:flex;align-items:center;margin-bottom:16px;animation:fadeIn .5s ease-out}
 .step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative}
-.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;transition:all .3s ease;border:2px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#94a3b8;z-index:1}
-.step.done .step-dot{background:var(--gradient-4);color:#001018;border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.4)}
-.step.active .step-dot{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,.5)}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;
+  transition:all .3s ease;border:2px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#94a3b8;z-index:1}
+.step.done .step-dot{background:var(--gradient-4);color:#001018;border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.35)}
+.step.active .step-dot{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,.45)}
 .step-label{font-size:.72rem;color:#475569;font-weight:700;text-align:center;white-space:nowrap}
 .step.done .step-label,.step.active .step-label{color:#94a3b8}
-.step-line{position:absolute;top:15px;left:calc(50% + 17px);width:calc(100% - 34px);height:2px;background:rgba(148,163,184,.15);transition:background .4s;z-index:0}
-.step.done .step-line{background:rgba(34,197,94,.35)}
+.step-line{position:absolute;top:15px;left:calc(50% + 17px);width:calc(100% - 34px);height:2px;background:rgba(148,163,184,.15);
+  transition:background .4s;z-index:0}
+.step.done .step-line{background:rgba(34,197,94,.32)}
+
 /* share bar */
 .share-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,.12)}
-.share-btn{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#cbd5e1;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:.82rem;transition:all .2s ease;display:flex;align-items:center;gap:6px}
+.share-btn{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#cbd5e1;border-radius:10px;padding:8px 14px;
+  cursor:pointer;font-weight:700;font-size:.82rem;transition:all .2s ease;display:flex;align-items:center;gap:6px}
 .share-btn:hover{transform:translateY(-2px)}
 .share-btn.wa{border-color:rgba(37,211,102,.4);color:#4ade80}
 .share-btn.wa:hover{background:rgba(37,211,102,.1);box-shadow:0 4px 12px rgba(37,211,102,.2)}
 .share-btn.cl{border-color:rgba(56,189,248,.4);color:#7dd3fc}
 .share-btn.cl:hover{background:rgba(56,189,248,.1);box-shadow:0 4px 12px rgba(56,189,248,.2)}
+
 /* field validation */
 #hx input.field-ok{border-color:rgba(34,197,94,.5)!important}
 #hx input.field-err{border-color:rgba(239,68,68,.5)!important;box-shadow:0 0 0 3px rgba(239,68,68,.1)!important}
 .field-hint{font-size:.78rem;margin-top:4px;min-height:16px;transition:all .2s}
 .field-hint.ok{color:#4ade80}
 .field-hint.err{color:#f87171}
+
 /* rango multi-zona */
 .range-bar{display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap}
 .range-tag{font-size:.75rem;border-radius:8px;padding:2px 7px;font-weight:700}
 .range-tag.lo{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25)}
 .range-tag.hi{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+
 /* ahorro countdown */
 .countdown{margin-top:10px;padding:12px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;border-left:4px solid #f59e0b;color:#fde68a;font-size:.88rem;line-height:1.6}
+
+/* micro-pro touches */
+.c{transform:translateZ(0)}
+.tab,.b,.mini,.chip{will-change:transform}
+::selection{background:rgba(56,189,248,.25)}
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
@@ -212,10 +244,11 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
 
   <div class="steps" id="stepBar">
     <div class="step active" id="stp1"><div class="step-dot" id="sdot1">1</div><div class="step-label" id="slbl1">Personal</div><div class="step-line"></div></div>
-    <div class="step" id="stp2"><div class="step-dot" id="sdot2">2</div><div class="step-label" id="slbl2">Econom&#237;a</div><div class="step-line"></div></div>
+    <div class="step" id="stp2"><div class="step-dot" id="sdot2">2</div><div class="step-label" id="slbl2">Economía</div><div class="step-line"></div></div>
     <div class="step" id="stp3"><div class="step-dot" id="sdot3">3</div><div class="step-label" id="slbl3">Preferencias</div><div class="step-line"></div></div>
     <div class="step" id="stp4"><div class="step-dot" id="sdot4">4</div><div class="step-label" id="slbl4">Resultado</div></div>
   </div>
+
   <div class="tabs">
     <div id="t_p" class="tab a" data-i="tab1">1 Personal</div>
     <div id="t_e" class="tab" data-i="tab2">2 Economía</div>
@@ -236,12 +269,12 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
 
   <div class="c" data-p="e" style="display:none">
     <div class="g">
-      <div><label data-i="lblInc">Ingresos mensuales (€) <span class="tip"><span class="tip-icon">?</span><span class="tip-box">Suma todos los ingresos netos mensuales. Si hay dos titulares, s&#250;malos.</span></span></label><input id="inc" type="number" min="0"><div class="field-hint" id="hint-inc"></div></div>
-      <div><label data-i="lblSav">Ahorros disponibles (€) <span class="tip"><span class="tip-icon">?</span><span class="tip-box">Dinero l&#237;quido real hoy. Necesitar&#225;s 10&#8211;20% de entrada + ~10% en gastos (notaría, ITP&#8230;).</span></span></label><input id="sav" type="number" min="0"><div class="field-hint" id="hint-sav"></div></div>
+      <div><label data-i="lblInc">Ingresos mensuales (€)</label><input id="inc" type="number" min="0"><div class="field-hint" id="hint-inc"></div></div>
+      <div><label data-i="lblSav">Ahorros disponibles (€)</label><input id="sav" type="number" min="0"><div class="field-hint" id="hint-sav"></div></div>
       <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40"></div>
       <div><label data-i="lblHor">¿Vivirás más de 5 años aquí?</label><select id="hor"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
       <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
-      <div><label data-i="lblMsv">Ahorro mensual (€) <span class="tip"><span class="tip-icon">?</span><span class="tip-box">Cuánto puedes ahorrar cada mes. Sirve para calcular en cu&#225;nto tiempo llegar&#237;as al objetivo de compra.</span></span></label><input id="msv" type="number" min="0"></div>
+      <div><label data-i="lblMsv">Ahorro mensual (€)</label><input id="msv" type="number" min="0"></div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
     <div class="r" style="margin-top:10px"><button class="b" id="ne" type="button" data-i="btnContinue">Continuar</button></div>
@@ -320,8 +353,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
       <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
     </div>
     <div class="share-bar">
-      <button class="share-btn wa" id="shareWa" type="button">&#128241; WhatsApp</button>
-      <button class="share-btn cl" id="shareCl" type="button">&#128203; Copiar</button>
+      <button class="share-btn wa" id="shareWa" type="button">📱 WhatsApp</button>
+      <button class="share-btn cl" id="shareCl" type="button">📋 <span data-i="btnCopy2">Copiar</span></button>
     </div>
   </div>
 
@@ -358,28 +391,21 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
   <div class="br">Assessoria d'Habitatge</div>
   <div>
     <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener">assesoriahabitatge.com</a> ·
-    <a href="/cdn-cgi/l/email-protection#1b52757d745b7a68687e687469727a737a79726f7a6f7c7e35787476"><span class="__cf_email__" data-cfemail="5f163139301f3e2c2c3a2c302d363e373e3d362b3e2b383a713c3032">[email&#160;protected]</span></a>
+    <a href="mailto:info@assesoriahabitatge.com">info@assesoriahabitatge.com</a>
   </div>
 </div>
 
 <div id="ts" class="tst" role="status" aria-live="polite"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // Esperar a que Leaflet se cargue con timeout de seguridad
 let attempts = 0;
-const maxAttempts = 100; // 5 segundos máximo
+const maxAttempts = 100;
 
 function waitForLeaflet() {
-  if (typeof L !== 'undefined') {
-    // Leaflet está listo, ejecutar código
-    initApp();
-  } else if (attempts < maxAttempts) {
-    attempts++;
-    setTimeout(waitForLeaflet, 50);
-  } else {
-    console.error('Leaflet no se pudo cargar después de 5 segundos');
-    alert('Error: No se pudo cargar el mapa. Por favor recarga la página.');
-  }
+  if (typeof L !== 'undefined') initApp();
+  else if (attempts < maxAttempts) { attempts++; setTimeout(waitForLeaflet, 50); }
+  else { console.error('Leaflet no se pudo cargar'); alert('Error: No se pudo cargar el mapa. Recarga la página.'); }
 }
 
 function initApp() {
@@ -415,13 +441,7 @@ function initApp() {
       lblProv:"Provincia (comparador)",lblM2s:"m²",lblType2:"Tipo",btnCompare:"Comparar",btnUseMine:"Usar mis datos",
       hintX:"Si elegiste varios municipios, salen botones por municipio (Idealista no soporta multi-municipio en 1 sola URL).",
       yes:"Sí",no:"No",
-
-      // Recomendaciones traducidas
-      recBuy:"COMPRAR",
-      recRent:"ALQUILAR",
-      recNotFeasible:"NO FACTIBLE",
-
-      // dinámicos JS
+      recBuy:"COMPRAR",recRent:"ALQUILAR",recNotFeasible:"NO FACTIBLE",
       toastCheckNameAge:"Revisa nombre/edad",
       toastFirstAnalyze:"Primero analiza.",
       toastPrefsChanged:"Preferencias cambiadas: vuelve a Analizar.",
@@ -451,21 +471,48 @@ function initApp() {
       reportRec:"Recomendación: {rec}",
       any:"Cualquiera",
       btnCopy2:"Copiar",
-      savingsOk:"\u2705 Ahorros suficientes para la entrada.",
-      yearsToSave:"Con {msv}/mes, alcanzar\u00e1s el objetivo en ~{yrs} a\u00f1os ({mos} meses).",
-      itpNote:"En Catalunya, la compraventa tributa un 10% de ITP + ~1% en gastos de notar\u00eda y registro. Ya incluido en los gastos de cierre estimados.",
+      savingsOk:"✅ Ahorros suficientes para la entrada.",
+      yearsToSave:"Con {msv}/mes, alcanzarás el objetivo en ~{yrs} años ({mos} meses).",
+      itpNote:"En Catalunya, la compraventa tributa un 10% de ITP + ~1% en gastos de notaría y registro. Ya incluido en los gastos de cierre estimados.",
       avgZone:"Media de {n} municipios",
-      priceRange:"Rango: {lo} \u2013 {hi}",
-      stepPersonal:"Personal",stepEco:"Econom\u00eda",stepPref:"Preferencias",stepRes:"Resultado",
-      
-      // Comparador mejorado
-      cmpCheaper:"más barato",
-      cmpExpensive:"más caro",
-      cmpSame:"igual",
+      priceRange:"Rango: {lo} – {hi}",
+      stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",
+      cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",
       cmpExplain:"Esto significa que {typeText} en {prov} es {diff} {direction} que en tu zona (Baix Penedès). La diferencia de precio es de {absDiff}, lo que representa un {pct} {direction2}.",
       cmpContext:"En {prov}, el precio medio por m² es de {avgM2}. Si aplicas las mismas características que buscas (tamaño, habitaciones, extras), el coste total sería de {total}.",
       cmpRent:"El alquiler mensual estimado en {prov} sería de {rent}, comparado con {yourRent} en tu zona.",
-      cmpAdvice:"💡 Esto puede ayudarte a decidir si vale la pena buscar en otras provincias según tu presupuesto y necesidades de movilidad."
+      cmpAdvice:"💡 Esto puede ayudarte a decidir si vale la pena buscar en otras provincias según tu presupuesto y necesidades de movilidad.",
+
+      // NUEVAS CLAVES (anti-mezcla)
+      whyBuyTitle:"¿Por qué COMPRAR?",
+      whyRentTitle:"¿Por qué ALQUILAR?",
+      notFeasibleTitle:"NO FACTIBLE",
+      prefsTitle:"Preferencias",
+      financingTitle:"Financiación",
+      effortTitle:"Esfuerzo económico",
+      mortgageEffort:"Esfuerzo hipoteca",
+      rentEffort:"Esfuerzo alquiler",
+      recommendedLimitMort:"Límite recomendado: 35%",
+      recommendedLimitRent:"Límite recomendado: 40%",
+      downPayment:"Entrada",
+      closingCosts:"Gastos de cierre",
+      toFinance:"A financiar",
+      months:"meses",
+      years:"años",
+      perMonth:"/mes",
+      selectedLabel:"Seleccionados: ",
+      none:"ninguno",
+      activeTowns:"Municipios activos: ",
+      noAreaApplied:"Ninguna zona aplicada",
+      noSelection:"Sin selección",
+      buyLabel:"COMPRA",
+      rentLabel:"ALQUILER",
+      strictLabel:"estricto",
+      flexLabel:"flex",
+      validateIncome:"Introduce ingresos válidos",
+      validateSavings:"Introduce tus ahorros",
+      validateM2:"Mínimo 50 m²",
+      missingDataCmp:"Completa provincia y datos."
     },
     CA:{
       hdrTitle:"Assessoria d'Habitatge · Baix Penedès",
@@ -486,11 +533,7 @@ function initApp() {
       lblProv:"Província (comparador)",lblM2s:"m²",lblType2:"Tipus",btnCompare:"Comparar",btnUseMine:"Usar les meves dades",
       hintX:"Si has triat diversos municipis, surten botons per municipi (Idealista no admet multi-municipi en 1 sola URL).",
       yes:"Sí",no:"No",
-
-      recBuy:"COMPRAR",
-      recRent:"LLOGAR",
-      recNotFeasible:"NO FACTIBLE",
-
+      recBuy:"COMPRAR",recRent:"LLOGAR",recNotFeasible:"NO FACTIBLE",
       toastCheckNameAge:"Revisa nom/edat",
       toastFirstAnalyze:"Primer analitza.",
       toastPrefsChanged:"Preferències canviades: torna a Analitzar.",
@@ -520,20 +563,48 @@ function initApp() {
       reportRec:"Recomanació: {rec}",
       any:"Qualsevol",
       btnCopy2:"Copiar",
-      savingsOk:"\u2705 Estalvis suficients per a l'entrada.",
-      yearsToSave:"Estalviant {msv}/mes, arribar\u00e0s a l'objectiu en ~{yrs} anys ({mos} mesos).",
-      itpNote:"A Catalunya, la compravenda tributa un 10% d'ITP + ~1% en despeses de notaria i registre. Incl\u00f2s a les despeses de tancament estimades.",
+      savingsOk:"✅ Estalvis suficients per a l'entrada.",
+      yearsToSave:"Estalviant {msv}/mes, arribaràs a l'objectiu en ~{yrs} anys ({mos} mesos).",
+      itpNote:"A Catalunya, la compravenda tributa un 10% d'ITP + ~1% en despeses de notaria i registre. Inclòs a les despeses de tancament estimades.",
       avgZone:"Mitjana de {n} municipis",
-      priceRange:"Rang: {lo} \u2013 {hi}",
-      stepPersonal:"Personal",stepEco:"Economia",stepPref:"Prefer\u00e8ncies",stepRes:"Resultat",
-      
-      cmpCheaper:"més barat",
-      cmpExpensive:"més car",
-      cmpSame:"igual",
+      priceRange:"Rang: {lo} – {hi}",
+      stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",
+      cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",
       cmpExplain:"Això vol dir que {typeText} a {prov} és {diff} {direction} que a la teva zona (Baix Penedès). La diferència de preu és de {absDiff}, que representa un {pct} {direction2}.",
-      cmpContext:"A {prov}, el preu mitjà per m² és de {avgM2}. Si apliques les mateixes característiques que busques (mida, habitacions, extres), el cost total seria de {total}.",
-      cmpRent:"El lloguer mensual estimat a {prov} seria de {rent}, comparat amb {yourRent} a la teva zona.",
-      cmpAdvice:"💡 Això et pot ajudar a decidir si val la pena buscar a altres províncies segons el teu pressupost i necessitats de mobilitat."
+      cmpContext:"A {prov}, el preu mitjà per m² és {avgM2}. Si apliques les mateixes característiques que busques (mida, habitacions, extres), el cost total seria {total}.",
+      cmpRent:"El lloguer mensual estimat a {prov} seria {rent}, comparat amb {yourRent} a la teva zona.",
+      cmpAdvice:"💡 Això et pot ajudar a decidir si val la pena buscar a altres províncies segons el teu pressupost i necessitats de mobilitat.",
+
+      // NUEVAS CLAVES
+      whyBuyTitle:"Per què COMPRAR?",
+      whyRentTitle:"Per què LLOGAR?",
+      notFeasibleTitle:"NO FACTIBLE",
+      prefsTitle:"Preferències",
+      financingTitle:"Finançament",
+      effortTitle:"Esforç econòmic",
+      mortgageEffort:"Esforç hipoteca",
+      rentEffort:"Esforç lloguer",
+      recommendedLimitMort:"Límit recomanat: 35%",
+      recommendedLimitRent:"Límit recomanat: 40%",
+      downPayment:"Entrada",
+      closingCosts:"Despeses de tancament",
+      toFinance:"A finançar",
+      months:"mesos",
+      years:"anys",
+      perMonth:"/mes",
+      selectedLabel:"Seleccionats: ",
+      none:"cap",
+      activeTowns:"Municipis actius: ",
+      noAreaApplied:"Cap zona aplicada",
+      noSelection:"Sense selecció",
+      buyLabel:"COMPRA",
+      rentLabel:"LLOGUER",
+      strictLabel:"estricte",
+      flexLabel:"flex",
+      validateIncome:"Introdueix ingressos vàlids",
+      validateSavings:"Introdueix els teus estalvis",
+      validateM2:"Mínim 50 m²",
+      missingDataCmp:"Completa província i dades."
     },
     EN:{
       hdrTitle:"Housing Advisor · Baix Penedès",
@@ -554,11 +625,7 @@ function initApp() {
       lblProv:"Province (comparator)",lblM2s:"m²",lblType2:"Type",btnCompare:"Compare",btnUseMine:"Use my data",
       hintX:"If you chose multiple towns, you get buttons per town (Idealista doesn't support multi-town in one URL).",
       yes:"Yes",no:"No",
-
-      recBuy:"BUY",
-      recRent:"RENT",
-      recNotFeasible:"NOT FEASIBLE",
-
+      recBuy:"BUY",recRent:"RENT",recNotFeasible:"NOT FEASIBLE",
       toastCheckNameAge:"Check name/age",
       toastFirstAnalyze:"Analyze first.",
       toastPrefsChanged:"Preferences changed: analyze again.",
@@ -588,20 +655,48 @@ function initApp() {
       reportRec:"Recommendation: {rec}",
       any:"Any",
       btnCopy2:"Copy",
-      savingsOk:"\u2705 Savings are sufficient for the down payment.",
+      savingsOk:"✅ Savings are sufficient for the down payment.",
       yearsToSave:"Saving {msv}/mo, you'll reach the goal in ~{yrs} years ({mos} months).",
       itpNote:"In Catalunya, property purchase tax is ~10% ITP + ~1% notary/registry fees. Already included in the estimated closing costs.",
       avgZone:"Average of {n} towns",
-      priceRange:"Range: {lo} \u2013 {hi}",
+      priceRange:"Range: {lo} – {hi}",
       stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",
-      
-      cmpCheaper:"cheaper",
-      cmpExpensive:"more expensive",
-      cmpSame:"the same",
+      cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",
       cmpExplain:"This means that {typeText} in {prov} is {diff} {direction} than in your area (Baix Penedès). The price difference is {absDiff}, which represents {pct} {direction2}.",
       cmpContext:"In {prov}, the average price per m² is {avgM2}. If you apply the same features you're looking for (size, bedrooms, extras), the total cost would be {total}.",
       cmpRent:"The estimated monthly rent in {prov} would be {rent}, compared to {yourRent} in your area.",
-      cmpAdvice:"💡 This can help you decide whether it's worth searching in other provinces based on your budget and mobility needs."
+      cmpAdvice:"💡 This can help you decide whether it's worth searching in other provinces based on your budget and mobility needs.",
+
+      // NUEVAS CLAVES
+      whyBuyTitle:"Why BUY?",
+      whyRentTitle:"Why RENT?",
+      notFeasibleTitle:"NOT FEASIBLE",
+      prefsTitle:"Preferences",
+      financingTitle:"Financing",
+      effortTitle:"Financial effort",
+      mortgageEffort:"Mortgage effort",
+      rentEffort:"Rent effort",
+      recommendedLimitMort:"Recommended limit: 35%",
+      recommendedLimitRent:"Recommended limit: 40%",
+      downPayment:"Down payment",
+      closingCosts:"Closing costs",
+      toFinance:"To finance",
+      months:"months",
+      years:"years",
+      perMonth:"/mo",
+      selectedLabel:"Selected: ",
+      none:"none",
+      activeTowns:"Active towns: ",
+      noAreaApplied:"No area applied",
+      noSelection:"No selection",
+      buyLabel:"BUY",
+      rentLabel:"RENT",
+      strictLabel:"strict",
+      flexLabel:"flex",
+      validateIncome:"Enter valid income",
+      validateSavings:"Enter your savings",
+      validateM2:"Minimum 50 m²",
+      missingDataCmp:"Complete province and data."
     }
   };
 
@@ -617,28 +712,29 @@ function initApp() {
 
   const toast=(m)=>{let e=Q("#ts");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),1800)};
 
-  // aplicar traducciones a elementos con data-i
   const applyStaticI18n=()=>{
     QA("[data-i]").forEach(el=>{
       const k=el.getAttribute("data-i");
       const v=t(k);
-      if(!v) return;
-      el.textContent=v;
+      if(v) el.textContent=v;
     });
   };
 
   const setLang=(l)=>{
     LANG=l;
     localStorage.setItem(LANG_KEY,l);
+    document.documentElement.lang = (l==="CA"?"ca":l==="ES"?"es":"en");
+
     Q("#L_CA").classList.toggle("a",l==="CA");
     Q("#L_ES").classList.toggle("a",l==="ES");
     Q("#L_EN").classList.toggle("a",l==="EN");
+
     applyStaticI18n();
     renderZoneUI();
     renderResult();
     refreshExamplesUI();
-    updateSteps && updateSteps(document.querySelector("[data-p][style*='block']")?.getAttribute("data-p")||"p");
-    liveValidate && liveValidate();
+    updateSteps(document.querySelector("[data-p][style*='block']")?.getAttribute("data-p")||"p");
+    liveValidate();
   };
 
   const loadForm=()=>{
@@ -714,7 +810,7 @@ function initApp() {
     let ar=Q("#ar").value,m2=+Q("#m2").value||0,bd=(Q("#bed").value===""?0:+Q("#bed").value||0),ba=+Q("#bat").value||0,type=Q("#ty").value;
     if(!nm||ag<18||ag>100||m2<50||ba<1){toast(t("toastCheckNameAge"));return;}
     let e={t:Q("#et").checked,p:Q("#ep").checked,l:Q("#el").checked,k:Q("#ek").checked};
-    // Media de precios si hay multi-zona
+
     let pb,pr,pbRange=null,prRange=null,muniList=[];
     if((ar==="*"||ar==="__multi__")&&zoneSel.size>1){
       muniList=[...zoneSel];
@@ -730,6 +826,7 @@ function initApp() {
       pb=buy(baseM,m2,Math.max(0,bd),ba,e);
       pr=rent(baseM,m2,Math.max(0,bd),ba,e);
     }
+
     let dp=fst?.1:.2,down=pb*dp,cl=pb*BASE.close,cap=Math.max(0,pb-down);
     let rate=BASE.rate;if(sav<down)rate+=.005;
     let pay=mort(cap,rate,yrs),ratio=inc>0?(pay/inc)*100:1e9,rri=inc>0?(pr/inc)*100:1e9;
@@ -738,19 +835,15 @@ function initApp() {
     let ratioOK=isFinite(ratio)&&ratio<=35;
     let rentOK=isFinite(rri)&&rri<=40;
     let recCode=(!need && ratioOK && hor) ? "BUY" : (rentOK ? "RENT" : "NOT_FEASIBLE");
-    
-    // Traducir la recomendación según el idioma
-    let rec;
-    if(recCode === "BUY") rec = t("recBuy");
-    else if(recCode === "RENT") rec = t("recRent");
-    else rec = t("recNotFeasible");
+
+    let rec = recCode==="BUY" ? t("recBuy") : recCode==="RENT" ? t("recRent") : t("recNotFeasible");
 
     last={nm,muni:ar,m2,bd:Math.max(0,bd),ba,type,pb,pr,pbRange,prRange,muniList,cap,rate,yrs,dp,sav,down,cl,pay,ratio,rri,rec,recCode,e,need,hor,inc,msv:+Q("#msv").value||0};
     lastReq=reqFromUI(); lastReqSig=sigOfReq(lastReq);
 
     Q("#k1").textContent=fmtMoney(pb);
-    Q("#k2").textContent=(LANG==="EN"?fmtEN(pr):fmtES(pr))+" €";
-    Q("#k3").textContent=(LANG==="EN"?fmtEN(pay):fmtES(pay))+" €";
+    Q("#k2").textContent=fmtMoney(pr);
+    Q("#k3").textContent=fmtMoney(pay);
     Q("#k4").textContent=rec;
 
     renderResult();
@@ -780,140 +873,105 @@ function initApp() {
       `<span class="chip ${clsCash}">${tpl(t("chipCash"),{eur:fmtMoney(needCash)})}</span>`+
       `<span class="chip ${clsRate}">${tpl(t("chipRate"),{rate:(last.rate*100).toFixed(2)+"%"})}</span>`;
 
-    // Mini cards: rango multi-zona y precio/m²
     const isMulti=last.muniList&&last.muniList.length>1;
     const multiLbl=isMulti?`<div style='font-size:.72rem;color:#7dd3fc;margin-top:3px'>${tpl(t("avgZone"),{n:last.muniList.length})}</div>`:"";
     const pbRngHtml=(isMulti&&last.pbRange)?`<div class='range-bar'><span class='range-tag lo'>↓ ${fmtMoney(last.pbRange.lo)}</span><span class='range-tag hi'>↑ ${fmtMoney(last.pbRange.hi)}</span></div>`:"";
     const prRngHtml=(isMulti&&last.prRange)?`<div class='range-bar'><span class='range-tag lo'>↓ ${fmtMoney(last.prRange.lo)}</span><span class='range-tag hi'>↑ ${fmtMoney(last.prRange.hi)}</span></div>`:"";
     const pricePerM2=last.m2>0?Math.round(last.pb/last.m2):0;
     Q("#rMini").innerHTML=
-      `<div class="mini"><div class="h">${t("miniPrice")}</div><div class="v">${fmtMoney(last.pb)}</div>${multiLbl}${pbRngHtml}<div style='font-size:.75rem;color:#64748b;margin-top:4px'>${pricePerM2.toLocaleString("es-ES")} €/m²</div></div>`+
-      `<div class="mini"><div class="h">${t("miniPay")}</div><div class="v">${fmtMoney(last.pay)}</div><div style='font-size:.75rem;color:#64748b;margin-top:4px'>${last.yrs} ${LANG==="EN"?"years":"años"} · ${(last.rate*100).toFixed(2)}%</div></div>`+
+      `<div class="mini"><div class="h">${t("miniPrice")}</div><div class="v">${fmtMoney(last.pb)}</div>${multiLbl}${pbRngHtml}<div style='font-size:.75rem;color:#64748b;margin-top:4px'>${pricePerM2.toLocaleString(LANG==="EN"?"en-US":"es-ES")} €/m²</div></div>`+
+      `<div class="mini"><div class="h">${t("miniPay")}</div><div class="v">${fmtMoney(last.pay)}</div><div style='font-size:.75rem;color:#64748b;margin-top:4px'>${last.yrs} ${t("years")} · ${(last.rate*100).toFixed(2)}%</div></div>`+
       `<div class="mini"><div class="h">${t("miniRent")}</div><div class="v">${fmtMoney(last.pr)}</div>${prRngHtml}</div>`;
 
     const muniTxt=muniLabel(last.muni);
     const typeTxt=typeLabel(last.type);
 
-    // Crear explicación detallada y clara
     let bodyHTML = "<div style='display:grid;gap:16px'>";
-    
-    // EXPLICACIÓN DE LA RECOMENDACIÓN
+
     bodyHTML += "<div style='background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(14,165,233,.05));padding:16px;border-radius:14px;border-left:4px solid ";
-    
     if(last.recCode === "BUY") {
       bodyHTML += "#22c55e'>";
-      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#86efac;margin-bottom:12px'>✅ " + 
-        (LANG==="EN"?"Why BUY?":LANG==="CA"?"Per què COMPRAR?":"¿Por qué COMPRAR?") + "</div>";
+      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#86efac;margin-bottom:12px'>✅ " + t("whyBuyTitle") + "</div>";
       bodyHTML += "<div style='color:#cbd5e1;line-height:1.7;font-size:.92rem'>";
-      
-      const reasons = [];
-      if(!last.need) reasons.push((LANG==="EN"?"You have sufficient savings":"Tienes ahorros suficientes") + " (" + fmtMoney(last.sav) + " ≥ " + fmtMoney(needCash) + ")");
-      if(dti<=35) reasons.push((LANG==="EN"?"Mortgage effort is sustainable":"Esfuerzo hipotecario sostenible") + " (" + fmtPct(dti) + " " + (LANG==="EN"?"of income":"de ingresos") + ")");
-      if(last.hor) reasons.push((LANG==="EN"?"You plan to stay > 5 years":"Planeas quedarte > 5 años") + " (" + (LANG==="EN"?"builds equity":"genera patrimonio") + ")");
-      reasons.push((LANG==="EN"?"Your monthly payment":"Tu cuota mensual") + " (" + fmtMoney(last.pay) + ") " + (LANG==="EN"?"vs rent":"vs alquiler") + " (" + fmtMoney(last.pr) + ")");
-      
-      reasons.forEach((r,i)=>bodyHTML+="<div style='margin-bottom:8px'>• " + r + "</div>");
+      const reasons=[];
+      if(!last.need) reasons.push(`${t("closingCosts")}: ${fmtMoney(needCash)} · ${fmtMoney(last.sav)} ≥ ${fmtMoney(needCash)}`);
+      if(dti<=35) reasons.push(`${t("mortgageEffort")}: ${fmtPct(dti)}`);
+      if(last.hor) reasons.push(LANG==="EN"?"Staying > 5 years helps amortize purchase costs.":LANG==="CA"?"Estar > 5 anys ajuda a amortitzar costos.":"Quedarte > 5 años ayuda a amortizar costes.");
+      reasons.push(`${t("miniPay")}: ${fmtMoney(last.pay)} vs ${t("miniRent")}: ${fmtMoney(last.pr)}`);
+      reasons.forEach(r=>bodyHTML+=`<div style='margin-bottom:8px'>• ${r}</div>`);
       bodyHTML += "</div>";
-      
     } else if(last.recCode === "RENT") {
       bodyHTML += "#f59e0b'>";
-      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#fde68a;margin-bottom:12px'>⚠️ " + 
-        (LANG==="EN"?"Why RENT?":LANG==="CA"?"Per què LLOGAR?":"¿Por qué ALQUILAR?") + "</div>";
+      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#fde68a;margin-bottom:12px'>⚠️ " + t("whyRentTitle") + "</div>";
       bodyHTML += "<div style='color:#cbd5e1;line-height:1.7;font-size:.92rem'>";
-      
-      const reasons = [];
-      if(last.need) {
-        const missing = Math.round(needCash - last.sav);
-        reasons.push((LANG==="EN"?"Insufficient savings":"Ahorros insuficientes") + " (" + 
-          (LANG==="EN"?"need":"necesitas") + " " + fmtMoney(needCash) + ", " + 
-          (LANG==="EN"?"missing":"faltan") + " " + fmtMoney(missing) + ")");
+      const reasons=[];
+      if(last.need){
+        const missing=Math.round(needCash-last.sav);
+        reasons.push((LANG==="EN"?"Insufficient savings":"CA"?"Estalvis insuficients":"Ahorros insuficientes")+" ("+fmtMoney(missing)+" "+(LANG==="EN"?"missing":"falten")+")");
       }
-      if(dti>35) reasons.push((LANG==="EN"?"Mortgage effort too high":"Esfuerzo hipotecario demasiado alto") + " (" + fmtPct(dti) + " > 35% " + (LANG==="EN"?"of income":"de ingresos") + ")");
-      if(!last.hor) reasons.push((LANG==="EN"?"Short term stay (< 5 years)":"Estancia corta plazo (< 5 años)") + " - " + (LANG==="EN"?"buying costs not worth it":"gastos de compra no valen la pena"));
-      if(rti<=40) reasons.push((LANG==="EN"?"Rent is affordable":"Alquiler es asequible") + " (" + fmtPct(rti) + " " + (LANG==="EN"?"of income":"de ingresos") + ")");
-      else reasons.push((LANG==="EN"?"Rent effort":"Esfuerzo alquiler") + " " + fmtPct(rti) + " " + (LANG==="EN"?"is high but manageable":"es alto pero manejable"));
-      
-      reasons.forEach((r,i)=>bodyHTML+="<div style='margin-bottom:8px'>• " + r + "</div>");
+      if(dti>35) reasons.push(`${t("mortgageEffort")}: ${fmtPct(dti)} (>35%)`);
+      if(!last.hor) reasons.push(LANG==="EN"?"Short stay makes buying less efficient.":LANG==="CA"?"Estada curta fa la compra menys eficient.":"Estancia corta hace la compra menos eficiente.");
+      reasons.push(`${t("rentEffort")}: ${fmtPct(rti)}`);
+      reasons.forEach(r=>bodyHTML+=`<div style='margin-bottom:8px'>• ${r}</div>`);
       bodyHTML += "</div>";
-      
     } else {
       bodyHTML += "#ef4444'>";
-      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#fca5a5;margin-bottom:12px'>❌ " + 
-        (LANG==="EN"?"NOT FEASIBLE":LANG==="CA"?"NO FACTIBLE":"NO FACTIBLE") + "</div>";
+      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#fca5a5;margin-bottom:12px'>❌ " + t("notFeasibleTitle") + "</div>";
       bodyHTML += "<div style='color:#cbd5e1;line-height:1.7;font-size:.92rem'>";
-      
-      const problems = [];
-      if(last.need) problems.push((LANG==="EN"?"Insufficient savings for down payment":"Ahorros insuficientes para entrada"));
-      if(dti>35) problems.push((LANG==="EN"?"Mortgage effort":"Esfuerzo hipoteca") + " " + fmtPct(dti) + " > 35% (" + (LANG==="EN"?"too high":"demasiado alto") + ")");
-      if(rti>40) problems.push((LANG==="EN"?"Rent effort":"Esfuerzo alquiler") + " " + fmtPct(rti) + " > 40% (" + (LANG==="EN"?"too high":"demasiado alto") + ")");
-      
-      problems.forEach((p,i)=>bodyHTML+="<div style='margin-bottom:8px'>• " + p + "</div>");
-      bodyHTML += "<div style='margin-top:12px;padding:12px;background:rgba(239,68,68,.1);border-radius:8px'>";
-      bodyHTML += "<b style='color:#fca5a5'>" + (LANG==="EN"?"💡 Suggestions:":"💡 Sugerencias:") + "</b><br>";
-      if(last.need) bodyHTML += "• " + (LANG==="EN"?"Save more (need "+fmtMoney(needCash)+")":"Ahorra más (necesitas "+fmtMoney(needCash)+")") + "<br>";
-      if(dti>35 || rti>40) bodyHTML += "• " + (LANG==="EN"?"Increase income or reduce property price":"Aumenta ingresos o reduce precio de propiedad") + "<br>";
-      bodyHTML += "• " + (LANG==="EN"?"Consider a smaller property or different area":"Considera una propiedad más pequeña o zona diferente");
-      bodyHTML += "</div>";
+      const problems=[];
+      if(last.need) problems.push(LANG==="EN"?"Not enough savings for down payment + costs.":LANG==="CA"?"No hi ha prou estalvis per a entrada + despeses.":"No hay ahorros suficientes para entrada + gastos.");
+      if(dti>35) problems.push(`${t("mortgageEffort")}: ${fmtPct(dti)} (>35%)`);
+      if(rti>40) problems.push(`${t("rentEffort")}: ${fmtPct(rti)} (>40%)`);
+      problems.forEach(p=>bodyHTML+=`<div style='margin-bottom:8px'>• ${p}</div>`);
       bodyHTML += "</div>";
     }
     bodyHTML += "</div>";
-    
-    // Preferencias
-    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:8px'>📍 " + t("bodyPrefs").split(":")[0] + "</div>" +
-      "<div style='margin-left:20px;color:#cbd5e1'>" + 
-      tpl(t("bodyPrefs").replace(/^.*?:\s*/,""),{
-        muni:muniTxt,m2:last.m2,bed:(last.bd||0),bath:last.ba,type:typeTxt
-      }) + "</div></div>";
-    
-    // Financiación
-    const dpPct = Math.round(last.dp*100);
-    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:8px'>💰 " + 
-      (LANG==="EN"?"Financing":"Financiación") + "</div>" +
+
+    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:8px'>📍 "+t("prefsTitle")+"</div>" +
       "<div style='margin-left:20px;color:#cbd5e1'>" +
-      "<div style='margin-bottom:6px'>" + (LANG==="EN"?"Down payment: ":"Entrada: ") + dpPct + "% → <b>" + fmtMoney(last.down) + "</b></div>" +
-      "<div style='margin-bottom:6px'>" + (LANG==="EN"?"Closing costs: ":"Gastos de cierre: ") + "<b>" + fmtMoney(last.cl) + "</b></div>" +
-      "<div>" + (LANG==="EN"?"To finance: ":"A financiar: ") + "<b>" + fmtMoney(last.cap) + "</b> (" + last.yrs + (LANG==="EN"?" years":" años") + " @ " + (last.rate*100).toFixed(2) + "%)</div>" +
+      tpl(t("bodyPrefs").replace(/^.*?:\s*/,""),{muni:muniTxt,m2:last.m2,bed:(last.bd||0),bath:last.ba,type:typeTxt}) +
       "</div></div>";
-    
-    // Esfuerzo económico con barras de progreso visual
+
+    const dpPct = Math.round(last.dp*100);
+    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:8px'>💰 "+t("financingTitle")+"</div>" +
+      "<div style='margin-left:20px;color:#cbd5e1'>" +
+      "<div style='margin-bottom:6px'>"+t("downPayment")+": "+dpPct+"% → <b>"+fmtMoney(last.down)+"</b></div>" +
+      "<div style='margin-bottom:6px'>"+t("closingCosts")+": <b>"+fmtMoney(last.cl)+"</b></div>" +
+      "<div>"+t("toFinance")+": <b>"+fmtMoney(last.cap)+"</b> ("+last.yrs+" "+t("years")+" @ "+(last.rate*100).toFixed(2)+"%)</div>" +
+      "</div></div>";
+
     const dtiCls=dti<=30?"good":dti<=35?"warn":"bad";
     const rtiCls=rti<=35?"good":rti<=40?"warn":"bad";
-    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:12px'>📊 " +
-      (LANG==="EN"?"Financial effort":"Esfuerzo económico") + "</div>" +
+    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:12px'>📊 "+t("effortTitle")+"</div>" +
       "<div style='display:grid;gap:14px'>" +
       "<div><div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px'>" +
-        "<span style='color:#94a3b8;font-size:.85rem;font-weight:700'>" + (LANG==="EN"?"Mortgage effort":"Esfuerzo hipoteca") + "</span>" +
-        "<span style='font-weight:900;color:#f1f5f9'>" + fmtPct(dti) + " " + (dti<=30?"✅":dti<=35?"⚠️":"❌") + "</span></div>" +
-      "<div class='pbar-wrap'><div class='pbar " + dtiCls + "' style='width:" + Math.min(100,dti).toFixed(1) + "%'></div></div>" +
-      "<div style='font-size:.75rem;color:#64748b;margin-top:3px'>" + (LANG==="EN"?"Recommended limit: 35%":"Límite recomendado: 35%") + "</div></div>" +
+        "<span style='color:#94a3b8;font-size:.85rem;font-weight:700'>"+t("mortgageEffort")+"</span>" +
+        "<span style='font-weight:900;color:#f1f5f9'>"+fmtPct(dti)+" "+(dti<=30?"✅":dti<=35?"⚠️":"❌")+"</span></div>" +
+      "<div class='pbar-wrap'><div class='pbar "+dtiCls+"' style='width:"+Math.min(100,dti).toFixed(1)+"%'></div></div>" +
+      "<div style='font-size:.75rem;color:#64748b;margin-top:3px'>"+t("recommendedLimitMort")+"</div></div>" +
       "<div><div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px'>" +
-        "<span style='color:#94a3b8;font-size:.85rem;font-weight:700'>" + (LANG==="EN"?"Rent effort":"Esfuerzo alquiler") + "</span>" +
-        "<span style='font-weight:900;color:#f1f5f9'>" + fmtPct(rti) + " " + (rti<=35?"✅":rti<=40?"⚠️":"❌") + "</span></div>" +
-      "<div class='pbar-wrap'><div class='pbar " + rtiCls + "' style='width:" + Math.min(100,rti).toFixed(1) + "%'></div></div>" +
-      "<div style='font-size:.75rem;color:#64748b;margin-top:3px'>" + (LANG==="EN"?"Recommended limit: 40%":"Límite recomendado: 40%") + "</div></div>" +
+        "<span style='color:#94a3b8;font-size:.85rem;font-weight:700'>"+t("rentEffort")+"</span>" +
+        "<span style='font-weight:900;color:#f1f5f9'>"+fmtPct(rti)+" "+(rti<=35?"✅":rti<=40?"⚠️":"❌")+"</span></div>" +
+      "<div class='pbar-wrap'><div class='pbar "+rtiCls+"' style='width:"+Math.min(100,rti).toFixed(1)+"%'></div></div>" +
+      "<div style='font-size:.75rem;color:#64748b;margin-top:3px'>"+t("recommendedLimitRent")+"</div></div>" +
       "</div></div>";
 
-    // Nota ITP/AJD
-    bodyHTML += "<div style='padding:12px 14px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:12px;border-left:4px solid #818cf8;color:#c7d2fe;font-size:.85rem;line-height:1.6'>&#x2139;&#xFE0F; " + t("itpNote") + "</div>";
+    bodyHTML += "<div style='padding:12px 14px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:12px;border-left:4px solid #818cf8;color:#c7d2fe;font-size:.85rem;line-height:1.6'>ℹ️ "+t("itpNote")+"</div>";
 
-    // Countdown de ahorro
-    const needCash2=Math.round(last.down+last.cl);
     if(last.need){
-      const missing2=Math.max(0,needCash2-last.sav);
+      const missing2=Math.max(0,needCash-last.sav);
       if(last.msv>0&&missing2>0){
         const mos=Math.ceil(missing2/last.msv);
         const yrs2=(mos/12).toFixed(1);
-        bodyHTML += "<div class='countdown'>&#x23F3; "+tpl(t("yearsToSave"),{msv:fmtMoney(last.msv),yrs:yrs2,mos:mos})+"</div>";
+        bodyHTML += "<div class='countdown'>⏳ "+tpl(t("yearsToSave"),{msv:fmtMoney(last.msv),yrs:yrs2,mos:mos})+"</div>";
       }
     } else {
       bodyHTML += "<div class='countdown' style='background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);border-left-color:#22c55e;color:#86efac'>"+t("savingsOk")+"</div>";
     }
 
     bodyHTML += "</div>";
-    
     Q("#rBody").innerHTML = bodyHTML;
 
-    // Texto largo (clipboard) 100% en idioma
     Q("#rt").textContent=[
       tpl(t("reportHello"),{name:last.nm}),
       tpl(t("reportPrice"),{eur:fmtMoney(last.pb)}),
@@ -940,7 +998,7 @@ function initApp() {
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(cmap);
       L.marker(coords).addTo(cmap).bindPopup(m);
       setTimeout(()=>{if(cmap)cmap.invalidateSize()},200);
-    } else if(cmap){
+    } else {
       cmap.setView(coords,12);
       cmap.eachLayer(layer=>{if(layer instanceof L.Marker)cmap.removeLayer(layer)});
       L.marker(coords).addTo(cmap).bindPopup(m);
@@ -960,24 +1018,23 @@ function initApp() {
     if(!last){Q("#cmg").textContent=t("toastFirstAnalyze");return;}
     let m=Q("#cm").value,m2=+Q("#cm2").value||0,bd=+Q("#cbd").value||0,ba=+Q("#cba").value||0;
     let e={t:Q("#ct").checked,p:Q("#cp0").checked,l:Q("#cl0").checked,k:Q("#ck0").checked};
-    if(!M[m]||!(m2>0&&ba>0)){Q("#cmg").textContent=(LANG==="EN"?"Complete province and data.":LANG==="CA"?"Completa província i dades.":"Completa provincia y datos.");return;}
+    if(!M[m]||!(m2>0&&ba>0)){Q("#cmg").textContent=t("missingDataCmp");return;}
     let p2=buyM(m,m2,Math.max(0,bd),ba,e), r2=rentM(m,m2,Math.max(0,bd),ba,e);
     let d=p2-last.pb, pct=(last.pb>0)?(d/last.pb)*100:0;
     let cls=d>0?"bad":d<0?"good":"neu";
     let arrow=d>0?"↑":d<0?"↓":"→";
     let sign=d>0?"+":"";
     let pctTxt=(d===0)?"0%":(sign+pct.toFixed(1)+"%");
-    
-    // Mejorar explicación del comparador
+
     const typeTxt = typeLabel(Q("#cty").value);
     const direction = d>0 ? t("cmpExpensive") : (d<0 ? t("cmpCheaper") : t("cmpSame"));
     const direction2 = d>0 ? t("cmpExpensive") : (d<0 ? t("cmpCheaper") : "");
     const absDiff = fmtMoney(Math.abs(d));
     const avgM2 = fmtMoney(M[m].v);
-    
+
     let explanation = "";
     if(d !== 0) {
-      const explainTxt = tpl(t("cmpExplain"), {typeText: typeTxt, prov: m, diff: absDiff, direction: direction, pct: pctTxt, direction2: direction2});
+      const explainTxt = tpl(t("cmpExplain"), {typeText: typeTxt, prov: m, diff: absDiff, direction: direction, pct: pctTxt, direction2: direction2, absDiff: absDiff});
       const contextTxt = tpl(t("cmpContext"), {prov: m, avgM2: avgM2, total: fmtMoney(p2)});
       const rentTxt = tpl(t("cmpRent"), {prov: m, rent: fmtMoney(r2), yourRent: fmtMoney(last.pr)});
       const adviceTxt = t("cmpAdvice");
@@ -988,7 +1045,7 @@ function initApp() {
         "<p style='margin-top:10px;padding:10px;background:rgba(56,189,248,.1);border-radius:8px;border-left:3px solid #38bdf8'>" + adviceTxt + "</p>" +
         "</div>";
     }
-    
+
     Q("#cmg").innerHTML=
       "<div class='cardx'>" +
         "<div class='top'>" +
@@ -999,13 +1056,12 @@ function initApp() {
             "<span class='chip neu'>" + fmtMoney(p2) + "</span>" +
           "</div>" +
         "</div>" +
-        "<div class='body'>" + fmtMoney(p2) + " · " + fmtMoney(r2) + "/" + (LANG==="EN"?"month":LANG==="CA"?"mes":"mes") + "</div>" +
+        "<div class='body'>" + fmtMoney(p2) + " · " + fmtMoney(r2) + " " + t("perMonth") + "</div>" +
         explanation +
       "</div>";
     upMap(); saveForm();
   };
 
-  // ===== Mapa real (Leaflet) =====
   const ZONE_POINTS=[
     {name:"Cunit",lat:41.1989,lng:1.6368},
     {name:"Calafell",lat:41.2010,lng:1.5687},
@@ -1034,25 +1090,20 @@ function initApp() {
   };
   const saveZoneSel=()=>localStorage.setItem(ZONE_KEY, JSON.stringify([...zoneSel]));
 
-  const pinIcon=(on)=>L.divIcon({
-    className:"",
-    html:`<div class="pinWrap"><div class="pin ${on?"on":"off"}"></div></div>`,
-    iconSize:[26,26],
-    iconAnchor:[13,26]
-  });
+  const pinIcon=(on)=>L.divIcon({className:"",html:`<div class="pinWrap"><div class="pin ${on?"on":"off"}"></div></div>`,iconSize:[26,26],iconAnchor:[13,26]});
 
   const renderZoneUI=()=>{
-    const selTxt = zoneSel.size ? [...zoneSel].join(", ") : (LANG==="EN"?"none":LANG==="CA"?"cap":"ninguno");
-    Q("#zoneNote").textContent = (LANG==="EN"?"Selected: ":LANG==="CA"?"Seleccionats: ":"Seleccionados: ")+selTxt;
+    const selTxt = zoneSel.size ? [...zoneSel].join(", ") : t("none");
+    Q("#zoneNote").textContent = t("selectedLabel")+selTxt;
 
     Q("#zoneApplied").textContent = zoneSel.size
-      ? ((LANG==="EN"?"Active towns: ":LANG==="CA"?"Municipis actius: ":"Municipios activos: ")+[...zoneSel].join(", "))
-      : (LANG==="EN"?"No area applied":LANG==="CA"?"Cap zona aplicada":"Ninguna zona aplicada");
+      ? (t("activeTowns")+[...zoneSel].join(", "))
+      : t("noAreaApplied");
 
     const zc=Q("#zoneChips");
     zc.innerHTML = zoneSel.size
       ? [...zoneSel].map(z=>`<span class="pchip on" data-z="${z}">${z}</span>`).join("")
-      : `<span class="pchip off">${LANG==="EN"?"No selection":LANG==="CA"?"Sense selecció":"Sin selección"}</span>`;
+      : `<span class="pchip off">${t("noSelection")}</span>`;
 
     zc.querySelectorAll("[data-z]").forEach(ch=>{
       ch.addEventListener("click",()=>{
@@ -1086,17 +1137,12 @@ function initApp() {
     const bounds=[];
     ZONE_POINTS.forEach(p=>{
       bounds.push([p.lat,p.lng]);
-      const mk=L.marker([p.lat,p.lng],{
-        icon: pinIcon(zoneSel.has(p.name)),
-        keyboard:true,riseOnHover:true,title:p.name
-      }).addTo(zmap);
+      const mk=L.marker([p.lat,p.lng],{icon: pinIcon(zoneSel.has(p.name)),keyboard:true,riseOnHover:true,title:p.name}).addTo(zmap);
       mk.bindTooltip(p.name,{direction:"top",opacity:0.95});
-
       const hb=L.circle([p.lat,p.lng],{radius:380,opacity:0,fillOpacity:0}).addTo(zmap);
       const clickFn=()=>toggleZone(p.name,false);
       mk.on("click",clickFn);
       hb.on("click",clickFn);
-
       markerByName.set(p.name,mk);
       applyMarkerState(p.name);
     });
@@ -1106,7 +1152,6 @@ function initApp() {
     renderZoneUI();
   };
 
-  // ===== Idealista links =====
   const IDEALISTA_BASE="https://www.idealista.com";
   const MUNI_SLUG={
     "Cunit":"cunit-tarragona","El Vendrell":"el-vendrell-tarragona","Calafell":"calafell-tarragona","Santa Oliva":"santa-oliva-tarragona",
@@ -1140,26 +1185,21 @@ function initApp() {
   const buildIdealistaUrl=(mode,strict,muniOverride)=>{
     if(!lastReq) return null;
     const req=lastReq;
-
     const muni = muniOverride || req.muni;
     const area=(muni==="*"||muni==="__multi__") ? "tarragona/baix-penedes" : (MUNI_SLUG[muni]||null);
     if(!area) return null;
-
     const op=(mode==="buy")?"venta-viviendas":"alquiler-viviendas";
-
     const f=[];
     if(req.m2!=null) f.push(...m2RangeSlugs(req.m2));
     f.push(req.type==="flat"?"pisos":"chalets");
     if(req.bed!=null) f.push(bedSlug(req.bed));
     if(req.bath!=null) f.push(bathSlug(req.bath));
-
     if(strict){
       if(req.ex.t===1) f.push("terraza");
       if(req.ex.p===1) f.push("piscina");
       if(req.ex.l===1) f.push("ascensor");
       if(req.ex.k===1) f.push("garaje");
     }
-
     const joined=f.filter(Boolean).join("%2C");
     return `${IDEALISTA_BASE}/${op}/${area}/con-${joined}/`;
   };
@@ -1192,10 +1232,10 @@ function initApp() {
     };
 
     const z=[...zoneSel].filter(x=>MUNI_SLUG[x]);
-    const buyLabel = (LANG==="EN"?"BUY":LANG==="CA"?"COMPRA":"COMPRA");
-    const rentLabel = (LANG==="EN"?"RENT":LANG==="CA"?"LLOGUER":"ALQUILER");
-    const strictLabel = (LANG==="EN"?"strict":LANG==="CA"?"estricte":"estricto");
-    const flexLabel = (LANG==="EN"?"flex":LANG==="CA"?"flex":"flex");
+    const buyLabel = t("buyLabel");
+    const rentLabel = t("rentLabel");
+    const strictLabel = t("strictLabel");
+    const flexLabel = t("flexLabel");
 
     if(z.length){
       z.forEach(m=>{
@@ -1235,7 +1275,6 @@ function initApp() {
     show("p");
   };
 
-  // clamp
   const clamp=(id,min,max,len)=>{
     let el=document.getElementById(id);if(!el)return;
     const san=v=>{v=String(v||"").replace(/[^\d.]/g,"");let p=v.split(".");if(p.length>2)v=p.slice(0,2).join(".");return len?v.slice(0,len):v};
@@ -1251,15 +1290,17 @@ function initApp() {
     const set=(inp,hint,ok,msg)=>{
       inp.classList.toggle("field-ok",ok&&inp.value!=="");
       inp.classList.toggle("field-err",!ok&&inp.value!=="");
-      if(hint){hint.textContent=(!ok&&inp.value!=="")?"⚠ "+msg:"";hint.className="field-hint"+(ok&&inp.value!=""?" ok":!ok&&inp.value!=""?" err":"");}
+      if(hint){
+        hint.textContent=(!ok&&inp.value!=="")?"⚠ "+msg:"";
+        hint.className="field-hint"+(ok&&inp.value!=""?" ok":!ok&&inp.value!=""?" err":"");
+      }
     };
-    set(fi,hi,vi>0,LANG==="EN"?"Enter valid income":"Introduce ingresos v\u00e1lidos");
-    set(fs,hs,vs>0,LANG==="EN"?"Enter your savings":"Introduce tus ahorros");
-    set(fm,hm,vm>=50,LANG==="EN"?"Minimum 50 m\u00b2":"M\u00ednimo 50 m\u00b2");
+    set(fi,hi,vi>0,t("validateIncome"));
+    set(fs,hs,vs>0,t("validateSavings"));
+    set(fm,hm,vm>=50,t("validateM2"));
   };
   ["inc","sav","m2"].forEach(id=>{const el=Q("#"+id);if(el){el.addEventListener("input",liveValidate);el.addEventListener("change",liveValidate);}});
 
-  // bind
   Q("#np").addEventListener("click",()=>{
     let nm=(Q("#nm").value||"").trim();let ag=+Q("#ag").value||0;
     if(!nm||ag<18||ag>100){toast(t("toastCheckNameAge"));return;}
@@ -1324,10 +1365,9 @@ function initApp() {
   if(Q("#shareWa")) Q("#shareWa").addEventListener("click",shareWhatsApp);
   if(Q("#shareCl")) Q("#shareCl").addEventListener("click",copy);
 
-  // init
   loadZoneSel();
   loadForm();
-  applyStaticI18n();
+  setLang(LANG); // aplica traducciones + lang html
   upMap();
   updateSteps("p");
   liveValidate();

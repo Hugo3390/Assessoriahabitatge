@@ -1,1382 +1,1554 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Assessoria d'Habitatge</title>
-<style>
-:root{
-  --card:rgba(15,23,42,.68);--bd:#334155;--t:#e5e7eb;--m:#94a3b8;--pill:#0ea5e9;
-  --p:#06b6d4;--ph:#0891b2;--ok:#22c55e;--tab:#0b1220;--tb:#415269;--ta:#0ea5e9;
-  --g1:#3b4a60;--g2:#0b1220;--good:#16a34a;--warn:#f59e0b;--bad:#ef4444;
-  --gradient-1:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-  --gradient-2:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);
-  --gradient-3:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);
-  --gradient-4:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);
-  --gradient-5:linear-gradient(135deg,#fa709a 0%,#fee140 100%);
-  --shadow-lg:0 10px 40px rgba(0,0,0,.3);
-  --shadow-xl:0 20px 60px rgba(0,0,0,.4);
-}
-html,body{height:100%}
-body{margin:0;background:#020617;position:relative;overflow-x:hidden}
-body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;
-  background:radial-gradient(1400px 700px at 20% -10%,rgba(56,189,248,.18),transparent 60%),
-  radial-gradient(1000px 600px at 85% 0%,rgba(34,197,94,.14),transparent 60%),
-  radial-gradient(800px 500px at 50% 100%,rgba(168,85,247,.12),transparent 60%),
-  linear-gradient(180deg,#0f172a 0%,#020617 50%,#000000 100%);
-  z-index:-1;pointer-events:none;animation:pulse 20s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.8}50%{opacity:1}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 18px rgba(56,189,248,.25)}50%{box-shadow:0 0 28px rgba(56,189,248,.45)}}
-
-#hx{color:var(--t);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;-webkit-font-smoothing:antialiased}
-#hx *{box-sizing:border-box}
-.w{max-width:1200px;margin:22px auto 18px;padding:0 16px}
-.c{background:rgba(15,23,42,.85);border:1px solid rgba(148,163,184,.2);border-radius:20px;padding:24px;margin:16px 0;
-  backdrop-filter:blur(16px);box-shadow:var(--shadow-lg);animation:fadeIn .6s ease-out;
-  transition:all .3s ease;position:relative;overflow:hidden}
-.c::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(56,189,248,.6),transparent);opacity:.5}
-.c:hover{border-color:rgba(56,189,248,.4);box-shadow:var(--shadow-xl)}
-.r{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.pill{background:var(--gradient-3);color:#001018;border-radius:24px;padding:10px 18px;font-weight:900;
-  box-shadow:0 4px 15px rgba(56,189,248,.35);animation:glow 6s ease-in-out infinite;
-  letter-spacing:.5px;text-transform:uppercase;font-size:.9rem}
-.n{opacity:.95;font-size:.95rem;color:#cbd5e1;line-height:1.6}
-.small{font-size:.88rem;color:#b6c2d3;line-height:1.5}
-
-.tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;animation:slideIn .7s ease-out}
-.tab{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#cbd5e1;
-  border-radius:999px;padding:10px 18px;cursor:pointer;font-weight:800;transition:all .2s ease;
-  user-select:none;position:relative;overflow:hidden;font-size:.9rem;letter-spacing:.3px}
-.tab::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
-  transition:left .5s ease}
-.tab:hover::before{left:100%}
-.tab:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(56,189,248,.3)}
-.tab.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;
-  box-shadow:0 4px 15px rgba(56,189,248,.4);font-weight:900}
-.tab.dis{opacity:.4;cursor:not-allowed;filter:grayscale(.4)}
-.tab.dis:hover{transform:none;box-shadow:none}
-
-.b{background:var(--gradient-3);color:#001018;border:0;border-radius:14px;padding:12px 20px;
-  cursor:pointer;font-weight:900;transition:all .2s ease;box-shadow:0 4px 15px rgba(56,189,248,.3);
-  font-size:.95rem;letter-spacing:.3px;position:relative;overflow:hidden}
-.b::before{content:"";position:absolute;top:50%;left:50%;width:0;height:0;
-  border-radius:50%;background:rgba(255,255,255,.28);transform:translate(-50%,-50%);
-  transition:width .5s,height .5s}
-.b:hover::before{width:300px;height:300px}
-.b:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(56,189,248,.45)}
-.b.ok{background:var(--gradient-4);color:#001018;box-shadow:0 4px 15px rgba(67,233,123,.25)}
-.b.ok:hover{box-shadow:0 6px 20px rgba(67,233,123,.45)}
-.b.dis{opacity:.4;cursor:not-allowed;filter:grayscale(.3);transform:none;pointer-events:none}
-
-.g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-@media(max-width:800px){.g{grid-template-columns:1fr}}
-#hx input[type=text],#hx input[type=number],#hx select{
-  width:100%;padding:12px 14px;border:1px solid rgba(148,163,184,.3);border-radius:12px;
-  background:rgba(2,6,23,.85);color:var(--t);outline:none;transition:all .2s ease;font-size:.95rem
-}
-#hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus{
-  border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.15);background:rgba(2,6,23,.95)
-}
-#hx input[type=checkbox]{width:auto;margin-right:8px;accent-color:#38bdf8;width:18px;height:18px;cursor:pointer}
-#hx label{color:#cbd5e1;font-weight:600;margin-bottom:6px;display:block;font-size:.9rem;letter-spacing:.3px}
-
-.gu{margin-top:12px;padding:14px 16px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);
-  border-radius:14px;color:#dbeafe;display:flex;gap:12px;align-items:flex-start;border-left:4px solid #38bdf8}
-.gu .a{font-weight:900;line-height:1.2;margin-top:1px;font-size:1.2rem}
-
-.k{background:linear-gradient(145deg,rgba(14,165,233,.12),rgba(6,182,212,.08));
-  border:1px solid rgba(56,189,248,.35);border-radius:18px;padding:20px 16px;text-align:center;
-  transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.2)}
-.k::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(circle,rgba(56,189,248,.1),transparent 70%);transition:transform .6s ease;pointer-events:none}
-.k:hover::before{transform:scale(1.2)}
-.k:hover{border-color:rgba(56,189,248,.6);transform:translateY(-4px);box-shadow:0 8px 25px rgba(56,189,248,.25)}
-.k span{color:#94a3b8;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;display:block;position:relative;z-index:1}
-.k b{font-size:32px;display:block;color:#f1f5f9;margin-top:10px;font-weight:900;position:relative;z-index:1;text-shadow:0 2px 10px rgba(0,0,0,.3)}
-
-.tst{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(2,6,23,.92);
-  border:1px solid rgba(148,163,184,.35);color:var(--t);padding:10px 14px;border-radius:12px;opacity:0;
-  pointer-events:none;transition:.2s;z-index:99999}
-.tst.s{opacity:1}
-
-.sig{max-width:1100px;margin:10px auto 18px;padding:10px 12px;color:#a5b4fc;background:rgba(10,16,28,.65);
-  border:1px solid rgba(148,163,184,.25);border-radius:12px;display:flex;gap:12px;align-items:center;
-  justify-content:space-between;font-size:.95rem}
-.sig .br{font-weight:950;color:#e2e8f0}
-.sig a{color:#93c5fd;text-decoration:none}.sig a:hover{text-decoration:underline}
-
-/* cards */
-.cardx{margin-top:16px;background:linear-gradient(135deg,rgba(15,23,42,.85),rgba(11,18,32,.9));
-  border:1px solid rgba(148,163,184,.25);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.2)}
-.cardx .top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-  padding-bottom:16px;border-bottom:1px solid rgba(148,163,184,.15)}
-.cardx .title{font-weight:950;color:#f1f5f9;font-size:1.15rem}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1px solid rgba(148,163,184,.3);background:rgba(11,18,32,.8);color:#cbd5e1;border-radius:999px;
-  padding:8px 14px;font-weight:700;font-size:.85rem;transition:.15s}
-.chip:hover{transform:translateY(-1px)}
-.chip.good{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.12);color:#86efac}
-.chip.bad{border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12);color:#fca5a5}
-.chip.warn{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.12);color:#fde68a}
-.chip.neu{border-color:rgba(148,163,184,.35);color:#e2e8f0}
-.body{margin-top:16px;color:#cbd5e1;line-height:1.6;font-size:.95rem}
-.body b{color:#f8fafc;font-weight:700}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
-@media(max-width:900px){.grid3{grid-template-columns:1fr}}
-.mini{background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(6,182,212,.05));border:1px solid rgba(148,163,184,.25);
-  border-radius:14px;padding:14px;transition:.15s}
-.mini:hover{border-color:rgba(56,189,248,.4);transform:translateY(-1px)}
-.mini .h{color:#94a3b8;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.mini .v{font-weight:900;color:#f8fafc;margin-top:6px;font-size:1.1rem}
-.note{margin-top:16px;color:#cbd5e1;white-space:pre-wrap;background:rgba(2,6,23,.6);padding:16px;border-radius:12px;
-  border:1px solid rgba(148,163,184,.2);line-height:1.7;font-size:.92rem}
-
-/* mapa real */
-#zoneWrap{margin-top:12px}
-#zmap{height:380px;border-radius:12px;border:1px solid rgba(148,163,184,.22);overflow:hidden;max-width:100%}
-.pchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.pchip{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.7);color:#cbd5e1;border-radius:999px;
-  padding:6px 10px;font-weight:950;font-size:.85rem;cursor:pointer}
-.pchip.on{border-color:#38bdf8;color:#dbeafe}
-.pchip.off{opacity:.75}
-
-/* pin */
-.pinWrap{position:relative;width:26px;height:26px;transform:translate(-50%,-100%)}
-.pin{
-  width:18px;height:18px;background:#ef4444;border:2px solid #7f1d1d;border-radius:18px 18px 18px 0;
-  transform:rotate(-45deg);position:absolute;left:4px;top:4px;box-shadow:0 2px 10px rgba(0,0,0,.35);
-}
-.pin::after{content:"";width:7px;height:7px;background:#fff;border-radius:999px;position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-50%) rotate(45deg)}
-.pin.off{opacity:.42;filter:grayscale(.15)}
-.pin.on{opacity:1}
-
-/* header row */
-.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.lang{display:flex;gap:10px;align-items:center}
-.langbtn{border:1px solid rgba(148,163,184,.3);background:rgba(11,18,32,.85);color:#cbd5e1;border-radius:999px;
-  padding:8px 14px;font-weight:800;cursor:pointer;transition:all .2s ease;font-size:.85rem;letter-spacing:.5px}
-.langbtn:hover{border-color:rgba(56,189,248,.5);transform:translateY(-1px)}
-.langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 4px 15px rgba(56,189,248,.3)}
-
-/* progress bars */
-.pbar-wrap{margin-top:8px;background:rgba(255,255,255,.07);border-radius:999px;height:8px;overflow:hidden}
-.pbar{height:8px;border-radius:999px;transition:width .9s cubic-bezier(.4,0,.2,1)}
-.pbar.good{background:linear-gradient(90deg,#22c55e,#4ade80)}
-.pbar.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
-.pbar.bad{background:linear-gradient(90deg,#ef4444,#f87171)}
-
-/* tooltip */
-.tip{position:relative;display:inline-flex;align-items:center;gap:4px}
-.tip-icon{width:16px;height:16px;border-radius:50%;background:rgba(148,163,184,.25);color:#94a3b8;font-size:10px;font-weight:900;
-  cursor:help;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(148,163,184,.3);flex-shrink:0;user-select:none}
-.tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0f172a;border:1px solid rgba(56,189,248,.35);
-  border-radius:10px;padding:10px 14px;color:#cbd5e1;font-size:.82rem;line-height:1.5;width:220px;z-index:9999;
-  box-shadow:0 8px 24px rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .15s}
-.tip:hover .tip-box,.tip:focus-within .tip-box{opacity:1}
-
-/* step indicator */
-.steps{display:flex;align-items:center;margin-bottom:16px;animation:fadeIn .5s ease-out}
-.step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative}
-.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;
-  transition:all .3s ease;border:2px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#94a3b8;z-index:1}
-.step.done .step-dot{background:var(--gradient-4);color:#001018;border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.35)}
-.step.active .step-dot{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,.45)}
-.step-label{font-size:.72rem;color:#475569;font-weight:700;text-align:center;white-space:nowrap}
-.step.done .step-label,.step.active .step-label{color:#94a3b8}
-.step-line{position:absolute;top:15px;left:calc(50% + 17px);width:calc(100% - 34px);height:2px;background:rgba(148,163,184,.15);
-  transition:background .4s;z-index:0}
-.step.done .step-line{background:rgba(34,197,94,.32)}
-
-/* share bar */
-.share-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,.12)}
-.share-btn{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.8);color:#cbd5e1;border-radius:10px;padding:8px 14px;
-  cursor:pointer;font-weight:700;font-size:.82rem;transition:all .2s ease;display:flex;align-items:center;gap:6px}
-.share-btn:hover{transform:translateY(-2px)}
-.share-btn.wa{border-color:rgba(37,211,102,.4);color:#4ade80}
-.share-btn.wa:hover{background:rgba(37,211,102,.1);box-shadow:0 4px 12px rgba(37,211,102,.2)}
-.share-btn.cl{border-color:rgba(56,189,248,.4);color:#7dd3fc}
-.share-btn.cl:hover{background:rgba(56,189,248,.1);box-shadow:0 4px 12px rgba(56,189,248,.2)}
-
-/* field validation */
-#hx input.field-ok{border-color:rgba(34,197,94,.5)!important}
-#hx input.field-err{border-color:rgba(239,68,68,.5)!important;box-shadow:0 0 0 3px rgba(239,68,68,.1)!important}
-.field-hint{font-size:.78rem;margin-top:4px;min-height:16px;transition:all .2s}
-.field-hint.ok{color:#4ade80}
-.field-hint.err{color:#f87171}
-
-/* rango multi-zona */
-.range-bar{display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap}
-.range-tag{font-size:.75rem;border-radius:8px;padding:2px 7px;font-weight:700}
-.range-tag.lo{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25)}
-.range-tag.hi{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
-
-/* ahorro countdown */
-.countdown{margin-top:10px;padding:12px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;border-left:4px solid #f59e0b;color:#fde68a;font-size:.88rem;line-height:1.6}
-
-/* micro-pro touches */
-.c{transform:translateZ(0)}
-.tab,.b,.mini,.chip{will-change:transform}
-::selection{background:rgba(56,189,248,.25)}
-</style>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="theme-color" content="#0b1220"/>
+  <title>Assessoria d’Habitatge · Baix Penedès</title>
+  <meta name="description" content="Assessoria d’Habitatge: simulador profesional y humano para decidir entre alquilar o comprar, con recomendaciones personalizadas, comparador y búsqueda de ejemplos."/>
+  <meta property="og:title" content="Assessoria d’Habitatge · Baix Penedès"/>
+  <meta property="og:description" content="Decide entre alquilar o comprar con recomendaciones personalizadas, comparador y ejemplos reales."/>
+  <meta property="og:type" content="website"/>
+  <style>
+    :root{
+      --bg:#070b14;
+      --bg2:#0b1220;
+      --card:rgba(17,24,39,.72);
+      --card2:rgba(2,6,23,.62);
+      --bd:rgba(148,163,184,.20);
+      --bd2:rgba(148,163,184,.10);
+      --t:#e5e7eb;
+      --m:#a7b0c0;
+      --muted:#94a3b8;
+      --pill:#38bdf8;
+      --pill2:#22c55e;
+      --warn:#f59e0b;
+      --bad:#fb7185;
+      --good:#34d399;
+      --shadow:0 18px 65px rgba(0,0,0,.50);
+      --shadow2:0 10px 30px rgba(0,0,0,.35);
+      --r:18px;
+      --r2:14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--t);
+      background:
+        radial-gradient(900px 420px at 15% 8%, rgba(56,189,248,.18), transparent 55%),
+        radial-gradient(900px 420px at 85% 12%, rgba(34,197,94,.14), transparent 55%),
+        radial-gradient(1100px 520px at 40% 95%, rgba(245,158,11,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    .wrap{max-width:1220px;margin:0 auto;padding:22px 16px 46px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      position:sticky;top:0;z-index:10;
+      margin:-22px -16px 18px;
+      padding:14px 16px;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(7,11,20,.85), rgba(7,11,20,.55));
+      border-bottom:1px solid var(--bd2);
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:240px}
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.85), transparent 60%),
+        linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.85));
+      box-shadow:0 10px 30px rgba(56,189,248,.12);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .brand h1{font-size:14.5px;margin:0;letter-spacing:.2px;line-height:1.1}
+    .brand p{margin:2px 0 0;color:var(--m);font-size:12px}
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(15,23,42,.72);
+      border:1px solid var(--bd2);
+      box-shadow: var(--shadow2);
+    }
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      padding:10px 12px;border-radius:12px;
+      background:rgba(15,23,42,.85);
+      color:var(--t);
+      border:1px solid var(--bd2);
+      box-shadow: var(--shadow2);
+      transition:transform .08s ease, border-color .2s ease, background .2s ease;
+      font-weight:650;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(56,189,248,.35)}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.78));
+      color:#041018;border-color:rgba(255,255,255,.18)
+    }
+    .btn.ghost{background:transparent}
+    .btn.bad{background:rgba(251,113,133,.12);border-color:rgba(251,113,133,.28);color:#ffdbe2}
+    .select, .input{
+      width:100%;
+      background:rgba(2,6,23,.55);
+      border:1px solid var(--bd2);
+      color:var(--t);
+      padding:11px 12px;
+      border-radius:14px;
+      outline:none;
+      transition:border-color .2s ease, box-shadow .2s ease;
+    }
+    .input:focus, .select:focus{border-color:rgba(56,189,248,.45);box-shadow:0 0 0 4px rgba(56,189,248,.10)}
+    .label{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+    .label span{font-size:12px;color:var(--m)}
+    .hint{font-size:12px;color:var(--muted);line-height:1.45}
+    .grid{
+      display:grid;gap:14px;
+      grid-template-columns: 1.15fr .85fr;
+      align-items:start;
+    }
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{
+      background: linear-gradient(180deg, rgba(17,24,39,.74), rgba(2,6,23,.55));
+      border:1px solid var(--bd2);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:16px 16px 10px;
+      border-bottom:1px solid rgba(148,163,184,.10);
+    }
+    .title{margin:0;font-size:14px;letter-spacing:.2px}
+    .sub{margin:2px 0 0;color:var(--m);font-size:12px}
+    .body{padding:16px}
+    .kpiRow{display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+    @media (max-width:680px){.kpiRow{grid-template-columns:1fr}}
+    .kpi{
+      padding:12px 12px;border-radius:16px;border:1px solid rgba(148,163,184,.12);
+      background:rgba(2,6,23,.45);
+    }
+    .kpi .k{font-size:11px;color:var(--m);letter-spacing:.2px}
+    .kpi .v{margin-top:6px;font-size:18px;font-weight:800}
+    .kpi .d{margin-top:4px;font-size:12px;color:var(--muted);line-height:1.35}
+    .row{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    @media (max-width:680px){.row{grid-template-columns:1fr}}
+    .sep{height:1px;background:rgba(148,163,184,.12);margin:14px 0}
+    .tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(148,163,184,.14);
+      background:rgba(2,6,23,.45);
+      color:var(--t);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .dot{width:9px;height:9px;border-radius:999px;background:var(--pill)}
+    .dot.good{background:var(--good)}
+    .dot.warn{background:var(--warn)}
+    .dot.bad{background:var(--bad)}
+    .panel{
+      padding:14px;border-radius:16px;
+      border:1px solid rgba(148,163,184,.12);
+      background:rgba(2,6,23,.45);
+    }
+    .panel h3{margin:0 0 8px;font-size:13px}
+    .panel p{margin:0;color:var(--m);font-size:13px;line-height:1.55}
+    .list{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+    .li{
+      padding:10px 10px;border-radius:14px;
+      border:1px solid rgba(148,163,184,.10);
+      background:rgba(15,23,42,.35);
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .li b{display:block;font-size:12.5px}
+    .li span{display:block;font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+    .mini{
+      width:100%;height:120px;border-radius:16px;border:1px solid rgba(148,163,184,.12);
+      background:linear-gradient(180deg, rgba(2,6,23,.45), rgba(2,6,23,.20));
+      position:relative;overflow:hidden;
+    }
+    canvas{display:block;width:100%;height:100%}
+    .footer{
+      margin-top:16px;color:rgba(167,176,192,.95);
+      font-size:12px;line-height:1.55;
+      opacity:.95;
+    }
+    .toastWrap{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.55);z-index:50;padding:18px;
+    }
+    .toast{
+      width:min(560px, 100%);
+      border-radius:20px;
+      border:1px solid rgba(148,163,184,.20);
+      background:linear-gradient(180deg, rgba(17,24,39,.95), rgba(2,6,23,.86));
+      box-shadow:0 20px 80px rgba(0,0,0,.65);
+      overflow:hidden;
+    }
+    .toast .thd{
+      padding:14px 16px;border-bottom:1px solid rgba(148,163,184,.12);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .toast .thd b{font-size:13px}
+    .toast .tbd{padding:14px 16px}
+    .toast .tbd p{margin:0;color:var(--m);font-size:13px;line-height:1.6}
+    .toast .tft{padding:12px 16px;border-top:1px solid rgba(148,163,184,.12);display:flex;justify-content:flex-end;gap:10px}
+    .kbd{font-family:var(--mono);font-size:11px;color:#cbd5e1;border:1px solid rgba(148,163,184,.20);background:rgba(2,6,23,.55);padding:2px 6px;border-radius:8px}
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .right{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:14px;
+      border:1px solid rgba(148,163,184,.12);
+      background:rgba(2,6,23,.45);
+      font-size:12px;color:var(--m)
+    }
+    .mono{font-family:var(--mono)}
+    .sr{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .twoCol{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    @media (max-width:680px){.twoCol{grid-template-columns:1fr}}
+    .donateGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+    @media (max-width:980px){.donateGrid{grid-template-columns:1fr}}
+    .notice{
+      padding:12px 12px;border-radius:16px;border:1px solid rgba(148,163,184,.12);
+      background:rgba(56,189,248,.08);
+      color:#dbeafe;
+      font-size:12.5px;line-height:1.5
+    }
+  </style>
 </head>
 
 <body>
-<div class="w" id="hx">
-  <div class="c hrow">
-    <div class="pill" data-i="hdrTitle">Assessoria d'Habitatge · Baix Penedès</div>
-    <div class="r" style="justify-content:flex-end;flex:1">
-      <div class="n" data-i="hdrHint">Ejemplos reales: solo después de Analizar.</div>
-      <div class="lang" aria-label="Idioma">
-        <button class="langbtn" id="L_CA" type="button">CA</button>
-        <button class="langbtn a" id="L_ES" type="button">ES</button>
-        <button class="langbtn" id="L_EN" type="button">EN</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="steps" id="stepBar">
-    <div class="step active" id="stp1"><div class="step-dot" id="sdot1">1</div><div class="step-label" id="slbl1">Personal</div><div class="step-line"></div></div>
-    <div class="step" id="stp2"><div class="step-dot" id="sdot2">2</div><div class="step-label" id="slbl2">Economía</div><div class="step-line"></div></div>
-    <div class="step" id="stp3"><div class="step-dot" id="sdot3">3</div><div class="step-label" id="slbl3">Preferencias</div><div class="step-line"></div></div>
-    <div class="step" id="stp4"><div class="step-dot" id="sdot4">4</div><div class="step-label" id="slbl4">Resultado</div></div>
-  </div>
-
-  <div class="tabs">
-    <div id="t_p" class="tab a" data-i="tab1">1 Personal</div>
-    <div id="t_e" class="tab" data-i="tab2">2 Economía</div>
-    <div id="t_f" class="tab" data-i="tab3">3 Preferencias</div>
-    <div id="t_r" class="tab" data-i="tab4">4 Resultado</div>
-    <div id="t_m" class="tab" data-i="tab5">5 Comparador</div>
-    <div id="t_x" class="tab" data-i="tab6">6 Ejemplos reales</div>
-  </div>
-
-  <div class="c" data-p="p">
-    <div class="g">
-      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name"></div>
-      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100"></div>
-    </div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintP">Rellena los datos básicos para continuar.</div></div>
-    <div class="r" style="margin-top:10px"><button class="b" id="np" type="button" data-i="btnContinue">Continuar</button></div>
-  </div>
-
-  <div class="c" data-p="e" style="display:none">
-    <div class="g">
-      <div><label data-i="lblInc">Ingresos mensuales (€)</label><input id="inc" type="number" min="0"><div class="field-hint" id="hint-inc"></div></div>
-      <div><label data-i="lblSav">Ahorros disponibles (€)</label><input id="sav" type="number" min="0"><div class="field-hint" id="hint-sav"></div></div>
-      <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40"></div>
-      <div><label data-i="lblHor">¿Vivirás más de 5 años aquí?</label><select id="hor"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
-      <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
-      <div><label data-i="lblMsv">Ahorro mensual (€)</label><input id="msv" type="number" min="0"></div>
-    </div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
-    <div class="r" style="margin-top:10px"><button class="b" id="ne" type="button" data-i="btnContinue">Continuar</button></div>
-  </div>
-
-  <div class="c" data-p="f" style="display:none">
-    <div class="g">
+  <div class="topbar">
+    <div class="brand" role="banner">
+      <div class="logo" aria-hidden="true"></div>
       <div>
-        <label data-i="lblMuni">Municipio (Baix Penedès)</label>
-        <select id="ar">
-          <option value="*">Cualquiera</option>
-          <option>Cunit</option><option>El Vendrell</option><option>Calafell</option><option>Santa Oliva</option><option>Bellvei</option>
-          <option>L'Arboç</option><option>Banyeres del Penedès</option><option>Albinyana</option><option>Bonastre</option><option>Masllorenç</option>
-          <option>La Bisbal del Penedès</option><option>Llorenç del Penedès</option><option>Sant Jaume dels Domenys</option><option>El Montmell</option>
+        <h1 id="appTitle">Assessoria d’Habitatge</h1>
+        <p id="appSubtitle">Simulador realista · Baix Penedès</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="pill" title="Idioma">
+        <span class="muted small" id="langLbl">Idioma</span>
+        <select class="select" id="lang" style="width:auto;min-width:140px;padding:9px 10px;border-radius:999px">
+          <option value="es">Español</option>
+          <option value="ca">Català</option>
+          <option value="en">English</option>
         </select>
-        <div class="small" style="margin-top:6px" data-i="lblMuniHelp">Si usas el mapa puedes elegir varios municipios para 'Ejemplos reales'.</div>
       </div>
-      <div><label data-i="lblM2">Metros cuadrados (≥50)</label><input id="m2" type="number" min="50"><div class="field-hint" id="hint-m2"></div></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="0" max="10"></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10"></div>
-      <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
-      <div class="r">
-        <label><input type="checkbox" id="et"><span data-i="exTer">Terraza</span></label>
-        <label><input type="checkbox" id="ep"><span data-i="exPis">Piscina</span></label>
-        <label><input type="checkbox" id="el"><span data-i="exAsc">Ascensor</span></label>
-        <label><input type="checkbox" id="ek"><span data-i="exGar">Aparcamiento</span></label>
-      </div>
+      <button class="btn ghost" id="btnVisit" type="button">Visit site</button>
+      <button class="btn bad" id="btnReset" type="button">Reset</button>
+      <button class="btn primary" id="btnAnalyze" type="button">Analyze</button>
     </div>
+  </div>
 
-    <div class="r" style="margin-top:10px">
-      <button class="b" id="go" type="button" data-i="btnAnalyze">Analizar</button>
-      <button class="b ok" id="toggleMap" type="button" data-i="btnMap">Mapa (zona real)</button>
-    </div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintF">Si cambias preferencias, vuelve a Analizar para actualizar el resultado.</div></div>
+  <div class="wrap">
+    <div class="grid">
 
-    <div id="zoneWrap" class="cardx" style="display:none">
-      <div class="top">
-        <div>
-          <div class="title" data-i="zoneTitle">Zona preferida (mapa real)</div>
-          <div class="n" data-i="zoneHint">Haz clic en un pin para seleccionar municipios. Puedes elegir varios del Baix Penedès.</div>
-          <div class="n" id="zoneNote" style="margin-top:6px">Seleccionados: ninguno</div>
+      <!-- LEFT: FORM -->
+      <section class="card" aria-labelledby="formTitle">
+        <div class="hd">
+          <div>
+            <h2 class="title" id="formTitle">Datos de tu caso</h2>
+            <p class="sub" id="formSub">Cuanto más preciso seas, más honesta será la recomendación.</p>
+          </div>
+          <div class="right">
+            <span class="badge" id="scopeBadge">Ámbito: Baix Penedès</span>
+            <span class="badge mono" id="versionBadge">v2.0</span>
+          </div>
         </div>
-        <div class="pchips" id="zoneChips"></div>
+
+        <div class="body">
+          <div class="row">
+            <div>
+              <div class="label">
+                <span id="munLbl">Municipio (para contexto)</span>
+                <span class="hint" id="munHint">La búsqueda se hace en todo el Baix Penedès.</span>
+              </div>
+              <select class="select" id="municipi">
+                <option value="">0</option>
+                <option>Cunit</option>
+                <option>Calafell</option>
+                <option>El Vendrell</option>
+                <option>Santa Oliva</option>
+                <option>L’Arboç</option>
+                <option>Bellvei</option>
+                <option>La Bisbal del Penedès</option>
+                <option>Banyeres del Penedès</option>
+                <option>Sant Jaume dels Domenys</option>
+              </select>
+              <div class="hint" id="munFoot" style="margin-top:6px">
+                No bloquea nada si eliges otro municipio: solo ajusta el “tono” y referencias de precios.
+              </div>
+            </div>
+
+            <div>
+              <div class="label">
+                <span id="typeLbl">Tipo de vivienda</span>
+                <span class="hint" id="typeHint">Cambia la lógica de extras y comparables.</span>
+              </div>
+              <select class="select" id="tipus">
+                <option value="">0</option>
+                <option value="flat">Piso</option>
+                <option value="house">Casa</option>
+              </select>
+              <div class="hint" id="typeFoot" style="margin-top:6px">
+                Piso = más peso a comunidad/ascensor. Casa = más peso a estado, parcela y mantenimiento.
+              </div>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="row">
+            <div>
+              <div class="label"><span id="roomsLbl">Habitaciones</span><span class="hint"><span class="kbd">0</span> si no sabes</span></div>
+              <input class="input" id="rooms" type="number" min="0" step="1" value="0" inputmode="numeric"/>
+            </div>
+            <div>
+              <div class="label"><span id="bathsLbl">Baños</span><span class="hint"><span class="kbd">0</span> si no sabes</span></div>
+              <input class="input" id="baths" type="number" min="0" step="1" value="0" inputmode="numeric"/>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="row">
+            <div>
+              <div class="label"><span id="m2Lbl">Metros cuadrados (m²)</span><span class="hint">Útil para comparar precios</span></div>
+              <input class="input" id="m2" type="number" min="0" step="1" value="0" inputmode="numeric" placeholder="0"/>
+              <div class="hint" id="m2Foot" style="margin-top:6px">
+                Si pones 0, el comparador será menos preciso, pero no te va a insultar (mucho).
+              </div>
+            </div>
+            <div>
+              <div class="label"><span id="budgetLbl">Presupuesto (compra o alquiler)</span><span class="hint">€ / mes o € total</span></div>
+              <input class="input" id="budget" type="number" min="0" step="50" value="0" inputmode="numeric"/>
+              <div class="hint" id="budgetFoot" style="margin-top:6px">
+                Si quieres alquiler: pon tu tope mensual. Si quieres compra: pon el precio objetivo total.
+              </div>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="row">
+            <div>
+              <div class="label"><span id="incomeLbl">Ingresos netos mensuales</span><span class="hint">€</span></div>
+              <input class="input" id="income" type="number" min="0" step="50" value="0" inputmode="numeric"/>
+            </div>
+            <div>
+              <div class="label"><span id="savingsLbl">Ahorros disponibles</span><span class="hint">€</span></div>
+              <input class="input" id="savings" type="number" min="0" step="100" value="0" inputmode="numeric"/>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="row">
+            <div>
+              <div class="label"><span id="termLbl">Plazo hipoteca</span><span class="hint">años</span></div>
+              <input class="input" id="term" type="number" min="0" step="1" value="0" inputmode="numeric"/>
+            </div>
+            <div>
+              <div class="label"><span id="rateLbl">Interés anual (aprox.)</span><span class="hint">%</span></div>
+              <input class="input" id="rate" type="number" min="0" step="0.1" value="0" inputmode="decimal"/>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="panel">
+            <h3 id="extrasTitle">Extras (opcional)</h3>
+            <p id="extrasSub">No son “caprichos”: cambian el precio real y los comparables.</p>
+            <ul class="list" id="extrasList"></ul>
+          </div>
+
+          <div class="footer" id="formFooter">
+            Consejo realista: si metes todo a cero, te daré una recomendación igualmente, pero será muy genérica.
+            En la vida real, las decisiones con datos “0” suelen acabar en “sorpresa”. Y no de las buenas.
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: OUTPUT -->
+      <aside class="card" aria-labelledby="outTitle">
+        <div class="hd">
+          <div>
+            <h2 class="title" id="outTitle">Resultado y recomendación</h2>
+            <p class="sub" id="outSub">Explicación clara, realista y accionable. Sin humo.</p>
+          </div>
+          <div class="right">
+            <span class="tag" id="statusTag"><span class="dot" id="statusDot"></span><span id="statusTxt">Sin analizar</span></span>
+          </div>
+        </div>
+
+        <div class="body">
+          <div class="kpiRow" aria-label="Indicadores">
+            <div class="kpi">
+              <div class="k" id="kpi1k">Capacidad mensual</div>
+              <div class="v" id="kpi1v">0 €</div>
+              <div class="d" id="kpi1d">Lo que puedes destinar sin asfixiarte.</div>
+            </div>
+            <div class="kpi">
+              <div class="k" id="kpi2k">Precio estimado</div>
+              <div class="v" id="kpi2v">0 €</div>
+              <div class="d" id="kpi2d">Estimación basada en Baix Penedès.</div>
+            </div>
+            <div class="kpi">
+              <div class="k" id="kpi3k">Decisión sugerida</div>
+              <div class="v" id="kpi3v">—</div>
+              <div class="d" id="kpi3d">Compra, alquiler o espera con plan.</div>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="mini" aria-label="Mini gráfica">
+            <canvas id="chart"></canvas>
+          </div>
+          <div class="hint" id="chartHint" style="margin-top:8px">
+            Visual rápido: coste mensual compra vs alquiler, y el margen de seguridad según tus ingresos.
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="panel" id="humanPanel">
+            <h3 id="humanTitle">Explicación humana</h3>
+            <p id="humanText">Introduce tus datos y pulsa <b>Analyze</b>. Te diré lo que haría una persona sensata, no un anuncio.</p>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="twoCol">
+            <div class="panel">
+              <h3 id="nextTitle">Siguientes pasos</h3>
+              <ul class="list" id="nextSteps"></ul>
+            </div>
+            <div class="panel">
+              <h3 id="compareTitle">Comparador rápido</h3>
+              <p id="compareText">Te mostraré si tu precio objetivo cuadra con un rango realista del Baix Penedès.</p>
+              <div class="sep"></div>
+              <div id="compareBadges" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="panel">
+            <h3 id="searchTitle">Búsqueda de ejemplos (Baix Penedès)</h3>
+            <p id="searchSub">No puedo “leer” portales en tiempo real desde un HTML estático, pero sí puedo generarte búsquedas limpias y útiles.</p>
+            <div class="sep"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a class="btn" id="btnIdealista" target="_blank" rel="noreferrer">Idealista</a>
+              <a class="btn" id="btnFotocasa" target="_blank" rel="noreferrer">Fotocasa</a>
+              <a class="btn" id="btnHabitaclia" target="_blank" rel="noreferrer">Habitaclia</a>
+            </div>
+            <div class="hint" id="searchFoot" style="margin-top:8px">
+              Se abre en nueva pestaña con filtros aproximados: zona Baix Penedès, tipo, habitaciones y un rango de m² (±20).
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="card" style="background:transparent;border:1px solid rgba(148,163,184,.12);box-shadow:none">
+            <div class="body donateGrid">
+              <div>
+                <div class="notice" id="donNotice">
+                  Esto es gratis porque así debe ser. Si te ahorra tiempo o errores, puedes dejar una aportación voluntaria para mantener y mejorar descargables y herramientas.
+                </div>
+                <div style="margin-top:10px" class="hint" id="donHint">
+                  Importante: esto no desbloquea funciones. Es solo un “gracias” opcional.
+                </div>
+              </div>
+              <div>
+                <div class="label"><span id="donLbl">Aportación voluntaria</span><span class="hint">€</span></div>
+                <input class="input" id="donAmount" type="number" min="0" step="1" value="0" inputmode="numeric"/>
+                <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+                  <button class="btn" id="btnCopyBizum" type="button">Copy details</button>
+                  <button class="btn primary" id="btnDonate" type="button">Donate</button>
+                </div>
+                <div class="hint" id="donFoot" style="margin-top:8px">
+                  Aquí puedes poner Bizum/PayPal/Stripe link cuando lo tengas. Por ahora, se queda en modo “copiar”.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer" id="legal">
+            Aviso: esto es una guía educativa. No es asesoramiento financiero oficial. Aun así, está hecho para sonar y pensar como una persona real, no como un folleto.
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- POPUP -->
+  <div class="toastWrap" id="toastWrap" role="dialog" aria-modal="true" aria-labelledby="toastTitle">
+    <div class="toast">
+      <div class="thd">
+        <b id="toastTitle">Atención</b>
+        <button class="btn ghost" id="toastClose" type="button" aria-label="Cerrar">✕</button>
       </div>
-
-      <div class="r" style="margin-top:10px;justify-content:flex-end">
-        <button class="b" id="zoneClear" type="button" data-i="btnClear">Limpiar</button>
-        <button class="b ok" id="zoneApply" type="button" data-i="btnUse">Usar en Ejemplos reales</button>
+      <div class="tbd">
+        <p id="toastMsg"></p>
       </div>
-
-      <div id="zmap" style="margin-top:10px"></div>
-      <div class="n" id="zoneApplied" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-  <div class="c" data-p="r" style="display:none">
-    <div class="g">
-      <div class="k"><span data-i="kPrice">Precio estimado</span><b id="k1">0 €</b></div>
-      <div class="k"><span data-i="kRent">Alquiler estimado</span><b id="k2">0 €</b></div>
-      <div class="k"><span data-i="kPay">Cuota hipoteca</span><b id="k3">0 €</b></div>
-      <div class="k"><span data-i="kRec">Recomendación</span><b id="k4">–</b></div>
-    </div>
-
-    <div id="rCard" class="cardx" style="display:none">
-      <div class="top">
-        <div class="title" id="rTitle"></div>
-        <div class="chips" id="rChips"></div>
-      </div>
-      <div class="grid3" id="rMini"></div>
-      <div class="body" id="rBody"></div>
-      <div class="note" id="rt"></div>
-    </div>
-
-    <div class="r" style="margin-top:10px">
-      <button class="b" id="cp" type="button" data-i="btnCopy">Copiar resumen</button>
-      <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
-    </div>
-    <div class="share-bar">
-      <button class="share-btn wa" id="shareWa" type="button">📱 WhatsApp</button>
-      <button class="share-btn cl" id="shareCl" type="button">📋 <span data-i="btnCopy2">Copiar</span></button>
-    </div>
-  </div>
-
-  <div class="c" data-p="m" style="display:none">
-    <div class="g">
-      <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
-      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="0" max="10"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10"></div>
-      <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
-      <div class="r">
-        <label><input type="checkbox" id="ct"><span data-i="exTer">Terraza</span></label>
-        <label><input type="checkbox" id="cp0"><span data-i="exPis">Piscina</span></label>
-        <label><input type="checkbox" id="cl0"><span data-i="exAsc">Ascensor</span></label>
-        <label><input type="checkbox" id="ck0"><span data-i="exGar">Aparcamiento</span></label>
+      <div class="tft">
+        <button class="btn primary" id="toastOk" type="button">OK</button>
       </div>
     </div>
-    <div id="cmap" style="width:100%;height:320px;border:0;border-radius:12px;margin-top:12px"></div>
-    <div class="r" style="margin-top:10px">
-      <button class="b" id="bc" type="button" data-i="btnCompare">Comparar</button>
-      <button class="b ok" id="autoFillCmp" type="button" data-i="btnUseMine">Usar mis datos</button>
-    </div>
-    <div class="n" id="cmg" style="margin-top:10px"></div>
   </div>
-
-  <div class="c" data-p="x" style="display:none">
-    <div class="n" id="xinfo"></div>
-    <div class="r" style="margin-top:10px" id="xbtns"></div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintX">Si elegiste varios municipios, salen botones por municipio (Idealista no soporta multi-municipio en 1 sola URL).</div></div>
-  </div>
-</div>
-
-<div class="sig">
-  <div class="br">Assessoria d'Habitatge</div>
-  <div>
-    <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener">assesoriahabitatge.com</a> ·
-    <a href="mailto:info@assesoriahabitatge.com">info@assesoriahabitatge.com</a>
-  </div>
-</div>
-
-<div id="ts" class="tst" role="status" aria-live="polite"></div>
 
 <script>
-// Esperar a que Leaflet se cargue con timeout de seguridad
-let attempts = 0;
-const maxAttempts = 100;
+/*  Assessoria d’Habitatge · v2
+    - No backend. HTML estático. Enfocado en: claridad, validación, explicación humana y acciones.
+    - Ámbito: Baix Penedès (siempre). El municipio es contexto, no filtro restrictivo.
+*/
+(() => {
+  "use strict";
 
-function waitForLeaflet() {
-  if (typeof L !== 'undefined') initApp();
-  else if (attempts < maxAttempts) { attempts++; setTimeout(waitForLeaflet, 50); }
-  else { console.error('Leaflet no se pudo cargar'); alert('Error: No se pudo cargar el mapa. Recarga la página.'); }
-}
+  // ---------- Utilities ----------
+  const $ = (id) => document.getElementById(id);
+  const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+  const num = (v) => {
+    const x = Number(String(v ?? "").replace(",", "."));
+    return isFinite(x) ? x : 0;
+  };
+  const fmtEUR = (v) => new Intl.NumberFormat(undefined, { style:"currency", currency:"EUR", maximumFractionDigits:0 }).format(v);
+  const fmtPct = (v) => (Math.round(v*10)/10).toFixed(1) + "%";
+  const safeText = (s) => String(s ?? "").replace(/[<>]/g, "");
+  const now = () => Date.now();
 
-function initApp() {
-(()=> {
-  const Q=s=>document.querySelector(s);
-  const QA=s=>[...document.querySelectorAll(s)];
-  const fmtES=n=>Math.round(n).toLocaleString("es-ES");
-  const fmtEN=n=>Math.round(n).toLocaleString("en-US");
-  const pctEN=n=>Number(n).toFixed(1)+"%";
-  const pctES=n=>Number(n).toFixed(1)+"%";
-
-  const STORE_KEY="hx_form_v7";
-  const ZONE_KEY="hx_zoneSel_v4";
-  const LANG_KEY="hx_lang";
-
-  const I18N={
-    ES:{
-      hdrTitle:"Assessoria d'Habitatge · Baix Penedès",
-      hdrHint:"Ejemplos reales: solo después de Analizar.",
-      tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",tab6:"6 Ejemplos reales",
-      lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",
-      hintP:"Rellena los datos básicos para continuar.",
-      lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",
-      hintE:"Completa economía y sigue a preferencias.",
-      lblMuni:"Municipio (Baix Penedès)",lblMuniHelp:"Si usas el mapa puedes elegir varios municipios para 'Ejemplos reales'.",
-      lblM2:"Metros cuadrados (≥50)",lblBed:"Habitaciones",lblBath:"Baños",lblType:"Tipo de vivienda",optFlat:"Piso",optHouse:"Casa",
-      exTer:"Terraza",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcamiento",
-      btnAnalyze:"Analizar",btnMap:"Mapa (zona real)",hintF:"Si cambias preferencias, vuelve a Analizar para actualizar el resultado.",
-      zoneTitle:"Zona preferida (mapa real)",zoneHint:"Haz clic en un pin para seleccionar municipios. Puedes elegir varios del Baix Penedès.",
-      btnClear:"Limpiar",btnUse:"Usar en Ejemplos reales",
-      kPrice:"Precio estimado",kRent:"Alquiler estimado",kPay:"Cuota hipoteca",kRec:"Recomendación",
-      btnCopy:"Copiar resumen",btnReset:"Reiniciar",
-      lblProv:"Provincia (comparador)",lblM2s:"m²",lblType2:"Tipo",btnCompare:"Comparar",btnUseMine:"Usar mis datos",
-      hintX:"Si elegiste varios municipios, salen botones por municipio (Idealista no soporta multi-municipio en 1 sola URL).",
-      yes:"Sí",no:"No",
-      recBuy:"COMPRAR",recRent:"ALQUILAR",recNotFeasible:"NO FACTIBLE",
-      toastCheckNameAge:"Revisa nombre/edad",
-      toastFirstAnalyze:"Primero analiza.",
-      toastPrefsChanged:"Preferencias cambiadas: vuelve a Analizar.",
-      toastNoLink:"No se pudo generar el link",
-      toastCopied:"Copiado",
-      toastZoneCleared:"Zona limpiada",
-      toastNoZone:"No hay municipios seleccionados",
-      toastZoneApplied:"Zona aplicada a Ejemplos reales",
-      stateReady:"✅ Disponible",
-      stateNeedAnalyze:"⛔ Requiere Analizar / re-Analizar",
-      xInfo:"Municipio (Preferencias): {muni} · Estado: {state}.",
-      sumTitle:"Resumen claro · {rec}",
-      chipMort:"Esfuerzo hipoteca: {pct}",
-      chipRent:"Esfuerzo alquiler: {pct}",
-      chipCash:"Entrada+gastos: {eur}",
-      chipRate:"Tipo: {rate}",
-      miniPrice:"Precio estimado",
-      miniPay:"Cuota hipoteca",
-      miniRent:"Alquiler estimado",
-      bodyPrefs:"Preferencias: {muni} · {m2} m² · {bed} hab · {bath} baños · {type}",
-      reportHello:"Hola {name},",
-      reportPrice:"Precio estimado: {eur}.",
-      reportHome:"Vivienda: {muni} · {m2} m² · {bed} hab · {bath} baños · {type}.",
-      reportDown:"Entrada: {dp}% → {down} € · Gastos: {cl} €.",
-      reportFin:"A financiar: {cap} € · Plazo: {yrs} años · Tipo: {rate}.",
-      reportPay:"Cuota hipoteca: {pay} € · Alquiler: {rent} €.",
-      reportRec:"Recomendación: {rec}",
-      any:"Cualquiera",
-      btnCopy2:"Copiar",
-      savingsOk:"✅ Ahorros suficientes para la entrada.",
-      yearsToSave:"Con {msv}/mes, alcanzarás el objetivo en ~{yrs} años ({mos} meses).",
-      itpNote:"En Catalunya, la compraventa tributa un 10% de ITP + ~1% en gastos de notaría y registro. Ya incluido en los gastos de cierre estimados.",
-      avgZone:"Media de {n} municipios",
-      priceRange:"Rango: {lo} – {hi}",
-      stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",
-      cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",
-      cmpExplain:"Esto significa que {typeText} en {prov} es {diff} {direction} que en tu zona (Baix Penedès). La diferencia de precio es de {absDiff}, lo que representa un {pct} {direction2}.",
-      cmpContext:"En {prov}, el precio medio por m² es de {avgM2}. Si aplicas las mismas características que buscas (tamaño, habitaciones, extras), el coste total sería de {total}.",
-      cmpRent:"El alquiler mensual estimado en {prov} sería de {rent}, comparado con {yourRent} en tu zona.",
-      cmpAdvice:"💡 Esto puede ayudarte a decidir si vale la pena buscar en otras provincias según tu presupuesto y necesidades de movilidad.",
-
-      // NUEVAS CLAVES (anti-mezcla)
-      whyBuyTitle:"¿Por qué COMPRAR?",
-      whyRentTitle:"¿Por qué ALQUILAR?",
-      notFeasibleTitle:"NO FACTIBLE",
-      prefsTitle:"Preferencias",
-      financingTitle:"Financiación",
-      effortTitle:"Esfuerzo económico",
-      mortgageEffort:"Esfuerzo hipoteca",
-      rentEffort:"Esfuerzo alquiler",
-      recommendedLimitMort:"Límite recomendado: 35%",
-      recommendedLimitRent:"Límite recomendado: 40%",
-      downPayment:"Entrada",
-      closingCosts:"Gastos de cierre",
-      toFinance:"A financiar",
-      months:"meses",
-      years:"años",
-      perMonth:"/mes",
-      selectedLabel:"Seleccionados: ",
-      none:"ninguno",
-      activeTowns:"Municipios activos: ",
-      noAreaApplied:"Ninguna zona aplicada",
-      noSelection:"Sin selección",
-      buyLabel:"COMPRA",
-      rentLabel:"ALQUILER",
-      strictLabel:"estricto",
-      flexLabel:"flex",
-      validateIncome:"Introduce ingresos válidos",
-      validateSavings:"Introduce tus ahorros",
-      validateM2:"Mínimo 50 m²",
-      missingDataCmp:"Completa provincia y datos."
+  // ---------- i18n ----------
+  const I18N = {
+    es: {
+      appTitle: "Assessoria d’Habitatge",
+      appSubtitle: "Simulador realista · Baix Penedès",
+      langLbl: "Idioma",
+      formTitle: "Datos de tu caso",
+      formSub: "Cuanto más preciso seas, más honesta será la recomendación.",
+      scopeBadge: "Ámbito: Baix Penedès",
+      munLbl: "Municipio (para contexto)",
+      munHint: "La búsqueda se hace en todo el Baix Penedès.",
+      munFoot: "No bloquea nada si eliges otro municipio: solo ajusta el “tono” y referencias de precios.",
+      typeLbl: "Tipo de vivienda",
+      typeHint: "Cambia la lógica de extras y comparables.",
+      typeFoot: "Piso = más peso a comunidad/ascensor. Casa = más peso a estado, parcela y mantenimiento.",
+      roomsLbl: "Habitaciones",
+      bathsLbl: "Baños",
+      m2Lbl: "Metros cuadrados (m²)",
+      m2Foot: "Si pones 0, el comparador será menos preciso, pero no te va a insultar (mucho).",
+      budgetLbl: "Presupuesto (compra o alquiler)",
+      budgetFoot: "Si quieres alquiler: pon tu tope mensual. Si quieres compra: pon el precio objetivo total.",
+      incomeLbl: "Ingresos netos mensuales",
+      savingsLbl: "Ahorros disponibles",
+      termLbl: "Plazo hipoteca",
+      rateLbl: "Interés anual (aprox.)",
+      extrasTitle: "Extras (opcional)",
+      extrasSub: "No son “caprichos”: cambian el precio real y los comparables.",
+      formFooter: "Consejo realista: si metes todo a cero, te daré una recomendación igualmente, pero será muy genérica. En la vida real, las decisiones con datos “0” suelen acabar en “sorpresa”. Y no de las buenas.",
+      outTitle: "Resultado y recomendación",
+      outSub: "Explicación clara, realista y accionable. Sin humo.",
+      statusIdle: "Sin analizar",
+      statusOk: "Listo",
+      statusWarn: "Revisar",
+      statusBad: "Faltan datos",
+      kpi1k: "Capacidad mensual",
+      kpi1d: "Lo que puedes destinar sin asfixiarte.",
+      kpi2k: "Precio estimado",
+      kpi2d: "Estimación basada en Baix Penedès.",
+      kpi3k: "Decisión sugerida",
+      kpi3d: "Compra, alquiler o espera con plan.",
+      chartHint: "Visual rápido: coste mensual compra vs alquiler, y el margen de seguridad según tus ingresos.",
+      humanTitle: "Explicación humana",
+      humanIdle: "Introduce tus datos y pulsa Analyze. Te diré lo que haría una persona sensata, no un anuncio.",
+      nextTitle: "Siguientes pasos",
+      compareTitle: "Comparador rápido",
+      compareText: "Te mostraré si tu precio objetivo cuadra con un rango realista del Baix Penedès.",
+      searchTitle: "Búsqueda de ejemplos (Baix Penedès)",
+      searchSub: "No puedo “leer” portales en tiempo real desde un HTML estático, pero sí puedo generarte búsquedas limpias y útiles.",
+      searchFoot: "Se abre en nueva pestaña con filtros aproximados: zona Baix Penedès, tipo, habitaciones y un rango de m² (±20).",
+      donateNotice: "Esto es gratis porque así debe ser. Si te ahorra tiempo o errores, puedes dejar una aportación voluntaria para mantener y mejorar descargables y herramientas.",
+      donateHint: "Importante: esto no desbloquea funciones. Es solo un “gracias” opcional.",
+      donLbl: "Aportación voluntaria",
+      btnCopy: "Copy details",
+      btnDonate: "Donate",
+      donFoot: "Aquí puedes poner Bizum/PayPal/Stripe link cuando lo tengas. Por ahora, se queda en modo “copiar”.",
+      legal: "Aviso: esto es una guía educativa. No es asesoramiento financiero oficial. Aun así, está hecho para sonar y pensar como una persona real, no como un folleto.",
+      visit: "Visit site",
+      reset: "Reset",
+      analyze: "Analyze",
+      ok: "OK",
+      toastTitle: "Atención",
+      // validation messages
+      v_needSomething: "Ahora mismo todo está a 0. Puedo analizar igual, pero la recomendación será muy genérica. Si quieres algo realmente útil, añade al menos: ingresos, presupuesto y m².",
+      v_budgetIncome: "Para darte una recomendación realista necesito al menos: ingresos mensuales y tu presupuesto (compra o alquiler).",
+      v_buyNeedsTermRate: "Si quieres analizar compra con hipoteca, necesito plazo (años) e interés (%). Si no los sabes, pon una estimación (por ejemplo 25 años y 3.5%).",
+      v_m2TooLow: "Los m² no pueden ser negativos. Sí, hay pisos pequeños, pero no en el multiverso.",
+      copied: "Copiado. Pega aquí tus datos reales (Bizum/PayPal/Stripe) cuando los tengas.",
+      donated: "Vale. En esta demo no se cobra nada. Pero tu intención es preciosa y rarísima. 👌",
+      // extras
+      ex_terrace: "Terraza / balcón",
+      ex_elevator: "Ascensor",
+      ex_parking: "Parking",
+      ex_pool: "Piscina",
+      ex_garden: "Jardín",
+      ex_renovated: "Reformado",
+      ex_seaview: "Vistas / cerca del mar",
+      ex_storage: "Trastero",
+      ex_ac: "Aire acondicionado",
+      ex_heating: "Calefacción",
+      // next steps templates
+      ns1: "Define tu objetivo real (alquiler vs compra) con un número concreto, no con “ya veremos”.",
+      ns2: "Si compras: reserva 10–12% extra del precio para impuestos y gastos (aprox.).",
+      ns3: "No te enamores del primer anuncio. Compara mínimo 8–12 opciones con tus filtros.",
+      ns4: "Con tu capacidad mensual, fija un “límite duro” y uno “cómodo”. Lo cómodo es el que te salva.",
+      ns5: "Haz una lista de no-negociables (m², luz natural, ubicación, estado) y una de caprichos.",
     },
-    CA:{
-      hdrTitle:"Assessoria d'Habitatge · Baix Penedès",
-      hdrHint:"Exemples reals: només després d'Analitzar.",
-      tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",tab6:"6 Exemples reals",
-      lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",
-      hintP:"Omple les dades bàsiques per continuar.",
-      lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",
-      hintE:"Completa economia i passa a preferències.",
-      lblMuni:"Municipi (Baix Penedès)",lblMuniHelp:"Si uses el mapa pots triar diversos municipis per als 'Exemples reals'.",
-      lblM2:"Metres quadrats (≥50)",lblBed:"Habitacions",lblBath:"Banys",lblType:"Tipus d'habitatge",optFlat:"Pis",optHouse:"Casa",
-      exTer:"Terrassa",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcament",
-      btnAnalyze:"Analitzar",btnMap:"Mapa (zona real)",hintF:"Si canvies preferències, torna a Analitzar per actualitzar el resultat.",
-      zoneTitle:"Zona preferida (mapa real)",zoneHint:"Clica un pin per seleccionar municipis. Pots triar-ne diversos del Baix Penedès.",
-      btnClear:"Netejar",btnUse:"Usar a Exemples reals",
-      kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",
-      btnCopy:"Copiar resum",btnReset:"Reiniciar",
-      lblProv:"Província (comparador)",lblM2s:"m²",lblType2:"Tipus",btnCompare:"Comparar",btnUseMine:"Usar les meves dades",
-      hintX:"Si has triat diversos municipis, surten botons per municipi (Idealista no admet multi-municipi en 1 sola URL).",
-      yes:"Sí",no:"No",
-      recBuy:"COMPRAR",recRent:"LLOGAR",recNotFeasible:"NO FACTIBLE",
-      toastCheckNameAge:"Revisa nom/edat",
-      toastFirstAnalyze:"Primer analitza.",
-      toastPrefsChanged:"Preferències canviades: torna a Analitzar.",
-      toastNoLink:"No s'ha pogut generar l'enllaç",
-      toastCopied:"Copiat",
-      toastZoneCleared:"Zona netejada",
-      toastNoZone:"No hi ha municipis seleccionats",
-      toastZoneApplied:"Zona aplicada a Exemples reals",
-      stateReady:"✅ Disponible",
-      stateNeedAnalyze:"⛔ Cal Analitzar / re-Analitzar",
-      xInfo:"Municipi (Preferències): {muni} · Estat: {state}.",
-      sumTitle:"Resum clar · {rec}",
-      chipMort:"Esforç hipoteca: {pct}",
-      chipRent:"Esforç lloguer: {pct}",
-      chipCash:"Entrada+despeses: {eur}",
-      chipRate:"Tipus: {rate}",
-      miniPrice:"Preu estimat",
-      miniPay:"Quota hipoteca",
-      miniRent:"Lloguer estimat",
-      bodyPrefs:"Preferències: {muni} · {m2} m² · {bed} hab · {bath} banys · {type}",
-      reportHello:"Hola {name},",
-      reportPrice:"Preu estimat: {eur}.",
-      reportHome:"Habitatge: {muni} · {m2} m² · {bed} hab · {bath} banys · {type}.",
-      reportDown:"Entrada: {dp}% → {down} € · Despeses: {cl} €.",
-      reportFin:"A finançar: {cap} € · Termini: {yrs} anys · Tipus: {rate}.",
-      reportPay:"Quota hipoteca: {pay} € · Lloguer: {rent} €.",
-      reportRec:"Recomanació: {rec}",
-      any:"Qualsevol",
-      btnCopy2:"Copiar",
-      savingsOk:"✅ Estalvis suficients per a l'entrada.",
-      yearsToSave:"Estalviant {msv}/mes, arribaràs a l'objectiu en ~{yrs} anys ({mos} mesos).",
-      itpNote:"A Catalunya, la compravenda tributa un 10% d'ITP + ~1% en despeses de notaria i registre. Inclòs a les despeses de tancament estimades.",
-      avgZone:"Mitjana de {n} municipis",
-      priceRange:"Rang: {lo} – {hi}",
-      stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",
-      cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",
-      cmpExplain:"Això vol dir que {typeText} a {prov} és {diff} {direction} que a la teva zona (Baix Penedès). La diferència de preu és de {absDiff}, que representa un {pct} {direction2}.",
-      cmpContext:"A {prov}, el preu mitjà per m² és {avgM2}. Si apliques les mateixes característiques que busques (mida, habitacions, extres), el cost total seria {total}.",
-      cmpRent:"El lloguer mensual estimat a {prov} seria {rent}, comparat amb {yourRent} a la teva zona.",
-      cmpAdvice:"💡 Això et pot ajudar a decidir si val la pena buscar a altres províncies segons el teu pressupost i necessitats de mobilitat.",
-
-      // NUEVAS CLAVES
-      whyBuyTitle:"Per què COMPRAR?",
-      whyRentTitle:"Per què LLOGAR?",
-      notFeasibleTitle:"NO FACTIBLE",
-      prefsTitle:"Preferències",
-      financingTitle:"Finançament",
-      effortTitle:"Esforç econòmic",
-      mortgageEffort:"Esforç hipoteca",
-      rentEffort:"Esforç lloguer",
-      recommendedLimitMort:"Límit recomanat: 35%",
-      recommendedLimitRent:"Límit recomanat: 40%",
-      downPayment:"Entrada",
-      closingCosts:"Despeses de tancament",
-      toFinance:"A finançar",
-      months:"mesos",
-      years:"anys",
-      perMonth:"/mes",
-      selectedLabel:"Seleccionats: ",
-      none:"cap",
-      activeTowns:"Municipis actius: ",
-      noAreaApplied:"Cap zona aplicada",
-      noSelection:"Sense selecció",
-      buyLabel:"COMPRA",
-      rentLabel:"LLOGUER",
-      strictLabel:"estricte",
-      flexLabel:"flex",
-      validateIncome:"Introdueix ingressos vàlids",
-      validateSavings:"Introdueix els teus estalvis",
-      validateM2:"Mínim 50 m²",
-      missingDataCmp:"Completa província i dades."
+    ca: {
+      appTitle: "Assessoria d’Habitatge",
+      appSubtitle: "Simulador realista · Baix Penedès",
+      langLbl: "Idioma",
+      formTitle: "Dades del teu cas",
+      formSub: "Com més precís siguis, més honesta serà la recomanació.",
+      scopeBadge: "Àmbit: Baix Penedès",
+      munLbl: "Municipi (per context)",
+      munHint: "La cerca es fa a tot el Baix Penedès.",
+      munFoot: "No bloqueja res si tries un altre municipi: només ajusta el “to” i referències de preus.",
+      typeLbl: "Tipus d’habitatge",
+      typeHint: "Canvia la lògica d’extres i comparables.",
+      typeFoot: "Pis = més pes a comunitat/ascensor. Casa = més pes a estat, parcel·la i manteniment.",
+      roomsLbl: "Habitacions",
+      bathsLbl: "Banys",
+      m2Lbl: "Metres quadrats (m²)",
+      m2Foot: "Si poses 0, el comparador serà menys precís, però no et faltarà al respecte (gaire).",
+      budgetLbl: "Pressupost (compra o lloguer)",
+      budgetFoot: "Si vols lloguer: posa el teu màxim mensual. Si vols compra: posa el preu objectiu total.",
+      incomeLbl: "Ingressos nets mensuals",
+      savingsLbl: "Estalvis disponibles",
+      termLbl: "Termini hipoteca",
+      rateLbl: "Interès anual (aprox.)",
+      extrasTitle: "Extres (opcional)",
+      extrasSub: "No són “capricis”: canvien el preu real i els comparables.",
+      formFooter: "Consell realista: si ho deixes tot a zero, t’analitzaré igual, però serà genèric. A la vida real, les decisions amb dades “0” acaben en “sorpresa”. I no de les bones.",
+      outTitle: "Resultat i recomanació",
+      outSub: "Explicació clara, realista i accionable. Sense fum.",
+      statusIdle: "Sense analitzar",
+      statusOk: "Fet",
+      statusWarn: "Revisar",
+      statusBad: "Falten dades",
+      kpi1k: "Capacitat mensual",
+      kpi1d: "El que pots destinar sense ofegar-te.",
+      kpi2k: "Preu estimat",
+      kpi2d: "Estimació basada en Baix Penedès.",
+      kpi3k: "Decisió suggerida",
+      kpi3d: "Compra, lloguer o esperar amb pla.",
+      chartHint: "Visual ràpid: cost mensual compra vs lloguer, i marge de seguretat segons ingressos.",
+      humanTitle: "Explicació humana",
+      humanIdle: "Introdueix dades i prem Analyze. Et diré què faria una persona sensata, no un anunci.",
+      nextTitle: "Següents passos",
+      compareTitle: "Comparador ràpid",
+      compareText: "Et mostraré si el teu objectiu encaixa amb un rang realista del Baix Penedès.",
+      searchTitle: "Cerca d’exemples (Baix Penedès)",
+      searchSub: "No puc “llegir” portals en temps real des d’un HTML estàtic, però sí generar cerques netes i útils.",
+      searchFoot: "S’obre en una pestanya nova amb filtres aproximats: Baix Penedès, tipus, habitacions i rang de m² (±20).",
+      donateNotice: "Això és gratis perquè així ha de ser. Si t’estalvia temps o errors, pots deixar una aportació voluntària per mantenir i millorar descarregables i eines.",
+      donateHint: "Important: això no desbloqueja funcions. És només un “gràcies” opcional.",
+      donLbl: "Aportació voluntària",
+      btnCopy: "Copy details",
+      btnDonate: "Donate",
+      donFoot: "Aquí pots posar Bizum/PayPal/Stripe quan ho tinguis. Per ara queda en mode “copiar”.",
+      legal: "Avís: guia educativa. No és assessorament financer oficial. Tot i així, està pensat per sonar i pensar com una persona real, no com un fulletó.",
+      visit: "Visit site",
+      reset: "Reset",
+      analyze: "Analyze",
+      ok: "OK",
+      toastTitle: "Atenció",
+      v_needSomething: "Ara mateix tot és 0. Puc analitzar igual, però serà molt genèric. Si vols utilitat real, afegeix com a mínim: ingressos, pressupost i m².",
+      v_budgetIncome: "Per una recomanació realista necessito com a mínim: ingressos mensuals i pressupost (compra o lloguer).",
+      v_buyNeedsTermRate: "Si vols analitzar compra amb hipoteca, necessito termini (anys) i interès (%). Si no els saps, posa una estimació (p. ex. 25 anys i 3.5%).",
+      v_m2TooLow: "Els m² no poden ser negatius. Sí, hi ha pisos petits, però no així.",
+      copied: "Copiat. Quan tinguis dades reals (Bizum/PayPal/Stripe), les enganxes on toqui.",
+      donated: "En aquesta demo no es cobra res. Però la intenció és bona i rara. 👌",
+      ex_terrace: "Terrassa / balcó",
+      ex_elevator: "Ascensor",
+      ex_parking: "Pàrquing",
+      ex_pool: "Piscina",
+      ex_garden: "Jardí",
+      ex_renovated: "Reformat",
+      ex_seaview: "Vistes / a prop del mar",
+      ex_storage: "Traster",
+      ex_ac: "Aire condicionat",
+      ex_heating: "Calefacció",
+      ns1: "Defineix l’objectiu real (lloguer vs compra) amb un número concret, no amb “ja veurem”.",
+      ns2: "Si compres: reserva un 10–12% extra per impostos i despeses (aprox.).",
+      ns3: "No t’enamoris del primer anunci. Compara mínim 8–12 opcions amb els teus filtres.",
+      ns4: "Amb la teva capacitat mensual, fixa un “límit dur” i un “còmode”. El còmode et salva.",
+      ns5: "Fes una llista de no-negociables (m², llum, ubicació, estat) i una de capricis.",
     },
-    EN:{
-      hdrTitle:"Housing Advisor · Baix Penedès",
-      hdrHint:"Real examples: only after Analyze.",
-      tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",tab6:"6 Real examples",
-      lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",
-      hintP:"Fill in the basics to continue.",
-      lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",
-      hintE:"Complete finance and move to preferences.",
-      lblMuni:"Town (Baix Penedès)",lblMuniHelp:"Using the map you can pick multiple towns for 'Real examples'.",
-      lblM2:"Square meters (≥50)",lblBed:"Bedrooms",lblBath:"Bathrooms",lblType:"Property type",optFlat:"Flat",optHouse:"House",
-      exTer:"Terrace",exPis:"Pool",exAsc:"Elevator",exGar:"Parking",
-      btnAnalyze:"Analyze",btnMap:"Map (real area)",hintF:"If you change preferences, analyze again to refresh results.",
-      zoneTitle:"Preferred area (real map)",zoneHint:"Click a pin to select towns. You can pick multiple towns in Baix Penedès.",
-      btnClear:"Clear",btnUse:"Use in Real examples",
-      kPrice:"Estimated price",kRent:"Estimated rent",kPay:"Mortgage payment",kRec:"Recommendation",
-      btnCopy:"Copy summary",btnReset:"Reset",
-      lblProv:"Province (comparator)",lblM2s:"m²",lblType2:"Type",btnCompare:"Compare",btnUseMine:"Use my data",
-      hintX:"If you chose multiple towns, you get buttons per town (Idealista doesn't support multi-town in one URL).",
-      yes:"Yes",no:"No",
-      recBuy:"BUY",recRent:"RENT",recNotFeasible:"NOT FEASIBLE",
-      toastCheckNameAge:"Check name/age",
-      toastFirstAnalyze:"Analyze first.",
-      toastPrefsChanged:"Preferences changed: analyze again.",
-      toastNoLink:"Could not generate the link",
-      toastCopied:"Copied",
-      toastZoneCleared:"Area cleared",
-      toastNoZone:"No towns selected",
-      toastZoneApplied:"Area applied to Real examples",
-      stateReady:"✅ Ready",
-      stateNeedAnalyze:"⛔ Please Analyze / re-Analyze",
-      xInfo:"Town (Preferences): {muni} · Status: {state}.",
-      sumTitle:"Clear summary · {rec}",
-      chipMort:"Mortgage effort: {pct}",
-      chipRent:"Rent effort: {pct}",
-      chipCash:"Cash needed: {eur}",
-      chipRate:"Rate: {rate}",
-      miniPrice:"Estimated price",
-      miniPay:"Mortgage payment",
-      miniRent:"Estimated rent",
-      bodyPrefs:"Preferences: {muni} · {m2} m² · {bed} bd · {bath} ba · {type}",
-      reportHello:"Hi {name},",
-      reportPrice:"Estimated price: {eur}.",
-      reportHome:"Home: {muni} · {m2} m² · {bed} bd · {bath} ba · {type}.",
-      reportDown:"Down payment: {dp}% → {down} € · Costs: {cl} €.",
-      reportFin:"To finance: {cap} € · Term: {yrs} years · Rate: {rate}.",
-      reportPay:"Mortgage: {pay} € · Rent: {rent} €.",
-      reportRec:"Recommendation: {rec}",
-      any:"Any",
-      btnCopy2:"Copy",
-      savingsOk:"✅ Savings are sufficient for the down payment.",
-      yearsToSave:"Saving {msv}/mo, you'll reach the goal in ~{yrs} years ({mos} months).",
-      itpNote:"In Catalunya, property purchase tax is ~10% ITP + ~1% notary/registry fees. Already included in the estimated closing costs.",
-      avgZone:"Average of {n} towns",
-      priceRange:"Range: {lo} – {hi}",
-      stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",
-      cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",
-      cmpExplain:"This means that {typeText} in {prov} is {diff} {direction} than in your area (Baix Penedès). The price difference is {absDiff}, which represents {pct} {direction2}.",
-      cmpContext:"In {prov}, the average price per m² is {avgM2}. If you apply the same features you're looking for (size, bedrooms, extras), the total cost would be {total}.",
-      cmpRent:"The estimated monthly rent in {prov} would be {rent}, compared to {yourRent} in your area.",
-      cmpAdvice:"💡 This can help you decide whether it's worth searching in other provinces based on your budget and mobility needs.",
-
-      // NUEVAS CLAVES
-      whyBuyTitle:"Why BUY?",
-      whyRentTitle:"Why RENT?",
-      notFeasibleTitle:"NOT FEASIBLE",
-      prefsTitle:"Preferences",
-      financingTitle:"Financing",
-      effortTitle:"Financial effort",
-      mortgageEffort:"Mortgage effort",
-      rentEffort:"Rent effort",
-      recommendedLimitMort:"Recommended limit: 35%",
-      recommendedLimitRent:"Recommended limit: 40%",
-      downPayment:"Down payment",
-      closingCosts:"Closing costs",
-      toFinance:"To finance",
-      months:"months",
-      years:"years",
-      perMonth:"/mo",
-      selectedLabel:"Selected: ",
-      none:"none",
-      activeTowns:"Active towns: ",
-      noAreaApplied:"No area applied",
-      noSelection:"No selection",
-      buyLabel:"BUY",
-      rentLabel:"RENT",
-      strictLabel:"strict",
-      flexLabel:"flex",
-      validateIncome:"Enter valid income",
-      validateSavings:"Enter your savings",
-      validateM2:"Minimum 50 m²",
-      missingDataCmp:"Complete province and data."
+    en: {
+      appTitle: "Housing Advisor",
+      appSubtitle: "Realistic simulator · Baix Penedès",
+      langLbl: "Language",
+      formTitle: "Your case details",
+      formSub: "The more accurate you are, the more honest the recommendation will be.",
+      scopeBadge: "Scope: Baix Penedès",
+      munLbl: "Town (context only)",
+      munHint: "Search always covers the entire Baix Penedès.",
+      munFoot: "This does not restrict anything: it only adjusts tone and local references.",
+      typeLbl: "Property type",
+      typeHint: "Changes how extras and comps are evaluated.",
+      typeFoot: "Flat = more weight on community/elevator. House = more weight on condition, land and maintenance.",
+      roomsLbl: "Bedrooms",
+      bathsLbl: "Bathrooms",
+      m2Lbl: "Square meters (m²)",
+      m2Foot: "If you set 0, comparisons get less precise, but it still works.",
+      budgetLbl: "Budget (rent or buy)",
+      budgetFoot: "If renting: set your monthly cap. If buying: set your target total price.",
+      incomeLbl: "Monthly net income",
+      savingsLbl: "Available savings",
+      termLbl: "Mortgage term",
+      rateLbl: "Annual interest (approx.)",
+      extrasTitle: "Extras (optional)",
+      extrasSub: "Not just “nice-to-haves”: they change real price and comparables.",
+      formFooter: "Reality check: if everything is 0, I can still analyze, but it will be generic. Decisions with “0 data” usually end in bad surprises.",
+      outTitle: "Result & recommendation",
+      outSub: "Clear, realistic, actionable. No fluff.",
+      statusIdle: "Not analyzed",
+      statusOk: "Ready",
+      statusWarn: "Review",
+      statusBad: "Missing data",
+      kpi1k: "Monthly capacity",
+      kpi1d: "What you can pay without choking.",
+      kpi2k: "Estimated price",
+      kpi2d: "Estimate based on Baix Penedès.",
+      kpi3k: "Suggested decision",
+      kpi3d: "Buy, rent, or wait with a plan.",
+      chartHint: "Quick visual: buy monthly cost vs rent, and your safety margin vs income.",
+      humanTitle: "Human explanation",
+      humanIdle: "Enter your data and click Analyze. You’ll get a sensible, human recommendation.",
+      nextTitle: "Next steps",
+      compareTitle: "Quick comparator",
+      compareText: "I’ll show whether your target price fits a realistic Baix Penedès range.",
+      searchTitle: "Example search (Baix Penedès)",
+      searchSub: "A static HTML can’t read portals live, but it can build clean searches with your filters.",
+      searchFoot: "Opens in a new tab with approximate filters: Baix Penedès area, type, bedrooms, and m² range (±20).",
+      donateNotice: "This is free because it should be. If it saves you time or mistakes, you can leave a voluntary tip to help maintain tools and downloads.",
+      donateHint: "Important: this does not unlock features. It’s just an optional thanks.",
+      donLbl: "Voluntary tip",
+      btnCopy: "Copy details",
+      btnDonate: "Donate",
+      donFoot: "Add your Bizum/PayPal/Stripe link later. For now it’s “copy mode”.",
+      legal: "Note: educational guidance only. Not official financial advice. Still: it’s designed to think like a real person, not a brochure.",
+      visit: "Visit site",
+      reset: "Reset",
+      analyze: "Analyze",
+      ok: "OK",
+      toastTitle: "Heads up",
+      v_needSomething: "Everything is 0 right now. I can still analyze, but it’ll be generic. For useful output, add at least: income, budget, and m².",
+      v_budgetIncome: "For a realistic recommendation I need at least: monthly income and your budget (rent or buy).",
+      v_buyNeedsTermRate: "If you want a mortgage buy analysis, I need term (years) and interest (%). If unsure, estimate (e.g., 25 years and 3.5%).",
+      v_m2TooLow: "m² can’t be negative. Physics is still a thing.",
+      copied: "Copied. Replace with your real Bizum/PayPal/Stripe details when ready.",
+      donated: "This demo doesn’t charge anything. But the intent is noted.",
+      ex_terrace: "Terrace / balcony",
+      ex_elevator: "Elevator",
+      ex_parking: "Parking",
+      ex_pool: "Pool",
+      ex_garden: "Garden",
+      ex_renovated: "Renovated",
+      ex_seaview: "Views / near the sea",
+      ex_storage: "Storage",
+      ex_ac: "Air conditioning",
+      ex_heating: "Heating",
+      ns1: "Pick a real goal (rent vs buy) with a number, not ‘we’ll see’.",
+      ns2: "If buying: reserve ~10–12% extra for taxes and fees (approx.).",
+      ns3: "Don’t fall for the first listing. Compare at least 8–12 options with your filters.",
+      ns4: "Set a ‘hard limit’ and a ‘comfortable limit’. Comfortable is what saves you.",
+      ns5: "Write non-negotiables (m², light, location, condition) and ‘nice-to-haves’.",
     }
   };
 
-  let LANG=localStorage.getItem(LANG_KEY)||"ES";
-  const t=(k)=> (I18N[LANG] && I18N[LANG][k]) || (I18N.ES[k]||k);
-  const tpl=(s,vars)=>String(s||"").replace(/\{(\w+)\}/g,(_,k)=> (vars && vars[k]!=null)?vars[k]:"");
+  function t(key){
+    const lang = state.lang;
+    return (I18N[lang] && I18N[lang][key]) || I18N.es[key] || key;
+  }
 
-  const fmtMoney=(n)=>{
-    if(!isFinite(n)) return "–";
-    return (LANG==="EN"?fmtEN(n):fmtES(n))+" €";
-  };
-  const fmtPct=(n)=> (LANG==="EN"?pctEN(n):pctES(n));
-
-  const toast=(m)=>{let e=Q("#ts");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),1800)};
-
-  const applyStaticI18n=()=>{
-    QA("[data-i]").forEach(el=>{
-      const k=el.getAttribute("data-i");
-      const v=t(k);
-      if(v) el.textContent=v;
-    });
-  };
-
-  const setLang=(l)=>{
-    LANG=l;
-    localStorage.setItem(LANG_KEY,l);
-    document.documentElement.lang = (l==="CA"?"ca":l==="ES"?"es":"en");
-
-    Q("#L_CA").classList.toggle("a",l==="CA");
-    Q("#L_ES").classList.toggle("a",l==="ES");
-    Q("#L_EN").classList.toggle("a",l==="EN");
-
-    applyStaticI18n();
-    renderZoneUI();
-    renderResult();
-    refreshExamplesUI();
-    updateSteps(document.querySelector("[data-p][style*='block']")?.getAttribute("data-p")||"p");
-    liveValidate();
-  };
-
-  const loadForm=()=>{
-    let s=localStorage.getItem(STORE_KEY); if(!s) return;
-    try{
-      let d=JSON.parse(s)||{};
-      ["nm","ag","inc","sav","yrs","msv","m2","bed","bat","cm2","cbd","cba"].forEach(id=>{ if(d[id]!=null && Q("#"+id)) Q("#"+id).value=d[id]; });
-      ["ar","ty","hor","fst","cm","cty"].forEach(id=>{ if(d[id]!=null && Q("#"+id)) Q("#"+id).value=d[id]; });
-      ["et","ep","el","ek","ct","cp0","cl0","ck0"].forEach(id=>{ if(Q("#"+id) && d[id]!=null) Q("#"+id).checked=!!d[id]; });
-    }catch(e){}
-  };
-  const saveForm=()=>{
-    let d={};
-    ["nm","ag","inc","sav","yrs","msv","m2","bed","bat","cm2","cbd","cba"].forEach(id=>{ if(Q("#"+id)) d[id]=Q("#"+id).value; });
-    ["ar","ty","hor","fst","cm","cty"].forEach(id=>{ if(Q("#"+id)) d[id]=Q("#"+id).value; });
-    ["et","ep","el","ek","ct","cp0","cl0","ck0"].forEach(id=>{ if(Q("#"+id)) d[id]=Q("#"+id).checked?1:0; });
-    localStorage.setItem(STORE_KEY,JSON.stringify(d));
-  };
-
-  const updateSteps=(p)=>{
-    const stepMap={p:1,e:2,f:3,r:4,m:4,x:4};
-    const cur=stepMap[p]||1;
-    [1,2,3,4].forEach(i=>{
-      const s=Q("#stp"+i); if(!s) return;
-      s.classList.remove("active","done");
-      if(i<cur) s.classList.add("done");
-      else if(i===cur) s.classList.add("active");
-    });
-    const lbls=[t("stepPersonal"),t("stepEco"),t("stepPref"),t("stepRes")];
-    lbls.forEach((l,i)=>{const el=Q("#slbl"+(i+1));if(el)el.textContent=l;});
-  };
-
-  const show=p=>{
-    QA("[data-p]").forEach(x=>x.style.display=x.getAttribute("data-p")==p?"block":"none");
-    ["p","e","f","r","m","x"].forEach(k=>Q("#t_"+k).classList.toggle("a",p===k));
-    updateSteps(p);
-    if(p==="m") setTimeout(()=>upMap(),100);
-    if(p==="x") refreshExamplesUI();
-    window.scrollTo({top:0,behavior:"smooth"});
-  };
-
-  const mort=(c,r,y)=>{let m=r/12,n=y*12;return r===0?c/n:c*(m*Math.pow(1+m,n))/(Math.pow(1+m,n)-1)};
-  const COEF={"Cunit":{c:1.157,r:.975},"El Vendrell":{c:.912,r:.842},"Calafell":{c:.856,r:.983},"Santa Oliva":{c:.783,r:.825},"Bellvei":{c:.783,r:.925},"L'Arboç":{c:.735,r:.883},"Banyeres del Penedès":{c:.614,r:.783},"Albinyana":{c:.766,r:.825},"Bonastre":{c:.497,r:.683},"Masllorenç":{c:.549,r:.75},"La Bisbal del Penedès":{c:.623,r:.808},"Llorenç del Penedès":{c:.856,r:.65},"Sant Jaume dels Domenys":{c:.614,r:.65},"El Montmell":{c:.529,r:.675}};
-  const BASE={m2:2000,rent:10,close:.1,rate:.0299};
-  const M={"Barcelona":{v:2986,l:21.9},"Girona":{v:2608,l:14.99},"Lleida":{v:1486,l:9.5},"Tarragona":{v:2100,l:13.5}};
-  const buy=(a,m2,b,ba,e)=>{let base=m2*BASE.m2*(COEF[a]?.c||1),adj=b*5e3+ba*3e3,x=0;if(e.t)x+=base*.05;if(e.p)x+=base*.08;if(e.l)x+=base*.04;if(e.k)x+=base*.03;return Math.round(base+adj+x)};
-  const rent=(a,m2,b,ba,e)=>{let base=m2*BASE.rent*(COEF[a]?.r||1),adj=b*50+ba*30,x=0;if(e.t)x+=base*.15;if(e.p)x+=base*.30;if(e.l)x+=base*.08;if(e.k)x+=base*.07;return Math.round(base+adj+x)};
-  const buyM=(m,m2,b,ba,e)=>{let p=M[m];if(!p)return NaN;let base=m2*p.v,adj=b*5e3+ba*3e3,x=0;if(e.t)x+=base*.05;if(e.p)x+=base*.08;if(e.l)x+=base*.04;if(e.k)x+=base*.03;return Math.round(base+adj+x)};
-  const rentM=(m,m2,b,ba,e)=>{let p=M[m];if(!p)return NaN;let base=m2*p.l,adj=b*50+ba*30,x=0;if(e.t)x+=base*.15;if(e.p)x+=base*.30;if(e.l)x+=base*.08;if(e.k)x+=base*.07;return Math.round(base+adj+x)};
-
-  let last=null,lastReq=null,lastReqSig="";
-  const reqFromUI=()=>({
-    muni:Q("#ar").value,type:Q("#ty").value,m2:+Q("#m2").value||null,
-    bed:(Q("#bed").value===""?null:+Q("#bed").value),bath:+Q("#bat").value||null,
-    ex:{t:Q("#et").checked?1:0,p:Q("#ep").checked?1:0,l:Q("#el").checked?1:0,k:Q("#ek").checked?1:0}
-  });
-  const sigOfReq=r=>[r.muni,r.type,r.m2,r.bed,r.bath,r.ex.t,r.ex.p,r.ex.l,r.ex.k].join("|");
-  const prefsChangedSinceAnalyze=()=>{ if(!lastReq) return true; return sigOfReq(reqFromUI())!==lastReqSig; };
-  const setTabsEnabled=()=>{
-    const needA=!lastReq;
-    ["#t_r","#t_m","#t_x"].forEach(id=>Q(id).classList.toggle("dis",needA));
-  };
-
-  const typeLabel=(type)=> type==="flat"?t("optFlat"):t("optHouse");
-  const muniLabel=(muni)=>{
-    if(muni==="*") return t("any");
-    if(muni==="__multi__") return [...zoneSel].join(", ");
-    return muni;
-  };
-
-  const analyze=()=>{
-    let nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0,inc=+Q("#inc").value||0,sav=+Q("#sav").value||0,yrs=+Q("#yrs").value||25,hor=Q("#hor").value==="y",fst=Q("#fst").value==="y";
-    let ar=Q("#ar").value,m2=+Q("#m2").value||0,bd=(Q("#bed").value===""?0:+Q("#bed").value||0),ba=+Q("#bat").value||0,type=Q("#ty").value;
-    if(!nm||ag<18||ag>100||m2<50||ba<1){toast(t("toastCheckNameAge"));return;}
-    let e={t:Q("#et").checked,p:Q("#ep").checked,l:Q("#el").checked,k:Q("#ek").checked};
-
-    let pb,pr,pbRange=null,prRange=null,muniList=[];
-    if((ar==="*"||ar==="__multi__")&&zoneSel.size>1){
-      muniList=[...zoneSel];
-      const buys=muniList.map(m=>buy(m,m2,Math.max(0,bd),ba,e));
-      const rents=muniList.map(m=>rent(m,m2,Math.max(0,bd),ba,e));
-      pb=Math.round(buys.reduce((a,b)=>a+b,0)/buys.length);
-      pr=Math.round(rents.reduce((a,b)=>a+b,0)/rents.length);
-      pbRange={lo:Math.min(...buys),hi:Math.max(...buys)};
-      prRange={lo:Math.min(...rents),hi:Math.max(...rents)};
-    } else {
-      const baseM=(ar==="__multi__"&&zoneSel.size===1)?[...zoneSel][0]:(ar==="*"?"Cunit":ar);
-      muniList=[baseM];
-      pb=buy(baseM,m2,Math.max(0,bd),ba,e);
-      pr=rent(baseM,m2,Math.max(0,bd),ba,e);
-    }
-
-    let dp=fst?.1:.2,down=pb*dp,cl=pb*BASE.close,cap=Math.max(0,pb-down);
-    let rate=BASE.rate;if(sav<down)rate+=.005;
-    let pay=mort(cap,rate,yrs),ratio=inc>0?(pay/inc)*100:1e9,rri=inc>0?(pr/inc)*100:1e9;
-
-    let need=sav<(down+cl);
-    let ratioOK=isFinite(ratio)&&ratio<=35;
-    let rentOK=isFinite(rri)&&rri<=40;
-    let recCode=(!need && ratioOK && hor) ? "BUY" : (rentOK ? "RENT" : "NOT_FEASIBLE");
-
-    let rec = recCode==="BUY" ? t("recBuy") : recCode==="RENT" ? t("recRent") : t("recNotFeasible");
-
-    last={nm,muni:ar,m2,bd:Math.max(0,bd),ba,type,pb,pr,pbRange,prRange,muniList,cap,rate,yrs,dp,sav,down,cl,pay,ratio,rri,rec,recCode,e,need,hor,inc,msv:+Q("#msv").value||0};
-    lastReq=reqFromUI(); lastReqSig=sigOfReq(lastReq);
-
-    Q("#k1").textContent=fmtMoney(pb);
-    Q("#k2").textContent=fmtMoney(pr);
-    Q("#k3").textContent=fmtMoney(pay);
-    Q("#k4").textContent=rec;
-
-    renderResult();
-    setTabsEnabled();
-    saveForm();
-    show("r");
-  };
-
-  const renderResult=()=>{
-    if(!last) return;
-
-    const dti=isFinite(last.ratio)?last.ratio:999;
-    const rti=isFinite(last.rri)?last.rri:999;
-    const needCash=Math.round(last.down+last.cl);
-
-    let clsDTI=dti<=30?"good":dti<=35?"warn":"bad";
-    let clsRTI=rti<=35?"good":rti<=40?"warn":"bad";
-    let clsCash=last.need?"bad":"good";
-    let clsRate=(last.rate>BASE.rate)?"warn":"neu";
-
-    Q("#rCard").style.display="block";
-
-    Q("#rTitle").textContent=tpl(t("sumTitle"),{rec:last.rec});
-    Q("#rChips").innerHTML=
-      `<span class="chip ${clsDTI}">${tpl(t("chipMort"),{pct:fmtPct(dti)})}</span>`+
-      `<span class="chip ${clsRTI}">${tpl(t("chipRent"),{pct:fmtPct(rti)})}</span>`+
-      `<span class="chip ${clsCash}">${tpl(t("chipCash"),{eur:fmtMoney(needCash)})}</span>`+
-      `<span class="chip ${clsRate}">${tpl(t("chipRate"),{rate:(last.rate*100).toFixed(2)+"%"})}</span>`;
-
-    const isMulti=last.muniList&&last.muniList.length>1;
-    const multiLbl=isMulti?`<div style='font-size:.72rem;color:#7dd3fc;margin-top:3px'>${tpl(t("avgZone"),{n:last.muniList.length})}</div>`:"";
-    const pbRngHtml=(isMulti&&last.pbRange)?`<div class='range-bar'><span class='range-tag lo'>↓ ${fmtMoney(last.pbRange.lo)}</span><span class='range-tag hi'>↑ ${fmtMoney(last.pbRange.hi)}</span></div>`:"";
-    const prRngHtml=(isMulti&&last.prRange)?`<div class='range-bar'><span class='range-tag lo'>↓ ${fmtMoney(last.prRange.lo)}</span><span class='range-tag hi'>↑ ${fmtMoney(last.prRange.hi)}</span></div>`:"";
-    const pricePerM2=last.m2>0?Math.round(last.pb/last.m2):0;
-    Q("#rMini").innerHTML=
-      `<div class="mini"><div class="h">${t("miniPrice")}</div><div class="v">${fmtMoney(last.pb)}</div>${multiLbl}${pbRngHtml}<div style='font-size:.75rem;color:#64748b;margin-top:4px'>${pricePerM2.toLocaleString(LANG==="EN"?"en-US":"es-ES")} €/m²</div></div>`+
-      `<div class="mini"><div class="h">${t("miniPay")}</div><div class="v">${fmtMoney(last.pay)}</div><div style='font-size:.75rem;color:#64748b;margin-top:4px'>${last.yrs} ${t("years")} · ${(last.rate*100).toFixed(2)}%</div></div>`+
-      `<div class="mini"><div class="h">${t("miniRent")}</div><div class="v">${fmtMoney(last.pr)}</div>${prRngHtml}</div>`;
-
-    const muniTxt=muniLabel(last.muni);
-    const typeTxt=typeLabel(last.type);
-
-    let bodyHTML = "<div style='display:grid;gap:16px'>";
-
-    bodyHTML += "<div style='background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(14,165,233,.05));padding:16px;border-radius:14px;border-left:4px solid ";
-    if(last.recCode === "BUY") {
-      bodyHTML += "#22c55e'>";
-      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#86efac;margin-bottom:12px'>✅ " + t("whyBuyTitle") + "</div>";
-      bodyHTML += "<div style='color:#cbd5e1;line-height:1.7;font-size:.92rem'>";
-      const reasons=[];
-      if(!last.need) reasons.push(`${t("closingCosts")}: ${fmtMoney(needCash)} · ${fmtMoney(last.sav)} ≥ ${fmtMoney(needCash)}`);
-      if(dti<=35) reasons.push(`${t("mortgageEffort")}: ${fmtPct(dti)}`);
-      if(last.hor) reasons.push(LANG==="EN"?"Staying > 5 years helps amortize purchase costs.":LANG==="CA"?"Estar > 5 anys ajuda a amortitzar costos.":"Quedarte > 5 años ayuda a amortizar costes.");
-      reasons.push(`${t("miniPay")}: ${fmtMoney(last.pay)} vs ${t("miniRent")}: ${fmtMoney(last.pr)}`);
-      reasons.forEach(r=>bodyHTML+=`<div style='margin-bottom:8px'>• ${r}</div>`);
-      bodyHTML += "</div>";
-    } else if(last.recCode === "RENT") {
-      bodyHTML += "#f59e0b'>";
-      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#fde68a;margin-bottom:12px'>⚠️ " + t("whyRentTitle") + "</div>";
-      bodyHTML += "<div style='color:#cbd5e1;line-height:1.7;font-size:.92rem'>";
-      const reasons=[];
-      if(last.need){
-        const missing=Math.round(needCash-last.sav);
-        reasons.push((LANG==="EN"?"Insufficient savings":"CA"?"Estalvis insuficients":"Ahorros insuficientes")+" ("+fmtMoney(missing)+" "+(LANG==="EN"?"missing":"falten")+")");
-      }
-      if(dti>35) reasons.push(`${t("mortgageEffort")}: ${fmtPct(dti)} (>35%)`);
-      if(!last.hor) reasons.push(LANG==="EN"?"Short stay makes buying less efficient.":LANG==="CA"?"Estada curta fa la compra menys eficient.":"Estancia corta hace la compra menos eficiente.");
-      reasons.push(`${t("rentEffort")}: ${fmtPct(rti)}`);
-      reasons.forEach(r=>bodyHTML+=`<div style='margin-bottom:8px'>• ${r}</div>`);
-      bodyHTML += "</div>";
-    } else {
-      bodyHTML += "#ef4444'>";
-      bodyHTML += "<div style='font-size:1.1rem;font-weight:900;color:#fca5a5;margin-bottom:12px'>❌ " + t("notFeasibleTitle") + "</div>";
-      bodyHTML += "<div style='color:#cbd5e1;line-height:1.7;font-size:.92rem'>";
-      const problems=[];
-      if(last.need) problems.push(LANG==="EN"?"Not enough savings for down payment + costs.":LANG==="CA"?"No hi ha prou estalvis per a entrada + despeses.":"No hay ahorros suficientes para entrada + gastos.");
-      if(dti>35) problems.push(`${t("mortgageEffort")}: ${fmtPct(dti)} (>35%)`);
-      if(rti>40) problems.push(`${t("rentEffort")}: ${fmtPct(rti)} (>40%)`);
-      problems.forEach(p=>bodyHTML+=`<div style='margin-bottom:8px'>• ${p}</div>`);
-      bodyHTML += "</div>";
-    }
-    bodyHTML += "</div>";
-
-    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:8px'>📍 "+t("prefsTitle")+"</div>" +
-      "<div style='margin-left:20px;color:#cbd5e1'>" +
-      tpl(t("bodyPrefs").replace(/^.*?:\s*/,""),{muni:muniTxt,m2:last.m2,bed:(last.bd||0),bath:last.ba,type:typeTxt}) +
-      "</div></div>";
-
-    const dpPct = Math.round(last.dp*100);
-    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:8px'>💰 "+t("financingTitle")+"</div>" +
-      "<div style='margin-left:20px;color:#cbd5e1'>" +
-      "<div style='margin-bottom:6px'>"+t("downPayment")+": "+dpPct+"% → <b>"+fmtMoney(last.down)+"</b></div>" +
-      "<div style='margin-bottom:6px'>"+t("closingCosts")+": <b>"+fmtMoney(last.cl)+"</b></div>" +
-      "<div>"+t("toFinance")+": <b>"+fmtMoney(last.cap)+"</b> ("+last.yrs+" "+t("years")+" @ "+(last.rate*100).toFixed(2)+"%)</div>" +
-      "</div></div>";
-
-    const dtiCls=dti<=30?"good":dti<=35?"warn":"bad";
-    const rtiCls=rti<=35?"good":rti<=40?"warn":"bad";
-    bodyHTML += "<div><div style='font-size:1rem;font-weight:800;color:#38bdf8;margin-bottom:12px'>📊 "+t("effortTitle")+"</div>" +
-      "<div style='display:grid;gap:14px'>" +
-      "<div><div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px'>" +
-        "<span style='color:#94a3b8;font-size:.85rem;font-weight:700'>"+t("mortgageEffort")+"</span>" +
-        "<span style='font-weight:900;color:#f1f5f9'>"+fmtPct(dti)+" "+(dti<=30?"✅":dti<=35?"⚠️":"❌")+"</span></div>" +
-      "<div class='pbar-wrap'><div class='pbar "+dtiCls+"' style='width:"+Math.min(100,dti).toFixed(1)+"%'></div></div>" +
-      "<div style='font-size:.75rem;color:#64748b;margin-top:3px'>"+t("recommendedLimitMort")+"</div></div>" +
-      "<div><div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px'>" +
-        "<span style='color:#94a3b8;font-size:.85rem;font-weight:700'>"+t("rentEffort")+"</span>" +
-        "<span style='font-weight:900;color:#f1f5f9'>"+fmtPct(rti)+" "+(rti<=35?"✅":rti<=40?"⚠️":"❌")+"</span></div>" +
-      "<div class='pbar-wrap'><div class='pbar "+rtiCls+"' style='width:"+Math.min(100,rti).toFixed(1)+"%'></div></div>" +
-      "<div style='font-size:.75rem;color:#64748b;margin-top:3px'>"+t("recommendedLimitRent")+"</div></div>" +
-      "</div></div>";
-
-    bodyHTML += "<div style='padding:12px 14px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:12px;border-left:4px solid #818cf8;color:#c7d2fe;font-size:.85rem;line-height:1.6'>ℹ️ "+t("itpNote")+"</div>";
-
-    if(last.need){
-      const missing2=Math.max(0,needCash-last.sav);
-      if(last.msv>0&&missing2>0){
-        const mos=Math.ceil(missing2/last.msv);
-        const yrs2=(mos/12).toFixed(1);
-        bodyHTML += "<div class='countdown'>⏳ "+tpl(t("yearsToSave"),{msv:fmtMoney(last.msv),yrs:yrs2,mos:mos})+"</div>";
-      }
-    } else {
-      bodyHTML += "<div class='countdown' style='background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);border-left-color:#22c55e;color:#86efac'>"+t("savingsOk")+"</div>";
-    }
-
-    bodyHTML += "</div>";
-    Q("#rBody").innerHTML = bodyHTML;
-
-    Q("#rt").textContent=[
-      tpl(t("reportHello"),{name:last.nm}),
-      tpl(t("reportPrice"),{eur:fmtMoney(last.pb)}),
-      tpl(t("reportHome"),{muni:muniTxt,m2:last.m2,bed:(last.bd||0),bath:last.ba,type:typeTxt}),
-      tpl(t("reportDown"),{dp:Math.round(last.dp*100),down:fmtMoney(last.down),cl:fmtMoney(last.cl)}),
-      tpl(t("reportFin"),{cap:fmtMoney(last.cap),yrs:last.yrs,rate:(last.rate*100).toFixed(2)+"%"}),
-      tpl(t("reportPay"),{pay:fmtMoney(last.pay),rent:fmtMoney(last.pr)}),
-      tpl(t("reportRec"),{rec:last.rec})
-    ].join("\n");
-  };
-
-  let cmap=null;
-  const PROV_COORDS={
-    "Barcelona":[41.3874,2.1686],
-    "Girona":[41.9794,2.8214],
-    "Lleida":[41.6176,0.6200],
-    "Tarragona":[41.1189,1.2445]
-  };
-  const upMap=()=>{
-    const m=Q("#cm").value||"Barcelona";
-    const coords=PROV_COORDS[m]||[41.3874,2.1686];
-    if(!cmap){
-      cmap=L.map("cmap").setView(coords,12);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(cmap);
-      L.marker(coords).addTo(cmap).bindPopup(m);
-      setTimeout(()=>{if(cmap)cmap.invalidateSize()},200);
-    } else {
-      cmap.setView(coords,12);
-      cmap.eachLayer(layer=>{if(layer instanceof L.Marker)cmap.removeLayer(layer)});
-      L.marker(coords).addTo(cmap).bindPopup(m);
-      setTimeout(()=>{if(cmap)cmap.invalidateSize()},100);
+  // ---------- State ----------
+  const state = {
+    lang: "es",
+    lastAnalyzeAt: 0,
+    extras: {
+      terrace:false, elevator:false, parking:false, pool:false, garden:false,
+      renovated:false, seaview:false, storage:false, ac:false, heating:false
     }
   };
 
-  const fillComparatorFromLast=()=>{
-    if(!last){ toast(t("toastFirstAnalyze")); return; }
-    Q("#cm2").value=last.m2||""; Q("#cbd").value=last.bd||""; Q("#cba").value=last.ba||"";
-    Q("#cty").value=last.type||"flat";
-    Q("#ct").checked=!!last.e?.t; Q("#cp0").checked=!!last.e?.p; Q("#cl0").checked=!!last.e?.l; Q("#ck0").checked=!!last.e?.k;
-    saveForm();
-  };
-
-  const compare=()=>{
-    if(!last){Q("#cmg").textContent=t("toastFirstAnalyze");return;}
-    let m=Q("#cm").value,m2=+Q("#cm2").value||0,bd=+Q("#cbd").value||0,ba=+Q("#cba").value||0;
-    let e={t:Q("#ct").checked,p:Q("#cp0").checked,l:Q("#cl0").checked,k:Q("#ck0").checked};
-    if(!M[m]||!(m2>0&&ba>0)){Q("#cmg").textContent=t("missingDataCmp");return;}
-    let p2=buyM(m,m2,Math.max(0,bd),ba,e), r2=rentM(m,m2,Math.max(0,bd),ba,e);
-    let d=p2-last.pb, pct=(last.pb>0)?(d/last.pb)*100:0;
-    let cls=d>0?"bad":d<0?"good":"neu";
-    let arrow=d>0?"↑":d<0?"↓":"→";
-    let sign=d>0?"+":"";
-    let pctTxt=(d===0)?"0%":(sign+pct.toFixed(1)+"%");
-
-    const typeTxt = typeLabel(Q("#cty").value);
-    const direction = d>0 ? t("cmpExpensive") : (d<0 ? t("cmpCheaper") : t("cmpSame"));
-    const direction2 = d>0 ? t("cmpExpensive") : (d<0 ? t("cmpCheaper") : "");
-    const absDiff = fmtMoney(Math.abs(d));
-    const avgM2 = fmtMoney(M[m].v);
-
-    let explanation = "";
-    if(d !== 0) {
-      const explainTxt = tpl(t("cmpExplain"), {typeText: typeTxt, prov: m, diff: absDiff, direction: direction, pct: pctTxt, direction2: direction2, absDiff: absDiff});
-      const contextTxt = tpl(t("cmpContext"), {prov: m, avgM2: avgM2, total: fmtMoney(p2)});
-      const rentTxt = tpl(t("cmpRent"), {prov: m, rent: fmtMoney(r2), yourRent: fmtMoney(last.pr)});
-      const adviceTxt = t("cmpAdvice");
-      explanation = "<div style='margin-top:12px;line-height:1.6'>" +
-        "<p><b>" + explainTxt + "</b></p>" +
-        "<p>" + contextTxt + "</p>" +
-        "<p>" + rentTxt + "</p>" +
-        "<p style='margin-top:10px;padding:10px;background:rgba(56,189,248,.1);border-radius:8px;border-left:3px solid #38bdf8'>" + adviceTxt + "</p>" +
-        "</div>";
-    }
-
-    Q("#cmg").innerHTML=
-      "<div class='cardx'>" +
-        "<div class='top'>" +
-          "<div class='title'>" + m + "</div>" +
-          "<div class='chips'>" +
-            "<span class='chip " + cls + "'>" + arrow + " " + sign + fmtMoney(d) + "</span>" +
-            "<span class='chip " + cls + "'>" + pctTxt + "</span>" +
-            "<span class='chip neu'>" + fmtMoney(p2) + "</span>" +
-          "</div>" +
-        "</div>" +
-        "<div class='body'>" + fmtMoney(p2) + " · " + fmtMoney(r2) + " " + t("perMonth") + "</div>" +
-        explanation +
-      "</div>";
-    upMap(); saveForm();
-  };
-
-  const ZONE_POINTS=[
-    {name:"Cunit",lat:41.1989,lng:1.6368},
-    {name:"Calafell",lat:41.2010,lng:1.5687},
-    {name:"El Vendrell",lat:41.2204,lng:1.5340},
-    {name:"Santa Oliva",lat:41.2533,lng:1.5510},
-    {name:"Bellvei",lat:41.2392,lng:1.5767},
-    {name:"L'Arboç",lat:41.2650,lng:1.6050},
-    {name:"Banyeres del Penedès",lat:41.2810,lng:1.5780},
-    {name:"Albinyana",lat:41.2440,lng:1.4870},
-    {name:"Bonastre",lat:41.2270,lng:1.4390},
-    {name:"Masllorenç",lat:41.2750,lng:1.4140},
-    {name:"La Bisbal del Penedès",lat:41.2780,lng:1.4890},
-    {name:"Llorenç del Penedès",lat:41.2820,lng:1.5490},
-    {name:"Sant Jaume dels Domenys",lat:41.2990,lng:1.5590},
-    {name:"El Montmell",lat:41.3070,lng:1.4540},
+  // ---------- Extras setup ----------
+  const EXTRAS_DEF = [
+    { key:"terrace",   labelKey:"ex_terrace",   weightBuy:+0.04, weightRent:+0.03 },
+    { key:"elevator",  labelKey:"ex_elevator",  weightBuy:+0.02, weightRent:+0.02, only:"flat" },
+    { key:"parking",   labelKey:"ex_parking",   weightBuy:+0.03, weightRent:+0.03 },
+    { key:"pool",      labelKey:"ex_pool",      weightBuy:+0.05, weightRent:+0.04, mostly:"house" },
+    { key:"garden",    labelKey:"ex_garden",    weightBuy:+0.05, weightRent:+0.03, mostly:"house" },
+    { key:"renovated", labelKey:"ex_renovated", weightBuy:+0.03, weightRent:+0.03 },
+    { key:"seaview",   labelKey:"ex_seaview",   weightBuy:+0.04, weightRent:+0.04 },
+    { key:"storage",   labelKey:"ex_storage",   weightBuy:+0.02, weightRent:+0.02 },
+    { key:"ac",        labelKey:"ex_ac",        weightBuy:+0.01, weightRent:+0.01 },
+    { key:"heating",   labelKey:"ex_heating",   weightBuy:+0.01, weightRent:+0.01 },
   ];
 
-  let zmap=null, zReady=false, zoneSel=new Set(), markerByName=new Map();
-  const loadZoneSel=()=>{
-    try{
-      const s=localStorage.getItem(ZONE_KEY);
-      if(!s) return;
-      const arr=JSON.parse(s)||[];
-      zoneSel=new Set(arr.filter(Boolean));
-    }catch(e){}
-  };
-  const saveZoneSel=()=>localStorage.setItem(ZONE_KEY, JSON.stringify([...zoneSel]));
+  function renderExtras(){
+    const list = $("extrasList");
+    list.innerHTML = "";
+    const type = $("tipus").value || "";
+    EXTRAS_DEF.forEach(x => {
+      if(x.only && x.only !== type && type) return;
+      const li = document.createElement("li");
+      li.className = "li";
+      const id = "ex_" + x.key;
 
-  const pinIcon=(on)=>L.divIcon({className:"",html:`<div class="pinWrap"><div class="pin ${on?"on":"off"}"></div></div>`,iconSize:[26,26],iconAnchor:[13,26]});
+      li.innerHTML = `
+        <input id="${id}" type="checkbox" style="margin-top:2px;transform:scale(1.05)"/>
+        <div>
+          <b>${safeText(t(x.labelKey))}</b>
+          <span class="muted">${extraMicrocopy(x, type)}</span>
+        </div>
+      `;
+      list.appendChild(li);
 
-  const renderZoneUI=()=>{
-    const selTxt = zoneSel.size ? [...zoneSel].join(", ") : t("none");
-    Q("#zoneNote").textContent = t("selectedLabel")+selTxt;
-
-    Q("#zoneApplied").textContent = zoneSel.size
-      ? (t("activeTowns")+[...zoneSel].join(", "))
-      : t("noAreaApplied");
-
-    const zc=Q("#zoneChips");
-    zc.innerHTML = zoneSel.size
-      ? [...zoneSel].map(z=>`<span class="pchip on" data-z="${z}">${z}</span>`).join("")
-      : `<span class="pchip off">${t("noSelection")}</span>`;
-
-    zc.querySelectorAll("[data-z]").forEach(ch=>{
-      ch.addEventListener("click",()=>{
-        const n=ch.getAttribute("data-z");
-        toggleZone(n,true);
+      const cb = $(id);
+      cb.checked = !!state.extras[x.key];
+      cb.addEventListener("change", () => {
+        state.extras[x.key] = cb.checked;
       });
     });
-  };
+  }
 
-  const applyMarkerState=(name)=>{
-    const mk=markerByName.get(name);
-    if(!mk) return;
-    const on=zoneSel.has(name);
-    mk.setIcon(pinIcon(on));
-    mk.setZIndexOffset(on?1000:0);
-  };
+  function extraMicrocopy(x, type){
+    const isFlat = type==="flat";
+    const isHouse = type==="house";
+    let s = "";
+    if(x.only==="flat") s = (state.lang==="en") ? "Usually relevant for apartment buildings." : (state.lang==="ca" ? "Normalment rellevant en edificis de pisos." : "Normalmente relevante en edificios de pisos.");
+    else if(x.mostly==="house") s = isFlat ? (state.lang==="en" ? "Still possible, but less common in flats." : (state.lang==="ca" ? "Possible, però menys habitual en pisos." : "Posible, pero menos habitual en pisos.")) : (state.lang==="en" ? "Commonly impacts price for houses." : (state.lang==="ca" ? "Sovint impacta el preu en cases." : "Suele impactar el precio en casas."));
+    else s = (state.lang==="en") ? "Can move comparable prices noticeably." : (state.lang==="ca" ? "Pot moure els preus comparables." : "Puede mover los precios comparables.");
+    return s;
+  }
 
-  const toggleZone=(name,fromChip)=>{
-    if(zoneSel.has(name)) zoneSel.delete(name); else zoneSel.add(name);
-    applyMarkerState(name);
-    renderZoneUI();
-    if(!fromChip) saveZoneSel();
-  };
+  // ---------- Popups ----------
+  function toast(msg, title){
+    $("toastTitle").textContent = title || t("toastTitle");
+    $("toastMsg").textContent = msg;
+    $("toastWrap").style.display = "flex";
+    $("toastOk").focus();
+  }
+  function closeToast(){
+    $("toastWrap").style.display = "none";
+  }
 
-  const initMap=()=>{
-    if(zReady) return;
-    zReady=true;
-    zmap=L.map("zmap",{scrollWheelZoom:false,tap:true}).setView([41.235,1.595],11);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'Leaflet | © OpenStreetMap'}).addTo(zmap);
+  $("toastClose").addEventListener("click", closeToast);
+  $("toastOk").addEventListener("click", closeToast);
+  $("toastWrap").addEventListener("click", (e) => {
+    if(e.target === $("toastWrap")) closeToast();
+  });
+  window.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") closeToast();
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "enter") analyze();
+  });
 
-    const bounds=[];
-    ZONE_POINTS.forEach(p=>{
-      bounds.push([p.lat,p.lng]);
-      const mk=L.marker([p.lat,p.lng],{icon: pinIcon(zoneSel.has(p.name)),keyboard:true,riseOnHover:true,title:p.name}).addTo(zmap);
-      mk.bindTooltip(p.name,{direction:"top",opacity:0.95});
-      const hb=L.circle([p.lat,p.lng],{radius:380,opacity:0,fillOpacity:0}).addTo(zmap);
-      const clickFn=()=>toggleZone(p.name,false);
-      mk.on("click",clickFn);
-      hb.on("click",clickFn);
-      markerByName.set(p.name,mk);
-      applyMarkerState(p.name);
-    });
+  // ---------- UI text apply ----------
+  function applyLang(){
+    $("appTitle").textContent = t("appTitle");
+    $("appSubtitle").textContent = t("appSubtitle");
+    $("langLbl").textContent = t("langLbl");
+    $("formTitle").textContent = t("formTitle");
+    $("formSub").textContent = t("formSub");
+    $("scopeBadge").textContent = t("scopeBadge");
+    $("munLbl").textContent = t("munLbl");
+    $("munHint").textContent = t("munHint");
+    $("munFoot").textContent = t("munFoot");
+    $("typeLbl").textContent = t("typeLbl");
+    $("typeHint").textContent = t("typeHint");
+    $("typeFoot").textContent = t("typeFoot");
+    $("roomsLbl").textContent = t("roomsLbl");
+    $("bathsLbl").textContent = t("bathsLbl");
+    $("m2Lbl").textContent = t("m2Lbl");
+    $("m2Foot").textContent = t("m2Foot");
+    $("budgetLbl").textContent = t("budgetLbl");
+    $("budgetFoot").textContent = t("budgetFoot");
+    $("incomeLbl").textContent = t("incomeLbl");
+    $("savingsLbl").textContent = t("savingsLbl");
+    $("termLbl").textContent = t("termLbl");
+    $("rateLbl").textContent = t("rateLbl");
+    $("extrasTitle").textContent = t("extrasTitle");
+    $("extrasSub").textContent = t("extrasSub");
+    $("formFooter").textContent = t("formFooter");
+    $("outTitle").textContent = t("outTitle");
+    $("outSub").textContent = t("outSub");
 
-    try{ zmap.fitBounds(bounds,{padding:[30,30]}); }catch(e){}
-    setTimeout(()=>zmap.invalidateSize(),140);
-    renderZoneUI();
-  };
+    $("kpi1k").textContent = t("kpi1k");
+    $("kpi1d").textContent = t("kpi1d");
+    $("kpi2k").textContent = t("kpi2k");
+    $("kpi2d").textContent = t("kpi2d");
+    $("kpi3k").textContent = t("kpi3k");
+    $("kpi3d").textContent = t("kpi3d");
 
-  const IDEALISTA_BASE="https://www.idealista.com";
-  const MUNI_SLUG={
-    "Cunit":"cunit-tarragona","El Vendrell":"el-vendrell-tarragona","Calafell":"calafell-tarragona","Santa Oliva":"santa-oliva-tarragona",
-    "Bellvei":"bellvei-tarragona","L'Arboç":"l-arboc-tarragona","Banyeres del Penedès":"banyeres-del-penedes-tarragona","Albinyana":"albinyana-tarragona",
-    "Bonastre":"bonastre-tarragona","Masllorenç":"masllorenc-tarragona","La Bisbal del Penedès":"la-bisbal-del-penedes-tarragona","Llorenç del Penedès":"llorenc-del-penedes-tarragona",
-    "Sant Jaume dels Domenys":"sant-jaume-dels-domenys-tarragona","El Montmell":"el-montmell-tarragona",
-  };
+    $("chartHint").textContent = t("chartHint");
+    $("humanTitle").textContent = t("humanTitle");
+    $("humanText").innerHTML = t("humanIdle").replace("Analyze","<b>Analyze</b>");
 
-  const bedSlug=n=>{
-    n=+n||0;
-    if(n<=0) return "estudios";
-    if(n===1) return "de-un-dormitorio";
-    if(n===2) return "de-dos-dormitorios";
-    if(n===3) return "de-tres-dormitorios";
-    return "de-cuatro-cinco-habitaciones-o-mas";
-  };
-  const bathSlug=n=>{
-    n=+n||0;
-    if(n<=1) return "un-bano";
-    if(n===2) return "dos-banos";
-    return "tres-banos-o-mas";
-  };
-  const m2RangeSlugs=m2=>{
-    m2=+m2||0; if(!(m2>0)) return [];
-    let min=Math.max(0, Math.floor((m2-10)/10)*10);
-    let max=Math.ceil((m2+10)/10)*10;
-    if(max<=min) max=min+10;
-    return [`metros-cuadrados-mas-de_${min}`, `metros-cuadrados-menos-de_${max}`];
-  };
+    $("nextTitle").textContent = t("nextTitle");
+    $("compareTitle").textContent = t("compareTitle");
+    $("compareText").textContent = t("compareText");
 
-  const buildIdealistaUrl=(mode,strict,muniOverride)=>{
-    if(!lastReq) return null;
-    const req=lastReq;
-    const muni = muniOverride || req.muni;
-    const area=(muni==="*"||muni==="__multi__") ? "tarragona/baix-penedes" : (MUNI_SLUG[muni]||null);
-    if(!area) return null;
-    const op=(mode==="buy")?"venta-viviendas":"alquiler-viviendas";
-    const f=[];
-    if(req.m2!=null) f.push(...m2RangeSlugs(req.m2));
-    f.push(req.type==="flat"?"pisos":"chalets");
-    if(req.bed!=null) f.push(bedSlug(req.bed));
-    if(req.bath!=null) f.push(bathSlug(req.bath));
-    if(strict){
-      if(req.ex.t===1) f.push("terraza");
-      if(req.ex.p===1) f.push("piscina");
-      if(req.ex.l===1) f.push("ascensor");
-      if(req.ex.k===1) f.push("garaje");
-    }
-    const joined=f.filter(Boolean).join("%2C");
-    return `${IDEALISTA_BASE}/${op}/${area}/con-${joined}/`;
-  };
+    $("searchTitle").textContent = t("searchTitle");
+    $("searchSub").textContent = t("searchSub");
+    $("searchFoot").textContent = t("searchFoot");
 
-  const openIdealista=(mode,strict,muniOverride)=>{
-    if(!lastReq){toast(t("toastFirstAnalyze"));return;}
-    if(prefsChangedSinceAnalyze()){toast(t("toastPrefsChanged"));return;}
-    const url=buildIdealistaUrl(mode,strict,muniOverride);
-    if(!url){toast(t("toastNoLink"));return;}
-    window.open(url,"_blank","noopener");
-  };
+    $("donNotice").textContent = t("donateNotice");
+    $("donHint").textContent = t("donateHint");
+    $("donLbl").textContent = t("donLbl");
+    $("btnCopyBizum").textContent = t("btnCopy");
+    $("btnDonate").textContent = t("btnDonate");
+    $("donFoot").textContent = t("donFoot");
 
-  const refreshExamplesUI=()=>{
-    const muniTxt=muniLabel(Q("#ar").value);
-    const ok=!!lastReq && !prefsChangedSinceAnalyze();
-    const state= ok ? t("stateReady") : t("stateNeedAnalyze");
-    Q("#xinfo").textContent = tpl(t("xInfo"),{muni:muniTxt,state:state});
+    $("legal").textContent = t("legal");
 
-    const wrap=Q("#xbtns");
-    wrap.innerHTML="";
+    $("btnVisit").textContent = t("visit");
+    $("btnReset").textContent = t("reset");
+    $("btnAnalyze").textContent = t("analyze");
+    $("toastOk").textContent = t("ok");
 
-    const mkBtn=(label,fn)=>{
-      const b=document.createElement("button");
-      b.type="button";
-      b.className="b ok";
-      b.textContent=label;
-      b.onclick=fn;
-      if(!ok) b.classList.add("dis");
-      wrap.appendChild(b);
-    };
+    setStatus("idle");
+    renderExtras();
+    renderNextSteps();
+    renderCompareBadges(null);
+    updateSearchLinks();
+    drawChart({buyMonthly:0,rentMonthly:0,capacity:0});
+  }
 
-    const z=[...zoneSel].filter(x=>MUNI_SLUG[x]);
-    const buyLabel = t("buyLabel");
-    const rentLabel = t("rentLabel");
-    const strictLabel = t("strictLabel");
-    const flexLabel = t("flexLabel");
+  // ---------- Default zeros & example-disappear behavior ----------
+  function resetAll(){
+    $("municipi").value = "";
+    $("tipus").value = "";
+    $("rooms").value = "0";
+    $("baths").value = "0";
+    $("m2").value = "0";
+    $("budget").value = "0";
+    $("income").value = "0";
+    $("savings").value = "0";
+    $("term").value = "0";
+    $("rate").value = "0";
+    Object.keys(state.extras).forEach(k => state.extras[k] = false);
+    renderExtras();
 
-    if(z.length){
-      z.forEach(m=>{
-        mkBtn(`${buyLabel} (${strictLabel}) · ${m}`,()=>openIdealista("buy",true,m));
-        mkBtn(`${buyLabel} (${flexLabel}) · ${m}`,()=>openIdealista("buy",false,m));
-        mkBtn(`${rentLabel} (${strictLabel}) · ${m}`,()=>openIdealista("rent",true,m));
-        mkBtn(`${rentLabel} (${flexLabel}) · ${m}`,()=>openIdealista("rent",false,m));
-      });
-    } else {
-      mkBtn(`${buyLabel} (${strictLabel})`,()=>openIdealista("buy",true,null));
-      mkBtn(`${buyLabel} (${flexLabel})`,()=>openIdealista("buy",false,null));
-      mkBtn(`${rentLabel} (${strictLabel})`,()=>openIdealista("rent",true,null));
-      mkBtn(`${rentLabel} (${flexLabel})`,()=>openIdealista("rent",false,null));
-    }
+    setStatus("idle");
+    $("kpi1v").textContent = "0 €";
+    $("kpi2v").textContent = "0 €";
+    $("kpi3v").textContent = "—";
+    $("humanText").innerHTML = t("humanIdle").replace("Analyze","<b>Analyze</b>");
+    renderNextSteps();
+    renderCompareBadges(null);
+    updateSearchLinks();
+    drawChart({buyMonthly:0,rentMonthly:0,capacity:0});
+  }
 
-    setTabsEnabled();
-  };
-
-  const copy=()=>navigator.clipboard.writeText(Q("#rt").textContent||"").then(()=>toast(t("toastCopied")));
-  const shareWhatsApp=()=>{
-    const txt=Q("#rt").textContent||"";
-    if(!txt){toast(t("toastFirstAnalyze"));return;}
-    window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank","noopener");
-  };
-
-  const reset=()=>{
-    ["nm","ag","inc","sav","yrs","msv","m2","bed","bat","cm2","cbd","cba"].forEach(id=>{let e=document.getElementById(id);if(e)e.value=""});
-    ["et","ep","el","ek","ct","cp0","cl0","ck0"].forEach(id=>{let e=document.getElementById(id);if(e)e.checked=false});
-    Q("#ar").value="*"; Q("#cm").value="Barcelona"; Q("#hor").value="y"; Q("#fst").value="n";
-    const pm2=Q("#ar").querySelector('[value="__multi__"]');if(pm2)pm2.remove();
-    Q("#rt").textContent="";Q("#k1").textContent="0 €";Q("#k2").textContent="0 €";Q("#k3").textContent="0 €";Q("#k4").textContent="–";
-    Q("#cmg").textContent=""; Q("#rCard").style.display="none";
-    last=null; lastReq=null; lastReqSig="";
-    localStorage.removeItem(STORE_KEY);
-    zoneSel.clear(); saveZoneSel(); renderZoneUI();
-    setTabsEnabled(); refreshExamplesUI();
-    show("p");
-  };
-
-  const clamp=(id,min,max,len)=>{
-    let el=document.getElementById(id);if(!el)return;
-    const san=v=>{v=String(v||"").replace(/[^\d.]/g,"");let p=v.split(".");if(p.length>2)v=p.slice(0,2).join(".");return len?v.slice(0,len):v};
-    el.addEventListener("input",()=>{el.value=san(el.value); saveForm();});
-    el.addEventListener("blur",()=>{if(el.value==="")return;let n=+el.value;if(!isFinite(n))return;el.value=Math.min(max,Math.max(min,n)); saveForm();});
-  };
-  [["ag",18,100,3],["m2",50,999,3],["bed",0,10,2],["bat",1,10,2],["inc",0,1000000,7],["sav",0,10000000,8],["msv",0,1000000,7],["yrs",5,40,2],["cm2",50,999,3],["cbd",0,10,2],["cba",1,10,2]].forEach(x=>clamp(...x));
-
-  const liveValidate=()=>{
-    const vi=+Q("#inc").value||0, vs=+Q("#sav").value||0, vm=+Q("#m2").value||0;
-    const fi=Q("#inc"),fs=Q("#sav"),fm=Q("#m2");
-    const hi=Q("#hint-inc"),hs=Q("#hint-sav"),hm=Q("#hint-m2");
-    const set=(inp,hint,ok,msg)=>{
-      inp.classList.toggle("field-ok",ok&&inp.value!=="");
-      inp.classList.toggle("field-err",!ok&&inp.value!=="");
-      if(hint){
-        hint.textContent=(!ok&&inp.value!=="")?"⚠ "+msg:"";
-        hint.className="field-hint"+(ok&&inp.value!=""?" ok":!ok&&inp.value!=""?" err":"");
+  // “Example disappears when typing”: for 0 fields we keep 0, but if user starts typing we clear the 0 once.
+  function attachAutoClearZero(id){
+    const el = $(id);
+    let cleared = false;
+    el.addEventListener("focus", () => {
+      if(!cleared && String(el.value).trim()==="0"){
+        el.select();
       }
-    };
-    set(fi,hi,vi>0,t("validateIncome"));
-    set(fs,hs,vs>0,t("validateSavings"));
-    set(fm,hm,vm>=50,t("validateM2"));
+    });
+    el.addEventListener("input", () => {
+      // if user types a non-empty non-zero, consider it "custom"
+      if(String(el.value).trim() !== "") cleared = true;
+      updateSearchLinks();
+    });
+    el.addEventListener("keydown", (e) => {
+      if(!cleared && String(el.value).trim()==="0"){
+        // first printable key clears
+        if(e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey){
+          el.value = "";
+          cleared = true;
+        }
+      }
+    });
+    el.addEventListener("blur", () => {
+      // if left empty, restore 0 for your “all values start at 0” requirement
+      if(String(el.value).trim()==="") el.value = "0";
+    });
+  }
+
+  // ---------- Data model (simple but realistic-ish) ----------
+  // These are heuristic ranges for Baix Penedès, not official. Good enough for a front-end guidance tool.
+  const MARKET = {
+    base_m2_buy: {
+      Cunit: 2100, Calafell: 2400, "El Vendrell": 1900, default: 2100
+    },
+    base_m2_rent: {
+      Cunit: 11.5, Calafell: 12.5, "El Vendrell": 10.5, default: 11.3
+    }
   };
-  ["inc","sav","m2"].forEach(id=>{const el=Q("#"+id);if(el){el.addEventListener("input",liveValidate);el.addEventListener("change",liveValidate);}});
 
-  Q("#np").addEventListener("click",()=>{
-    let nm=(Q("#nm").value||"").trim();let ag=+Q("#ag").value||0;
-    if(!nm||ag<18||ag>100){toast(t("toastCheckNameAge"));return;}
-    saveForm(); show("e");
-  });
-  Q("#ne").addEventListener("click",()=>{saveForm(); show("f");});
-  Q("#go").addEventListener("click",analyze);
-  Q("#cp").addEventListener("click",copy);
-  Q("#rs").addEventListener("click",reset);
-  Q("#bc").addEventListener("click",compare);
-  Q("#autoFillCmp").addEventListener("click",fillComparatorFromLast);
-  Q("#cm").addEventListener("change",()=>{upMap();saveForm();});
+  function getBaseM2Buy(mun){
+    return MARKET.base_m2_buy[mun] || MARKET.base_m2_buy.default;
+  }
+  function getBaseM2Rent(mun){
+    return MARKET.base_m2_rent[mun] || MARKET.base_m2_rent.default;
+  }
 
-  Q("#t_p").addEventListener("click",()=>show("p"));
-  Q("#t_e").addEventListener("click",()=>show("e"));
-  Q("#t_f").addEventListener("click",()=>show("f"));
-  Q("#t_r").addEventListener("click",()=>{ if(!lastReq){toast(t("toastFirstAnalyze"));return;} show("r"); });
-  Q("#t_m").addEventListener("click",()=>{ if(!lastReq){toast(t("toastFirstAnalyze"));return;} show("m"); });
-  Q("#t_x").addEventListener("click",()=>{ if(!lastReq){toast(t("toastFirstAnalyze"));return;} show("x"); });
+  function extrasMultiplier(mode, type){
+    // mode: "buy" or "rent"
+    let mult = 1;
+    EXTRAS_DEF.forEach(x => {
+      if(x.only && type && x.only !== type) return;
+      if(state.extras[x.key]){
+        mult += (mode==="buy" ? x.weightBuy : x.weightRent);
+      }
+    });
+    // house vs flat subtle shift
+    if(type==="house") mult += (mode==="buy" ? 0.03 : 0.01);
+    if(type==="flat") mult += (mode==="buy" ? 0.00 : 0.00);
+    return mult;
+  }
 
-  Q("#toggleMap").addEventListener("click",()=>{
-    const box=Q("#zoneWrap");
-    const open=box.style.display!=="none";
-    box.style.display=open?"none":"block";
-    if(!open){
-      initMap();
-      setTimeout(()=>{ if(zmap) zmap.invalidateSize(); },180);
-    }
-  });
+  function estimateBuyPriceEUR({mun,type,m2,rooms,baths}){
+    const base = getBaseM2Buy(mun) * (m2>0? m2 : 75); // fallback
+    let adj = 1;
 
-  Q("#zoneClear").addEventListener("click",()=>{
-    zoneSel.clear(); saveZoneSel();
-    markerByName.forEach((_,name)=>applyMarkerState(name));
-    const pm=Q("#ar").querySelector('[value="__multi__"]');if(pm){pm.remove();if(Q("#ar").value==="__multi__")Q("#ar").value="*";}
-    renderZoneUI(); refreshExamplesUI(); toast(t("toastZoneCleared"));
-  });
-
-  Q("#zoneApply").addEventListener("click",()=>{
-    if(zoneSel.size===0){toast(t("toastNoZone"));return;}
-    const pm=Q("#ar").querySelector('[value="__multi__"]');if(pm)pm.remove();
-    if(zoneSel.size===1){
-      const only=[...zoneSel][0];
-      if([...Q("#ar").options].some(o=>o.value===only||o.textContent===only)) Q("#ar").value=only;
-      else Q("#ar").value="*";
+    // rooms/baths add signal when m2 unknown or to tweak quality
+    if(m2<=0){
+      adj += clamp(rooms,0,6) * 0.03;
+      adj += clamp(baths,0,4) * 0.04;
     } else {
-      const mo=document.createElement("option");mo.value="__multi__";mo.textContent=[...zoneSel].join(", ");
-      Q("#ar").insertBefore(mo,Q("#ar").options[1]||null);Q("#ar").value="__multi__";
+      // if rooms unusually high/low for m2, adjust slightly
+      const ratio = rooms>0 ? (m2/rooms) : m2;
+      if(rooms>0 && ratio < 18) adj += 0.03; // tight layout -> often more expensive per m2
+      if(rooms>0 && ratio > 35) adj -= 0.02;
     }
-    saveZoneSel(); renderZoneUI(); saveForm(); refreshExamplesUI();
-    toast(t("toastZoneApplied"));
+
+    adj *= extrasMultiplier("buy", type);
+
+    // keep reasonable band
+    const price = clamp(base*adj, 35000, 950000);
+    return Math.round(price);
+  }
+
+  function estimateRentMonthlyEUR({mun,type,m2,rooms,baths}){
+    const base = getBaseM2Rent(mun) * (m2>0? m2 : 70);
+    let adj = 1;
+    if(m2<=0){
+      adj += clamp(rooms,0,6) * 0.04;
+      adj += clamp(baths,0,4) * 0.05;
+    } else {
+      const ratio = rooms>0 ? (m2/rooms) : m2;
+      if(rooms>0 && ratio < 18) adj += 0.03;
+      if(rooms>0 && ratio > 35) adj -= 0.02;
+    }
+    adj *= extrasMultiplier("rent", type);
+    const rent = clamp(base*adj, 350, 3800);
+    return Math.round(rent);
+  }
+
+  function mortgageMonthly(payment){
+    return Math.round(payment);
+  }
+
+  function calcMortgageMonthly(principal, annualRatePct, years){
+    const r = (annualRatePct/100)/12;
+    const n = years*12;
+    if(principal<=0 || years<=0) return 0;
+    if(r<=0) return Math.round(principal/n);
+    const m = principal * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n)-1);
+    return Math.round(m);
+  }
+
+  function monthlyCapacity(income){
+    // simple conservative: 30% of net income
+    return Math.round(Math.max(0, income*0.30));
+  }
+
+  // ---------- Comparator & decision logic ----------
+  function decide({income, budget, savings, buyPrice, rentMonthly, term, rate, wantsBuySignal}){
+    const cap = monthlyCapacity(income);
+
+    // If wantsBuySignal: budget is total price target. Else budget is rent cap.
+    const targetBuyPrice = wantsBuySignal ? budget : buyPrice;
+    const targetRentCap = wantsBuySignal ? rentMonthly : budget;
+
+    // buy scenario
+    const taxesFees = targetBuyPrice * 0.11; // approx 10–12%
+    const minCashNeeded = targetBuyPrice*0.20 + taxesFees; // conservative 20% + costs
+    const principal = Math.max(0, targetBuyPrice*0.80); // assume 80% financed
+    const mort = calcMortgageMonthly(principal, rate, term);
+    const buyAllMonthly = mort + Math.round(targetBuyPrice*0.0012); // maintenance-ish ~0.12%/month
+
+    // rent scenario
+    const rentAllMonthly = targetRentCap;
+
+    // scoring
+    let scoreBuy = 0, scoreRent = 0, scoreWait = 0;
+
+    // affordability
+    if(buyAllMonthly <= cap) scoreBuy += 3;
+    else if(buyAllMonthly <= cap*1.15) scoreBuy += 1;
+    else scoreBuy -= 3;
+
+    if(rentAllMonthly <= cap) scoreRent += 2;
+    else if(rentAllMonthly <= cap*1.20) scoreRent += 1;
+    else scoreRent -= 2;
+
+    // savings
+    if(savings >= minCashNeeded) scoreBuy += 3;
+    else if(savings >= minCashNeeded*0.70) scoreBuy += 1;
+    else scoreBuy -= 2;
+
+    // safety margin
+    const marginBuy = cap - buyAllMonthly;
+    const marginRent = cap - rentAllMonthly;
+    if(marginRent > marginBuy) scoreRent += 1;
+    if(marginBuy > 0) scoreBuy += 1;
+
+    // if both are bad -> wait
+    if(buyAllMonthly > cap*1.15 && rentAllMonthly > cap*1.20) scoreWait += 4;
+    if(savings < Math.min(minCashNeeded*0.60, 25000)) scoreWait += 2;
+
+    // decision
+    let decision = "wait";
+    const best = Math.max(scoreBuy, scoreRent, scoreWait);
+    if(best === scoreBuy) decision = "buy";
+    else if(best === scoreRent) decision = "rent";
+    else decision = "wait";
+
+    // confidence
+    const spread = best - Math.max(
+      decision==="buy"? Math.max(scoreRent, scoreWait) :
+      decision==="rent"? Math.max(scoreBuy, scoreWait) :
+      Math.max(scoreBuy, scoreRent)
+    );
+    const conf = clamp(spread, 0, 5);
+
+    return {
+      cap,
+      minCashNeeded: Math.round(minCashNeeded),
+      buyAllMonthly,
+      rentAllMonthly,
+      decision,
+      conf,
+      taxesFees: Math.round(taxesFees),
+      principal: Math.round(principal),
+      mort
+    };
+  }
+
+  function setStatus(kind){
+    const dot = $("statusDot");
+    const txt = $("statusTxt");
+    if(kind==="ok"){
+      dot.className = "dot good"; txt.textContent = t("statusOk");
+    } else if(kind==="warn"){
+      dot.className = "dot warn"; txt.textContent = t("statusWarn");
+    } else if(kind==="bad"){
+      dot.className = "dot bad"; txt.textContent = t("statusBad");
+    } else {
+      dot.className = "dot"; txt.textContent = t("statusIdle");
+    }
+  }
+
+  // ---------- Search links (Baix Penedès always) ----------
+  function updateSearchLinks(){
+    const rooms = clamp(num($("rooms").value),0,10);
+    const m2 = num($("m2").value);
+    const type = $("tipus").value;
+    const m2min = (m2>0 ? Math.max(10, Math.round(m2-20)) : "");
+    const m2max = (m2>0 ? Math.round(m2+20) : "");
+    const zone = "Baix Penedès";
+
+    // Build a human search query. Portals differ; we use site search or generic query approach.
+    const typeTxt = type==="house" ? (state.lang==="en" ? "house" : (state.lang==="ca" ? "casa" : "casa")) :
+                    type==="flat" ? (state.lang==="en" ? "apartment" : (state.lang==="ca" ? "pis" : "piso")) : "";
+    const roomsTxt = rooms>0 ? `${rooms} ${state.lang==="en" ? "bedroom" : (state.lang==="ca" ? "habitacions" : "habitaciones")}` : "";
+    const m2Txt = (m2>0) ? `${m2min}-${m2max} m2` : "";
+
+    const q = [zone, typeTxt, roomsTxt, m2Txt, "venta OR alquiler"].filter(Boolean).join(" ");
+
+    // Use portal + query style links (more robust than trying to guess internal filter URLs).
+    $("btnIdealista").href = "https://www.google.com/search?q=" + encodeURIComponent("site:idealista.com " + q);
+    $("btnFotocasa").href  = "https://www.google.com/search?q=" + encodeURIComponent("site:fotocasa.es " + q);
+    $("btnHabitaclia").href= "https://www.google.com/search?q=" + encodeURIComponent("site:habitaclia.com " + q);
+  }
+
+  // ---------- Next steps ----------
+  function renderNextSteps(custom){
+    const list = $("nextSteps");
+    list.innerHTML = "";
+    const arr = custom && custom.length ? custom : [t("ns1"),t("ns2"),t("ns3"),t("ns4"),t("ns5")];
+    arr.forEach(s => {
+      const li = document.createElement("li");
+      li.className = "li";
+      li.innerHTML = `<div class="dot good" style="margin-top:4px"></div><div><b>${safeText(s)}</b><span class="muted"></span></div>`;
+      list.appendChild(li);
+    });
+  }
+
+  function renderCompareBadges(data){
+    const box = $("compareBadges");
+    box.innerHTML = "";
+    if(!data){
+      box.innerHTML = `<span class="badge">${state.lang==="en"?"Waiting for analysis.":(state.lang==="ca"?"Esperant l’anàlisi.":"Esperando el análisis.")}</span>`;
+      return;
+    }
+    const {rangeLow, rangeHigh, target, label} = data;
+    const b1 = document.createElement("span");
+    b1.className = "badge";
+    b1.textContent = `${label}: ${fmtEUR(rangeLow)} – ${fmtEUR(rangeHigh)}`;
+    const b2 = document.createElement("span");
+    b2.className = "badge";
+    b2.textContent = `${state.lang==="en"?"Your target":"Tu objetivo"}: ${fmtEUR(target)}`;
+    const b3 = document.createElement("span");
+    b3.className = "badge";
+    const ok = target>=rangeLow && target<=rangeHigh;
+    b3.textContent = ok ? (state.lang==="en"?"Looks realistic":"Pinta realista") : (state.lang==="ca"?"Cal revisar":"Hay que revisar");
+    box.appendChild(b1); box.appendChild(b2); box.appendChild(b3);
+  }
+
+  // ---------- Chart ----------
+  function drawChart({buyMonthly, rentMonthly, capacity}){
+    const c = $("chart");
+    const rect = c.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    c.width = Math.max(360, Math.round(rect.width * dpr));
+    c.height = Math.round(rect.height * dpr);
+    const ctx = c.getContext("2d");
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const w = rect.width, h = rect.height;
+    ctx.clearRect(0,0,w,h);
+
+    // subtle grid
+    ctx.globalAlpha = 0.25;
+    ctx.strokeStyle = "rgba(148,163,184,.35)";
+    for(let i=1;i<=4;i++){
+      const y = (h/5)*i;
+      ctx.beginPath(); ctx.moveTo(12,y); ctx.lineTo(w-12,y); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    const maxV = Math.max(1, capacity*1.15, buyMonthly*1.1, rentMonthly*1.1);
+    const toY = (v)=> h-18 - (v/maxV)*(h-32);
+
+    // bars: buy & rent
+    const barW = 44;
+    const xBuy = w*0.32, xRent = w*0.62;
+
+    // capacity line
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(56,189,248,.85)";
+    ctx.beginPath(); ctx.moveTo(12, toY(capacity)); ctx.lineTo(w-12, toY(capacity)); ctx.stroke();
+    ctx.fillStyle = "rgba(229,231,235,.95)";
+    ctx.font = "12px " + getComputedStyle(document.body).fontFamily;
+    ctx.fillText((state.lang==="en"?"Capacity":"Capacidad") + ": " + Math.round(capacity) + "€", 14, toY(capacity)-6);
+
+    // buy bar
+    ctx.fillStyle = "rgba(34,197,94,.75)";
+    ctx.fillRect(xBuy-barW/2, toY(buyMonthly), barW, (h-18)-toY(buyMonthly));
+    ctx.fillStyle = "rgba(229,231,235,.95)";
+    ctx.fillText((state.lang==="en"?"Buy":"Compra") + " " + Math.round(buyMonthly) + "€", xBuy-barW/2, 14);
+
+    // rent bar
+    ctx.fillStyle = "rgba(245,158,11,.75)";
+    ctx.fillRect(xRent-barW/2, toY(rentMonthly), barW, (h-18)-toY(rentMonthly));
+    ctx.fillStyle = "rgba(229,231,235,.95)";
+    ctx.fillText((state.lang==="en"?"Rent":"Alquiler") + " " + Math.round(rentMonthly) + "€", xRent-barW/2, 14);
+
+    // safety zone
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = "rgba(56,189,248,.85)";
+    ctx.fillRect(0, toY(capacity), w, h - toY(capacity));
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Human explanation builder ----------
+  function humanExplain(input, est, dec){
+    const {mun,type,rooms,baths,m2,budget,income,savings,term,rate} = input;
+    const wantsBuySignal = budget > 2000; // rough heuristic: above 2000 likely buy price, below likely rent cap
+    const typeLabel = type==="house" ? (state.lang==="en"?"house":(state.lang==="ca"?"casa":"casa")) :
+                     type==="flat" ? (state.lang==="en"?"flat":(state.lang==="ca"?"pis":"piso")) :
+                     (state.lang==="en"?"property":(state.lang==="ca"?"habitatge":"vivienda"));
+
+    const muni = mun || (state.lang==="en"?"(no town selected)":(state.lang==="ca"?"(sense municipi)":"(sin municipio)"));
+    const m2txt = m2>0 ? `${m2} m²` : (state.lang==="en"?"unknown size":"m² desconocidos");
+    const rtxt = rooms>0 ? `${rooms}` : "0";
+    const btxt = baths>0 ? `${baths}` : "0";
+
+    const cap = dec.cap;
+    const buyM = dec.buyAllMonthly;
+    const rentM = dec.rentAllMonthly;
+
+    const decision = dec.decision;
+    const conf = dec.conf;
+
+    const confWord = conf>=4 ? (state.lang==="en"?"high":"alta") : conf>=2 ? (state.lang==="en"?"medium":"media") : (state.lang==="en"?"low":"baja");
+
+    let intro;
+    if(state.lang==="en"){
+      intro = `Based on your inputs for a ${typeLabel} in ${muni} (${rtxt} bed / ${btxt} bath, ${m2txt}), here’s the honest version.`;
+    } else if(state.lang==="ca"){
+      intro = `Amb les teves dades per a un/a ${typeLabel} a ${muni} (${rtxt} hab / ${btxt} bany, ${m2txt}), aquí tens la versió honesta.`;
+    } else {
+      intro = `Con tus datos para un/a ${typeLabel} en ${muni} (${rtxt} hab / ${btxt} baños, ${m2txt}), aquí va la versión honesta.`;
+    }
+
+    // logic statements
+    const lines = [];
+    lines.push(intro);
+
+    // capacity line
+    if(state.lang==="en"){
+      lines.push(`Your safe monthly capacity is about ${fmtEUR(cap)} (≈30% of your net income). That’s the line where you still get to live like a human.`);
+    } else if(state.lang==="ca"){
+      lines.push(`La teva capacitat mensual “segura” és d’uns ${fmtEUR(cap)} (≈30% del teu net). És la línia on encara vius com una persona.`);
+    } else {
+      lines.push(`Tu capacidad mensual “segura” es de unos ${fmtEUR(cap)} (≈30% de tu neto). Es la línea donde todavía vives como una persona.`);
+    }
+
+    // rent line
+    if(state.lang==="en"){
+      lines.push(`A realistic rent for this profile is around ${fmtEUR(rentM)}/month. ${rentM<=cap ? "It fits your capacity." : "It squeezes you."}`);
+    } else if(state.lang==="ca"){
+      lines.push(`Un lloguer realista per aquest perfil és d’uns ${fmtEUR(rentM)}/mes. ${rentM<=cap ? "Entra dins la teva capacitat." : "Et pressiona."}`);
+    } else {
+      lines.push(`Un alquiler realista para este perfil ronda ${fmtEUR(rentM)}/mes. ${rentM<=cap ? "Encaja con tu capacidad." : "Te aprieta."}`);
+    }
+
+    // buy line
+    if(term>0 && rate>0){
+      if(state.lang==="en"){
+        lines.push(`A mortgage-style buy (term ${term}y, rate ${fmtPct(rate)}) would land around ${fmtEUR(buyM)}/month including a basic maintenance buffer. ${buyM<=cap ? "Affordable on paper." : "Too tight on paper."}`);
+      } else if(state.lang==="ca"){
+        lines.push(`Una compra amb hipoteca (termini ${term}a, interès ${fmtPct(rate)}) quedaria a uns ${fmtEUR(buyM)}/mes incloent un marge de manteniment. ${buyM<=cap ? "Assumible sobre el paper." : "Massa just sobre el paper."}`);
+      } else {
+        lines.push(`Una compra con hipoteca (plazo ${term}a, interés ${fmtPct(rate)}) quedaría en unos ${fmtEUR(buyM)}/mes incluyendo un margen básico de mantenimiento. ${buyM<=cap ? "Asumible sobre el papel." : "Demasiado justo sobre el papel."}`);
+      }
+    } else {
+      if(state.lang==="en"){
+        lines.push(`Buy analysis is less precise because term/rate are missing. If you add them, the recommendation gets sharper.`);
+      } else if(state.lang==="ca"){
+        lines.push(`L’anàlisi de compra és menys precís perquè falta termini/interès. Si els afegeixes, la recomanació millora molt.`);
+      } else {
+        lines.push(`El análisis de compra es menos preciso porque faltan plazo/interés. Si los añades, la recomendación se afina mucho.`);
+      }
+    }
+
+    // cash needed
+    if(state.lang==="en"){
+      lines.push(`Cash reality: to buy safely you often need roughly ${fmtEUR(dec.minCashNeeded)} (down payment + taxes/fees). You have ${fmtEUR(savings)}.`);
+    } else if(state.lang==="ca"){
+      lines.push(`Realitat de caixa: per comprar amb seguretat sovint calen uns ${fmtEUR(dec.minCashNeeded)} (entrada + impostos/despeses). Tu tens ${fmtEUR(savings)}.`);
+    } else {
+      lines.push(`Realidad de caja: para comprar con seguridad suele hacer falta aprox. ${fmtEUR(dec.minCashNeeded)} (entrada + impuestos/gastos). Tú tienes ${fmtEUR(savings)}.`);
+    }
+
+    // final decision with tone
+    let fin;
+    if(decision==="buy"){
+      if(state.lang==="en"){
+        fin = `Recommendation: BUY (confidence: ${confWord}). Not because buying is “better”, but because your numbers can carry it without turning life into a monthly panic attack.`;
+      } else if(state.lang==="ca"){
+        fin = `Recomanació: COMPRAR (confiança: ${confWord}). No perquè comprar sigui “millor”, sinó perquè els teus números ho poden sostenir sense convertir cada mes en pànic.`;
+      } else {
+        fin = `Recomendación: COMPRAR (confianza: ${confWord}). No porque comprar sea “mejor”, sino porque tus números lo aguantan sin convertir cada mes en pánico.`;
+      }
+    } else if(decision==="rent"){
+      if(state.lang==="en"){
+        fin = `Recommendation: RENT (confidence: ${confWord}). It protects your cash and keeps flexibility while you build a stronger buying position.`;
+      } else if(state.lang==="ca"){
+        fin = `Recomanació: LLOGAR (confiança: ${confWord}). Protegeix estalvis i et dona flexibilitat mentre millores posició de compra.`;
+      } else {
+        fin = `Recomendación: ALQUILAR (confianza: ${confWord}). Protege ahorros y te da flexibilidad mientras construyes una mejor posición para comprar.`;
+      }
+    } else {
+      if(state.lang==="en"){
+        fin = `Recommendation: WAIT WITH A PLAN (confidence: ${confWord}). Right now the numbers look tight. Waiting isn’t “doing nothing”: it’s saving, improving income, and watching the right listings.`;
+      } else if(state.lang==="ca"){
+        fin = `Recomanació: ESPERAR AMB PLA (confiança: ${confWord}). Ara mateix els números van justos. Esperar no és “no fer res”: és estalviar, millorar ingressos i vigilar anuncis bons.`;
+      } else {
+        fin = `Recomendación: ESPERAR CON PLAN (confianza: ${confWord}). Ahora mismo los números van justos. Esperar no es “no hacer nada”: es ahorrar, mejorar ingresos y vigilar anuncios correctos.`;
+      }
+    }
+    lines.push(fin);
+
+    return lines.join(" ");
+  }
+
+  // ---------- Analyze ----------
+  function analyze(){
+    const mun = $("municipi").value;
+    const type = $("tipus").value;
+    const rooms = clamp(num($("rooms").value), 0, 12);
+    const baths = clamp(num($("baths").value), 0, 8);
+    const m2 = num($("m2").value);
+    const budget = num($("budget").value);
+    const income = num($("income").value);
+    const savings = num($("savings").value);
+    const term = clamp(num($("term").value), 0, 40);
+    const rate = clamp(num($("rate").value), 0, 12);
+
+    if(m2 < 0){
+      setStatus("bad");
+      toast(t("v_m2TooLow"));
+      return;
+    }
+
+    // validation logic: keep it helpful, not annoying.
+    const allZeros = !mun && !type && rooms===0 && baths===0 && m2===0 && budget===0 && income===0 && savings===0 && term===0 && rate===0;
+    if(allZeros){
+      setStatus("warn");
+      toast(t("v_needSomething"));
+      // continue anyway (user asked)
+    } else {
+      if(income<=0 || budget<=0){
+        setStatus("bad");
+        toast(t("v_budgetIncome"));
+        return;
+      }
+    }
+
+    // Determine intent: if budget looks like a rent cap or a buy price
+    // Heuristic: if budget <= 3500 assume rent cap, else buy target price.
+    const wantsBuySignal = budget > 3500;
+
+    // If buy path but missing term/rate, ask (but not block if they clearly want rent).
+    if(wantsBuySignal && (term<=0 || rate<=0)){
+      setStatus("warn");
+      toast(t("v_buyNeedsTermRate"));
+      return;
+    }
+
+    const input = {mun,type,rooms,baths,m2,budget,income,savings,term,rate};
+    const buyPriceEst = estimateBuyPriceEUR(input);
+    const rentEst = estimateRentMonthlyEUR(input);
+
+    // if renting intent, treat budget as rent cap; for buy intent treat as buy target
+    const targetBuy = wantsBuySignal ? budget : buyPriceEst;
+    const dec = decide({
+      income, budget, savings,
+      buyPrice: targetBuy,
+      rentMonthly: wantsBuySignal ? rentEst : budget,
+      term, rate,
+      wantsBuySignal
+    });
+
+    // KPI updates
+    $("kpi1v").textContent = fmtEUR(dec.cap).replace("€", " €");
+    $("kpi2v").textContent = fmtEUR(wantsBuySignal ? targetBuy : rentEst) + (wantsBuySignal ? "" : "");
+    $("kpi3v").textContent =
+      dec.decision==="buy" ? (state.lang==="en"?"BUY":(state.lang==="ca"?"COMPRAR":"COMPRAR")) :
+      dec.decision==="rent"? (state.lang==="en"?"RENT":(state.lang==="ca"?"LLOGAR":"ALQUILAR")) :
+                             (state.lang==="en"?"WAIT":(state.lang==="ca"?"ESPERAR":"ESPERAR"));
+
+    // status
+    setStatus(dec.decision==="wait" ? "warn" : "ok");
+
+    // Human explanation
+    $("humanText").textContent = humanExplain(input, {buyPriceEst,rentEst}, dec);
+
+    // Next steps tuned
+    const steps = [];
+    if(dec.decision==="buy"){
+      steps.push(state.lang==="en"?"Get a pre-approval simulation from your bank (or two).":"Pide simulación/preaprobación al banco (o a dos).");
+      steps.push(state.lang==="en"?"Keep a buffer: emergencies + maintenance is not optional.":"Mantén colchón: emergencias + mantenimiento no es opcional.");
+      steps.push(state.lang==="en"?"Negotiate with data: comps, condition, and time on market.":"Negocia con datos: comparables, estado y tiempo publicado.");
+      steps.push(t("ns3"));
+      steps.push(t("ns5"));
+    } else if(dec.decision==="rent"){
+      steps.push(state.lang==="en"?"Use renting to build a stronger down payment plan.":"Usa el alquiler para construir un plan de entrada más fuerte.");
+      steps.push(state.lang==="en"?"Avoid stretching rent above your safe capacity.":"Evita estirar el alquiler por encima de tu capacidad segura.");
+      steps.push(t("ns3"));
+      steps.push(t("ns4"));
+      steps.push(t("ns5"));
+    } else {
+      steps.push(state.lang==="en"?"Set a monthly saving target (automatic transfer).":"Fija un objetivo mensual de ahorro (transferencia automática).");
+      steps.push(state.lang==="en"?"Improve income or reduce target expectations: pick one.":"Mejora ingresos o baja expectativas: elige una.");
+      steps.push(t("ns3"));
+      steps.push(t("ns4"));
+      steps.push(t("ns5"));
+    }
+    renderNextSteps(steps);
+
+    // Comparator badges:
+    // if buy intent, compare target buy price to estimated band; else compare rent cap to estimated rent band
+    if(wantsBuySignal){
+      const bandLow = Math.round(buyPriceEst*0.85);
+      const bandHigh= Math.round(buyPriceEst*1.18);
+      renderCompareBadges({rangeLow:bandLow, rangeHigh:bandHigh, target:targetBuy, label: state.lang==="en"?"Buy price range":"Rango compra"});
+    } else {
+      const bandLow = Math.round(rentEst*0.88);
+      const bandHigh= Math.round(rentEst*1.20);
+      renderCompareBadges({rangeLow:bandLow, rangeHigh:bandHigh, target:budget, label: state.lang==="en"?"Rent range":"Rango alquiler"});
+    }
+
+    // Chart data:
+    const buyMonthly = wantsBuySignal ? dec.buyAllMonthly : calcMortgageMonthly(Math.round(buyPriceEst*0.80), Math.max(rate,3.5), Math.max(term,25)) + Math.round(buyPriceEst*0.0012);
+    const rentMonthly = wantsBuySignal ? rentEst : budget;
+    drawChart({buyMonthly, rentMonthly, capacity: dec.cap});
+
+    // Search links update
+    updateSearchLinks();
+
+    state.lastAnalyzeAt = now();
+  }
+
+  // ---------- Donate ----------
+  $("btnCopyBizum").addEventListener("click", () => {
+    const txt = "Bizum/PayPal/Stripe: (replace this with your real details)\nProject: Assessoria d’Habitatge\nNote: voluntary support";
+    navigator.clipboard?.writeText(txt).then(() => toast(t("copied"))).catch(() => toast(txt));
   });
 
-  ["#nm","#ar","#ty","#hor","#fst","#cm","#cty","#et","#ep","#el","#ek","#ct","#cp0","#cl0","#ck0","#inc","#sav","#yrs","#msv","#m2","#bed","#bat","#cm2","#cbd","#cba"].forEach(sel=>{
-    let el=Q(sel); if(!el) return;
-    el.addEventListener("change",()=>{saveForm(); refreshExamplesUI();});
-    el.addEventListener("input",()=>saveForm());
+  $("btnDonate").addEventListener("click", () => {
+    toast(t("donated"));
   });
 
-  Q("#L_CA").addEventListener("click",()=>setLang("CA"));
-  Q("#L_ES").addEventListener("click",()=>setLang("ES"));
-  Q("#L_EN").addEventListener("click",()=>setLang("EN"));
-  if(Q("#shareWa")) Q("#shareWa").addEventListener("click",shareWhatsApp);
-  if(Q("#shareCl")) Q("#shareCl").addEventListener("click",copy);
+  // ---------- Buttons ----------
+  $("btnAnalyze").addEventListener("click", analyze);
+  $("btnReset").addEventListener("click", resetAll);
+  $("btnVisit").addEventListener("click", () => {
+    // if you later use custom domain, update here
+    window.open(window.location.href, "_blank", "noopener,noreferrer");
+  });
 
-  loadZoneSel();
-  loadForm();
-  setLang(LANG); // aplica traducciones + lang html
-  upMap();
-  updateSteps("p");
-  liveValidate();
-  setTabsEnabled();
-  refreshExamplesUI();
-})()
-}
+  // ---------- Language selector ----------
+  $("lang").addEventListener("change", () => {
+    state.lang = $("lang").value;
+    document.documentElement.lang = state.lang;
+    applyLang();
+  });
 
-waitForLeaflet();
+  // ---------- Type change affects extras display ----------
+  $("tipus").addEventListener("change", () => {
+    renderExtras();
+    updateSearchLinks();
+  });
+
+  // ---------- attach auto-clear for inputs ----------
+  ["rooms","baths","m2","budget","income","savings","term","rate"].forEach(attachAutoClearZero);
+
+  // init
+  state.lang = $("lang").value || "es";
+  document.documentElement.lang = state.lang;
+  applyLang();
+  resetAll();
+})();
 </script>
 </body>
 </html>

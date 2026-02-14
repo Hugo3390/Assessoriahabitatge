@@ -1482,6 +1482,12 @@ const pickTopics=(msg,maxN=3)=>{
 
 const expertLine=(L,es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
 
+const isHousingQuestion=(msg="")=>{
+  const m=normAI(msg);
+  const keys=["hipoteca","mortgage","alquiler","lloguer","comprar","buy","rent","vivienda","habitatge","entrada","itp","notaria","euribor","municipio","m2","cuota","down payment","bonastre","calafell","cunit","vendrell"];
+  return keys.some(k=>m.includes(normAI(k)));
+};
+
 const expertTopicText=(id,c,L)=>{
   const missing=Math.max(0,c.needCash-c.sav);
   const msv=Math.max(0,c.msv||0);
@@ -1534,7 +1540,7 @@ const expertTopicText=(id,c,L)=>{
 const buildExpertReply=(msg,c,L,intent)=>{
   if(!c) return "";
   const topics=pickTopics(msg,4);
-  const needsExpert=(intent==="general"||intent==="advice"||intent==="strategy"||intent==="savings"||intent==="buyrent"||topics.length>=2);
+  const needsExpert=((intent==="advice")||(intent==="general"&&isHousingQuestion(msg))||(topics.length>=3));
   if(!needsExpert) return "";
 
   const header=expertLine(L,
@@ -1591,7 +1597,7 @@ const detectIntent=(msg)=>{
 
   // Ahorro
   if(has("ahorrar","estalviar","save","ahorro","estalvi","savings","cuanto necesito","cuanto tardar","quant trigar")) return "savings";
-  if(has("estrategia","strategy","capacidad de compra","buying power","poder adquisitivo","como comprar mas")) return "strategy";
+  if(has("estrategia","estrategies","estrategia de","strategy","capacitat de compra","capacidad de compra","buying power","poder adquisitivo","com comprar mes","como comprar mas")) return "strategy";
   if(has("amortiz","pagar antes","pagar avans","overpay","cancelar hipoteca","reducir hipoteca")) return "amortize";
 
   // Propiedades
@@ -1605,6 +1611,7 @@ const detectIntent=(msg)=>{
   if(has("municipio","municipi","town","zona","pueblo","village","donde vivir","on viure","where to live","mejor zona","millor zona")) return "towns";
   if(has("comparar","compare","otra zona","altra zona","barcelona","girona","tarragona","lleida","diferencia zona")) return "compare";
   if(has("mercado","mercat","market","tendencia","tendència","trend","subira","baixara","sube","baja","futuro","previsión")) return "market";
+  if(has("francia","franca","france","alemania","germany","portugal","italia","italy","madrid","valencia") && has("comprar","buy","alquilar","rent","inmueble","vivienda")) return "external_market";
 
   // Ayudas y fiscalidad
   if(has("ayuda","ajuda","subvencio","subvencion","subsidio","bonus","deduccion","deducció","irpf","hacienda","hisenda")) return "subsidy";
@@ -1620,6 +1627,7 @@ const detectIntent=(msg)=>{
   // Preguntas raras / off-topic
   if(has("tiempo","clima","weather","llueve","sol","calor","fred","frio")) return "weather";
   if(has("chiste","joke","broma","divertido","humor","rie","rire")) return "joke";
+  if(has("como te llamas","com et dius","what is your name","what's your name","your name","nombre","name")) return "identity";
   if(has("quien eres","qui ets","who are you","eres humano","ets huma","are you human","ets ia","eres ia","eres robot","chatgpt","openai","anthropic","claude")) return "identity";
   if(has("la vida","filosofia","sentido","meaning","existencial","dios","religion")) return "philosophy";
   if(has("futbol","barça","barca","madrid","sport","deporte","esport")) return "sport";
@@ -1636,7 +1644,7 @@ const buildReply=(intent, msg)=>{
   const L=LANG;
   const es=(es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
 
-  const housingIntents=new Set(["summary","advice","buyrent","mortgage","payment","downpayment","costs","rates","savings","strategy","amortize","price","rent","size","term","extras","towns","compare","market","subsidy","firsthome","inflation","risk","income","negotiation","actionplan"]);
+  const housingIntents=new Set(["summary","advice","buyrent","mortgage","payment","downpayment","costs","rates","savings","strategy","amortize","price","rent","size","term","extras","towns","compare","market","subsidy","firsthome","inflation","risk","income","negotiation","actionplan","external_market"]);
   const generalKBReply=buildGeneralKnowledgeReply(msg,L);
 
   // Si no hay análisis: responder SIEMPRE. Para vivienda, pedir análisis; para general, responder con KB universal.
@@ -1708,6 +1716,29 @@ const buildReply=(intent, msg)=>{
       `📊 Resumen de tu análisis:\n🏠 ${c.muni} · ${c.m2}m² · ${c.type}\n💰 Precio estimado: ${_fm(c.pb)}\n📅 Cuota: ${_fm(c.pay)} (${_fp(c.ratio)} de tus ingresos)\n🏠 Alquiler: ${_fm(c.pr)} (${_fp(c.rri)} de tus ingresos)\n🎯 Recomendación: ${c.rec}`,
       `📊 Resum de la teva anàlisi:\n🏠 ${c.muni} · ${c.m2}m² · ${c.type}\n💰 Preu estimat: ${_fm(c.pb)}\n📅 Quota: ${_fm(c.pay)} (${_fp(c.ratio)} dels teus ingressos)\n🏠 Lloguer: ${_fm(c.pr)} (${_fp(c.rri)} dels teus ingressos)\n🎯 Recomanació: ${c.rec}`,
       `📊 Your analysis summary:\n🏠 ${c.muni} · ${c.m2}m² · ${c.type}\n💰 Estimated price: ${_fm(c.pb)}\n📅 Payment: ${_fm(c.pay)} (${_fp(c.ratio)} of income)\n🏠 Rent: ${_fm(c.pr)} (${_fp(c.rri)} of income)\n🎯 Recommendation: ${c.rec}`
+    );
+
+    case "external_market": return es(
+      `🌍 Puedo orientarte, pero este simulador está calibrado para Baix Penedès (no para mercado internacional).
+Si quieres comprar fuera (ej. Francia), usa esta guía rápida:
+1) Define presupuesto total en € (precio + impuestos + notario + reforma + margen 10%).
+2) Exige estimación de cuota con tipo +1% y comprueba esfuerzo <35%.
+3) Verifica fiscalidad local (impuestos de compra, residencia y alquiler).
+4) Compara rentabilidad neta tras costes, no solo precio.
+💡 Si me pasas país/ciudad, precio objetivo, entrada e ingresos, te hago un análisis estructurado paso a paso.`,
+      `🌍 Puc orientar-te, però aquest simulador està calibrat per al Baix Penedès (no per mercat internacional).
+Si vols comprar fora (ex. França), guia ràpida:
+1) Pressupost total en € (preu + impostos + notari + reforma + marge 10%).
+2) Simula quota amb tipus +1% i comprova esforç <35%.
+3) Revisa fiscalitat local.
+4) Compara rendibilitat neta després de costos.`,
+      `🌍 I can guide you, but this simulator is calibrated for Baix Penedès (not international markets).
+If you want to buy abroad (e.g., France), quick framework:
+1) Set total budget (€) incl. taxes, notary, renovation, 10% buffer.
+2) Stress-test payment at +1% rate and keep effort <35%.
+3) Validate local tax and legal obligations.
+4) Compare net yield after all costs.
+💡 Share country/city, target price, down payment, and income and I'll build a step-by-step analysis.`
     );
 
     case "buyrent": return es(
@@ -2025,9 +2056,9 @@ ${gap>0?`5) Savings gap: ${_fm(gap)}${msv>0?` (~${mos} months).`:"."}`:`5) You a
     );
 
     case "identity": return es(
-      `🤖 Soy el asesor financiero integrado en esta aplicación. Estoy especializado en vivienda en el Baix Penedès y conozco tu análisis al completo. No soy ChatGPT ni ninguna IA de pago — soy un motor de conocimiento financiero local, gratuito y siempre disponible. ¿En qué te ayudo?`,
-      `🤖 Sóc l'assessor financer integrat en aquesta aplicació. Estic especialitzat en habitatge al Baix Penedès. Sóc un motor de coneixement financer local, gratuït i sempre disponible.`,
-      `🤖 I'm the financial advisor built into this application. I specialize in Baix Penedès housing and know your full analysis. I'm not ChatGPT — I'm a local, free, always-available financial knowledge engine. How can I help?`
+      `🤖 Me llamo AI Financial Advisor. Soy tu asistente dentro de esta app: especializado en vivienda/finanzas y también capaz de responder preguntas generales. Si quieres, te respondo en formato corto o paso a paso.`,
+      `🤖 Em dic AI Financial Advisor. Soc el teu assistent dins d'aquesta app: especialitzat en habitatge/finances i també capaç de respondre preguntes generals. Si vols, et responc en format curt o pas a pas.`,
+      `🤖 My name is AI Financial Advisor. I am your in-app assistant: specialized in housing/finance and also able to answer general questions. I can reply briefly or step-by-step if you prefer.`
     );
 
     case "philosophy": return es(

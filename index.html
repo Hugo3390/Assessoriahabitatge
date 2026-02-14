@@ -1194,6 +1194,14 @@ const AI_GENERAL_KB=[
    ES:["Regla práctica: 50/30/20 adaptada a tu realidad de vivienda e ingresos.","Fondo de emergencia ideal: 3-6 meses de gastos esenciales.","Prioriza deuda de alto interés antes que inversiones de riesgo."],
    CA:["Regla pràctica: 50/30/20 adaptada a la teva realitat d'habitatge i ingressos.","Fons d'emergència ideal: 3-6 mesos de despeses essencials.","Prioritza deute d'alt interès abans d'inversions de risc."],
    EN:["Practical rule: 50/30/20 adapted to housing and income reality.","Ideal emergency fund: 3-6 months of essential expenses.","Prioritize high-interest debt before risky investments."]},
+  {id:"behavioral_finance",k:["sesgo","bias","emociones","fear","greed","fomo","disciplina","habitos financieros"],
+   ES:["Las decisiones grandes mejoran con reglas previas (tope de precio, esfuerzo máximo y plan B).","Evita decidir con urgencia: pausa 24h para ofertas y revisa escenarios negativos.","Separar deseo de capacidad evita sobreendeudamiento y arrepentimiento financiero."],
+   CA:["Les decisions grans milloren amb regles prèvies (topall de preu, esforç màxim i pla B).","Evita decidir amb urgència: pausa 24h per ofertes i revisa escenaris negatius.","Separar desig de capacitat evita sobreendeutament i penediment financer."],
+   EN:["Big decisions improve with predefined rules (price cap, max effort, and Plan B).","Avoid urgency decisions: take a 24h pause on offers and test downside scenarios.","Separating desire from affordability prevents over-borrowing and regret."]},
+  {id:"mortgage_structuring",k:["loan to value","ltv","dsr","ratio endeudamiento","fixed variable","amortization","refinance","subrogacion"],
+   ES:["No optimices solo cuota: optimiza riesgo total (LTV, esfuerzo y colchón de liquidez).","Comparar TIN/TAE, vinculaciones y comisiones cambia el coste real de forma material.","Una hipoteca sostenible debe seguir siendo cómoda tras un shock de tipos o ingresos."],
+   CA:["No optimitzis només quota: optimitza risc total (LTV, esforç i coixí de liquiditat).","Comparar TIN/TAE, vinculacions i comissions canvia el cost real de manera material.","Una hipoteca sostenible ha de continuar còmoda després d'un xoc de tipus o ingressos."],
+   EN:["Do not optimize only monthly payment: optimize total risk (LTV, effort, liquidity buffer).","Comparing nominal/effective rates, bundling and fees materially changes true cost.","A sustainable mortgage should remain comfortable after rate or income shocks."]},
   {id:"real_estate",k:["inmobiliario","real estate","compraventa","arras","tasacion","notaria","registro","alquiler","rent"],
    ES:["Comprar requiere analizar coste total: entrada, impuestos, notaría, mantenimiento y oportunidad.","Alquilar puede ser racional si da flexibilidad o reduce riesgo financiero.","Negociar precio con comparables €/m² mejora resultado esperado."],
    CA:["Comprar requereix analitzar cost total: entrada, impostos, notaria, manteniment i oportunitat.","Llogar pot ser racional si dona flexibilitat o redueix risc financer.","Negociar preu amb comparables €/m² millora el resultat esperat."],
@@ -1278,23 +1286,41 @@ const AI_GENERAL_KB=[
 
 const scoreGeneralKB=(msg,entry)=>{
   const m=normAI(msg);
+  const tokens=new Set(m.split(" ").filter(Boolean));
+  const contains=(keyword="")=>{
+    const kw=normAI(keyword);
+    if(!kw) return false;
+    if(kw.includes(" ")) return (` ${m} `).includes(` ${kw} `);
+    if(kw.length<=2) return tokens.has(kw);
+    return tokens.has(kw)||(` ${m} `).includes(` ${kw} `);
+  };
   let score=0;
-  entry.k.forEach(k=>{ if(m.includes(normAI(k))) score+=2; });
-  if(m.length>0&&entry.id&&m.includes(normAI(entry.id))) score+=1;
+  entry.k.forEach(k=>{ if(contains(k)) score+=2; });
+  if(m.length>0&&entry.id&&contains(entry.id)) score+=1;
   return score;
 };
 
-const pickGeneralKB=(msg,maxN=3)=>AI_GENERAL_KB
+const pickGeneralKBScored=(msg,maxN=3)=>AI_GENERAL_KB
   .map(e=>({e,score:scoreGeneralKB(msg,e)}))
   .filter(x=>x.score>0)
   .sort((a,b)=>b.score-a.score)
-  .slice(0,maxN)
-  .map(x=>x.e);
+  .slice(0,maxN);
+
+const pickGeneralKB=(msg,maxN=3)=>pickGeneralKBScored(msg,maxN).map(x=>x.e);
 
 const buildGeneralKnowledgeReply=(msg,L)=>{
-  const top=pickGeneralKB(msg,3);
-  if(!top.length) return "";
+  const ranked=pickGeneralKBScored(msg,3);
+  if(!ranked.length) return "";
+  const topScore=ranked[0].score||0;
+  const top=ranked.map(x=>x.e);
   const byLang=(e)=>L==="CA"?e.CA:L==="EN"?e.EN:e.ES;
+  if(topScore<2){
+    return L==="EN"
+      ?"I can answer this better if you add context. Tell me domain + objective + constraints (time, budget, level)."
+      :(L==="CA"
+        ?"Et puc respondre millor si afegeixes context. Digue'm domini + objectiu + restriccions (temps, pressupost, nivell)."
+        :"Te puedo responder mejor si añades contexto. Dime dominio + objetivo + restricciones (tiempo, presupuesto, nivel).");
+  }
   const header=L==="EN"?"🌐 General knowledge answer (multi-domain):":(L==="CA"?"🌐 Resposta de coneixement general (multidomini):":"🌐 Respuesta de conocimiento general (multidominio):");
   const lines=[];
   top.forEach(entry=>{
@@ -1458,7 +1484,14 @@ const detectIntent=(msg)=>{
   const m=msg.toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
     .replace(/[¿¡'"]/g,"").trim();
-  const has=(...words)=>words.some(w=>m.includes(w));
+  const tokens=new Set(m.replace(/[^\p{L}\p{N}\s]/gu," ").split(/\s+/).filter(Boolean));
+  const has=(...words)=>words.some(w=>{
+    const n=w.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+    if(!n) return false;
+    if(n.includes(" ")) return (` ${m} `).includes(` ${n} `);
+    if(n.length<=2) return tokens.has(n);
+    return tokens.has(n)||m.includes(n);
+  });
   const starts=(...words)=>words.some(w=>m.startsWith(w));
 
   // Saludos y socialización
@@ -1471,6 +1504,7 @@ const detectIntent=(msg)=>{
   // Análisis y resultado
   if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","cuéntame","conta'm")) return "summary";
   if(has("consejo","consell","advice","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria")) return "advice";
+  if(has("por que","per que","why","explica por que","explica porque","justifica","com ho saps","como lo sabes")) return "rationale";
   if(has("plan","plan de accion","pasos","roadmap","hoja de ruta","next steps","seguent pas")) return "actionplan";
   if(has("semana por semana","setmana per setmana","week by week","weekly plan","plan semanal detallado")) return "weeklyplan";
   if(has("negociar","negociacio","negotiation","oferta","offer","regatear","rebaja","descuento")) return "negotiation";
@@ -1528,6 +1562,54 @@ const detectIntent=(msg)=>{
 
   return "general";
 };
+const explainabilityBlock=(intent,msg,c,L)=>{
+  const tr=(es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
+  const housingExplain=new Set(["summary","advice","buyrent","mortgage","payment","downpayment","costs","rates","savings","strategy","amortize","price","rent","size","term","extras","towns","compare","market","subsidy","firsthome","inflation","risk","income","negotiation","actionplan","weeklyplan","external_market","rationale"]);
+  const wantsWhy=/\b(por que|porque|per que|why|explica|justifica|com ho saps|como lo sabes)\b/i.test(normAI(msg));
+  if(!housingExplain.has(intent)&&!wantsWhy) return "";
+
+  if(!c) return tr(
+    `\n\n🧭 Cómo razono: sin tu análisis solo puedo dar guía general. Si completas pasos 1-3, te doy recomendaciones trazables con tus números.`,
+    `\n\n🧭 Com raono: sense la teva anàlisi només puc donar guia general. Si completes passos 1-3, et dono recomanacions traçables amb els teus números.`,
+    `\n\n🧭 How I reason: without your analysis I can only provide general guidance. Complete steps 1-3 for traceable recommendations with your numbers.`
+  );
+
+  const confidence=(c.ratio<=35&&c.sav>=c.needCash)?"alta":(c.ratio<=40?"media":"prudente");
+  const confidenceTxt=tr(
+    confidence==="alta"?"alta":"media",
+    confidence==="alta"?"alta":"mitjana",
+    confidence==="alta"?"high":"medium"
+  );
+  const why=tr(
+    `\n\n🧭 Por qué te digo esto:\n• Esfuerzo hipotecario estimado: ${_fp(c.ratio)} (objetivo ≤35%).\n• Ahorro disponible: ${_fm(c.sav)} vs necesidad inicial aproximada: ${_fm(c.needCash)}.\n• Horizonte de residencia >5 años: ${c.hor?"sí":"no"}.\n• Confianza de recomendación: ${confidenceTxt}.`,
+    `\n\n🧭 Per què et dic això:\n• Esforç hipotecari estimat: ${_fp(c.ratio)} (objectiu ≤35%).\n• Estalvi disponible: ${_fm(c.sav)} vs necessitat inicial aproximada: ${_fm(c.needCash)}.\n• Horitzó de residència >5 anys: ${c.hor?"sí":"no"}.\n• Confiança de recomanació: ${confidenceTxt}.`,
+    `\n\n🧭 Why I'm saying this:\n• Estimated mortgage effort: ${_fp(c.ratio)} (target ≤35%).\n• Available savings: ${_fm(c.sav)} vs estimated upfront need: ${_fm(c.needCash)}.\n• Residence horizon >5 years: ${c.hor?"yes":"no"}.\n• Recommendation confidence: ${confidenceTxt}.`
+  );
+  const caveat=tr(
+    `\n⚠️ Esto no sustituye asesoramiento legal/fiscal o una oferta vinculante bancaria.`,
+    `\n⚠️ Això no substitueix assessorament legal/fiscal ni una oferta vinculant bancària.`,
+    `\n⚠️ This does not replace legal/tax advice or a binding bank offer.`
+  );
+  return why+caveat;
+};
+
+const shouldUseDeepExplainability=(intent,msg)=>{
+  const m=normAI(msg);
+  const asksWhy=/\b(por que|porque|per que|why|justifica|explica|como lo sabes|com ho saps)\b/i.test(m);
+  if(asksWhy) return true;
+  return ["rationale","advice","summary","actionplan","weeklyplan","mortgage","buyrent"].includes(intent);
+};
+
+const enrichReply=(intent,msg,reply,c,L)=>{
+  if(!reply) return reply;
+  if(/por que te digo|per que et dic|why i m saying this/i.test(normAI(reply))) return reply;
+  if(!shouldUseDeepExplainability(intent,msg)){
+    const tail=L==="EN"?"\n\nIf you want, I can explain the reasoning and assumptions behind this answer.":(L==="CA"?"\n\nSi vols, et puc explicar el raonament i les hipòtesis d'aquesta resposta.":"\n\nSi quieres, te explico el razonamiento y las hipótesis de esta respuesta.");
+    return reply+tail;
+  }
+  return reply+explainabilityBlock(intent,msg,c,L);
+};
+
 /* ---- Generador de respuestas ---- */
 const buildReply=(intent, msg)=>{
   const c=getUserContext();
@@ -1538,28 +1620,32 @@ const buildReply=(intent, msg)=>{
   const generalKBReply=buildGeneralKnowledgeReply(msg,L);
 
   // Si no hay análisis: responder SIEMPRE. Para vivienda, pedir análisis; para general, responder con KB universal.
-  if(!c){
-    if(!housingIntents.has(intent)) return generalKBReply||buildUniversalFallbackReply(msg,L);
+  if(!c&&housingIntents.has(intent)){
     return es(
       "⚠️ Para preguntas personalizadas de vivienda primero necesito tu análisis (pasos 1-3). Mientras tanto, también puedo responder preguntas generales de cualquier tema.",
       "⚠️ Per preguntes personalitzades d'habitatge primer necessito la teva anàlisi (passos 1-3). Mentrestant, també puc respondre preguntes generals de qualsevol tema.",
       "⚠️ For personalized housing answers I need your analysis first (steps 1-3). Meanwhile, I can answer general questions on almost any topic."
     );
   }
-  const profile = analyzeUserProfile(c);
-  const tone = getToneForProfile(profile, L);
+  const profile = c?analyzeUserProfile(c):null;
+  const tone = c?getToneForProfile(profile, L):"";
 
-  if(generalKBReply&&!housingIntents.has(intent)) return generalKBReply;
+  if(intent==="general"&&generalKBReply) return generalKBReply;
 
-  const expertReply=buildExpertReply(msg,c,L,intent);
+  const expertReply=c?buildExpertReply(msg,c,L,intent):"";
   if(expertReply) return expertReply;
 
-  const buyOk=!c.need&&c.ratio<=35&&c.hor;
-  const rentOk=c.rri<=40;
+  const buyOk=c?!c.need&&c.ratio<=35&&c.hor:false;
+  const rentOk=c?c.rri<=40:false;
 
   switch(intent){
 
     case "greet": {
+  if(!c) return es(
+    "👋 ¡Hola! Soy tu AI Financial Advisor. Puedo responder temas de vivienda y también preguntas generales. Si quieres recomendaciones personalizadas, primero completa el análisis (pasos 1-3).",
+    "👋 Hola! Soc el teu AI Financial Advisor. Puc respondre temes d'habitatge i també preguntes generals. Si vols recomanacions personalitzades, primer completa l'anàlisi (passos 1-3).",
+    "👋 Hi! I'm your AI Financial Advisor. I can answer housing topics and general questions too. For personalized recommendations, please complete the analysis first (steps 1-3)."
+  );
   const greeting = es(
     `👋 ¡Hola ${c.nm}! ${tone}. `,
     `👋 Hola ${c.nm}! ${tone}. `,
@@ -1591,8 +1677,11 @@ const buildReply=(intent, msg)=>{
 }
 
     case "thanks": return es(
+      !c?"😊 ¡De nada! Si quieres, te puedo ayudar con una duda concreta paso a paso.":
       `😊 ¡De nada, ${c.nm}! Estoy aquí para lo que necesites. Si tienes más dudas sobre tu situación en ${c.muni} no dudes en preguntar.`,
+      !c?"😊 De res! Si vols, et puc ajudar amb un dubte concret pas a pas.":
       `😊 De res, ${c.nm}! Estic aquí per al que necessitis. Si tens més dubtes sobre la teva situació a ${c.muni} no dubtis a preguntar.`,
+      !c?"😊 You're welcome! If you want, I can help with one specific question step by step.":
       `😊 You're welcome, ${c.nm}! I'm here whenever you need. Feel free to ask anything else about your situation in ${c.muni}.`
     );
 
@@ -1866,6 +1955,27 @@ ${gap>0?`5) Savings gap: ${_fm(gap)}${msv>0?` (~${mos} months).`:"."}`:`5) You a
       );
     }
 
+    case "rationale": return es(
+      !c?`📌 Ahora mismo puedo explicar el método general, pero para justificar tu caso con números necesito tu análisis (pasos 1-3).`:`📌 Método de recomendación para tu caso:
+1) Calculo esfuerzo hipotecario (cuota/ingresos) y lo comparo con el umbral 30-35%.
+2) Verifico liquidez inicial: ahorro disponible vs entrada+gastos estimados.
+3) Testeo resiliencia: escenario de tipos +1% y fondo de emergencia.
+4) Pondero horizonte temporal (>5 años favorece compra).
+5) Devuelvo recomendación priorizando sostenibilidad, no solo cuota baja.`,
+      !c?`📌 Ara mateix puc explicar el mètode general, però per justificar el teu cas amb números necessito la teva anàlisi (passos 1-3).`:`📌 Mètode de recomanació pel teu cas:
+1) Calculo esforç hipotecari (quota/ingressos) i el comparo amb llindar 30-35%.
+2) Verifico liquiditat inicial: estalvi disponible vs entrada+despeses estimades.
+3) Test de resiliència: escenari de tipus +1% i fons d'emergència.
+4) Pondero horitzó temporal (>5 anys afavoreix compra).
+5) Retorno recomanació prioritzant sostenibilitat, no només quota baixa.`,
+      !c?`📌 I can explain the general method now, but to justify your case with numbers I need your analysis first (steps 1-3).`:`📌 Recommendation method for your case:
+1) I compute mortgage effort (payment/income) and compare it to the 30-35% threshold.
+2) I verify initial liquidity: available savings vs estimated down payment+costs.
+3) I stress-test resilience: +1% rate scenario and emergency buffer.
+4) I weight time horizon (>5 years tends to favor buying).
+5) I return a recommendation prioritizing sustainability, not just a low payment.`
+    );
+
     case "advice": {
   let advice = es("🎯 Mi consejo personalizado:\n\n", "🎯 El meu consell:\n\n", "🎯 My advice:\n\n");
   
@@ -2122,7 +2232,9 @@ const sendToAI=async msg=>{
   const repCount=repeatedQuestionCount(msg);
   if(repCount>=3){
     const gentle=LANG==="EN"?"I notice this question is repeated. I'll answer in a different way:":(LANG==="CA"?"Veig que aquesta pregunta es repeteix. Et responc d'una altra manera:":"Veo que esta pregunta se repite. Te respondo de otra forma:");
-    const alt=buildUniversalFallbackReply(msg,LANG);
+    const c=getUserContext();
+    const housing=isHousingQuestion(msg);
+    const alt=(c&&housing)?buildReply("rationale",msg):buildUniversalFallbackReply(msg,LANG);
     const composed=`${gentle}\n${alt}`;
     chatHistory.push({role:"assistant",content:composed});
     if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);
@@ -2140,7 +2252,8 @@ const sendToAI=async msg=>{
   removeThinking();
   let intent=detectIntent(msg);
   if(shouldTriggerPlanFromAffirm(msg,intent)) intent="actionplan";
-  const reply=buildReply(intent,msg);
+  const rawReply=buildReply(intent,msg);
+  const reply=enrichReply(intent,msg,rawReply,getUserContext(),LANG);
   pendingPlanOffer=/plan semanal|pla setmanal|week-by-week plan|plan de accion|pla d'accio|action plan/i.test(normAI(reply));
   chatHistory.push({role:"assistant",content:reply});
   if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);

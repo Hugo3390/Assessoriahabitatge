@@ -443,35 +443,12 @@ canvas{display:block;width:100%;height:240px}
   <div class="br">Assessoria d'Habitatge</div>
   <div>
     <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener">assesoriahabitatge.com</a> ·
-    <a href="/cdn-cgi/l/email-protection#c9a0a7afa689a8babaacbabaa6bba0a8a1a8aba0bda8bdaeace7aaa6a4"><span class="__cf_email__" data-cfemail="660f0800092607151503151509140f070e07040f12071201034805090b">[email&#160;protected]</span></a>
+    <a href="mailto:info@assessoriahabitatge.com">info@assessoriahabitatge.com</a>
   </div>
 </div>
 <div id="ts" class="tst" role="status" aria-live="polite"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-
-// ✅ URL de tu Cloudflare Worker (proxy IA real)
-const AI_PROXY_URL = "https://hidden-bar-6a89.hibanezborreguero.workers.dev/";
-
-// ✅ Llamada al proxy (IA real detrás)
-async function callGroqViaWorker(messages, opts = {}) {
-  const res = await fetch(AI_PROXY_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: opts.model || "llama-3.1-70b-versatile",
-      temperature: typeof opts.temperature === "number" ? opts.temperature : 0.4,
-      max_tokens: typeof opts.max_tokens === "number" ? opts.max_tokens : 900,
-      messages
-    })
-  });
-
-  if (!res.ok) throw new Error("Proxy error: " + res.status);
-  const data = await res.json();
-  return data?.choices?.[0]?.message?.content?.trim() || "";
-}
-
-
+<script>
 // ─────────────────────────────────────────
 //  MAPA: Polígonos de alta fidelidad (30+ puntos por municipio)
 //  Coordenadas reales del Baix Penedès (ICGC / OpenStreetMap)
@@ -825,10 +802,10 @@ EN:{
   recLimit35:"Recommended limit: 35%",recLimit40:"Recommended limit: 40%",
   financingTitle:"Financing",prefsTitle:"Preferences",monthlyEffortTitle:"Monthly effort",
   downPaymentLabel:"Down payment",closingCostsLabel:"Closing costs",toFinanceLabel:"To finance",
-  aiConnected:"Claude API active",aiLocalMode:"Local engine active",aiError:"Connection error",
+  aiConnected:"AI connected",aiLocalMode:"Local engine active",aiError:"Connection error",
   aiAdvisorTitle:"Your personal financial advisor.",
-  aiAdvisorDesc:"Uses real AI (Claude API) — answers any question, not just housing.",
-  aiWelcome:"👋 Hello! I'm your personal financial advisor powered by Claude AI. I can help you with any question — from mortgages to investments, business, technology, or anything else. What would you like to know today?",
+  aiAdvisorDesc:"Uses real AI (Groq via Cloudflare Worker) — answers any question, not just housing.",
+  aiWelcome:"👋 Hello! I'm your personal financial advisor powered by real AI. I can help you with any question — from mortgages to investments, business, technology, or anything else. What would you like to know today?",
   aiThinking:"Thinking...",aiYou:"YOU",aiPlaceholder:"Ask anything...",aiSend:"Send",
   aiPlanBtnLbl:"🧭 Action plan",aiClearBtnLbl:"🗑️ Clear chat",aiCopyBtnLbl:"📋 Copy chat",
   aiSug1:"How to improve my situation?",aiSug2:"How much to save for buying?",
@@ -841,6 +818,65 @@ let LANG=localStorage.getItem(LANG_KEY)||"ES";
 const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.ES[k]||k;
 const tpl=(s,v)=>String(s||"").replace(/\{(\w+)\}/g,(_,k)=>(v&&v[k]!=null)?v[k]:"");
 const fmtMoney=n=>!isFinite(n)?"–":((LANG==="EN"?fmtEN(n):fmtES(n))+" €");
+
+/* =====================
+   GROQ AI VIA WORKER
+   ===================== */
+// IMPORTANTE: Reemplaza esta URL con la de tu Cloudflare Worker
+const AI_PROXY_URL="https://hidden-bar-6a89.hibanezborreguero.workers.dev/";
+
+// Llamar a Groq vía Worker
+const callGroqViaWorker=async(messages,opts={})=>{
+  try{
+    const response=await fetch(AI_PROXY_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        messages,
+        model:opts.model||"llama-3.1-70b-versatile",
+        temperature:opts.temperature||0.4,
+        max_tokens:opts.max_tokens||900
+      })
+    });
+    
+    if(!response.ok){
+      const err=await response.json();
+      console.error("Worker error:",err);
+      return null;
+    }
+    
+    const data=await response.json();
+    return data?.choices?.[0]?.message?.content||null;
+  }catch(e){
+    console.error("Groq call failed:",e);
+    return null;
+  }
+};
+
+// Construir prompt para LLM con contexto
+const buildLLMPrompt=(userMsg)=>{
+  const ctx=calcContext();
+  let systemContext="";
+  
+  if(ctx){
+    systemContext=`Usuario: ${ctx.nm||"Anónimo"}, ${ctx.ag||"??"} años
+Ingresos: ${ctx.inc?fmtMoney(ctx.inc)+"/mes":"no especificado"}
+Ahorros: ${ctx.sav?fmtMoney(ctx.sav):"no especificado"}
+Municipio: ${ctx.muni||"no especificado"}
+Precio objetivo: ${ctx.pb?fmtMoney(ctx.pb):"no especificado"}
+Cuota hipoteca: ${ctx.pay?fmtMoney(ctx.pay)+"/mes":"no calculado"}
+Esfuerzo: ${ctx.ratio?(ctx.ratio*100).toFixed(1)+"%":"no calculado"}
+Recomendación: ${ctx.rec||"pendiente de análisis"}`;
+  }
+  
+  const lang=LANG==="CA"?"català":LANG==="EN"?"English":"español";
+  
+  return `Eres un asesor financiero e inmobiliario experto. El usuario habla ${lang}.
+
+${systemContext?`CONTEXTO DEL USUARIO:\n${systemContext}\n\n`:""}PREGUNTA DEL USUARIO: ${userMsg}
+
+Responde en ${lang} de forma clara, práctica y personalizada. Usa los datos del contexto si están disponibles. Sé directo y útil.`;
+};
 const fmtPct=n=>Number(n).toFixed(1)+"%";
 const toast=m=>{const e=Q("#ts");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),1900)};
 
@@ -2056,7 +2092,7 @@ const buildReply=msg=>{
 };
 
 /* ── ENVIAR MENSAJE AL AI ── */
-const sendToAI = async (msg) => {
+const sendToAI=async (msg)=>{
   if(isAIProcessing)return;
   isAIProcessing=true;
   const btnEl=Q("#chatSend"),inpEl=Q("#chatInput");
@@ -2065,59 +2101,50 @@ const sendToAI = async (msg) => {
   addMsg("user",msg);
   chatHistory.push({role:"user",content:msg});
   addThinking();
+  
+  // Determinar si usar IA real o local
+  const m=msg.toLowerCase().trim();
+  const useRealAI=(
+    m.length>100|| // Preguntas largas
+    /\b(plan|estrategia|consejo|recomiend|analiza|compara|explica|detalla|como|por que|cuando|donde)\b/i.test(m)|| // Palabras clave complejas
+    /\b(inversion|negocio|tecnologia|programacion|viaje|cocina|historia)\b/i.test(m) // Temas fuera de vivienda
+  );
+  
+  let reply="";
+  
+  if(useRealAI && AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL)){
+    // Intentar con IA real
+    try{
+      const prompt=buildLLMPrompt(msg);
+      const systemMsg={
+        role:"system",
+        content:LANG==="CA"?"Ets un assessor financer expert. Respon en català de forma clara i pràctica.":
+                LANG==="EN"?"You are an expert financial advisor. Respond in English clearly and practically.":
+                "Eres un asesor financiero experto. Responde en español de forma clara y práctica."
+      };
+      const messages=[systemMsg,{role:"user",content:prompt}];
+      
+      const aiReply=await callGroqViaWorker(messages,{temperature:0.4,max_tokens:900});
+      
+      if(aiReply&&aiReply.trim().length>10){
+        reply=aiReply;
+      }else{
+        // Fallback a local
+        reply=buildReply(msg);
+      }
+    }catch(e){
+      console.error("AI call error:",e);
+      // Fallback a local
+      reply=buildReply(msg);
+    }
+  }else{
+    // Usar motor local
+    reply=buildReply(msg);
+  }
+  
   // Pequeño delay para efecto visual
   setTimeout(()=>{
     removeThinking();
-    let reply = "";
-
-// Construye prompt con contexto si existe
-const prompt = (typeof buildLLMPrompt === "function") ? buildLLMPrompt(msg) : msg;
-
-const messages = [
-  { role: "system", content: "You are a helpful assistant." },
-  { role: "user", content: prompt }
-];
-
-// IA real vía Cloudflare Worker
-try {
-  reply = await callGroqViaWorker(messages, { temperature: 0.4, max_tokens: 900 });
-} catch (e) {
-  reply = "";
-}
-function buildLLMPrompt(userMsg) {
-  const c = (typeof getUserContext === "function") ? getUserContext() : null;
-
-  const langInstr =
-    (LANG==="CA") ? "Respon en català. No barregis idiomes." :
-    (LANG==="EN") ? "Answer in English. Do not mix languages." :
-                    "Responde en español. No mezcles idiomas.";
-
-  const contextBlock = c ? `
-DATOS DEL USUARIO:
-- Ingresos: ${c.inc}
-- Ahorros: ${c.sav}
-- Ahorro mensual: ${c.msv}
-- Zona: ${c.muni}
-- Recomendación local: ${c.rec}
-` : "No hay análisis previo.";
-
-  return `
-Eres un asesor financiero e inmobiliario en Baix Penedès.
-Da recomendaciones claras y prácticas.
-No inventes datos externos.
-
-${langInstr}
-
-${contextBlock}
-
-Pregunta del usuario:
-${userMsg}
-`.trim();
-}
-
-// Fallback local si falla
-if (!reply) reply = buildReply2(msg);
-
     chatHistory.push({role:"assistant",content:reply});
     saveChatHistory();
     // Efecto typing

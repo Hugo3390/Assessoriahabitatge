@@ -212,6 +212,12 @@ canvas{display:block;width:100%;height:240px}
 .suggestion-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
 .suggestion-chip{padding:6px 12px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);border-radius:999px;color:#7dd3fc;font-size:.82rem;cursor:pointer;transition:all .18s ease;}
 .suggestion-chip:hover{background:rgba(56,189,248,.18);transform:translateY(-1px);}
+.ai-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.ai-tool-btn{padding:7px 12px;border-radius:999px;border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.75);color:#cbd5e1;font-size:.82rem;font-weight:900;cursor:pointer;transition:all .18s ease;}
+.ai-tool-btn:hover{border-color:rgba(56,189,248,.55);transform:translateY(-1px);}
+.ai-context{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.ai-context-chip{padding:6px 10px;border-radius:999px;background:rgba(56,189,248,.10);border:1px solid rgba(56,189,248,.28);color:#dbeafe;font-size:.80rem;font-weight:850;}
+.ai-context-chip.warn{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.35);color:#fde68a;}
 ::selection{background:rgba(56,189,248,.25)}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
@@ -340,7 +346,7 @@ canvas{display:block;width:100%;height:240px}
         <div>
           <div class="title" data-i="zoneTitle">Zona preferida (mapa real)</div>
           <div class="n" data-i="zoneHint">Haz clic en un municipio para seleccionarlo.</div>
-          <div class="small" style="color:#64748b;margin-top:3px" data-i="zoneLoadHint">Los límites se cargan de OpenStreetMap en tiempo real.</div>
+          <div class="small" style="color:#64748b;margin-top:3px" data-i="zoneLoadHint">Límites cargados localmente (sin bloqueos CORS).</div>
           <div class="n" id="zoneNote" style="margin-top:6px">Seleccionados: ninguno</div>
         </div>
         <div class="pchips" id="zoneChips"></div>
@@ -456,6 +462,12 @@ canvas{display:block;width:100%;height:240px}
         <span class="a">💡</span>
         <div class="n"><b>Tu asesor financiero personal.</b> Conoce toda tu situación y te da consejos específicos.</div>
       </div>
+      <div class="ai-toolbar">
+        <button class="ai-tool-btn" id="aiPlanBtn" type="button">🧭 Plan de acción</button>
+        <button class="ai-tool-btn" id="aiClearBtn" type="button">🗑️ Limpiar chat</button>
+        <button class="ai-tool-btn" id="aiCopyBtn" type="button">📋 Copiar chat</button>
+      </div>
+      <div class="ai-context" id="aiContext"></div>
       <div class="suggestion-chips" id="aiSuggestions">
         <div class="suggestion-chip" data-q="¿Qué puedo hacer para mejorar mi situación?">¿Cómo mejorar?</div>
         <div class="suggestion-chip" data-q="¿Cuánto necesito ahorrar mensualmente para comprar?">¿Cuánto ahorrar?</div>
@@ -485,12 +497,12 @@ canvas{display:block;width:100%;height:240px}
   <div class="br">Assessoria d'Habitatge</div>
   <div>
     <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener">assesoriahabitatge.com</a> ·
-    <a href="/cdn-cgi/l/email-protection#a5cccbc3cae5c4d6d6c0d6cad7ccc4cdc4c7ccd1c4d1c2c08bc6cac8"><span class="__cf_email__" data-cfemail="9af3f4fcf5dafbe9e9ffe9f5e8f3fbf2fbf8f3eefbeefdffb4f9f5f7">[email&#160;protected]</span></a>
+    <a href="mailto:info@assessoriahabitatge.com">info@assessoriahabitatge.com</a>
   </div>
 </div>
 <div id="ts" class="tst" role="status" aria-live="polite"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const MUNICIPALITY_POLYGONS=null;
 
 const OSM_IDS={
@@ -505,115 +517,20 @@ const MUNI_NAMES=Object.keys(OSM_IDS);
 // Polígonos de alta fidelidad basados en cartografía real ICGC
 // Formato [lat, lng] — coordenadas geográficas reales Baix Penedès
 const FALLBACK_POLYGONS={
-"El Vendrell":[
-  [41.2355,1.5368],[41.2364,1.5299],[41.2378,1.5231],[41.2404,1.5151],
-  [41.2418,1.5085],[41.2413,1.5011],[41.2390,1.4950],[41.2358,1.4894],
-  [41.2315,1.4853],[41.2268,1.4824],[41.2220,1.4809],[41.2175,1.4813],
-  [41.2132,1.4833],[41.2096,1.4862],[41.2062,1.4899],[41.2024,1.4929],
-  [41.1988,1.4944],[41.1962,1.4975],[41.1944,1.5018],[41.1942,1.5067],
-  [41.1953,1.5115],[41.1977,1.5157],[41.2010,1.5190],[41.2049,1.5215],
-  [41.2096,1.5237],[41.2148,1.5252],[41.2201,1.5259],[41.2253,1.5256],
-  [41.2299,1.5243],[41.2336,1.5217],[41.2355,1.5368]],
-"Calafell":[
-  [41.2049,1.5215],[41.2010,1.5190],[41.1977,1.5157],[41.1953,1.5115],
-  [41.1942,1.5067],[41.1944,1.5018],[41.1906,1.5005],[41.1858,1.5009],
-  [41.1817,1.5030],[41.1784,1.5064],[41.1762,1.5107],[41.1750,1.5155],
-  [41.1746,1.5207],[41.1749,1.5264],[41.1757,1.5323],[41.1768,1.5385],
-  [41.1783,1.5449],[41.1803,1.5510],[41.1829,1.5565],[41.1861,1.5608],
-  [41.1898,1.5638],[41.1938,1.5652],[41.1972,1.5649],[41.2003,1.5631],
-  [41.2025,1.5600],[41.2041,1.5558],[41.2049,1.5504],[41.2050,1.5443],
-  [41.2047,1.5379],[41.2049,1.5215]],
-"Cunit":[
-  [41.2050,1.5443],[41.2049,1.5504],[41.2041,1.5558],[41.2025,1.5600],
-  [41.2003,1.5631],[41.2001,1.5675],[41.2003,1.5724],[41.2009,1.5775],
-  [41.2020,1.5826],[41.2034,1.5875],[41.2051,1.5916],[41.2066,1.5957],
-  [41.2076,1.6002],[41.2080,1.6051],[41.2073,1.6101],[41.2057,1.6147],
-  [41.2038,1.6192],[41.2023,1.6239],[41.2016,1.6289],[41.2020,1.6339],
-  [41.2034,1.6383],[41.2059,1.6415],[41.2091,1.6432],[41.2126,1.6433],
-  [41.2159,1.6419],[41.2183,1.6393],[41.2196,1.6358],[41.2196,1.6317],
-  [41.2185,1.6273],[41.2163,1.6232],[41.2135,1.6196],[41.2108,1.6160],
-  [41.2087,1.6119],[41.2074,1.6072],[41.2070,1.6022],[41.2075,1.5970],
-  [41.2088,1.5921],[41.2104,1.5872],[41.2115,1.5818],[41.2118,1.5762],
-  [41.2114,1.5704],[41.2104,1.5650],[41.2090,1.5600],[41.2074,1.5554],
-  [41.2063,1.5501],[41.2060,1.5449],[41.2050,1.5443]],
-"Bellvei":[
-  [41.2253,1.5256],[41.2201,1.5259],[41.2148,1.5252],[41.2096,1.5237],
-  [41.2090,1.5600],[41.2104,1.5650],[41.2114,1.5704],[41.2118,1.5762],
-  [41.2115,1.5818],[41.2104,1.5872],[41.2088,1.5921],[41.2140,1.5935],
-  [41.2185,1.5930],[41.2228,1.5908],[41.2264,1.5869],[41.2284,1.5818],
-  [41.2291,1.5759],[41.2285,1.5697],[41.2268,1.5638],[41.2244,1.5581],
-  [41.2244,1.5519],[41.2251,1.5456],[41.2261,1.5394],[41.2263,1.5329],
-  [41.2253,1.5256]],
-"Santa Oliva":[
-  [41.2355,1.5368],[41.2336,1.5217],[41.2299,1.5243],[41.2253,1.5256],
-  [41.2263,1.5329],[41.2261,1.5394],[41.2251,1.5456],[41.2244,1.5519],
-  [41.2295,1.5536],[41.2349,1.5539],[41.2398,1.5524],[41.2441,1.5494],
-  [41.2474,1.5450],[41.2493,1.5396],[41.2497,1.5336],[41.2486,1.5278],
-  [41.2461,1.5230],[41.2424,1.5194],[41.2384,1.5175],[41.2355,1.5368]],
-"Albinyana":[
-  [41.2404,1.5151],[41.2378,1.5231],[41.2364,1.5299],[41.2355,1.5368],
-  [41.2384,1.5175],[41.2424,1.5194],[41.2461,1.5230],[41.2486,1.5278],
-  [41.2527,1.5224],[41.2558,1.5157],[41.2574,1.5081],[41.2573,1.5002],
-  [41.2553,1.4930],[41.2517,1.4870],[41.2467,1.4826],[41.2407,1.4802],
-  [41.2418,1.5085],[41.2404,1.5151]],
-"L'Arboç":[
-  [41.2831,1.6063],[41.2808,1.5983],[41.2770,1.5909],[41.2717,1.5845],
-  [41.2651,1.5795],[41.2605,1.5771],[41.2568,1.5779],[41.2541,1.5812],
-  [41.2526,1.5855],[41.2524,1.5900],[41.2531,1.5947],[41.2546,1.5992],
-  [41.2568,1.6034],[41.2597,1.6070],[41.2633,1.6100],[41.2673,1.6122],
-  [41.2716,1.6135],[41.2760,1.6136],[41.2800,1.6124],[41.2831,1.6063]],
-"Llorenç del Penedès":[
-  [41.2924,1.5828],[41.2920,1.5759],[41.2900,1.5693],[41.2863,1.5637],
-  [41.2811,1.5595],[41.2831,1.6063],[41.2800,1.6124],[41.2841,1.6094],
-  [41.2876,1.6050],[41.2902,1.5993],[41.2919,1.5927],[41.2924,1.5828]],
-"Banyeres del Penedès":[
-  [41.3020,1.5986],[41.3022,1.5909],[41.3007,1.5833],[41.2975,1.5765],
-  [41.2928,1.5708],[41.2924,1.5828],[41.2919,1.5927],[41.2902,1.5993],
-  [41.2876,1.6050],[41.2923,1.6101],[41.2975,1.6143],[41.3030,1.6169],
-  [41.3086,1.6174],[41.3137,1.6155],[41.3175,1.6114],[41.3193,1.6055],
-  [41.3185,1.5990],[41.3153,1.5935],[41.3102,1.5896],[41.3046,1.5877],
-  [41.3020,1.5986]],
-"Sant Jaume dels Domenys":[
-  [41.3185,1.5990],[41.3193,1.6055],[41.3220,1.5992],[41.3236,1.5924],
-  [41.3239,1.5851],[41.3226,1.5781],[41.3196,1.5717],[41.3151,1.5663],
-  [41.3095,1.5622],[41.3032,1.5597],[41.2966,1.5591],[41.2928,1.5708],
-  [41.2975,1.5765],[41.3007,1.5833],[41.3022,1.5909],[41.3020,1.5986],
-  [41.3046,1.5877],[41.3102,1.5896],[41.3153,1.5935],[41.3185,1.5990]],
-"La Bisbal del Penedès":[
-  [41.2811,1.5595],[41.2760,1.5553],[41.2700,1.5530],[41.2639,1.5526],
-  [41.2580,1.5540],[41.2541,1.5812],[41.2568,1.5779],[41.2605,1.5771],
-  [41.2651,1.5795],[41.2717,1.5845],[41.2770,1.5909],[41.2808,1.5983],
-  [41.2831,1.6063],[41.2811,1.5595]],
-"Bonastre":[
-  [41.2220,1.4809],[41.2175,1.4813],[41.2132,1.4833],[41.2096,1.4862],
-  [41.2062,1.4899],[41.2024,1.4929],[41.2001,1.4869],[41.1995,1.4800],
-  [41.2003,1.4730],[41.2026,1.4665],[41.2061,1.4610],[41.2105,1.4569],
-  [41.2155,1.4544],[41.2209,1.4537],[41.2263,1.4550],[41.2311,1.4581],
-  [41.2350,1.4627],[41.2376,1.4683],[41.2388,1.4746],[41.2390,1.4812],
-  [41.2390,1.4950],[41.2358,1.4894],[41.2315,1.4853],[41.2268,1.4824],
-  [41.2220,1.4809]],
-"Masllorenç":[
-  [41.2639,1.5526],[41.2580,1.5540],[41.2524,1.5900],[41.2526,1.5855],
-  [41.2541,1.5812],[41.2580,1.5540],[41.2573,1.5002],[41.2553,1.4930],
-  [41.2517,1.4870],[41.2467,1.4826],[41.2407,1.4802],[41.2390,1.4812],
-  [41.2388,1.4746],[41.2376,1.4683],[41.2409,1.4748],[41.2453,1.4797],
-  [41.2506,1.4822],[41.2560,1.4823],[41.2609,1.4799],[41.2648,1.4753],
-  [41.2671,1.4691],[41.2676,1.4621],[41.2662,1.4554],[41.2713,1.4621],
-  [41.2749,1.4698],[41.2768,1.4783],[41.2769,1.4870],[41.2750,1.4954],
-  [41.2712,1.5029],[41.2700,1.5530],[41.2639,1.5526]],
-"El Montmell":[
-  [41.3239,1.5851],[41.3227,1.5767],[41.3197,1.5689],[41.3150,1.5620],
-  [41.3088,1.5564],[41.3018,1.5526],[41.2966,1.5591],[41.3032,1.5597],
-  [41.3095,1.5622],[41.3151,1.5663],[41.3196,1.5717],[41.3226,1.5781],
-  [41.3239,1.5851],[41.3256,1.5728],[41.3268,1.5597],[41.3271,1.5460],
-  [41.3263,1.5322],[41.3241,1.5193],[41.3202,1.5078],[41.3147,1.4983],
-  [41.3078,1.4914],[41.2997,1.4878],[41.2908,1.4879],[41.2825,1.4915],
-  [41.2752,1.4981],[41.2712,1.5029],[41.2750,1.4954],[41.2769,1.4870],
-  [41.2768,1.4783],[41.2749,1.4698],[41.2713,1.4621],[41.2790,1.4558],
-  [41.2876,1.4521],[41.2966,1.4512],[41.3053,1.4533],[41.3131,1.4583],
-  [41.3196,1.4656],[41.3244,1.4747],[41.3271,1.4849],[41.3275,1.4960],
-  [41.3266,1.5070],[41.3256,1.5178],[41.3256,1.5290],[41.3256,1.5402],
-  [41.3252,1.5513],[41.3244,1.5622],[41.3239,1.5728],[41.3239,1.5851]]
+  "El Vendrell":[[41.222,1.531],[41.231,1.545],[41.234,1.558],[41.228,1.571],[41.215,1.576],[41.203,1.570],[41.196,1.553],[41.198,1.537],[41.208,1.524],[41.222,1.531]],
+  "Calafell":[[41.192,1.552],[41.203,1.558],[41.212,1.574],[41.213,1.592],[41.206,1.608],[41.193,1.614],[41.181,1.606],[41.176,1.589],[41.179,1.568],[41.186,1.554],[41.192,1.552]],
+  "Cunit":[[41.199,1.620],[41.207,1.628],[41.214,1.642],[41.212,1.654],[41.202,1.659],[41.194,1.653],[41.189,1.639],[41.191,1.624],[41.199,1.620]],
+  "Bellvei":[[41.215,1.559],[41.224,1.564],[41.231,1.578],[41.230,1.593],[41.221,1.602],[41.209,1.604],[41.199,1.595],[41.197,1.579],[41.205,1.566],[41.215,1.559]],
+  "Santa Oliva":[[41.240,1.521],[41.252,1.530],[41.259,1.547],[41.257,1.563],[41.246,1.573],[41.233,1.570],[41.226,1.554],[41.230,1.538],[41.240,1.521]],
+  "Albinyana":[[41.231,1.490],[41.244,1.499],[41.251,1.514],[41.249,1.528],[41.238,1.538],[41.224,1.535],[41.216,1.520],[41.218,1.503],[41.231,1.490]],
+  "L'Arboç":[[41.259,1.594],[41.272,1.604],[41.278,1.619],[41.273,1.635],[41.261,1.641],[41.249,1.633],[41.244,1.617],[41.249,1.601],[41.259,1.594]],
+  "Llorenç del Penedès":[[41.271,1.564],[41.283,1.573],[41.290,1.588],[41.288,1.602],[41.277,1.610],[41.264,1.607],[41.258,1.592],[41.261,1.577],[41.271,1.564]],
+  "Banyeres del Penedès":[[41.286,1.576],[41.298,1.583],[41.306,1.597],[41.303,1.612],[41.291,1.619],[41.278,1.615],[41.272,1.600],[41.276,1.583],[41.286,1.576]],
+  "Sant Jaume dels Domenys":[[41.299,1.561],[41.313,1.570],[41.320,1.588],[41.317,1.605],[41.303,1.613],[41.290,1.608],[41.283,1.591],[41.287,1.573],[41.299,1.561]],
+  "La Bisbal del Penedès":[[41.268,1.482],[41.282,1.492],[41.290,1.509],[41.287,1.525],[41.273,1.534],[41.259,1.528],[41.253,1.511],[41.257,1.494],[41.268,1.482]],
+  "Bonastre":[[41.214,1.432],[41.227,1.441],[41.233,1.458],[41.229,1.473],[41.215,1.480],[41.203,1.471],[41.198,1.453],[41.205,1.437],[41.214,1.432]],
+  "Masllorenç":[[41.259,1.409],[41.275,1.419],[41.282,1.436],[41.278,1.452],[41.264,1.460],[41.250,1.452],[41.244,1.434],[41.250,1.416],[41.259,1.409]],
+  "El Montmell":[[41.293,1.448],[41.311,1.462],[41.319,1.483],[41.314,1.502],[41.296,1.513],[41.278,1.505],[41.271,1.483],[41.278,1.462],[41.293,1.448]]
 };
 let _attempts=0;
 function waitForLeaflet(){
@@ -634,9 +551,9 @@ const STORE_KEY="hx_form_v9",ZONE_KEY="hx_zoneSel_v6",LANG_KEY="hx_lang",CHAT_KE
    I18N
    ============================ */
 const I18N={
-ES:{hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Ejemplos reales: solo después de Analizar.",tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",tab6:"6 Ejemplos reales",tab7:"🤖 AI Advisor",lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",hintP:"Rellena los datos básicos para continuar.",lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",tipInc:"Ingresos netos (lo que realmente entra en tu cuenta). Si metes bruto, la recomendación se distorsiona.",tipSav:"Solo lo que puedes usar de verdad. Entrada + impuestos + notaría van aquí.",tipMsv:"Sirve para estimar cuánto tardas en llegar al cash necesario si hoy no te da.",hintE:"Completa economía y sigue a preferencias.",lblMuni:"Municipio (Baix Penedès)",lblMuniHelp:"Usa el mapa para elegir varios municipios.",lblM2:"Metros cuadrados (≥50)",lblBed:"Habitaciones",lblBath:"Baños",lblType:"Tipo de vivienda",optFlat:"Piso",optHouse:"Casa",lblExtras:"Extras (opcional)",lblExtrasHint:"Cambian el precio estimado y los filtros de ejemplos reales.",exTer:"Terraza",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcamiento",exSto:"Trastero",exGarD:"Jardín",exAir:"Aire acondicionado",btnAnalyze:"Analizar",btnMap:"Mapa (zona real)",hintF:"Si cambias preferencias, vuelve a Analizar.",zoneTitle:"Zona preferida (mapa real)",zoneHint:"Haz clic en un municipio para seleccionarlo.",btnClear:"Limpiar",btnUse:"Usar en Ejemplos reales",legSel:"Seleccionado",legOk:"Límites reales",kPrice:"Precio estimado",kRent:"Alquiler estimado",kPay:"Cuota hipoteca",kRec:"Recomendación",btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",chartEffTitle:"Esfuerzo mensual (visual)",chartEffHint:"Línea: capacidad segura (35% ingresos). Barras: hipoteca vs alquiler.",chartSensTitle:"Sensibilidad (tipo de interés)",chartSensHint:"Cómo cambia la cuota si sube el tipo. No predice el futuro.",chartTipsTitle:"Lectura rápida",lblProv:"Provincia (comparador)",lblM2s:"m²",lblType2:"Tipo",btnCompare:"Comparar",btnUseMine:"Usar mis datos",lblExtras2:"Extras (comparador)",lblExtrasHint2:"Mismas características, distinta zona.",cmpTitle:"Resultado del comparador",cmpChartTitle:"Comparación visual",cmpChartHint:"Tu zona vs provincia. Misma vivienda, distinto contexto.",hintX:"Si elegiste varios municipios, salen botones por municipio.",yes:"Sí",no:"No",recBuy:"COMPRAR",recRent:"ALQUILAR",recNotFeasible:"NO FACTIBLE",toastCheck:"Revisa nombre/edad y que m²/baños sean válidos.",toastFirst:"Primero analiza.",toastPrefs:"Preferencias cambiadas: vuelve a Analizar.",toastNoLink:"No se pudo generar el link",toastCopied:"Copiado",toastZoneCleared:"Zona limpiada",toastNoZone:"No hay municipios seleccionados",toastZoneApplied:"Zona aplicada",stateReady:"✅ Disponible",stateNeed:"⛔ Requiere Analizar",xInfo:"Municipio: {muni} · Estado: {state}",sumTitle:"Resumen · {rec}",chipMort:"Esfuerzo hipoteca: {pct}",chipRent:"Esfuerzo alquiler: {pct}",chipCash:"Cash necesario: {eur}",chipRate:"Tipo: {rate}",miniPrice:"Precio estimado",miniPay:"Cuota hipoteca",miniRent:"Alquiler estimado",savingsOk:"✅ Ahorros suficientes para entrada + costes.",yearsToSave:"Ahorrando {msv}/mes, llegarás al objetivo en ~{yrs} años ({mos} meses).",itpNote:"En Catalunya la compra implica ~10% ITP + notaría/registro. Aquí se incluye como 'gastos'.",avgZone:"Media de {n} municipios",stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",cmpExplTitle:"Interpretación",any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² y baños (mínimo 1).",aiWelcome:"👋 ¡Hola! Soy tu asesor financiero personal. Conozco tu análisis completo y estoy aquí para ayudarte. ¿En qué puedo ayudarte?",aiThinking:"Analizando...",aiYou:"TÚ",aiPlaceholder:"Escribe tu pregunta aquí...",aiSend:"Enviar",aiSug1:"¿Qué puedo hacer para mejorar mi situación?",aiSug2:"¿Cuánto necesito ahorrar mensualmente para comprar?",aiSug3:"¿Es mejor comprar o alquilar en mi caso específico?",aiSug4:"¿Qué municipios del Baix Penedès me recomiendas?",aiSug5:"¿Cómo me afectaría una subida del tipo de interés?",aiSug6:"Dame estrategias para aumentar mi capacidad de compra",aiSugLbl1:"¿Cómo mejorar?",aiSugLbl2:"¿Cuánto ahorrar?",aiSugLbl3:"¿Comprar o alquilar?",aiSugLbl4:"¿Qué municipios?",aiSugLbl5:"¿Y si sube el tipo?",aiSugLbl6:"Estrategias",aiErrAuth:"Error de autenticación con la API.",aiErrRate:"Demasiadas peticiones. Espera un momento.",aiErrNet:"Error al conectar. Intenta de nuevo.",aiConnected:"Conectado",zoneLoadHint:"Los límites se cargan de OpenStreetMap en tiempo real."},
-CA:{hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Exemples reals: només després d'Analitzar.",tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",tab6:"6 Exemples reals",tab7:"🤖 AI Advisor",lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",hintP:"Omple les dades bàsiques per continuar.",lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",tipInc:"Ingressos nets (el que entra al compte).",tipSav:"Només el que pots usar de veritat.",tipMsv:"Per estimar quant tardes a arribar al cash necessari.",hintE:"Completa economia i passa a preferències.",lblMuni:"Municipi (Baix Penedès)",lblMuniHelp:"Usa el mapa per triar diversos municipis.",lblM2:"Metres quadrats (≥50)",lblBed:"Habitacions",lblBath:"Banys",lblType:"Tipus d'habitatge",optFlat:"Pis",optHouse:"Casa",lblExtras:"Extres (opcional)",lblExtrasHint:"Canvien el preu estimat i els filtres dels exemples reals.",exTer:"Terrassa",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcament",exSto:"Traster",exGarD:"Jardí",exAir:"Aire condicionat",btnAnalyze:"Analitzar",btnMap:"Mapa (zona real)",hintF:"Si canvies preferències, torna a Analitzar.",zoneTitle:"Zona preferida (mapa real)",zoneHint:"Clica un municipi per seleccionar-lo.",btnClear:"Netejar",btnUse:"Usar a Exemples reals",legSel:"Seleccionat",legOk:"Límits reals",kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",chartEffTitle:"Esforç mensual (visual)",chartEffHint:"Línia: capacitat segura (35% ingressos). Barres: hipoteca vs lloguer.",chartSensTitle:"Sensibilitat (tipus d'interès)",chartSensHint:"Com canvia la quota si puja el tipus.",chartTipsTitle:"Lectura ràpida",lblProv:"Província (comparador)",lblM2s:"m²",lblType2:"Tipus",btnCompare:"Comparar",btnUseMine:"Usar les meves dades",lblExtras2:"Extres (comparador)",lblExtrasHint2:"Mateixes característiques, zona diferent.",cmpTitle:"Resultat del comparador",cmpChartTitle:"Comparació visual",cmpChartHint:"La teva zona vs província. Mateixa vivenda, context diferent.",hintX:"Si has triat diversos municipis, surten botons per municipi.",yes:"Sí",no:"No",recBuy:"COMPRAR",recRent:"LLOGAR",recNotFeasible:"NO FACTIBLE",toastCheck:"Revisa nom/edat i que m²/banys siguin vàlids.",toastFirst:"Primer analitza.",toastPrefs:"Preferències canviades: torna a Analitzar.",toastNoLink:"No s'ha pogut generar l'enllaç",toastCopied:"Copiat",toastZoneCleared:"Zona netejada",toastNoZone:"No hi ha municipis seleccionats",toastZoneApplied:"Zona aplicada",stateReady:"✅ Disponible",stateNeed:"⛔ Cal Analitzar",xInfo:"Municipi: {muni} · Estat: {state}",sumTitle:"Resum · {rec}",chipMort:"Esforç hipoteca: {pct}",chipRent:"Esforç lloguer: {pct}",chipCash:"Cash necessari: {eur}",chipRate:"Tipus: {rate}",miniPrice:"Preu estimat",miniPay:"Quota hipoteca",miniRent:"Lloguer estimat",savingsOk:"✅ Estalvis suficients per a entrada + despeses.",yearsToSave:"Estalviant {msv}/mes, arribaràs a l'objectiu en ~{yrs} anys ({mos} mesos).",itpNote:"A Catalunya la compra implica ~10% ITP + notaria/registre.",avgZone:"Mitjana de {n} municipis",stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",cmpExplTitle:"Interpretació",any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² i banys (mínim 1).",aiWelcome:"👋 Hola! Soc el teu assessor financer personal. Conec el teu anàlisi complet i estic aquí per ajudar-te. En què et puc ajudar?",aiThinking:"Analitzant...",aiYou:"TU",aiPlaceholder:"Escriu la teva pregunta aquí...",aiSend:"Enviar",aiSug1:"Què puc fer per millorar la meva situació?",aiSug2:"Quant necessito estalviar mensualment per comprar?",aiSug3:"És millor comprar o llogar en el meu cas específic?",aiSug4:"Quins municipis del Baix Penedès em recomanes?",aiSug5:"Com m'afectaria una pujada del tipus d'interès?",aiSug6:"Dona'm estratègies per augmentar la meva capacitat de compra",aiSugLbl1:"Com millorar?",aiSugLbl2:"Quant estalviar?",aiSugLbl3:"Comprar o llogar?",aiSugLbl4:"Quins municipis?",aiSugLbl5:"I si puja el tipus?",aiSugLbl6:"Estratègies",aiErrAuth:"Error d'autenticació amb l'API.",aiErrRate:"Massa peticions. Espera un moment.",aiErrNet:"Error en connectar. Torna-ho a intentar.",aiConnected:"Connectat",zoneLoadHint:"Els límits es carreguen d'OpenStreetMap en temps real."},
-EN:{hdrTitle:"Housing Advisor · Baix Penedès",hdrHint:"Real examples: only after Analyze.",tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",tab6:"6 Real examples",tab7:"🤖 AI Advisor",lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",hintP:"Fill in the basics to continue.",lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",tipInc:"Net income (what actually hits your bank account).",tipSav:"Only what you can truly use.",tipMsv:"Used to estimate how long it takes to reach the needed cash.",hintE:"Complete finance and move to preferences.",lblMuni:"Town (Baix Penedès)",lblMuniHelp:"Use the map to pick multiple towns.",lblM2:"Square meters (≥50)",lblBed:"Bedrooms",lblBath:"Bathrooms",lblType:"Property type",optFlat:"Flat",optHouse:"House",lblExtras:"Extras (optional)",lblExtrasHint:"They change the price estimate and real-example filters.",exTer:"Terrace",exPis:"Pool",exAsc:"Elevator",exGar:"Parking",exSto:"Storage",exGarD:"Garden",exAir:"Air conditioning",btnAnalyze:"Analyze",btnMap:"Map (real area)",hintF:"If you change preferences, analyze again.",zoneTitle:"Preferred area (real map)",zoneHint:"Click a municipality to select it.",btnClear:"Clear",btnUse:"Use in Real examples",legSel:"Selected",legOk:"Real boundaries",kPrice:"Estimated price",kRent:"Estimated rent",kPay:"Mortgage payment",kRec:"Recommendation",btnCopy:"Copy summary",btnReset:"Reset",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",chartEffTitle:"Monthly effort (visual)",chartEffHint:"Line: safe capacity (35% of income). Bars: mortgage vs rent.",chartSensTitle:"Sensitivity (interest rate)",chartSensHint:"How payment changes if rates rise.",chartTipsTitle:"Quick read",lblProv:"Province (comparator)",lblM2s:"m²",lblType2:"Type",btnCompare:"Compare",btnUseMine:"Use my data",lblExtras2:"Extras (comparator)",lblExtrasHint2:"Same features, different area.",cmpTitle:"Comparator result",cmpChartTitle:"Visual comparison",cmpChartHint:"Your area vs province. Same home, different context.",hintX:"If you chose multiple towns, you get buttons per town.",yes:"Yes",no:"No",recBuy:"BUY",recRent:"RENT",recNotFeasible:"NOT FEASIBLE",toastCheck:"Check name/age and ensure m²/bathrooms are valid.",toastFirst:"Analyze first.",toastPrefs:"Preferences changed: analyze again.",toastNoLink:"Could not generate the link",toastCopied:"Copied",toastZoneCleared:"Area cleared",toastNoZone:"No towns selected",toastZoneApplied:"Area applied",stateReady:"✅ Ready",stateNeed:"⛔ Please Analyze",xInfo:"Town: {muni} · Status: {state}",sumTitle:"Summary · {rec}",chipMort:"Mortgage effort: {pct}",chipRent:"Rent effort: {pct}",chipCash:"Cash needed: {eur}",chipRate:"Rate: {rate}",miniPrice:"Estimated price",miniPay:"Mortgage payment",miniRent:"Estimated rent",savingsOk:"✅ Savings cover down payment + costs.",yearsToSave:"Saving {msv}/mo, you'll reach the goal in ~{yrs} years ({mos} months).",itpNote:"In Catalunya, purchase implies ~10% tax + notary/registry.",avgZone:"Average of {n} towns",stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",cmpExplTitle:"Interpretation",any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² and bathrooms (min 1).",aiWelcome:"👋 Hello! I'm your personal financial advisor. I know your full analysis and I'm here to help. What would you like to know?",aiThinking:"Analyzing...",aiYou:"YOU",aiPlaceholder:"Type your question here...",aiSend:"Send",aiSug1:"What can I do to improve my situation?",aiSug2:"How much do I need to save monthly to buy?",aiSug3:"Is it better to buy or rent in my specific case?",aiSug4:"Which towns in Baix Penedès do you recommend?",aiSug5:"How would a rate increase affect me?",aiSug6:"Give me strategies to increase my buying power",aiSugLbl1:"How to improve?",aiSugLbl2:"How much to save?",aiSugLbl3:"Buy or rent?",aiSugLbl4:"Which towns?",aiSugLbl5:"If rates rise?",aiSugLbl6:"Strategies",aiErrAuth:"Authentication error with the API.",aiErrRate:"Too many requests. Please wait.",aiErrNet:"Connection error. Please try again.",aiConnected:"Connected",zoneLoadHint:"Boundaries loaded live from OpenStreetMap."}
+ES:{hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Ejemplos reales: solo después de Analizar.",tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",tab6:"6 Ejemplos reales",tab7:"🤖 AI Advisor",lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",hintP:"Rellena los datos básicos para continuar.",lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",tipInc:"Ingresos netos (lo que realmente entra en tu cuenta). Si metes bruto, la recomendación se distorsiona.",tipSav:"Solo lo que puedes usar de verdad. Entrada + impuestos + notaría van aquí.",tipMsv:"Sirve para estimar cuánto tardas en llegar al cash necesario si hoy no te da.",hintE:"Completa economía y sigue a preferencias.",lblMuni:"Municipio (Baix Penedès)",lblMuniHelp:"Usa el mapa para elegir varios municipios.",lblM2:"Metros cuadrados (≥50)",lblBed:"Habitaciones",lblBath:"Baños",lblType:"Tipo de vivienda",optFlat:"Piso",optHouse:"Casa",lblExtras:"Extras (opcional)",lblExtrasHint:"Cambian el precio estimado y los filtros de ejemplos reales.",exTer:"Terraza",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcamiento",exSto:"Trastero",exGarD:"Jardín",exAir:"Aire acondicionado",btnAnalyze:"Analizar",btnMap:"Mapa (zona real)",hintF:"Si cambias preferencias, vuelve a Analizar.",zoneTitle:"Zona preferida (mapa real)",zoneHint:"Haz clic en un municipio para seleccionarlo.",btnClear:"Limpiar",btnUse:"Usar en Ejemplos reales",legSel:"Seleccionado",legOk:"Límites reales",kPrice:"Precio estimado",kRent:"Alquiler estimado",kPay:"Cuota hipoteca",kRec:"Recomendación",btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",chartEffTitle:"Esfuerzo mensual (visual)",chartEffHint:"Línea: capacidad segura (35% ingresos). Barras: hipoteca vs alquiler.",chartSensTitle:"Sensibilidad (tipo de interés)",chartSensHint:"Cómo cambia la cuota si sube el tipo. No predice el futuro.",chartTipsTitle:"Lectura rápida",lblProv:"Provincia (comparador)",lblM2s:"m²",lblType2:"Tipo",btnCompare:"Comparar",btnUseMine:"Usar mis datos",lblExtras2:"Extras (comparador)",lblExtrasHint2:"Mismas características, distinta zona.",cmpTitle:"Resultado del comparador",cmpChartTitle:"Comparación visual",cmpChartHint:"Tu zona vs provincia. Misma vivienda, distinto contexto.",hintX:"Si elegiste varios municipios, salen botones por municipio.",yes:"Sí",no:"No",recBuy:"COMPRAR",recRent:"ALQUILAR",recNotFeasible:"NO FACTIBLE",toastCheck:"Revisa nombre/edad y que m²/baños sean válidos.",toastFirst:"Primero analiza.",toastPrefs:"Preferencias cambiadas: vuelve a Analizar.",toastNoLink:"No se pudo generar el link",toastCopied:"Copiado",toastZoneCleared:"Zona limpiada",toastNoZone:"No hay municipios seleccionados",toastZoneApplied:"Zona aplicada",stateReady:"✅ Disponible",stateNeed:"⛔ Requiere Analizar",xInfo:"Municipio: {muni} · Estado: {state}",sumTitle:"Resumen · {rec}",chipMort:"Esfuerzo hipoteca: {pct}",chipRent:"Esfuerzo alquiler: {pct}",chipCash:"Cash necesario: {eur}",chipRate:"Tipo: {rate}",miniPrice:"Precio estimado",miniPay:"Cuota hipoteca",miniRent:"Alquiler estimado",savingsOk:"✅ Ahorros suficientes para entrada + costes.",yearsToSave:"Ahorrando {msv}/mes, llegarás al objetivo en ~{yrs} años ({mos} meses).",itpNote:"En Catalunya la compra implica ~10% ITP + notaría/registro. Aquí se incluye como 'gastos'.",avgZone:"Media de {n} municipios",stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",cmpExplTitle:"Interpretación",any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² y baños (mínimo 1).",aiWelcome:"👋 ¡Hola! Soy tu asesor financiero personal. Conozco tu análisis completo y estoy aquí para ayudarte. ¿En qué puedo ayudarte?",aiThinking:"Analizando...",aiYou:"TÚ",aiPlaceholder:"Escribe tu pregunta aquí...",aiSend:"Enviar",aiSug1:"¿Qué puedo hacer para mejorar mi situación?",aiSug2:"¿Cuánto necesito ahorrar mensualmente para comprar?",aiSug3:"¿Es mejor comprar o alquilar en mi caso específico?",aiSug4:"¿Qué municipios del Baix Penedès me recomiendas?",aiSug5:"¿Cómo me afectaría una subida del tipo de interés?",aiSug6:"Dame estrategias para aumentar mi capacidad de compra",aiSugLbl1:"¿Cómo mejorar?",aiSugLbl2:"¿Cuánto ahorrar?",aiSugLbl3:"¿Comprar o alquilar?",aiSugLbl4:"¿Qué municipios?",aiSugLbl5:"¿Y si sube el tipo?",aiSugLbl6:"Estrategias",aiErrAuth:"Error de autenticación con la API.",aiErrRate:"Demasiadas peticiones. Espera un momento.",aiErrNet:"Error al conectar. Intenta de nuevo.",aiConnected:"Conectado",zoneLoadHint:"Límites cargados localmente (sin bloqueos CORS)."},
+CA:{hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Exemples reals: només després d'Analitzar.",tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",tab6:"6 Exemples reals",tab7:"🤖 AI Advisor",lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",hintP:"Omple les dades bàsiques per continuar.",lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",tipInc:"Ingressos nets (el que entra al compte).",tipSav:"Només el que pots usar de veritat.",tipMsv:"Per estimar quant tardes a arribar al cash necessari.",hintE:"Completa economia i passa a preferències.",lblMuni:"Municipi (Baix Penedès)",lblMuniHelp:"Usa el mapa per triar diversos municipis.",lblM2:"Metres quadrats (≥50)",lblBed:"Habitacions",lblBath:"Banys",lblType:"Tipus d'habitatge",optFlat:"Pis",optHouse:"Casa",lblExtras:"Extres (opcional)",lblExtrasHint:"Canvien el preu estimat i els filtres dels exemples reals.",exTer:"Terrassa",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcament",exSto:"Traster",exGarD:"Jardí",exAir:"Aire condicionat",btnAnalyze:"Analitzar",btnMap:"Mapa (zona real)",hintF:"Si canvies preferències, torna a Analitzar.",zoneTitle:"Zona preferida (mapa real)",zoneHint:"Clica un municipi per seleccionar-lo.",btnClear:"Netejar",btnUse:"Usar a Exemples reals",legSel:"Seleccionat",legOk:"Límits reals",kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",chartEffTitle:"Esforç mensual (visual)",chartEffHint:"Línia: capacitat segura (35% ingressos). Barres: hipoteca vs lloguer.",chartSensTitle:"Sensibilitat (tipus d'interès)",chartSensHint:"Com canvia la quota si puja el tipus.",chartTipsTitle:"Lectura ràpida",lblProv:"Província (comparador)",lblM2s:"m²",lblType2:"Tipus",btnCompare:"Comparar",btnUseMine:"Usar les meves dades",lblExtras2:"Extres (comparador)",lblExtrasHint2:"Mateixes característiques, zona diferent.",cmpTitle:"Resultat del comparador",cmpChartTitle:"Comparació visual",cmpChartHint:"La teva zona vs província. Mateixa vivenda, context diferent.",hintX:"Si has triat diversos municipis, surten botons per municipi.",yes:"Sí",no:"No",recBuy:"COMPRAR",recRent:"LLOGAR",recNotFeasible:"NO FACTIBLE",toastCheck:"Revisa nom/edat i que m²/banys siguin vàlids.",toastFirst:"Primer analitza.",toastPrefs:"Preferències canviades: torna a Analitzar.",toastNoLink:"No s'ha pogut generar l'enllaç",toastCopied:"Copiat",toastZoneCleared:"Zona netejada",toastNoZone:"No hi ha municipis seleccionats",toastZoneApplied:"Zona aplicada",stateReady:"✅ Disponible",stateNeed:"⛔ Cal Analitzar",xInfo:"Municipi: {muni} · Estat: {state}",sumTitle:"Resum · {rec}",chipMort:"Esforç hipoteca: {pct}",chipRent:"Esforç lloguer: {pct}",chipCash:"Cash necessari: {eur}",chipRate:"Tipus: {rate}",miniPrice:"Preu estimat",miniPay:"Quota hipoteca",miniRent:"Lloguer estimat",savingsOk:"✅ Estalvis suficients per a entrada + despeses.",yearsToSave:"Estalviant {msv}/mes, arribaràs a l'objectiu en ~{yrs} anys ({mos} mesos).",itpNote:"A Catalunya la compra implica ~10% ITP + notaria/registre.",avgZone:"Mitjana de {n} municipis",stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",cmpExplTitle:"Interpretació",any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² i banys (mínim 1).",aiWelcome:"👋 Hola! Soc el teu assessor financer personal. Conec el teu anàlisi complet i estic aquí per ajudar-te. En què et puc ajudar?",aiThinking:"Analitzant...",aiYou:"TU",aiPlaceholder:"Escriu la teva pregunta aquí...",aiSend:"Enviar",aiSug1:"Què puc fer per millorar la meva situació?",aiSug2:"Quant necessito estalviar mensualment per comprar?",aiSug3:"És millor comprar o llogar en el meu cas específic?",aiSug4:"Quins municipis del Baix Penedès em recomanes?",aiSug5:"Com m'afectaria una pujada del tipus d'interès?",aiSug6:"Dona'm estratègies per augmentar la meva capacitat de compra",aiSugLbl1:"Com millorar?",aiSugLbl2:"Quant estalviar?",aiSugLbl3:"Comprar o llogar?",aiSugLbl4:"Quins municipis?",aiSugLbl5:"I si puja el tipus?",aiSugLbl6:"Estratègies",aiErrAuth:"Error d'autenticació amb l'API.",aiErrRate:"Massa peticions. Espera un moment.",aiErrNet:"Error en connectar. Torna-ho a intentar.",aiConnected:"Connectat",zoneLoadHint:"Límits carregats localment (sense bloquejos CORS)."},
+EN:{hdrTitle:"Housing Advisor · Baix Penedès",hdrHint:"Real examples: only after Analyze.",tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",tab6:"6 Real examples",tab7:"🤖 AI Advisor",lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",hintP:"Fill in the basics to continue.",lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",tipInc:"Net income (what actually hits your bank account).",tipSav:"Only what you can truly use.",tipMsv:"Used to estimate how long it takes to reach the needed cash.",hintE:"Complete finance and move to preferences.",lblMuni:"Town (Baix Penedès)",lblMuniHelp:"Use the map to pick multiple towns.",lblM2:"Square meters (≥50)",lblBed:"Bedrooms",lblBath:"Bathrooms",lblType:"Property type",optFlat:"Flat",optHouse:"House",lblExtras:"Extras (optional)",lblExtrasHint:"They change the price estimate and real-example filters.",exTer:"Terrace",exPis:"Pool",exAsc:"Elevator",exGar:"Parking",exSto:"Storage",exGarD:"Garden",exAir:"Air conditioning",btnAnalyze:"Analyze",btnMap:"Map (real area)",hintF:"If you change preferences, analyze again.",zoneTitle:"Preferred area (real map)",zoneHint:"Click a municipality to select it.",btnClear:"Clear",btnUse:"Use in Real examples",legSel:"Selected",legOk:"Real boundaries",kPrice:"Estimated price",kRent:"Estimated rent",kPay:"Mortgage payment",kRec:"Recommendation",btnCopy:"Copy summary",btnReset:"Reset",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",chartEffTitle:"Monthly effort (visual)",chartEffHint:"Line: safe capacity (35% of income). Bars: mortgage vs rent.",chartSensTitle:"Sensitivity (interest rate)",chartSensHint:"How payment changes if rates rise.",chartTipsTitle:"Quick read",lblProv:"Province (comparator)",lblM2s:"m²",lblType2:"Type",btnCompare:"Compare",btnUseMine:"Use my data",lblExtras2:"Extras (comparator)",lblExtrasHint2:"Same features, different area.",cmpTitle:"Comparator result",cmpChartTitle:"Visual comparison",cmpChartHint:"Your area vs province. Same home, different context.",hintX:"If you chose multiple towns, you get buttons per town.",yes:"Yes",no:"No",recBuy:"BUY",recRent:"RENT",recNotFeasible:"NOT FEASIBLE",toastCheck:"Check name/age and ensure m²/bathrooms are valid.",toastFirst:"Analyze first.",toastPrefs:"Preferences changed: analyze again.",toastNoLink:"Could not generate the link",toastCopied:"Copied",toastZoneCleared:"Area cleared",toastNoZone:"No towns selected",toastZoneApplied:"Area applied",stateReady:"✅ Ready",stateNeed:"⛔ Please Analyze",xInfo:"Town: {muni} · Status: {state}",sumTitle:"Summary · {rec}",chipMort:"Mortgage effort: {pct}",chipRent:"Rent effort: {pct}",chipCash:"Cash needed: {eur}",chipRate:"Rate: {rate}",miniPrice:"Estimated price",miniPay:"Mortgage payment",miniRent:"Estimated rent",savingsOk:"✅ Savings cover down payment + costs.",yearsToSave:"Saving {msv}/mo, you'll reach the goal in ~{yrs} years ({mos} months).",itpNote:"In Catalunya, purchase implies ~10% tax + notary/registry.",avgZone:"Average of {n} towns",stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",cmpExplTitle:"Interpretation",any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² and bathrooms (min 1).",aiWelcome:"👋 Hello! I'm your personal financial advisor. I know your full analysis and I'm here to help. What would you like to know?",aiThinking:"Analyzing...",aiYou:"YOU",aiPlaceholder:"Type your question here...",aiSend:"Send",aiSug1:"What can I do to improve my situation?",aiSug2:"How much do I need to save monthly to buy?",aiSug3:"Is it better to buy or rent in my specific case?",aiSug4:"Which towns in Baix Penedès do you recommend?",aiSug5:"How would a rate increase affect me?",aiSug6:"Give me strategies to increase my buying power",aiSugLbl1:"How to improve?",aiSugLbl2:"How much to save?",aiSugLbl3:"Buy or rent?",aiSugLbl4:"Which towns?",aiSugLbl5:"If rates rise?",aiSugLbl6:"Strategies",aiErrAuth:"Authentication error with the API.",aiErrRate:"Too many requests. Please wait.",aiErrNet:"Connection error. Please try again.",aiConnected:"Connected",zoneLoadHint:"Locally loaded boundaries (no CORS blocking)."}
 };
 
 let LANG=localStorage.getItem(LANG_KEY)||"ES";
@@ -656,9 +573,11 @@ const applyI18n=()=>{
   const sb=Q("#chatSend");if(sb)sb.textContent=t("aiSend");
   // AI status chip
   const ais=Q("#aiStatus");if(ais)ais.textContent=t("aiConnected");
-  // Suggestion chips
-  const scs=Q("#aiSuggestions");
-  if(scs){scs.innerHTML=[1,2,3,4,5,6].map(i=>`<div class="suggestion-chip" data-q="${t("aiSug"+i)}">${t("aiSugLbl"+i)}</div>`).join("");}
+  const planBtn=Q("#aiPlanBtn");if(planBtn)planBtn.textContent=LANG==="EN"?"🧭 Action plan":(LANG==="CA"?"🧭 Pla d'acció":"🧭 Plan de acción");
+  const clearBtn=Q("#aiClearBtn");if(clearBtn)clearBtn.textContent=LANG==="EN"?"🗑️ Clear chat":(LANG==="CA"?"🗑️ Netejar xat":"🗑️ Limpiar chat");
+  const copyBtn=Q("#aiCopyBtn");if(copyBtn)copyBtn.textContent=LANG==="EN"?"📋 Copy chat":(LANG==="CA"?"📋 Copiar xat":"📋 Copiar chat");
+  renderAISuggestions();
+  renderAIContext();
 };
 const setLang=l=>{
   LANG=l;localStorage.setItem(LANG_KEY,l);
@@ -738,7 +657,7 @@ const drawEffortChart=()=>{
   const pL=12,pR=12,pT=18,pB=26,pW=w-pL-pR,pH=h-pT-pB;
   const ySafe=pT+pH*(1-(safe/maxV));
   ctx.strokeStyle="rgba(56,189,248,.90)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(pL,ySafe);ctx.lineTo(w-pR,ySafe);ctx.stroke();
-  drawTxt(ctx,(LANG==="EN"?"Safe ":"Cap.segura ")+fmtMoney(safe),pL+6,ySafe-6,11,"#7dd3fc","left");
+  drawTxt(ctx,(LANG==="EN"?"Safe capacity ":(LANG==="CA"?"Capacitat segura ":"Capacidad segura "))+fmtMoney(safe),pL+6,ySafe-6,11,"#7dd3fc","left");
   const bW=Math.min(100,pW/4);
   const bar=(x,val,lbl,fill,tc)=>{const bh=pH*(val/maxV);const y=pT+pH-bh;ctx.fillStyle=fill;ctx.globalAlpha=.92;ctx.fillRect(x,y,bW,bh);ctx.globalAlpha=1;ctx.strokeStyle="rgba(255,255,255,.12)";ctx.strokeRect(x,y,bW,bh);drawTxt(ctx,lbl,x+bW/2,pT+pH+18,12,"#cbd5e1","center");drawTxt(ctx,fmtMoney(val),x+bW/2,y-6,12,tc,"center");};
   bar(pL+pW*.3-bW/2,buyV,LANG==="EN"?"BUY":"COMPRA","rgba(34,197,94,.60)","#86efac");
@@ -811,7 +730,7 @@ const analyze=()=>{
   Q("#k3sub").textContent=`${yrs} ${LANG==="EN"?"years":"años"} · ${(rate*100).toFixed(2)}%`;
   Q("#k4sub").textContent=recCode==="BUY"?(LANG==="EN"?"You fit cash + effort":"Encajas cash + esfuerzo"):recCode==="RENT"?(LANG==="EN"?"Buying is tight":"Comprar aprieta"):(LANG==="EN"?"Neither option fits safely":"No encaja con seguridad");
 
-  renderResult();setTabsEnabled();saveForm();show("r");
+  renderResult();renderAIContext();renderAISuggestions();setTabsEnabled();saveForm();show("r");
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
 };
 
@@ -851,7 +770,7 @@ const renderResult=()=>{
   else if(last.recCode==="RENT"){if(last.need)why.push((LANG==="EN"?"Short on cash":"Falta cash")+": "+fmtMoney(last.needCash-last.sav));if(dti>35)why.push((LANG==="EN"?"Mortgage effort high":"Esfuerzo hipoteca alto")+": "+fmtPct(dti));if(!last.hor)why.push(LANG==="EN"?"Short horizon: buying less efficient":"Horizonte corto: comprar menos eficiente");why.push(LANG==="EN"?"Rent closer to a safer monthly load":"Alquiler más cerca de carga mensual segura");}
   else{if(last.need)why.push(LANG==="EN"?"Not enough cash for down payment + costs":"No hay cash suficiente para entrada + costes");if(dti>35)why.push((LANG==="EN"?"Mortgage effort exceeds limit":"Esfuerzo hipoteca supera límite")+": "+fmtPct(dti));if(rti>40)why.push((LANG==="EN"?"Rent effort also exceeds limit":"Esfuerzo alquiler también supera límite")+": "+fmtPct(rti));}
 
-  Q("#chartTips").textContent=(LANG==="EN"?"Safe ":"Cap.segura ")+fmtMoney(safe)+" · "+(LANG==="EN"?"Mortgage ":"Hip. ")+fmtMoney(last.pay)+" · "+(LANG==="EN"?"Rent ":"Alq. ")+fmtMoney(last.pr);
+  Q("#chartTips").textContent=(LANG==="EN"?"Safe capacity ":(LANG==="CA"?"Capacitat segura ":"Capacidad segura "))+fmtMoney(safe)+" · "+(LANG==="EN"?"Mortgage ":"Hip. ")+fmtMoney(last.pay)+" · "+(LANG==="EN"?"Rent ":"Alq. ")+fmtMoney(last.pr);
   const blockClr=last.recCode==="BUY"?"#22c55e":last.recCode==="RENT"?"#f59e0b":"#ef4444";
   Q("#quickExplain").innerHTML=`<div style="font-weight:950;color:#e5e7eb;margin-bottom:8px">${t("cmpExplTitle")}</div><div style="display:grid;gap:6px">${why.map(x=>`<div>• ${x}</div>`).join("")}</div>`;
 
@@ -1001,16 +920,14 @@ const initMap=()=>{
     maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',
     subdomains:"abcd"
   }).addTo(zmap);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(zmap);
   renderZoneUI();
-  // Cargar GeoJSON real de cada municipio desde Nominatim/OSM
+  // Carga local de polígonos (evita CORS/429 en GitHub Pages y funciona offline parcial)
   let loaded=0;const total=MUNI_NAMES.length;
   const mapContainer=document.querySelector("#zmap");
-  // Mostrar loader
   const loader=document.createElement("div");
   loader.id="zmapLoader";
   loader.style.cssText="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(2,6,23,.92);color:#7dd3fc;padding:14px 22px;border-radius:14px;border:1px solid rgba(56,189,248,.40);font-size:.9rem;font-weight:800;z-index:1000;pointer-events:none;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.5)";
-  loader.textContent=LANG==="EN"?"Loading real map...":LANG==="CA"?"Carregant mapa real...":"Cargando mapa real...";
+  loader.textContent=LANG==="EN"?"Loading local boundaries...":LANG==="CA"?"Carregant límits locals...":"Cargando límites locales...";
   if(mapContainer){mapContainer.style.position="relative";mapContainer.appendChild(loader);}
 
   const onDone=()=>{
@@ -1030,75 +947,23 @@ const initMap=()=>{
   };
 
   MUNI_NAMES.forEach(name=>{
-    const relId=OSM_IDS[name];
-    const url=`https://nominatim.openstreetmap.org/lookup?osm_type=R&osm_ids=R${relId}&format=geojson&polygon_geojson=1`;
-    fetch(url,{headers:{"Accept-Language":"es","User-Agent":"HousingAdvisor/1.0"}})
-      .then(r=>r.json())
-      .then(data=>{
-        if(!data.features||!data.features.length)throw new Error("no features");
-        const geom=data.features[0].geometry;
-        const on=zoneSel.has(name);
-        const style={fillColor:on?"#38bdf8":"#4ade80",fillOpacity:on?.35:.10,
-                     color:on?"#0ea5e9":"#16a34a",weight:on?2.5:1.5,opacity:on?1:.70};
-        let layer;
-        if(geom.type==="Polygon"){
-          const latlngs=geom.coordinates[0].map(c=>[c[1],c[0]]);
-          layer=L.polygon(latlngs,style).addTo(zmap);
-        }else if(geom.type==="MultiPolygon"){
-          const rings=geom.coordinates.map(poly=>poly[0].map(c=>[c[1],c[0]]));
-          layer=L.polygon(rings,style).addTo(zmap);
-        }
-        if(layer){
-          layer.bindTooltip(name,{permanent:false,direction:"center",opacity:.95,
-            className:"muni-tooltip"});
-          layer.on("mouseover",function(){
-            if(!zoneSel.has(name))this.setStyle({fillOpacity:.22,fillColor:"#86efac"});
-          });
-          layer.on("mouseout",function(){
-            if(!zoneSel.has(name))this.setStyle({fillOpacity:.10,fillColor:"#4ade80"});
-          });
-          layer.on("click",()=>toggleZone(name,false));
-          polygonsByName.set(name,layer);
-        }
-        onDone();
-      })
-      .catch(()=>{
-        // Fallback: polígono de respaldo si falla la carga
-        const fb=FALLBACK_POLYGONS[name];
-        if(fb){
-          const on=zoneSel.has(name);
-          const style={fillColor:on?"#38bdf8":"#4ade80",fillOpacity:on?.35:.10,
-                       color:on?"#0ea5e9":"#16a34a",weight:on?2.5:1.5,opacity:on?1:.70};
-          const layer=L.polygon(fb,style).addTo(zmap);
-          layer.bindTooltip(name,{permanent:false,direction:"center",opacity:.95,className:"muni-tooltip"});
-          layer.on("mouseover",function(){if(!zoneSel.has(name))this.setStyle({fillOpacity:.22,fillColor:"#86efac"});});
-          layer.on("mouseout",function(){if(!zoneSel.has(name))this.setStyle({fillOpacity:.10,fillColor:"#4ade80"});});
-          layer.on("click",()=>toggleZone(name,false));
-          polygonsByName.set(name,layer);
-        }
-        onDone();
-      });
+    const fb=FALLBACK_POLYGONS[name];
+    if(fb){
+      const on=zoneSel.has(name);
+      const style={fillColor:on?"#38bdf8":"#4ade80",fillOpacity:on?.24:.07,
+                   color:on?"#0ea5e9":"#16a34a",weight:on?2.2:1.2,opacity:on?.95:.65};
+      const layer=L.polygon(fb,{...style,smoothFactor:1.2}).addTo(zmap);
+      layer.bindTooltip(name,{permanent:false,direction:"center",opacity:.95,className:"muni-tooltip"});
+      layer.on("mouseover",function(){if(!zoneSel.has(name))this.setStyle({fillOpacity:.22,fillColor:"#86efac"});});
+      layer.on("mouseout",function(){if(!zoneSel.has(name))this.setStyle({fillOpacity:.10,fillColor:"#4ade80"});});
+      layer.on("click",()=>toggleZone(name,false));
+      polygonsByName.set(name,layer);
+    }
+    onDone();
   });
   setTimeout(()=>zmap.invalidateSize(),200);
 };
 
-// Polígonos de respaldo (fallback) si Nominatim no está disponible
-const FALLBACK_POLYGONS={
-  "El Vendrell":[[41.222,1.531],[41.231,1.545],[41.234,1.558],[41.228,1.571],[41.215,1.576],[41.203,1.570],[41.196,1.553],[41.198,1.537],[41.208,1.524],[41.222,1.531]],
-  "Calafell":[[41.192,1.552],[41.203,1.558],[41.212,1.574],[41.213,1.592],[41.206,1.608],[41.193,1.614],[41.181,1.606],[41.176,1.589],[41.179,1.568],[41.186,1.554],[41.192,1.552]],
-  "Cunit":[[41.199,1.620],[41.207,1.628],[41.214,1.642],[41.212,1.654],[41.202,1.659],[41.194,1.653],[41.189,1.639],[41.191,1.624],[41.199,1.620]],
-  "Bellvei":[[41.215,1.559],[41.224,1.564],[41.231,1.578],[41.230,1.593],[41.221,1.602],[41.209,1.604],[41.199,1.595],[41.197,1.579],[41.205,1.566],[41.215,1.559]],
-  "Santa Oliva":[[41.240,1.521],[41.252,1.530],[41.259,1.547],[41.257,1.563],[41.246,1.573],[41.233,1.570],[41.226,1.554],[41.230,1.538],[41.240,1.521]],
-  "Albinyana":[[41.231,1.490],[41.244,1.499],[41.251,1.514],[41.249,1.528],[41.238,1.538],[41.224,1.535],[41.216,1.520],[41.218,1.503],[41.231,1.490]],
-  "L'Arboç":[[41.259,1.594],[41.272,1.604],[41.278,1.619],[41.273,1.635],[41.261,1.641],[41.249,1.633],[41.244,1.617],[41.249,1.601],[41.259,1.594]],
-  "Llorenç del Penedès":[[41.271,1.564],[41.283,1.573],[41.290,1.588],[41.288,1.602],[41.277,1.610],[41.264,1.607],[41.258,1.592],[41.261,1.577],[41.271,1.564]],
-  "Banyeres del Penedès":[[41.286,1.576],[41.298,1.583],[41.306,1.597],[41.303,1.612],[41.291,1.619],[41.278,1.615],[41.272,1.600],[41.276,1.583],[41.286,1.576]],
-  "Sant Jaume dels Domenys":[[41.299,1.561],[41.313,1.570],[41.320,1.588],[41.317,1.605],[41.303,1.613],[41.290,1.608],[41.283,1.591],[41.287,1.573],[41.299,1.561]],
-  "La Bisbal del Penedès":[[41.268,1.482],[41.282,1.492],[41.290,1.509],[41.287,1.525],[41.273,1.534],[41.259,1.528],[41.253,1.511],[41.257,1.494],[41.268,1.482]],
-  "Bonastre":[[41.214,1.432],[41.227,1.441],[41.233,1.458],[41.229,1.473],[41.215,1.480],[41.203,1.471],[41.198,1.453],[41.205,1.437],[41.214,1.432]],
-  "Masllorenç":[[41.259,1.409],[41.275,1.419],[41.282,1.436],[41.278,1.452],[41.264,1.460],[41.250,1.452],[41.244,1.434],[41.250,1.416],[41.259,1.409]],
-  "El Montmell":[[41.293,1.448],[41.311,1.462],[41.319,1.483],[41.314,1.502],[41.296,1.513],[41.278,1.505],[41.271,1.483],[41.278,1.462],[41.293,1.448]]
-};
 const MUNI_SLUG={"Cunit":"cunit-tarragona","El Vendrell":"el-vendrell-tarragona","Calafell":"calafell-tarragona","Santa Oliva":"santa-oliva-tarragona","Bellvei":"bellvei-tarragona","L'Arboç":"l-arboc-tarragona","Banyeres del Penedès":"banyeres-del-penedes-tarragona","Albinyana":"albinyana-tarragona","Bonastre":"bonastre-tarragona","Masllorenç":"masllorenc-tarragona","La Bisbal del Penedès":"la-bisbal-del-penedes-tarragona","Llorenç del Penedès":"llorenc-del-penedes-tarragona","Sant Jaume dels Domenys":"sant-jaume-dels-domenys-tarragona","El Montmell":"el-montmell-tarragona"};
 const bedSlug=n=>{n=+n||0;if(n<=0)return"estudios";if(n===1)return"de-un-dormitorio";if(n===2)return"de-dos-dormitorios";if(n===3)return"de-tres-dormitorios";return"de-cuatro-cinco-habitaciones-o-mas";};
 const bathSlug=n=>{n=+n||0;if(n<=1)return"un-bano";if(n===2)return"dos-banos";return"tres-banos-o-mas";};
@@ -1140,12 +1005,56 @@ const refreshExamplesUI=()=>{
 /* ============================
    AI CHAT
    ============================ */
-let chatHistory=[],isAIProcessing=false;
+let chatHistory=[],isAIProcessing=false,pendingPlanOffer=false;
 
 const loadChatHistory=()=>{
   try{const s=localStorage.getItem(CHAT_KEY);if(s){chatHistory=JSON.parse(s)||[];renderChatHistory();}}catch(e){}
 };
 const saveChatHistory=()=>{try{localStorage.setItem(CHAT_KEY,JSON.stringify(chatHistory));}catch(e){}};
+
+const renderAIContext=()=>{
+  const box=Q("#aiContext");
+  if(!box) return;
+  const c=getUserContext();
+  if(!c){
+    box.innerHTML=`<span class="ai-context-chip warn">${LANG==="EN"?"Complete and analyze your case to activate smart context":(LANG==="CA"?"Completa i analitza el teu cas per activar context intel·ligent":"Completa y analiza tu caso para activar contexto inteligente")}</span>`;
+    return;
+  }
+  const gap=Math.max(0,c.needCash-c.sav);
+  const chips=[
+    `<span class="ai-context-chip">🎯 ${c.rec}</span>`,
+    `<span class="ai-context-chip ${c.ratio>35?"warn":""}">🏦 ${LANG==="EN"?"Mortgage effort":(LANG==="CA"?"Esforç hipoteca":"Esfuerzo hipoteca")}: ${_fp(c.ratio)}</span>`,
+    `<span class="ai-context-chip">🏠 ${LANG==="EN"?"Estimated rent":(LANG==="CA"?"Lloguer estimat":"Alquiler estimado")}: ${_fm(c.pr)}</span>`,
+    gap>0?`<span class="ai-context-chip warn">💸 ${LANG==="EN"?"Savings gap":(LANG==="CA"?"Falta estalvi":"Falta ahorro")}: ${_fm(gap)}</span>`:`<span class="ai-context-chip">✅ ${LANG==="EN"?"Upfront cash covered":(LANG==="CA"?"Estalvi inicial cobert":"Ahorro inicial cubierto")}</span>`
+  ];
+  box.innerHTML=chips.join("");
+};
+
+const renderAISuggestions=()=>{
+  const scs=Q("#aiSuggestions");
+  if(!scs) return;
+  const base=[1,2,3,4,5,6].map(i=>({q:t("aiSug"+i),lbl:t("aiSugLbl"+i)}));
+  const c=getUserContext();
+  if(!c){
+    scs.innerHTML=base.map(x=>`<div class="suggestion-chip" data-q="${x.q}">${x.lbl}</div>`).join("");
+    return;
+  }
+  const extra=[];
+  if(c.need) extra.push({
+    q:LANG==="EN"?"Give me a monthly savings plan to close my upfront cash gap":(LANG==="CA"?"Dona'm un pla d'estalvi mensual per cobrir la manca d'entrada":"Dame un plan de ahorro mensual para cubrir la falta de entrada"),
+    lbl:LANG==="EN"?"Close savings gap":(LANG==="CA"?"Cobrir falta d'estalvi":"Cubrir ahorro")
+  });
+  if(c.ratio>35) extra.push({
+    q:LANG==="EN"?"How can I reduce my mortgage effort below 35%?":(LANG==="CA"?"Com puc baixar l'esforç hipotecari per sota del 35%?":"¿Cómo reduzco mi esfuerzo hipotecario por debajo del 35%?"),
+    lbl:LANG==="EN"?"Lower effort <35%":(LANG==="CA"?"Baixar esforç <35%":"Bajar esfuerzo <35%")
+  });
+  if(c.recCode==="BUY") extra.push({
+    q:LANG==="EN"?"Give me a negotiation checklist before making an offer":(LANG==="CA"?"Dona'm un checklist de negociació abans de fer oferta":"Dame un checklist de negociación antes de ofertar"),
+    lbl:LANG==="EN"?"Negotiate better":(LANG==="CA"?"Negociar millor":"Negociar mejor")
+  });
+  const list=[...extra,...base].slice(0,8);
+  scs.innerHTML=list.map(x=>`<div class="suggestion-chip" data-q="${x.q}">${x.lbl}</div>`).join("");
+};
 
 const getUserContext=()=>{
   if(!last)return null;
@@ -1255,6 +1164,295 @@ const getToneForProfile = (profile, LANG) => {
   return tones[LANG][key] || "";
 };
 
+
+
+/* ---- Motor experto local (reglas + scoring semántico) ---- */
+const AI_EXPERT_TOPICS=[
+  {id:"affordability",k:["esfuerzo","ratio","cuota","35%","asequible","afford","stress"]},
+  {id:"cashgap",k:["entrada","ahorro","falta","gap","inicial","down payment","cash"]},
+  {id:"buyvsrent",k:["comprar","alquilar","llogar","buy","rent","mejor opcion"]},
+  {id:"rates",k:["tipo","euribor","interest","subida","bajada","fijo","variable"]},
+  {id:"term",k:["plazo","anos","años","years","duracion","term"]},
+  {id:"savings",k:["ahorrar","estalviar","save","monthly","mensual","meses"]},
+  {id:"negotiation",k:["negociar","oferta","descuento","rebaja","arras","offer"]},
+  {id:"subsidies",k:["ayuda","subvencion","subsidio","itp","irpf","bonus"]},
+  {id:"towns",k:["municipio","zona","town","baixa","baix penedes","calafell","vendrell","cunit"]},
+  {id:"risk",k:["riesgo","risk","emergencia","seguridad","imprevisto","crisis"]}
+];
+
+/* ---- Base masiva de conocimiento general (multidominio) ---- */
+const AI_GENERAL_KB=[
+  {id:"economy",k:["inflacion","inflation","ipc","deflacion","pib","gdp","recesion","tipo de interes","euribor","deuda","fiscal","macroeconomia"],
+   ES:["Inflación sostenida reduce poder adquisitivo; compara siempre salario real vs IPC.","Diversificar ingresos y mantener liquidez reduce fragilidad ante recesiones.","Los ciclos monetarios impactan hipotecas, renta variable y consumo."],
+   CA:["La inflació sostinguda redueix poder adquisitiu; compara salari real vs IPC.","Diversificar ingressos i mantenir liquiditat redueix fragilitat en recessions.","Els cicles monetaris impacten hipoteques, renda variable i consum."],
+   EN:["Persistent inflation erodes purchasing power; track real wage vs CPI.","Diversifying income and holding liquidity lowers recession fragility.","Monetary cycles affect mortgages, equities, and consumer demand."]},
+  {id:"investing",k:["invertir","investment","etf","fondos","acciones","bonds","bonos","diversificacion","riesgo retorno","portfolio"],
+   ES:["Riesgo y retorno están ligados: evita promesas de rentabilidad alta sin volatilidad.","Costes bajos y horizonte largo suelen ganar frente a trading impulsivo.","Define asignación de activos según objetivo, plazo y tolerancia al riesgo."],
+   CA:["Risc i retorn estan lligats: evita promeses de rendibilitat alta sense volatilitat.","Costos baixos i horitzó llarg solen guanyar al trading impulsiu.","Defineix assignació d'actius segons objectiu, termini i tolerància al risc."],
+   EN:["Risk and return are linked: avoid high-return/no-volatility promises.","Low costs plus long horizon usually beat impulsive trading.","Set asset allocation by goal, timeline, and risk tolerance."]},
+  {id:"personal_finance",k:["presupuesto","budget","deuda","debt","ahorro","emergency fund","fondo emergencia","credit score","interes compuesto"],
+   ES:["Regla práctica: 50/30/20 adaptada a tu realidad de vivienda e ingresos.","Fondo de emergencia ideal: 3-6 meses de gastos esenciales.","Prioriza deuda de alto interés antes que inversiones de riesgo."],
+   CA:["Regla pràctica: 50/30/20 adaptada a la teva realitat d'habitatge i ingressos.","Fons d'emergència ideal: 3-6 mesos de despeses essencials.","Prioritza deute d'alt interès abans d'inversions de risc."],
+   EN:["Practical rule: 50/30/20 adapted to housing and income reality.","Ideal emergency fund: 3-6 months of essential expenses.","Prioritize high-interest debt before risky investments."]},
+  {id:"real_estate",k:["inmobiliario","real estate","compraventa","arras","tasacion","notaria","registro","alquiler","rent"],
+   ES:["Comprar requiere analizar coste total: entrada, impuestos, notaría, mantenimiento y oportunidad.","Alquilar puede ser racional si da flexibilidad o reduce riesgo financiero.","Negociar precio con comparables €/m² mejora resultado esperado."],
+   CA:["Comprar requereix analitzar cost total: entrada, impostos, notaria, manteniment i oportunitat.","Llogar pot ser racional si dona flexibilitat o redueix risc financer.","Negociar preu amb comparables €/m² millora el resultat esperat."],
+   EN:["Buying requires total-cost view: down payment, taxes, notary, maintenance, opportunity cost.","Renting can be rational if it improves flexibility or lowers financial risk.","Negotiating with €/m² comparables improves expected outcome."]},
+  {id:"business",k:["empresa","startup","pricing","margen","cashflow","ebitda","unit economics","clientes","marketing"],
+   ES:["Sin flujo de caja, el crecimiento no es sostenible.","Mide CAC/LTV y margen de contribución antes de escalar.","Precio debe reflejar valor percibido, coste y posición competitiva."],
+   CA:["Sense flux de caixa, el creixement no és sostenible.","Mesura CAC/LTV i marge de contribució abans d'escalar.","El preu ha de reflectir valor percebut, cost i posició competitiva."],
+   EN:["Without cashflow, growth is not sustainable.","Measure CAC/LTV and contribution margin before scaling.","Price must reflect perceived value, cost, and competitive position."]},
+  {id:"technology",k:["programacion","software","ia","ai","algoritmo","arquitectura","backend","frontend","api","database","sql","python","javascript"],
+   ES:["Buena ingeniería prioriza claridad, testabilidad y mantenibilidad.","Diseños simples con métricas y observabilidad reducen incidencias.","Seguridad básica: validación de entrada, mínimo privilegio y secretos fuera del código."],
+   CA:["Bona enginyeria prioritza claredat, testabilitat i mantenibilitat.","Dissenys simples amb mètriques i observabilitat redueixen incidències.","Seguretat bàsica: validació d'entrada, mínim privilegi i secrets fora del codi."],
+   EN:["Good engineering prioritizes clarity, testability, and maintainability.","Simple designs with metrics and observability reduce incidents.","Basic security: input validation, least privilege, and secrets outside code."]},
+  {id:"health",k:["salud","health","nutricion","ejercicio","sueño","stress","mental","ansiedad","dieta"],
+   ES:["Base de salud: sueño suficiente, actividad física regular y alimentación consistente.","No sustituyo consejo médico profesional; ante síntomas consulta un profesional.","Pequeños hábitos sostenibles superan cambios extremos de corta duración."],
+   CA:["Base de salut: son suficient, activitat física regular i alimentació consistent.","No substitueixo consell mèdic professional; amb símptomes consulta un professional.","Petits hàbits sostenibles superen canvis extrems de curta durada."],
+   EN:["Health basics: adequate sleep, regular physical activity, and consistent nutrition.","I do not replace professional medical advice; consult a clinician for symptoms.","Small sustainable habits beat short-lived extreme changes."]},
+  {id:"law",k:["legal","contrato","ley","leyes","derecho","demanda","impuesto","fiscal","compliance","rgpd"],
+   ES:["Puedo orientar en términos generales, pero no sustituyo asesoramiento legal profesional.","Lee cláusulas de penalización, plazos y jurisdicción antes de firmar.","En privacidad, minimización de datos y consentimiento informado son clave."],
+   CA:["Puc orientar en termes generals, però no substitueixo assessorament legal professional.","Llegeix clàusules de penalització, terminis i jurisdicció abans de signar.","En privacitat, minimització de dades i consentiment informat són clau."],
+   EN:["I can provide general guidance but not replace professional legal advice.","Review penalty clauses, timelines, and jurisdiction before signing.","For privacy, data minimization and informed consent are key."]},
+  {id:"education",k:["estudiar","aprender","learning","curso","universidad","exam","memoria","productividad"],
+   ES:["Aprendizaje efectivo: práctica activa + repetición espaciada + feedback.","Divide metas en bloques semanales con revisión de progreso.","Enseñar lo aprendido acelera comprensión y retención."],
+   CA:["Aprenentatge efectiu: pràctica activa + repetició espaiada + feedback.","Divideix metes en blocs setmanals amb revisió de progrés.","Ensenyar el que has après accelera comprensió i retenció."],
+   EN:["Effective learning: active practice + spaced repetition + feedback.","Break goals into weekly blocks with progress review.","Teaching what you learned accelerates understanding and retention."]},
+  {id:"career",k:["trabajo","job","salario","entrevista","cv","curriculum","promocion","liderazgo","management"],
+   ES:["Aumentar salario suele requerir evidencia de impacto medible y negociación preparada.","CV eficaz: logros con métricas, no solo tareas.","En entrevistas, estructura STAR mejora claridad de ejemplos."],
+   CA:["Augmentar salari sol requerir evidència d'impacte mesurable i negociació preparada.","CV eficaç: fites amb mètriques, no només tasques.","En entrevistes, estructura STAR millora claredat d'exemples."],
+   EN:["Salary growth often requires measurable impact evidence and prepared negotiation.","Strong CV: achievements with metrics, not just tasks.","In interviews, STAR structure improves example clarity."]},
+  {id:"science",k:["fisica","quimica","biologia","astronomia","ciencia","experimento","evidence","metodo cientifico"],
+   ES:["La ciencia avanza por evidencia reproducible, no por autoridad aislada.","Distinguir correlación de causalidad evita conclusiones erróneas.","Modelos son aproximaciones útiles, no verdades absolutas."],
+   CA:["La ciència avança per evidència reproduïble, no per autoritat aïllada.","Distingir correlació de causalitat evita conclusions errònies.","Els models són aproximacions útils, no veritats absolutes."],
+   EN:["Science advances through reproducible evidence, not isolated authority.","Distinguishing correlation from causation avoids wrong conclusions.","Models are useful approximations, not absolute truths."]},
+  {id:"history",k:["historia","history","guerra","imperio","revolucion","siglo","edad media","roma"],
+   ES:["Contexto importa: causas económicas, sociales y tecnológicas interactúan.","Evita anacronismos al juzgar decisiones del pasado.","Contrastar fuentes reduce sesgos narrativos."],
+   CA:["El context importa: causes econòmiques, socials i tecnològiques interactuen.","Evita anacronismes en jutjar decisions del passat.","Contrastar fonts redueix biaixos narratius."],
+   EN:["Context matters: economic, social, and technological causes interact.","Avoid anachronisms when judging past decisions.","Cross-checking sources reduces narrative bias."]},
+  {id:"philosophy",k:["filosofia","ethics","moral","existencial","sentido","stoic","utilitarismo"],
+   ES:["Marco útil: clarifica valores, luego evalúa consecuencias y deberes.","En dilemas éticos, explicitar supuestos mejora decisiones.","No hay respuestas únicas para todos los contextos."],
+   CA:["Marc útil: clarifica valors, després avalua conseqüències i deures.","En dilemes ètics, explicitar supòsits millora decisions.","No hi ha respostes úniques per a tots els contextos."],
+   EN:["Useful frame: clarify values, then assess consequences and duties.","In ethical dilemmas, making assumptions explicit improves decisions.","There are rarely one-size-fits-all answers." ]},
+  {id:"psychology",k:["psicologia","habitos","motivacion","procrastinacion","emociones","mindset"],
+   ES:["El entorno diseña conducta: reduce fricción para hábitos buenos.","Objetivos específicos y medibles superan intenciones vagas.","Autocompasión y constancia funcionan mejor que culpa."],
+   CA:["L'entorn dissenya conducta: redueix fricció per hàbits bons.","Objectius específics i mesurables superen intencions vagues.","Autocompassió i constància funcionen millor que culpa."],
+   EN:["Environment shapes behavior: reduce friction for good habits.","Specific measurable goals beat vague intentions.","Self-compassion and consistency beat guilt." ]},
+  {id:"communication",k:["comunicar","presentacion","escribir","email","negociacion","argumento","storytelling"],
+   ES:["Estructura clara: contexto → problema → propuesta → siguiente paso.","Mensajes cortos con una idea central mejoran comprensión.","Escucha activa y preguntas abiertas elevan calidad de conversaciones."],
+   CA:["Estructura clara: context → problema → proposta → següent pas.","Missatges curts amb una idea central milloren comprensió.","Escolta activa i preguntes obertes eleven la qualitat de converses."],
+   EN:["Clear structure: context → problem → proposal → next step.","Short messages with one core idea improve comprehension.","Active listening and open questions improve conversations."]},
+  {id:"travel",k:["viaje","travel","itinerario","vuelos","hotel","visa","equipaje"],
+   ES:["Planifica con margen: documentación, seguros y política de cancelación.","Optimiza coste total, no solo precio de vuelo.","Itinerarios realistas reducen fatiga y mejoran experiencia."],
+   CA:["Planifica amb marge: documentació, assegurances i política de cancel·lació.","Optimitza cost total, no només preu del vol.","Itineraris realistes redueixen fatiga i milloren experiència."],
+   EN:["Plan with buffer: documents, insurance, and cancellation policies.","Optimize total trip cost, not just airfare.","Realistic itineraries reduce fatigue and improve experience."]},
+  {id:"cooking",k:["cocina","receta","horno","sarten","salsa","fermentacion","pan","postre"],
+   ES:["Domina técnicas base (sofrito, emulsión, punto de cocción) y tendrás mejores resultados.","Mise en place ahorra errores y tiempo.","Ajusta sal, ácido y grasa para equilibrar sabor."],
+   CA:["Domina tècniques base (sofregit, emulsió, punt de cocció) i tindràs millors resultats.","Mise en place estalvia errors i temps.","Ajusta sal, àcid i greix per equilibrar sabor."],
+   EN:["Master core techniques (saute, emulsion, doneness) for better results.","Mise en place reduces mistakes and saves time.","Balance salt, acid, and fat for flavor." ]},
+  {id:"sports",k:["deporte","futbol","running","gym","fuerza","resistencia","entrenamiento"],
+   ES:["Progresión gradual y descanso son esenciales para mejorar sin lesión.","Objetivo SMART + registro semanal acelera resultados.","Nutrición e hidratación sostienen rendimiento."],
+   CA:["Progressió gradual i descans són essencials per millorar sense lesió.","Objectiu SMART + registre setmanal accelera resultats.","Nutrició i hidratació sostenen rendiment."],
+   EN:["Gradual progression and rest are key to improve injury-free.","SMART goals + weekly tracking accelerate results.","Nutrition and hydration sustain performance."]},
+  {id:"languages",k:["idioma","ingles","english","frances","aleman","vocabulario","grammar","pronunciation"],
+   ES:["Práctica diaria breve (20-30 min) supera sesiones largas esporádicas.","Input comprensible + output frecuente + corrección rápida.","Prioriza frases útiles antes que listas largas de reglas."],
+   CA:["Pràctica diària breu (20-30 min) supera sessions llargues esporàdiques.","Input comprensible + output freqüent + correcció ràpida.","Prioritza frases útils abans que llistes llargues de regles."],
+   EN:["Short daily practice (20-30 min) beats sporadic long sessions.","Comprehensible input + frequent output + fast correction.","Prioritize useful phrases before long grammar lists."]},
+  {id:"ai_ml",k:["machine learning","llm","neural","transformer","prompt","hallucination","rag","vector"],
+   ES:["LLMs generan texto probable, no verdad garantizada; verifica datos críticos.","Prompts con contexto, restricciones y formato mejoran consistencia.","Para precisión, combina retrieval/grounding con validación externa."],
+   CA:["Els LLMs generen text probable, no veritat garantida; verifica dades crítiques.","Prompts amb context, restriccions i format milloren consistència.","Per precisió, combina retrieval/grounding amb validació externa."],
+   EN:["LLMs generate likely text, not guaranteed truth; verify critical facts.","Prompts with context, constraints, and output format improve consistency.","For accuracy, combine retrieval/grounding with external validation."]},
+  {id:"cybersecurity",k:["seguridad","cyber","phishing","password","2fa","malware","ransomware","vpn","encryption"],
+   ES:["Higiene mínima: contraseñas únicas + gestor + 2FA.","Actualizaciones y copias de seguridad reducen impacto de incidentes.","Desconfía de urgencia artificial en correos y enlaces."],
+   CA:["Higiene mínima: contrasenyes úniques + gestor + 2FA.","Actualitzacions i còpies de seguretat redueixen impacte d'incidents.","Desconfia de la urgència artificial en correus i enllaços."],
+   EN:["Minimum hygiene: unique passwords + manager + 2FA.","Updates and backups reduce incident impact.","Be skeptical of artificial urgency in emails and links."]},
+  {id:"math",k:["matematicas","algebra","calculo","estadistica","probabilidad","derivada","integral"],
+   ES:["Entender conceptos primero y fórmulas después mejora transferencia.","Problemas tipo + variaciones graduales consolidan aprendizaje.","En estadística, interpreta incertidumbre, no solo promedios."],
+   CA:["Entendre conceptes primer i fórmules després millora transferència.","Problemes tipus + variacions graduals consoliden aprenentatge.","En estadística, interpreta incertesa, no només mitjanes."],
+   EN:["Concepts first, formulas second improves transfer.","Prototype problems + gradual variations build mastery.","In statistics, interpret uncertainty, not only averages."]},
+  {id:"writing",k:["escribir","writing","novela","articulo","copy","blog","guion","story"],
+   ES:["Un borrador malo terminado vale más que uno perfecto inconcluso.","Edita en capas: estructura, claridad, estilo, corrección.","Conoce audiencia y objetivo antes de elegir tono."],
+   CA:["Un esborrany dolent acabat val més que un perfecte inacabat.","Edita per capes: estructura, claredat, estil, correcció.","Coneix audiència i objectiu abans de triar to."],
+   EN:["A bad finished draft beats a perfect unfinished one.","Edit in layers: structure, clarity, style, correctness.","Know audience and goal before picking tone."]}
+];
+
+const scoreGeneralKB=(msg,entry)=>{
+  const m=normAI(msg);
+  let score=0;
+  entry.k.forEach(k=>{ if(m.includes(normAI(k))) score+=2; });
+  if(m.length>0&&entry.id&&m.includes(normAI(entry.id))) score+=1;
+  return score;
+};
+
+const pickGeneralKB=(msg,maxN=3)=>AI_GENERAL_KB
+  .map(e=>({e,score:scoreGeneralKB(msg,e)}))
+  .filter(x=>x.score>0)
+  .sort((a,b)=>b.score-a.score)
+  .slice(0,maxN)
+  .map(x=>x.e);
+
+const buildGeneralKnowledgeReply=(msg,L)=>{
+  const top=pickGeneralKB(msg,3);
+  if(!top.length) return "";
+  const byLang=(e)=>L==="CA"?e.CA:L==="EN"?e.EN:e.ES;
+  const header=L==="EN"?"🌐 General knowledge answer (multi-domain):":(L==="CA"?"🌐 Resposta de coneixement general (multidomini):":"🌐 Respuesta de conocimiento general (multidominio):");
+  const lines=[];
+  top.forEach(entry=>{
+    const points=byLang(entry).slice(0,3);
+    lines.push(`
+[${entry.id}]`);
+    points.forEach(p=>lines.push(`• ${p}`));
+  });
+  const close=L==="EN"
+    ?"\nIf you want, I can go deeper in one specific domain (step-by-step, examples, and actionable plan)."
+    :(L==="CA"
+      ?"\nSi vols, puc aprofundir en un domini concret (pas a pas, exemples i pla accionable)."
+      :"\nSi quieres, puedo profundizar en un dominio concreto (paso a paso, ejemplos y plan accionable).");
+  return [header,...lines].join("\n")+close;
+};
+
+const detectTaskMode=(msg="")=>{
+  const m=normAI(msg);
+  const has=(...k)=>k.some(x=>m.includes(normAI(x)));
+  if(has("paso a paso","step by step","guia","guía","tutorial","como ","cómo ")) return "howto";
+  if(has("plan","roadmap","itinerario","estrategia","strategy")) return "plan";
+  if(has("compara","versus","vs","pros y contras","advantages","disadvantages")) return "compare";
+  if(has("codigo","código","code","program","script","debug","error")) return "code";
+  if(has("calcula","resolver","equation","matematic","estadistica")) return "math";
+  if(has("resume","resumen","summary","explica","explain")) return "explain";
+  return "general";
+};
+
+const buildUniversalFallbackReply=(msg,L)=>{
+  const mode=detectTaskMode(msg);
+  const kb=pickGeneralKB(msg,2);
+  const head=L==="EN"?"🧠 Universal response (best effort):":(L==="CA"?"🧠 Resposta universal (millor esforç):":"🧠 Respuesta universal (mejor esfuerzo):");
+  const modeText={
+    ES:{howto:"Te lo explico paso a paso.",plan:"Te propongo un plan ejecutable.",compare:"Te doy comparación con pros y contras.",code:"Te doy enfoque técnico y pseudocódigo.",math:"Te doy método y resultado orientativo.",explain:"Te doy explicación clara y resumida.",general:"Te doy una respuesta general estructurada."},
+    CA:{howto:"T'ho explico pas a pas.",plan:"Et proposo un pla executable.",compare:"Et dono comparació amb pros i contres.",code:"Et dono enfocament tècnic i pseudocodi.",math:"Et dono mètode i resultat orientatiu.",explain:"Et dono explicació clara i resumida.",general:"Et dono una resposta general estructurada."},
+    EN:{howto:"I will explain step by step.",plan:"I will propose an executable plan.",compare:"I will provide a pros/cons comparison.",code:"I will provide technical approach and pseudocode.",math:"I will provide method and an indicative result.",explain:"I will provide a clear concise explanation.",general:"I will provide a structured general answer."}
+  };
+  const lang=L==="CA"?"CA":L==="EN"?"EN":"ES";
+  const a=[head,modeText[lang][mode]];
+  if(kb.length){
+    a.push(lang==="EN"?"Relevant domains:":(lang==="CA"?"Dominis rellevants:":"Dominios relevantes:"));
+    kb.forEach(e=>{
+      const pts=(lang==="EN"?e.EN:lang==="CA"?e.CA:e.ES).slice(0,2);
+      a.push(`- ${e.id}: ${pts.join(" ")}`);
+    });
+  }
+  a.push(lang==="EN"?"If you want higher precision, ask with context, constraints, and desired output format.":(lang==="CA"?"Si vols més precisió, demana-ho amb context, restriccions i format de sortida desitjat.":"Si quieres más precisión, pídelo con contexto, restricciones y formato de salida deseado."));
+  return a.join("\n");
+};
+
+
+
+const normAI=(txt="")=>txt.toLowerCase()
+  .normalize("NFD").replace(/[̀-ͯ]/g,"")
+  .replace(/[^\p{L}\p{N}\s%]/gu," ")
+  .replace(/\s+/g," ").trim();
+
+const scoreTopic=(msg,topic)=>{
+  const m=normAI(msg);
+  let score=0;
+  topic.k.forEach(k=>{ if(m.includes(normAI(k))) score+=1; });
+  return score;
+};
+
+const pickTopics=(msg,maxN=3)=>{
+  return AI_EXPERT_TOPICS
+    .map(t=>({id:t.id,score:scoreTopic(msg,t)}))
+    .filter(x=>x.score>0)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,maxN)
+    .map(x=>x.id);
+};
+
+const expertLine=(L,es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
+
+const isHousingQuestion=(msg="")=>{
+  const m=normAI(msg);
+  const keys=["hipoteca","mortgage","alquiler","lloguer","comprar","buy","rent","vivienda","habitatge","entrada","itp","notaria","euribor","municipio","m2","cuota","down payment","bonastre","calafell","cunit","vendrell"];
+  return keys.some(k=>m.includes(normAI(k)));
+};
+
+const expertTopicText=(id,c,L)=>{
+  const missing=Math.max(0,c.needCash-c.sav);
+  const msv=Math.max(0,c.msv||0);
+  const mos=(missing>0&&msv>0)?Math.ceil(missing/msv):0;
+  switch(id){
+    case "affordability": return expertLine(L,
+      `• Esfuerzo actual: ${_fp(c.ratio)}. Objetivo recomendado: 30-35%. Si superas 35%, baja presupuesto o amplía plazo de forma controlada.`,
+      `• Esforç actual: ${_fp(c.ratio)}. Objectiu recomanat: 30-35%. Si superes 35%, baixa pressupost o amplia termini amb control.`,
+      `• Current effort: ${_fp(c.ratio)}. Recommended target: 30-35%. If above 35%, lower budget or extend term carefully.`);
+    case "cashgap": return expertLine(L,
+      missing>0?`• Te faltan ${_fm(missing)} para entrada+gastos${msv>0?` (~${mos} meses a ${_fm(msv)}/mes).`:"."}`:`• Ya cubres entrada+gastos. Prioriza negociación de precio y condiciones.` ,
+      missing>0?`• Et falten ${_fm(missing)} per entrada+despeses${msv>0?` (~${mos} mesos a ${_fm(msv)}/mes).`:"."}`:`• Ja cobreixes entrada+despeses. Prioritza negociar preu i condicions.` ,
+      missing>0?`• You are short by ${_fm(missing)} for down payment+costs${msv>0?` (~${mos} months at ${_fm(msv)}/mo).`:"."}`:`• You already cover upfront cash. Focus on negotiating better price/terms.`);
+    case "buyvsrent": return expertLine(L,
+      `• Recomendación actual: ${c.rec}. Comprar suele tener sentido si esfuerzo ≤35%, horizonte >5 años y fondo de emergencia intacto.`,
+      `• Recomanació actual: ${c.rec}. Comprar sol tenir sentit si esforç ≤35%, horitzó >5 anys i fons d'emergència intacte.`,
+      `• Current recommendation: ${c.rec}. Buying usually makes sense when effort ≤35%, horizon >5 years, and emergency fund remains intact.`);
+    case "rates": return expertLine(L,
+      `• Tipo usado: ${(c.rate*100).toFixed(2)}%. Regla práctica: simula +1% de tipo y comprueba que sigues por debajo del 40% de ingresos.`,
+      `• Tipus utilitzat: ${(c.rate*100).toFixed(2)}%. Regla pràctica: simula +1% i comprova que continues per sota del 40% d'ingressos.`,
+      `• Rate used: ${(c.rate*100).toFixed(2)}%. Rule of thumb: simulate +1% and ensure you stay below 40% income effort.`);
+    case "term": return expertLine(L,
+      `• Plazo actual: ${c.yrs} años. Acortar reduce intereses; alargar mejora caja mensual. Decide por estabilidad de ingresos, no solo por cuota.`,
+      `• Termini actual: ${c.yrs} anys. Escurçar redueix interessos; allargar millora caixa mensual. Decideix per estabilitat d'ingressos.`,
+      `• Current term: ${c.yrs} years. Shorter term cuts interest; longer term improves monthly cashflow. Decide by income stability, not payment alone.`);
+    case "savings": return expertLine(L,
+      `• Plan de ahorro: automatiza ${_fm(Math.max(150,c.inc*0.1))}/mes, elimina 2 gastos fijos y revisa progreso cada 30 días.`,
+      `• Pla d'estalvi: automatitza ${_fm(Math.max(150,c.inc*0.1))}/mes, elimina 2 despeses fixes i revisa progrés cada 30 dies.`,
+      `• Savings plan: automate ${_fm(Math.max(150,c.inc*0.1))}/mo, cut 2 fixed costs, review progress every 30 days.`);
+    case "negotiation": return expertLine(L,
+      `• Negociación: abre 8-12% por debajo, lleva comparables €/m² y no superes tu tope (${_fm(c.pb*(c.ratio>35?0.9:1))}).`,
+      `• Negociació: obre 8-12% per sota, porta comparables €/m² i no superis el teu topall (${_fm(c.pb*(c.ratio>35?0.9:1))}).`,
+      `• Negotiation: start 8-12% below asking, bring €/m² comparables, and do not exceed your cap (${_fm(c.pb*(c.ratio>35?0.9:1))}).`);
+    case "subsidies": return expertLine(L,
+      `• Revisa ayudas: ITP reducido (si aplica), deducciones autonómicas y condiciones de primera vivienda antes de firmar.`,
+      `• Revisa ajudes: ITP reduït (si aplica), deduccions autonòmiques i condicions de primera vivenda abans de signar.`,
+      `• Check subsidies: reduced ITP (if eligible), regional deductions, and first-home conditions before signing.`);
+    case "towns": return expertLine(L,
+      `• Zonas: costa (Calafell/Cunit) = más precio; interior (Bonastre/Masllorenç/Montmell) = mayor asequibilidad.`,
+      `• Zones: costa (Calafell/Cunit) = més preu; interior (Bonastre/Masllorenç/Montmell) = més assequible.`,
+      `• Areas: coast (Calafell/Cunit) = higher prices; inland (Bonastre/Masllorenç/Montmell) = more affordable.`);
+    case "risk": return expertLine(L,
+      `• Gestión de riesgo: conserva fondo de emergencia de 6 meses (${_fm(c.inc*6)}) y evita comprometer todo el ahorro en la compra.`,
+      `• Gestió de risc: mantén fons d'emergència de 6 mesos (${_fm(c.inc*6)}) i evita comprometre tots els estalvis en la compra.`,
+      `• Risk management: keep a 6-month emergency fund (${_fm(c.inc*6)}) and avoid deploying all savings into purchase costs.`);
+    default: return "";
+  }
+};
+
+const buildExpertReply=(msg,c,L,intent)=>{
+  if(!c) return "";
+  const topics=pickTopics(msg,4);
+  const needsExpert=((intent==="advice")||(intent==="general"&&isHousingQuestion(msg))||(topics.length>=3));
+  if(!needsExpert) return "";
+
+  const header=expertLine(L,
+    `🧠 Respuesta avanzada para tu caso (${c.muni} · ${c.m2}m²):`,
+    `🧠 Resposta avançada pel teu cas (${c.muni} · ${c.m2}m²):`,
+    `🧠 Advanced answer for your case (${c.muni} · ${c.m2}m²):`);
+
+  const diag=[
+    expertLine(L,`• Precio estimado: ${_fm(c.pb)} · Cuota: ${_fm(c.pay)} (${_fp(c.ratio)}).`,`• Preu estimat: ${_fm(c.pb)} · Quota: ${_fm(c.pay)} (${_fp(c.ratio)}).`,`• Estimated price: ${_fm(c.pb)} · Payment: ${_fm(c.pay)} (${_fp(c.ratio)}).`),
+    expertLine(L,`• Alquiler estimado: ${_fm(c.pr)} (${_fp(c.rri)}).`,`• Lloguer estimat: ${_fm(c.pr)} (${_fp(c.rri)}).`,`• Estimated rent: ${_fm(c.pr)} (${_fp(c.rri)}).`),
+    expertLine(L,`• Recomendación actual: ${c.rec}.`,`• Recomanació actual: ${c.rec}.`,`• Current recommendation: ${c.rec}.`)
+  ];
+
+  const chosen=topics.length?topics:["affordability","cashgap","buyvsrent"];
+  const body=chosen.map(id=>expertTopicText(id,c,L)).filter(Boolean);
+
+  const close=expertLine(L,
+    "\nSi quieres, te hago ahora un plan semanal (Semana 1 a 12) con tareas exactas y objetivo de ahorro mensual.",
+    "\nSi vols, et faig ara un pla setmanal (Setmana 1 a 12) amb tasques exactes i objectiu d'estalvi mensual.",
+    "\nIf you want, I can now generate a week-by-week plan (Weeks 1-12) with exact tasks and monthly savings targets.");
+
+  return [header,...diag,...body].join("\n")+close;
+};
+
 /* ---- Detectar intención del mensaje ---- */
 const detectIntent=(msg)=>{
   const m=msg.toLowerCase()
@@ -1266,16 +1464,19 @@ const detectIntent=(msg)=>{
   // Saludos y socialización
   if(has("hola","hi ","hello","bon dia","buenos dias","buenas","hey","buen","good morning","good evening","que tal","com estas","com anem","how are")) return "greet";
   if(has("gracias","gracies","thanks","thank you","genial","perfecto","molt be","muy bien","great","awesome","guay","crack","mola")) return "thanks";
+  if(has("vale","ok","de acuerdo","d'accord","perfecte","perfect","yes","si","sí","continua","continua","hazlo","fes-ho","do it")) return "affirm";
   if(has("adios","hasta luego","bye","fins aviat","ciao","chao","nos vemos")) return "bye";
   if(has("que puedes","que pots","what can you","que sabes","que saps","ayudame","ajuda'm","help me","para que sirves","com funciones")) return "capabilities";
 
   // Análisis y resultado
-  if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","explica","cuéntame","conta'm")) return "summary";
+  if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","cuéntame","conta'm")) return "summary";
   if(has("consejo","consell","advice","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria")) return "advice";
+  if(has("plan","plan de accion","pasos","roadmap","hoja de ruta","next steps","seguent pas")) return "actionplan";
+  if(has("semana por semana","setmana per setmana","week by week","weekly plan","plan semanal detallado")) return "weeklyplan";
+  if(has("negociar","negociacio","negotiation","oferta","offer","regatear","rebaja","descuento")) return "negotiation";
 
   // Compra vs Alquiler
   if(has("comprar o alquilar","comprar o llogar","buy or rent","mejor opcion","millor opcio","que es mejor","que es millor","which is better")) return "buyrent";
-  if(has("comprar","compra","buying","purchase","adquirir")) return "buyrent";
 
   // Financiación
   if(has("hipoteca","mortgage","prestamo","credito","financiacion","financiamiento","banco","bank","euribor")) return "mortgage";
@@ -1286,7 +1487,7 @@ const detectIntent=(msg)=>{
 
   // Ahorro
   if(has("ahorrar","estalviar","save","ahorro","estalvi","savings","cuanto necesito","cuanto tardar","quant trigar")) return "savings";
-  if(has("estrategia","strategy","capacidad de compra","buying power","poder adquisitivo","como comprar mas")) return "strategy";
+  if(has("estrategia","estrategies","estrategia de","strategy","capacitat de compra","capacidad de compra","buying power","poder adquisitivo","com comprar mes","como comprar mas")) return "strategy";
   if(has("amortiz","pagar antes","pagar avans","overpay","cancelar hipoteca","reducir hipoteca")) return "amortize";
 
   // Propiedades
@@ -1300,6 +1501,7 @@ const detectIntent=(msg)=>{
   if(has("municipio","municipi","town","zona","pueblo","village","donde vivir","on viure","where to live","mejor zona","millor zona")) return "towns";
   if(has("comparar","compare","otra zona","altra zona","barcelona","girona","tarragona","lleida","diferencia zona")) return "compare";
   if(has("mercado","mercat","market","tendencia","tendència","trend","subira","baixara","sube","baja","futuro","previsión")) return "market";
+  if(has("francia","franca","france","alemania","germany","portugal","italia","italy","madrid","valencia") && has("comprar","buy","alquilar","rent","inmueble","vivienda")) return "external_market";
 
   // Ayudas y fiscalidad
   if(has("ayuda","ajuda","subvencio","subvencion","subsidio","bonus","deduccion","deducció","irpf","hacienda","hisenda")) return "subsidy";
@@ -1307,7 +1509,7 @@ const detectIntent=(msg)=>{
   if(has("ipc","inflacion","inflacio","inflation","subida precios","poder adquisitivo")) return "inflation";
 
   // Riesgos
-  if(has("riesgo","risc","risk","seguro","segur","peligro","perills","crash","burbuja","burbolla","crisis")) return "risk";
+  if(has("riesgo","risc","risk","peligro","perills","crash","burbuja","burbolla","crisis")) return "risk";
 
   // Ingresos
   if(has("trabajo","feina","job","sueldo","salari","salary","ingresos","nómina","nomina")) return "income";
@@ -1315,6 +1517,7 @@ const detectIntent=(msg)=>{
   // Preguntas raras / off-topic
   if(has("tiempo","clima","weather","llueve","sol","calor","fred","frio")) return "weather";
   if(has("chiste","joke","broma","divertido","humor","rie","rire")) return "joke";
+  if(has("como te llamas","com et dius","what is your name","what's your name","your name","nombre","name")) return "identity";
   if(has("quien eres","qui ets","who are you","eres humano","ets huma","are you human","ets ia","eres ia","eres robot","chatgpt","openai","anthropic","claude")) return "identity";
   if(has("la vida","filosofia","sentido","meaning","existencial","dios","religion")) return "philosophy";
   if(has("futbol","barça","barca","madrid","sport","deporte","esport")) return "sport";
@@ -1331,17 +1534,25 @@ const buildReply=(intent, msg)=>{
   const L=LANG;
   const es=(es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
 
-  // Si no hay análisis
+  const housingIntents=new Set(["summary","advice","buyrent","mortgage","payment","downpayment","costs","rates","savings","strategy","amortize","price","rent","size","term","extras","towns","compare","market","subsidy","firsthome","inflation","risk","income","negotiation","actionplan","external_market"]);
+  const generalKBReply=buildGeneralKnowledgeReply(msg,L);
+
+  // Si no hay análisis: responder SIEMPRE. Para vivienda, pedir análisis; para general, responder con KB universal.
   if(!c){
+    if(!housingIntents.has(intent)) return generalKBReply||buildUniversalFallbackReply(msg,L);
     return es(
-      "⚠️ Aún no has completado el análisis. Rellena los pasos 1-3 y pulsa Analizar para que pueda darte consejos personalizados.",
-      "⚠️ Encara no has completat l'anàlisi. Omple els passos 1-3 i prem Analitzar per rebre consells personalitzats.",
-      "⚠️ You haven't completed the analysis yet. Fill in steps 1-3 and click Analyze so I can give you personalized advice."
+      "⚠️ Para preguntas personalizadas de vivienda primero necesito tu análisis (pasos 1-3). Mientras tanto, también puedo responder preguntas generales de cualquier tema.",
+      "⚠️ Per preguntes personalitzades d'habitatge primer necessito la teva anàlisi (passos 1-3). Mentrestant, també puc respondre preguntes generals de qualsevol tema.",
+      "⚠️ For personalized housing answers I need your analysis first (steps 1-3). Meanwhile, I can answer general questions on almost any topic."
     );
   }
-// ⭐ AÑADE ESTAS DOS LÍNEAS:
   const profile = analyzeUserProfile(c);
   const tone = getToneForProfile(profile, L);
+
+  if(generalKBReply&&!housingIntents.has(intent)) return generalKBReply;
+
+  const expertReply=buildExpertReply(msg,c,L,intent);
+  if(expertReply) return expertReply;
 
   const buyOk=!c.need&&c.ratio<=35&&c.hor;
   const rentOk=c.rri<=40;
@@ -1395,6 +1606,29 @@ const buildReply=(intent, msg)=>{
       `📊 Resumen de tu análisis:\n🏠 ${c.muni} · ${c.m2}m² · ${c.type}\n💰 Precio estimado: ${_fm(c.pb)}\n📅 Cuota: ${_fm(c.pay)} (${_fp(c.ratio)} de tus ingresos)\n🏠 Alquiler: ${_fm(c.pr)} (${_fp(c.rri)} de tus ingresos)\n🎯 Recomendación: ${c.rec}`,
       `📊 Resum de la teva anàlisi:\n🏠 ${c.muni} · ${c.m2}m² · ${c.type}\n💰 Preu estimat: ${_fm(c.pb)}\n📅 Quota: ${_fm(c.pay)} (${_fp(c.ratio)} dels teus ingressos)\n🏠 Lloguer: ${_fm(c.pr)} (${_fp(c.rri)} dels teus ingressos)\n🎯 Recomanació: ${c.rec}`,
       `📊 Your analysis summary:\n🏠 ${c.muni} · ${c.m2}m² · ${c.type}\n💰 Estimated price: ${_fm(c.pb)}\n📅 Payment: ${_fm(c.pay)} (${_fp(c.ratio)} of income)\n🏠 Rent: ${_fm(c.pr)} (${_fp(c.rri)} of income)\n🎯 Recommendation: ${c.rec}`
+    );
+
+    case "external_market": return es(
+      `🌍 Puedo orientarte, pero este simulador está calibrado para Baix Penedès (no para mercado internacional).
+Si quieres comprar fuera (ej. Francia), usa esta guía rápida:
+1) Define presupuesto total en € (precio + impuestos + notario + reforma + margen 10%).
+2) Exige estimación de cuota con tipo +1% y comprueba esfuerzo <35%.
+3) Verifica fiscalidad local (impuestos de compra, residencia y alquiler).
+4) Compara rentabilidad neta tras costes, no solo precio.
+💡 Si me pasas país/ciudad, precio objetivo, entrada e ingresos, te hago un análisis estructurado paso a paso.`,
+      `🌍 Puc orientar-te, però aquest simulador està calibrat per al Baix Penedès (no per mercat internacional).
+Si vols comprar fora (ex. França), guia ràpida:
+1) Pressupost total en € (preu + impostos + notari + reforma + marge 10%).
+2) Simula quota amb tipus +1% i comprova esforç <35%.
+3) Revisa fiscalitat local.
+4) Compara rendibilitat neta després de costos.`,
+      `🌍 I can guide you, but this simulator is calibrated for Baix Penedès (not international markets).
+If you want to buy abroad (e.g., France), quick framework:
+1) Set total budget (€) incl. taxes, notary, renovation, 10% buffer.
+2) Stress-test payment at +1% rate and keep effort <35%.
+3) Validate local tax and legal obligations.
+4) Compare net yield after all costs.
+💡 Share country/city, target price, down payment, and income and I'll build a step-by-step analysis.`
     );
 
     case "buyrent": return es(
@@ -1554,6 +1788,84 @@ const buildReply=(intent, msg)=>{
       `🏊 Selected extras: ${c.extras}\n💡 Each extra increases estimated price: Terrace +5% · Pool +8% · Elevator +4% · Parking +3%.`
     );
 
+    case "negotiation": return es(
+      `🤝 Checklist de negociación (rápido):
+1) Lleva 3 comparables reales de la zona (€/m²).
+2) Abre oferta un 8-12% por debajo de tu tope.
+3) Prioriza precio + arras + plazo de firma (pack completo).
+4) Pide revisión técnica y usa incidencias para ajustar precio.
+5) No superes tu límite: ${_fm(c.pb*(c.ratio>35?0.90:1))}.
+💡 Si quieres, te preparo un guion de llamada al vendedor.`,
+      `🤝 Checklist de negociació:
+1) Porta 3 comparables reals de la zona.
+2) Obre oferta 8-12% per sota del teu topall.
+3) Negocia preu + arres + termini de signatura.
+4) Revisa incidències tècniques per ajustar preu.
+5) No superis el teu límit: ${_fm(c.pb*(c.ratio>35?0.90:1))}.`,
+      `🤝 Negotiation checklist:
+1) Bring 3 local comparables (€/m²).
+2) Start 8-12% below your max budget.
+3) Negotiate price + deposit terms + closing date as a package.
+4) Use technical issues to support price adjustments.
+5) Do not exceed your cap: ${_fm(c.pb*(c.ratio>35?0.90:1))}.`
+    );
+
+    case "weeklyplan": return es(
+      `📅 Plan semana por semana (12 semanas):
+S1: inventario financiero y gastos fijos.
+S2: recorte de 2-3 partidas y ahorro automático.
+S3: fondo de emergencia y colchón mensual.
+S4: revisión de deudas y optimización de cuotas.
+S5: simulador de hipoteca con escenarios (+1% tipo).
+S6: objetivo de precio máximo y lista de municipios.
+S7: documentación bancaria (nóminas, vida laboral, etc.).
+S8: preaprobación con 2-3 bancos.
+S9: búsqueda activa y comparables €/m².
+S10: checklist técnico de vivienda.
+S11: estrategia de oferta y arras.
+S12: cierre, gastos y plan de estabilidad post-compra.`,
+      `📅 Pla setmana per setmana (12 setmanes):
+S1 inventari financer, S2 retall despesa i estalvi automàtic, S3 coixí d'emergència, S4 deutes, S5 simulació hipoteca (+1%), S6 preu màxim/municipis, S7 documentació, S8 preaprovació, S9 comparables €/m², S10 checklist tècnic, S11 oferta i arres, S12 tancament i estabilitat.`,
+      `📅 Week-by-week plan (12 weeks):
+W1 financial inventory, W2 cost cuts + auto-savings, W3 emergency cushion, W4 debt optimization, W5 mortgage stress test (+1%), W6 max-price/towns, W7 documentation, W8 pre-approval, W9 €/m² comparables, W10 technical checklist, W11 offer strategy, W12 closing and post-purchase stability.`
+    );
+
+    case "actionplan": {
+      const gap=Math.max(0,c.needCash-c.sav);
+      const msv=Math.max(0,c.msv||0);
+      const mos=(gap>0&&msv>0)?Math.ceil(gap/msv):0;
+      return es(
+        `🧭 Plan de acción en 90 días:
+1) Semana 1: fija presupuesto de vivienda en torno a ${_fm(c.pb*(c.ratio>35?0.85:1))}.
+2) Semana 2-3: reduce gastos fijos para liberar al menos ${_fm(Math.max(100,c.inc*0.08))}/mes.
+3) Mes 2: mejora perfil bancario (sin descubiertos y recibos al día).
+4) Mes 3: compara 3 hipotecas y pide preaprobación.
+${gap>0?`5) Objetivo ahorro: te faltan ${_fm(gap)}${msv>0?` (~${mos} meses a ${_fm(msv)}/mes).`:"."}`:`5) Ya cubres la entrada+gastos: prioriza negociar precio y condiciones.`}
+✅ Te dejo ya un plan semanal (12 semanas):
+- Semanas 1-2: auditoría de gastos y objetivo mensual.
+- Semanas 3-4: reducción de deudas/costos fijos.
+- Semanas 5-8: ahorro automático + simulación bancaria.
+- Semanas 9-10: comparación de hipotecas/documentación.
+- Semanas 11-12: estrategia de oferta y negociación.
+
+Si quieres que lo baje al detalle de cada semana, dime: "haz el plan semana por semana".`,
+        `🧭 Pla d'acció en 90 dies:
+1) Defineix pressupost de compra (~${_fm(c.pb*(c.ratio>35?0.85:1))}).
+2) Allibera despesa fixa mensual i reforça estalvi.
+3) Millora perfil bancari i demana preaprovació.
+4) Compara 3 hipoteques abans de decidir.
+✅ Pla setmanal (12 setmanes): 1-2 auditoria despesa, 3-4 reducció costos, 5-8 estalvi automàtic, 9-10 simulació bancària, 11-12 negociació.
+${gap>0?`5) Et falten ${_fm(gap)}${msv>0?` (~${mos} mesos).`:"."}`:`5) Ja tens estalvi suficient: prioritza negociació.`}`,
+        `🧭 90-day action plan:
+1) Set a target budget around ${_fm(c.pb*(c.ratio>35?0.85:1))}.
+2) Free monthly cashflow and boost savings.
+3) Improve bank profile and request pre-approval.
+4) Compare at least 3 mortgage offers.
+✅ Weekly 12-week plan: weeks 1-2 spending audit, 3-4 fixed-cost reduction, 5-8 automatic savings, 9-10 bank simulation, 11-12 offer negotiation.
+${gap>0?`5) Savings gap: ${_fm(gap)}${msv>0?` (~${mos} months).`:"."}`:`5) You already cover upfront cash: focus on price/terms negotiation.`}`
+      );
+    }
+
     case "advice": {
   let advice = es("🎯 Mi consejo personalizado:\n\n", "🎯 El meu consell:\n\n", "🎯 My advice:\n\n");
   
@@ -1663,9 +1975,9 @@ const buildReply=(intent, msg)=>{
     );
 
     case "identity": return es(
-      `🤖 Soy el asesor financiero integrado en esta aplicación. Estoy especializado en vivienda en el Baix Penedès y conozco tu análisis al completo. No soy ChatGPT ni ninguna IA de pago — soy un motor de conocimiento financiero local, gratuito y siempre disponible. ¿En qué te ayudo?`,
-      `🤖 Sóc l'assessor financer integrat en aquesta aplicació. Estic especialitzat en habitatge al Baix Penedès. Sóc un motor de coneixement financer local, gratuït i sempre disponible.`,
-      `🤖 I'm the financial advisor built into this application. I specialize in Baix Penedès housing and know your full analysis. I'm not ChatGPT — I'm a local, free, always-available financial knowledge engine. How can I help?`
+      `🤖 Me llamo AI Financial Advisor. Soy tu asistente dentro de esta app: especializado en vivienda/finanzas y también capaz de responder preguntas generales. Si quieres, te respondo en formato corto o paso a paso.`,
+      `🤖 Em dic AI Financial Advisor. Soc el teu assistent dins d'aquesta app: especialitzat en habitatge/finances i també capaç de respondre preguntes generals. Si vols, et responc en format curt o pas a pas.`,
+      `🤖 My name is AI Financial Advisor. I am your in-app assistant: specialized in housing/finance and also able to answer general questions. I can reply briefly or step-by-step if you prefer.`
     );
 
     case "philosophy": return es(
@@ -1703,12 +2015,7 @@ const buildReply=(intent, msg)=>{
       `🚂 Tren Rodalies a Barcelona (~45 min des del Vendrell), AP-7 i N-340. Un factor que puja el valor de l'habitatge a llarg termini.`,
       `🚂 Good transport links: Rodalies train to Barcelona (~45 min from El Vendrell), AP-7 motorway. A factor that supports long-term property values.`
     );
-
-        default: return es(
-      `🤖 Entiendo tu pregunta sobre "${msg.length>40?msg.substring(0,40)+"...":msg}".\n💡 Puedo ayudarte con: hipotecas, ahorros, comprar vs alquilar, riesgos, municipios, ayudas, plazos, amortización, y más. ¿Qué quieres saber exactamente?`,
-      `🤖 Puc ajudar-te amb: hipoteques, estalvis, comprar vs llogar, riscos, municipis, ajudes, terminis i més. Pregunta'm qualsevol cosa!`,
-      `🤖 I can help with: mortgages, savings, buy vs rent, risks, towns, subsidies, terms, and more. What exactly would you like to know?`
-    );
+        default: return buildUniversalFallbackReply(msg,L);
   }
 };
 
@@ -1724,6 +2031,13 @@ const stripMd = (text) => {
     .replace(/\[(.+?)\]\(.+?\)/g, '$1');
 };
 
+const escapeHTML=(text="")=>String(text)
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#39;");
+
 // Añadir mensaje al chat
 const addMsg = (role, content) => {
   const mc = Q("#chatMessages");
@@ -1738,7 +2052,7 @@ const addMsg = (role, content) => {
   
   const bub = document.createElement("div");
   bub.className = "chat-bubble";
-  bub.innerHTML = stripMd(content).replace(/\n/g, "<br>");
+  bub.innerHTML = escapeHTML(stripMd(content)).replace(/\n/g, "<br>");
   
   if (role === "user") {
     d.appendChild(bub);
@@ -1782,7 +2096,21 @@ const removeThinking = () => {
 };
 
 /* ---- Motor principal: simula escritura progresiva ---- */
+const repeatedQuestionCount=(msg)=>{
+  const q=normAI(msg);
+  const users=chatHistory.filter(x=>x.role==="user").map(x=>normAI(x.content));
+  return users.filter(x=>x===q).length;
+};
+
+const shouldTriggerPlanFromAffirm=(msg,intent)=>{
+  if(intent!=="affirm") return false;
+  if(pendingPlanOffer) return true;
+  const m=normAI(msg);
+  return m==="vale"||m==="ok"||m==="si"||m==="sí"||m==="yes";
+};
+
 const sendToAI=async msg=>{
+
   if(isAIProcessing)return;
   isAIProcessing=true;
   const btnEl=Q("#chatSend"), inpEl=Q("#chatInput");
@@ -1790,13 +2118,32 @@ const sendToAI=async msg=>{
   if(inpEl){inpEl.disabled=true;inpEl.value="";}
   addMsg("user",msg);
   chatHistory.push({role:"user",content:msg});
+
+  const repCount=repeatedQuestionCount(msg);
+  if(repCount>=3){
+    const gentle=LANG==="EN"?"I notice this question is repeated. I'll answer in a different way:":(LANG==="CA"?"Veig que aquesta pregunta es repeteix. Et responc d'una altra manera:":"Veo que esta pregunta se repite. Te respondo de otra forma:");
+    const alt=buildUniversalFallbackReply(msg,LANG);
+    const composed=`${gentle}\n${alt}`;
+    chatHistory.push({role:"assistant",content:composed});
+    if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);
+    saveChatHistory();
+    addMsg("ai",composed);
+    isAIProcessing=false;
+    if(btnEl)btnEl.disabled=false;
+    if(inpEl){inpEl.disabled=false;inpEl.focus();}
+    return;
+  }
+
   addThinking();
   const delay=500+Math.random()*700;
   await new Promise(r=>setTimeout(r,delay));
   removeThinking();
-  const intent=detectIntent(msg);
+  let intent=detectIntent(msg);
+  if(shouldTriggerPlanFromAffirm(msg,intent)) intent="actionplan";
   const reply=buildReply(intent,msg);
+  pendingPlanOffer=/plan semanal|pla setmanal|week-by-week plan|plan de accion|pla d'accio|action plan/i.test(normAI(reply));
   chatHistory.push({role:"assistant",content:reply});
+  if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);
   saveChatHistory();
   // Efecto typing usando intervalo (más robusto que recursión)
   const mc=Q("#chatMessages");
@@ -1808,7 +2155,7 @@ const sendToAI=async msg=>{
   bub.className="chat-bubble";
   d.appendChild(av);d.appendChild(bub);
   if(mc)mc.appendChild(d);
-  const clean=stripMd(reply);
+  const clean=escapeHTML(stripMd(reply));
   let pos=0;
   const unlock=()=>{
     isAIProcessing=false;
@@ -1831,6 +2178,7 @@ const renderChatHistory=()=>{
 const initChatUI=()=>{
   applyI18n(); // refresca welcome bubble, chips y textos
   loadChatHistory();
+  renderAIContext();
   const btn=Q("#chatSend"),inp=Q("#chatInput");
   if(btn&&!btn.dataset.init){btn.dataset.init="1";btn.onclick=()=>{const m=inp?.value?.trim();if(m)sendToAI(m);};}
   if(inp&&!inp.dataset.init){
@@ -1838,6 +2186,33 @@ const initChatUI=()=>{
     inp.addEventListener("keypress",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();const m=inp.value.trim();if(m)sendToAI(m);}});
     inp.addEventListener("input",()=>{inp.style.height="auto";inp.style.height=Math.min(inp.scrollHeight,120)+"px";});
   }
+  const clearBtn=Q("#aiClearBtn"),planBtn=Q("#aiPlanBtn"),copyBtn=Q("#aiCopyBtn");
+  if(clearBtn&&!clearBtn.dataset.init){
+    clearBtn.dataset.init="1";
+    clearBtn.addEventListener("click",()=>{
+      chatHistory=[];
+      saveChatHistory();
+      renderChatHistory();
+      toast(LANG==="EN"?"Chat cleared":(LANG==="CA"?"Xat netejat":"Chat limpiado"));
+    });
+  }
+  if(copyBtn&&!copyBtn.dataset.init){
+    copyBtn.dataset.init="1";
+    copyBtn.addEventListener("click",()=>{
+      const lines=chatHistory.map(m=>`${m.role==="user"?(LANG==="EN"?"YOU":(LANG==="CA"?"TU":"TÚ")):"AI"}: ${stripMd(m.content)}`);
+      const txt=lines.join("\n\n") || (LANG==="EN"?"No messages yet":(LANG==="CA"?"Encara no hi ha missatges":"Aún no hay mensajes"));
+      navigator.clipboard?.writeText(txt)
+        .then(()=>toast(LANG==="EN"?"Chat copied":(LANG==="CA"?"Xat copiat":"Chat copiado")))
+        .catch(()=>toast(LANG==="EN"?"Could not copy chat":(LANG==="CA"?"No s'ha pogut copiar el xat":"No se pudo copiar el chat")));
+    });
+  }
+  if(planBtn&&!planBtn.dataset.init){
+    planBtn.dataset.init="1";
+    planBtn.addEventListener("click",()=>{
+      if(!isAIProcessing)sendToAI(LANG==="EN"?"Create a 90-day action plan for my case":(LANG==="CA"?"Fes-me un pla d'acció de 90 dies pel meu cas":"Hazme un plan de accion de 90 dias para mi caso"));
+    });
+  }
+
   // Re-bind suggestion chips (se regeneran al cambiar idioma)
   QA(".suggestion-chip").forEach(ch=>{
     ch.replaceWith(ch.cloneNode(true)); // quitar listeners viejos

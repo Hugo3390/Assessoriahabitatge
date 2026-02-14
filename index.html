@@ -1276,6 +1276,122 @@ const getToneForProfile = (profile, LANG) => {
   return tones[LANG][key] || "";
 };
 
+
+
+/* ---- Motor experto local (reglas + scoring semántico) ---- */
+const AI_EXPERT_TOPICS=[
+  {id:"affordability",k:["esfuerzo","ratio","cuota","35%","asequible","afford","stress"]},
+  {id:"cashgap",k:["entrada","ahorro","falta","gap","inicial","down payment","cash"]},
+  {id:"buyvsrent",k:["comprar","alquilar","llogar","buy","rent","mejor opcion"]},
+  {id:"rates",k:["tipo","euribor","interest","subida","bajada","fijo","variable"]},
+  {id:"term",k:["plazo","anos","años","years","duracion","term"]},
+  {id:"savings",k:["ahorrar","estalviar","save","monthly","mensual","meses"]},
+  {id:"negotiation",k:["negociar","oferta","descuento","rebaja","arras","offer"]},
+  {id:"subsidies",k:["ayuda","subvencion","subsidio","itp","irpf","bonus"]},
+  {id:"towns",k:["municipio","zona","town","baixa","baix penedes","calafell","vendrell","cunit"]},
+  {id:"risk",k:["riesgo","risk","emergencia","seguridad","imprevisto","crisis"]}
+];
+
+const normAI=(txt="")=>txt.toLowerCase()
+  .normalize("NFD").replace(/[̀-ͯ]/g,"")
+  .replace(/[^\p{L}\p{N}\s%]/gu," ")
+  .replace(/\s+/g," ").trim();
+
+const scoreTopic=(msg,topic)=>{
+  const m=normAI(msg);
+  let score=0;
+  topic.k.forEach(k=>{ if(m.includes(normAI(k))) score+=1; });
+  return score;
+};
+
+const pickTopics=(msg,maxN=3)=>{
+  return AI_EXPERT_TOPICS
+    .map(t=>({id:t.id,score:scoreTopic(msg,t)}))
+    .filter(x=>x.score>0)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,maxN)
+    .map(x=>x.id);
+};
+
+const expertLine=(L,es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
+
+const expertTopicText=(id,c,L)=>{
+  const missing=Math.max(0,c.needCash-c.sav);
+  const msv=Math.max(0,c.msv||0);
+  const mos=(missing>0&&msv>0)?Math.ceil(missing/msv):0;
+  switch(id){
+    case "affordability": return expertLine(L,
+      `• Esfuerzo actual: ${_fp(c.ratio)}. Objetivo recomendado: 30-35%. Si superas 35%, baja presupuesto o amplía plazo de forma controlada.`,
+      `• Esforç actual: ${_fp(c.ratio)}. Objectiu recomanat: 30-35%. Si superes 35%, baixa pressupost o amplia termini amb control.`,
+      `• Current effort: ${_fp(c.ratio)}. Recommended target: 30-35%. If above 35%, lower budget or extend term carefully.`);
+    case "cashgap": return expertLine(L,
+      missing>0?`• Te faltan ${_fm(missing)} para entrada+gastos${msv>0?` (~${mos} meses a ${_fm(msv)}/mes).`:"."}`:`• Ya cubres entrada+gastos. Prioriza negociación de precio y condiciones.` ,
+      missing>0?`• Et falten ${_fm(missing)} per entrada+despeses${msv>0?` (~${mos} mesos a ${_fm(msv)}/mes).`:"."}`:`• Ja cobreixes entrada+despeses. Prioritza negociar preu i condicions.` ,
+      missing>0?`• You are short by ${_fm(missing)} for down payment+costs${msv>0?` (~${mos} months at ${_fm(msv)}/mo).`:"."}`:`• You already cover upfront cash. Focus on negotiating better price/terms.`);
+    case "buyvsrent": return expertLine(L,
+      `• Recomendación actual: ${c.rec}. Comprar suele tener sentido si esfuerzo ≤35%, horizonte >5 años y fondo de emergencia intacto.`,
+      `• Recomanació actual: ${c.rec}. Comprar sol tenir sentit si esforç ≤35%, horitzó >5 anys i fons d'emergència intacte.`,
+      `• Current recommendation: ${c.rec}. Buying usually makes sense when effort ≤35%, horizon >5 years, and emergency fund remains intact.`);
+    case "rates": return expertLine(L,
+      `• Tipo usado: ${(c.rate*100).toFixed(2)}%. Regla práctica: simula +1% de tipo y comprueba que sigues por debajo del 40% de ingresos.`,
+      `• Tipus utilitzat: ${(c.rate*100).toFixed(2)}%. Regla pràctica: simula +1% i comprova que continues per sota del 40% d'ingressos.`,
+      `• Rate used: ${(c.rate*100).toFixed(2)}%. Rule of thumb: simulate +1% and ensure you stay below 40% income effort.`);
+    case "term": return expertLine(L,
+      `• Plazo actual: ${c.yrs} años. Acortar reduce intereses; alargar mejora caja mensual. Decide por estabilidad de ingresos, no solo por cuota.`,
+      `• Termini actual: ${c.yrs} anys. Escurçar redueix interessos; allargar millora caixa mensual. Decideix per estabilitat d'ingressos.`,
+      `• Current term: ${c.yrs} years. Shorter term cuts interest; longer term improves monthly cashflow. Decide by income stability, not payment alone.`);
+    case "savings": return expertLine(L,
+      `• Plan de ahorro: automatiza ${_fm(Math.max(150,c.inc*0.1))}/mes, elimina 2 gastos fijos y revisa progreso cada 30 días.`,
+      `• Pla d'estalvi: automatitza ${_fm(Math.max(150,c.inc*0.1))}/mes, elimina 2 despeses fixes i revisa progrés cada 30 dies.`,
+      `• Savings plan: automate ${_fm(Math.max(150,c.inc*0.1))}/mo, cut 2 fixed costs, review progress every 30 days.`);
+    case "negotiation": return expertLine(L,
+      `• Negociación: abre 8-12% por debajo, lleva comparables €/m² y no superes tu tope (${_fm(c.pb*(c.ratio>35?0.9:1))}).`,
+      `• Negociació: obre 8-12% per sota, porta comparables €/m² i no superis el teu topall (${_fm(c.pb*(c.ratio>35?0.9:1))}).`,
+      `• Negotiation: start 8-12% below asking, bring €/m² comparables, and do not exceed your cap (${_fm(c.pb*(c.ratio>35?0.9:1))}).`);
+    case "subsidies": return expertLine(L,
+      `• Revisa ayudas: ITP reducido (si aplica), deducciones autonómicas y condiciones de primera vivienda antes de firmar.`,
+      `• Revisa ajudes: ITP reduït (si aplica), deduccions autonòmiques i condicions de primera vivenda abans de signar.`,
+      `• Check subsidies: reduced ITP (if eligible), regional deductions, and first-home conditions before signing.`);
+    case "towns": return expertLine(L,
+      `• Zonas: costa (Calafell/Cunit) = más precio; interior (Bonastre/Masllorenç/Montmell) = mayor asequibilidad.`,
+      `• Zones: costa (Calafell/Cunit) = més preu; interior (Bonastre/Masllorenç/Montmell) = més assequible.`,
+      `• Areas: coast (Calafell/Cunit) = higher prices; inland (Bonastre/Masllorenç/Montmell) = more affordable.`);
+    case "risk": return expertLine(L,
+      `• Gestión de riesgo: conserva fondo de emergencia de 6 meses (${_fm(c.inc*6)}) y evita comprometer todo el ahorro en la compra.`,
+      `• Gestió de risc: mantén fons d'emergència de 6 mesos (${_fm(c.inc*6)}) i evita comprometre tots els estalvis en la compra.`,
+      `• Risk management: keep a 6-month emergency fund (${_fm(c.inc*6)}) and avoid deploying all savings into purchase costs.`);
+    default: return "";
+  }
+};
+
+const buildExpertReply=(msg,c,L,intent)=>{
+  if(!c) return "";
+  const topics=pickTopics(msg,4);
+  const needsExpert=(intent==="general"||intent==="advice"||intent==="strategy"||intent==="savings"||intent==="buyrent"||topics.length>=2);
+  if(!needsExpert) return "";
+
+  const header=expertLine(L,
+    `🧠 Respuesta avanzada para tu caso (${c.muni} · ${c.m2}m²):`,
+    `🧠 Resposta avançada pel teu cas (${c.muni} · ${c.m2}m²):`,
+    `🧠 Advanced answer for your case (${c.muni} · ${c.m2}m²):`);
+
+  const diag=[
+    expertLine(L,`• Precio estimado: ${_fm(c.pb)} · Cuota: ${_fm(c.pay)} (${_fp(c.ratio)}).`,`• Preu estimat: ${_fm(c.pb)} · Quota: ${_fm(c.pay)} (${_fp(c.ratio)}).`,`• Estimated price: ${_fm(c.pb)} · Payment: ${_fm(c.pay)} (${_fp(c.ratio)}).`),
+    expertLine(L,`• Alquiler estimado: ${_fm(c.pr)} (${_fp(c.rri)}).`,`• Lloguer estimat: ${_fm(c.pr)} (${_fp(c.rri)}).`,`• Estimated rent: ${_fm(c.pr)} (${_fp(c.rri)}).`),
+    expertLine(L,`• Recomendación actual: ${c.rec}.`,`• Recomanació actual: ${c.rec}.`,`• Current recommendation: ${c.rec}.`)
+  ];
+
+  const chosen=topics.length?topics:["affordability","cashgap","buyvsrent"];
+  const body=chosen.map(id=>expertTopicText(id,c,L)).filter(Boolean);
+
+  const close=expertLine(L,
+    "\nSi quieres, te hago ahora un plan semanal (Semana 1 a 12) con tareas exactas y objetivo de ahorro mensual.",
+    "\nSi vols, et faig ara un pla setmanal (Setmana 1 a 12) amb tasques exactes i objectiu d'estalvi mensual.",
+    "\nIf you want, I can now generate a week-by-week plan (Weeks 1-12) with exact tasks and monthly savings targets.");
+
+  return [header,...diag,...body].join("\n")+close;
+};
+
 /* ---- Detectar intención del mensaje ---- */
 const detectIntent=(msg)=>{
   const m=msg.toLowerCase()
@@ -1361,9 +1477,11 @@ const buildReply=(intent, msg)=>{
       "⚠️ You haven't completed the analysis yet. Fill in steps 1-3 and click Analyze so I can give you personalized advice."
     );
   }
-// ⭐ AÑADE ESTAS DOS LÍNEAS:
   const profile = analyzeUserProfile(c);
   const tone = getToneForProfile(profile, L);
+
+  const expertReply=buildExpertReply(msg,c,L,intent);
+  if(expertReply) return expertReply;
 
   const buyOk=!c.need&&c.ratio<=35&&c.hor;
   const rentOk=c.rri<=40;

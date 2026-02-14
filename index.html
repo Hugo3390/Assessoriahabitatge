@@ -1206,14 +1206,15 @@ const refreshExamplesUI=()=>{
      SECTION 2 — PERSISTENCE
      ============================ */
   localStorage.setItem(CHAT_KEY, JSON.stringify(chatHistory));
-    try {
-      const s = localStorage.getItem(window.CHAT_KEY);
-      if (s) {
-        chatHistory = JSON.parse(s) || [];
-        renderChatHistory();
-      }
-    } catch (e) {}
-  };
+try {
+  const s = localStorage.getItem(window.CHAT_KEY);
+  if (s) {
+    chatHistory = JSON.parse(s) || [];
+    renderChatHistory();
+  }
+} catch (e) {
+  // opcional: console.warn("Chat history corrupt", e);
+}
 
   const saveChatHistory = () => {
     try {

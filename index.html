@@ -1097,65 +1097,35 @@ const addThinking=()=>{
 };
 const removeThinking=()=>{const el=Q("#thinking-msg");if(el)el.remove();};
 
-const WORKER_URL = "https://shy-scene-c5e2.hibanezborreguero.workers.dev";
-
-const sendToAI = async (msg) => {
-  if (isAIProcessing) return;
-  isAIProcessing = true;
-
-  const btn = Q("#chatSend"), inp = Q("#chatInput");
-  if (btn) btn.disabled = true;
-  if (inp) inp.disabled = true;
-
-  addMsg("user", msg);
-  chatHistory.push({ role: "user", content: msg });
-  addThinking();
-
-  try {
-    const payload = {
-      message: msg,
-      lang: LANG,
-      system: getSystemPrompt(),
-      history: chatHistory.slice(-12).map(m => ({
-        role: m.role === "assistant" ? "assistant" : (m.role === "ai" ? "assistant" : "user"),
-        content: m.content
-      }))
-    };
-
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+const sendToAI=async msg=>{
+  if(isAIProcessing)return;isAIProcessing=true;
+  const btn=Q("#chatSend"),inp=Q("#chatInput");
+  if(btn)btn.disabled=true;if(inp)inp.disabled=true;
+  addMsg("user",msg);chatHistory.push({role:"user",content:msg});addThinking();
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:600,
+        system:getSystemPrompt(),
+        messages:chatHistory.slice(-12).map(m=>({role:m.role==="ai"?"assistant":m.role,content:m.content}))
+      })
     });
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status} ${errText}`);
-    }
-
-    const data = await res.json();
-    removeThinking();
-
-    const txt = data.reply || data.text || data.output_text;
-    if (!txt) throw new Error("Respuesta vacía del Worker");
-
-    addMsg("ai", txt);
-    chatHistory.push({ role: "assistant", content: txt });
-    saveChatHistory();
-
-  } catch (err) {
-    removeThinking();
-    console.error("AI error:", err);
-    addMsg("ai", t("aiErrNet"));
-  } finally {
-    isAIProcessing = false;
-    if (btn) btn.disabled = false;
-    if (inp) {
-      inp.disabled = false;
-      inp.value = "";
-      inp.style.height = "auto";
-      inp.focus();
-    }
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+    const data=await res.json();removeThinking();
+    const txt=data.content?.[0]?.text;
+    if(!txt)throw new Error("Respuesta vacía");
+    addMsg("ai",txt);chatHistory.push({role:"assistant",content:txt});saveChatHistory();
+  }catch(err){
+    removeThinking();console.error("AI error:",err);
+    const errMsg=err.message?.includes("401")?t("aiErrAuth"):err.message?.includes("429")?t("aiErrRate"):t("aiErrNet");
+    addMsg("ai",errMsg);
+  }finally{
+    isAIProcessing=false;
+    if(btn)btn.disabled=false;
+    if(inp){inp.disabled=false;inp.value="";inp.style.height="auto";inp.focus();}
   }
 };
 

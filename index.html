@@ -1159,22 +1159,6 @@ const sendToAI = async (msg) => {
   }
 };
 
-    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
-    const data=await res.json();removeThinking();
-    const txt=data.content?.[0]?.text;
-    if(!txt)throw new Error("Respuesta vacía");
-    addMsg("ai",txt);chatHistory.push({role:"assistant",content:txt});saveChatHistory();
-  }catch(err){
-    removeThinking();console.error("AI error:",err);
-    const errMsg=err.message?.includes("401")?t("aiErrAuth"):err.message?.includes("429")?t("aiErrRate"):t("aiErrNet");
-    addMsg("ai",errMsg);
-  }finally{
-    isAIProcessing=false;
-    if(btn)btn.disabled=false;
-    if(inp){inp.disabled=false;inp.value="";inp.style.height="auto";inp.focus();}
-  }
-};
-
 const renderChatHistory=()=>{
   QA(".chat-message:not(#welcome-message)").forEach(el=>el.remove());
   chatHistory.forEach(m=>{if(m.role==="user")addMsg("user",m.content);else if(m.role==="assistant")addMsg("ai",m.content);});

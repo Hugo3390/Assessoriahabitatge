@@ -1292,6 +1292,138 @@ const AI_EXPERT_TOPICS=[
   {id:"risk",k:["riesgo","risk","emergencia","seguridad","imprevisto","crisis"]}
 ];
 
+/* ---- Base masiva de conocimiento general (multidominio) ---- */
+const AI_GENERAL_KB=[
+  {id:"economy",k:["inflacion","inflation","ipc","deflacion","pib","gdp","recesion","tipo de interes","euribor","deuda","fiscal","macroeconomia"],
+   ES:["Inflación sostenida reduce poder adquisitivo; compara siempre salario real vs IPC.","Diversificar ingresos y mantener liquidez reduce fragilidad ante recesiones.","Los ciclos monetarios impactan hipotecas, renta variable y consumo."],
+   CA:["La inflació sostinguda redueix poder adquisitiu; compara salari real vs IPC.","Diversificar ingressos i mantenir liquiditat redueix fragilitat en recessions.","Els cicles monetaris impacten hipoteques, renda variable i consum."],
+   EN:["Persistent inflation erodes purchasing power; track real wage vs CPI.","Diversifying income and holding liquidity lowers recession fragility.","Monetary cycles affect mortgages, equities, and consumer demand."]},
+  {id:"investing",k:["invertir","investment","etf","fondos","acciones","bonds","bonos","diversificacion","riesgo retorno","portfolio"],
+   ES:["Riesgo y retorno están ligados: evita promesas de rentabilidad alta sin volatilidad.","Costes bajos y horizonte largo suelen ganar frente a trading impulsivo.","Define asignación de activos según objetivo, plazo y tolerancia al riesgo."],
+   CA:["Risc i retorn estan lligats: evita promeses de rendibilitat alta sense volatilitat.","Costos baixos i horitzó llarg solen guanyar al trading impulsiu.","Defineix assignació d'actius segons objectiu, termini i tolerància al risc."],
+   EN:["Risk and return are linked: avoid high-return/no-volatility promises.","Low costs plus long horizon usually beat impulsive trading.","Set asset allocation by goal, timeline, and risk tolerance."]},
+  {id:"personal_finance",k:["presupuesto","budget","deuda","debt","ahorro","emergency fund","fondo emergencia","credit score","interes compuesto"],
+   ES:["Regla práctica: 50/30/20 adaptada a tu realidad de vivienda e ingresos.","Fondo de emergencia ideal: 3-6 meses de gastos esenciales.","Prioriza deuda de alto interés antes que inversiones de riesgo."],
+   CA:["Regla pràctica: 50/30/20 adaptada a la teva realitat d'habitatge i ingressos.","Fons d'emergència ideal: 3-6 mesos de despeses essencials.","Prioritza deute d'alt interès abans d'inversions de risc."],
+   EN:["Practical rule: 50/30/20 adapted to housing and income reality.","Ideal emergency fund: 3-6 months of essential expenses.","Prioritize high-interest debt before risky investments."]},
+  {id:"real_estate",k:["inmobiliario","real estate","compraventa","arras","tasacion","notaria","registro","alquiler","rent"],
+   ES:["Comprar requiere analizar coste total: entrada, impuestos, notaría, mantenimiento y oportunidad.","Alquilar puede ser racional si da flexibilidad o reduce riesgo financiero.","Negociar precio con comparables €/m² mejora resultado esperado."],
+   CA:["Comprar requereix analitzar cost total: entrada, impostos, notaria, manteniment i oportunitat.","Llogar pot ser racional si dona flexibilitat o redueix risc financer.","Negociar preu amb comparables €/m² millora el resultat esperat."],
+   EN:["Buying requires total-cost view: down payment, taxes, notary, maintenance, opportunity cost.","Renting can be rational if it improves flexibility or lowers financial risk.","Negotiating with €/m² comparables improves expected outcome."]},
+  {id:"business",k:["empresa","startup","pricing","margen","cashflow","ebitda","unit economics","clientes","marketing"],
+   ES:["Sin flujo de caja, el crecimiento no es sostenible.","Mide CAC/LTV y margen de contribución antes de escalar.","Precio debe reflejar valor percibido, coste y posición competitiva."],
+   CA:["Sense flux de caixa, el creixement no és sostenible.","Mesura CAC/LTV i marge de contribució abans d'escalar.","El preu ha de reflectir valor percebut, cost i posició competitiva."],
+   EN:["Without cashflow, growth is not sustainable.","Measure CAC/LTV and contribution margin before scaling.","Price must reflect perceived value, cost, and competitive position."]},
+  {id:"technology",k:["programacion","software","ia","ai","algoritmo","arquitectura","backend","frontend","api","database","sql","python","javascript"],
+   ES:["Buena ingeniería prioriza claridad, testabilidad y mantenibilidad.","Diseños simples con métricas y observabilidad reducen incidencias.","Seguridad básica: validación de entrada, mínimo privilegio y secretos fuera del código."],
+   CA:["Bona enginyeria prioritza claredat, testabilitat i mantenibilitat.","Dissenys simples amb mètriques i observabilitat redueixen incidències.","Seguretat bàsica: validació d'entrada, mínim privilegi i secrets fora del codi."],
+   EN:["Good engineering prioritizes clarity, testability, and maintainability.","Simple designs with metrics and observability reduce incidents.","Basic security: input validation, least privilege, and secrets outside code."]},
+  {id:"health",k:["salud","health","nutricion","ejercicio","sueño","stress","mental","ansiedad","dieta"],
+   ES:["Base de salud: sueño suficiente, actividad física regular y alimentación consistente.","No sustituyo consejo médico profesional; ante síntomas consulta un profesional.","Pequeños hábitos sostenibles superan cambios extremos de corta duración."],
+   CA:["Base de salut: son suficient, activitat física regular i alimentació consistent.","No substitueixo consell mèdic professional; amb símptomes consulta un professional.","Petits hàbits sostenibles superen canvis extrems de curta durada."],
+   EN:["Health basics: adequate sleep, regular physical activity, and consistent nutrition.","I do not replace professional medical advice; consult a clinician for symptoms.","Small sustainable habits beat short-lived extreme changes."]},
+  {id:"law",k:["legal","contrato","ley","leyes","derecho","demanda","impuesto","fiscal","compliance","rgpd"],
+   ES:["Puedo orientar en términos generales, pero no sustituyo asesoramiento legal profesional.","Lee cláusulas de penalización, plazos y jurisdicción antes de firmar.","En privacidad, minimización de datos y consentimiento informado son clave."],
+   CA:["Puc orientar en termes generals, però no substitueixo assessorament legal professional.","Llegeix clàusules de penalització, terminis i jurisdicció abans de signar.","En privacitat, minimització de dades i consentiment informat són clau."],
+   EN:["I can provide general guidance but not replace professional legal advice.","Review penalty clauses, timelines, and jurisdiction before signing.","For privacy, data minimization and informed consent are key."]},
+  {id:"education",k:["estudiar","aprender","learning","curso","universidad","exam","memoria","productividad"],
+   ES:["Aprendizaje efectivo: práctica activa + repetición espaciada + feedback.","Divide metas en bloques semanales con revisión de progreso.","Enseñar lo aprendido acelera comprensión y retención."],
+   CA:["Aprenentatge efectiu: pràctica activa + repetició espaiada + feedback.","Divideix metes en blocs setmanals amb revisió de progrés.","Ensenyar el que has après accelera comprensió i retenció."],
+   EN:["Effective learning: active practice + spaced repetition + feedback.","Break goals into weekly blocks with progress review.","Teaching what you learned accelerates understanding and retention."]},
+  {id:"career",k:["trabajo","job","salario","entrevista","cv","curriculum","promocion","liderazgo","management"],
+   ES:["Aumentar salario suele requerir evidencia de impacto medible y negociación preparada.","CV eficaz: logros con métricas, no solo tareas.","En entrevistas, estructura STAR mejora claridad de ejemplos."],
+   CA:["Augmentar salari sol requerir evidència d'impacte mesurable i negociació preparada.","CV eficaç: fites amb mètriques, no només tasques.","En entrevistes, estructura STAR millora claredat d'exemples."],
+   EN:["Salary growth often requires measurable impact evidence and prepared negotiation.","Strong CV: achievements with metrics, not just tasks.","In interviews, STAR structure improves example clarity."]},
+  {id:"science",k:["fisica","quimica","biologia","astronomia","ciencia","experimento","evidence","metodo cientifico"],
+   ES:["La ciencia avanza por evidencia reproducible, no por autoridad aislada.","Distinguir correlación de causalidad evita conclusiones erróneas.","Modelos son aproximaciones útiles, no verdades absolutas."],
+   CA:["La ciència avança per evidència reproduïble, no per autoritat aïllada.","Distingir correlació de causalitat evita conclusions errònies.","Els models són aproximacions útils, no veritats absolutes."],
+   EN:["Science advances through reproducible evidence, not isolated authority.","Distinguishing correlation from causation avoids wrong conclusions.","Models are useful approximations, not absolute truths."]},
+  {id:"history",k:["historia","history","guerra","imperio","revolucion","siglo","edad media","roma"],
+   ES:["Contexto importa: causas económicas, sociales y tecnológicas interactúan.","Evita anacronismos al juzgar decisiones del pasado.","Contrastar fuentes reduce sesgos narrativos."],
+   CA:["El context importa: causes econòmiques, socials i tecnològiques interactuen.","Evita anacronismes en jutjar decisions del passat.","Contrastar fonts redueix biaixos narratius."],
+   EN:["Context matters: economic, social, and technological causes interact.","Avoid anachronisms when judging past decisions.","Cross-checking sources reduces narrative bias."]},
+  {id:"philosophy",k:["filosofia","ethics","moral","existencial","sentido","stoic","utilitarismo"],
+   ES:["Marco útil: clarifica valores, luego evalúa consecuencias y deberes.","En dilemas éticos, explicitar supuestos mejora decisiones.","No hay respuestas únicas para todos los contextos."],
+   CA:["Marc útil: clarifica valors, després avalua conseqüències i deures.","En dilemes ètics, explicitar supòsits millora decisions.","No hi ha respostes úniques per a tots els contextos."],
+   EN:["Useful frame: clarify values, then assess consequences and duties.","In ethical dilemmas, making assumptions explicit improves decisions.","There are rarely one-size-fits-all answers." ]},
+  {id:"psychology",k:["psicologia","habitos","motivacion","procrastinacion","emociones","mindset"],
+   ES:["El entorno diseña conducta: reduce fricción para hábitos buenos.","Objetivos específicos y medibles superan intenciones vagas.","Autocompasión y constancia funcionan mejor que culpa."],
+   CA:["L'entorn dissenya conducta: redueix fricció per hàbits bons.","Objectius específics i mesurables superen intencions vagues.","Autocompassió i constància funcionen millor que culpa."],
+   EN:["Environment shapes behavior: reduce friction for good habits.","Specific measurable goals beat vague intentions.","Self-compassion and consistency beat guilt." ]},
+  {id:"communication",k:["comunicar","presentacion","escribir","email","negociacion","argumento","storytelling"],
+   ES:["Estructura clara: contexto → problema → propuesta → siguiente paso.","Mensajes cortos con una idea central mejoran comprensión.","Escucha activa y preguntas abiertas elevan calidad de conversaciones."],
+   CA:["Estructura clara: context → problema → proposta → següent pas.","Missatges curts amb una idea central milloren comprensió.","Escolta activa i preguntes obertes eleven la qualitat de converses."],
+   EN:["Clear structure: context → problem → proposal → next step.","Short messages with one core idea improve comprehension.","Active listening and open questions improve conversations."]},
+  {id:"travel",k:["viaje","travel","itinerario","vuelos","hotel","visa","equipaje"],
+   ES:["Planifica con margen: documentación, seguros y política de cancelación.","Optimiza coste total, no solo precio de vuelo.","Itinerarios realistas reducen fatiga y mejoran experiencia."],
+   CA:["Planifica amb marge: documentació, assegurances i política de cancel·lació.","Optimitza cost total, no només preu del vol.","Itineraris realistes redueixen fatiga i milloren experiència."],
+   EN:["Plan with buffer: documents, insurance, and cancellation policies.","Optimize total trip cost, not just airfare.","Realistic itineraries reduce fatigue and improve experience."]},
+  {id:"cooking",k:["cocina","receta","horno","sarten","salsa","fermentacion","pan","postre"],
+   ES:["Domina técnicas base (sofrito, emulsión, punto de cocción) y tendrás mejores resultados.","Mise en place ahorra errores y tiempo.","Ajusta sal, ácido y grasa para equilibrar sabor."],
+   CA:["Domina tècniques base (sofregit, emulsió, punt de cocció) i tindràs millors resultats.","Mise en place estalvia errors i temps.","Ajusta sal, àcid i greix per equilibrar sabor."],
+   EN:["Master core techniques (saute, emulsion, doneness) for better results.","Mise en place reduces mistakes and saves time.","Balance salt, acid, and fat for flavor." ]},
+  {id:"sports",k:["deporte","futbol","running","gym","fuerza","resistencia","entrenamiento"],
+   ES:["Progresión gradual y descanso son esenciales para mejorar sin lesión.","Objetivo SMART + registro semanal acelera resultados.","Nutrición e hidratación sostienen rendimiento."],
+   CA:["Progressió gradual i descans són essencials per millorar sense lesió.","Objectiu SMART + registre setmanal accelera resultats.","Nutrició i hidratació sostenen rendiment."],
+   EN:["Gradual progression and rest are key to improve injury-free.","SMART goals + weekly tracking accelerate results.","Nutrition and hydration sustain performance."]},
+  {id:"languages",k:["idioma","ingles","english","frances","aleman","vocabulario","grammar","pronunciation"],
+   ES:["Práctica diaria breve (20-30 min) supera sesiones largas esporádicas.","Input comprensible + output frecuente + corrección rápida.","Prioriza frases útiles antes que listas largas de reglas."],
+   CA:["Pràctica diària breu (20-30 min) supera sessions llargues esporàdiques.","Input comprensible + output freqüent + correcció ràpida.","Prioritza frases útils abans que llistes llargues de regles."],
+   EN:["Short daily practice (20-30 min) beats sporadic long sessions.","Comprehensible input + frequent output + fast correction.","Prioritize useful phrases before long grammar lists."]},
+  {id:"ai_ml",k:["machine learning","llm","neural","transformer","prompt","hallucination","rag","vector"],
+   ES:["LLMs generan texto probable, no verdad garantizada; verifica datos críticos.","Prompts con contexto, restricciones y formato mejoran consistencia.","Para precisión, combina retrieval/grounding con validación externa."],
+   CA:["Els LLMs generen text probable, no veritat garantida; verifica dades crítiques.","Prompts amb context, restriccions i format milloren consistència.","Per precisió, combina retrieval/grounding amb validació externa."],
+   EN:["LLMs generate likely text, not guaranteed truth; verify critical facts.","Prompts with context, constraints, and output format improve consistency.","For accuracy, combine retrieval/grounding with external validation."]},
+  {id:"cybersecurity",k:["seguridad","cyber","phishing","password","2fa","malware","ransomware","vpn","encryption"],
+   ES:["Higiene mínima: contraseñas únicas + gestor + 2FA.","Actualizaciones y copias de seguridad reducen impacto de incidentes.","Desconfía de urgencia artificial en correos y enlaces."],
+   CA:["Higiene mínima: contrasenyes úniques + gestor + 2FA.","Actualitzacions i còpies de seguretat redueixen impacte d'incidents.","Desconfia de la urgència artificial en correus i enllaços."],
+   EN:["Minimum hygiene: unique passwords + manager + 2FA.","Updates and backups reduce incident impact.","Be skeptical of artificial urgency in emails and links."]},
+  {id:"math",k:["matematicas","algebra","calculo","estadistica","probabilidad","derivada","integral"],
+   ES:["Entender conceptos primero y fórmulas después mejora transferencia.","Problemas tipo + variaciones graduales consolidan aprendizaje.","En estadística, interpreta incertidumbre, no solo promedios."],
+   CA:["Entendre conceptes primer i fórmules després millora transferència.","Problemes tipus + variacions graduals consoliden aprenentatge.","En estadística, interpreta incertesa, no només mitjanes."],
+   EN:["Concepts first, formulas second improves transfer.","Prototype problems + gradual variations build mastery.","In statistics, interpret uncertainty, not only averages."]},
+  {id:"writing",k:["escribir","writing","novela","articulo","copy","blog","guion","story"],
+   ES:["Un borrador malo terminado vale más que uno perfecto inconcluso.","Edita en capas: estructura, claridad, estilo, corrección.","Conoce audiencia y objetivo antes de elegir tono."],
+   CA:["Un esborrany dolent acabat val més que un perfecte inacabat.","Edita per capes: estructura, claredat, estil, correcció.","Coneix audiència i objectiu abans de triar to."],
+   EN:["A bad finished draft beats a perfect unfinished one.","Edit in layers: structure, clarity, style, correctness.","Know audience and goal before picking tone."]}
+];
+
+const scoreGeneralKB=(msg,entry)=>{
+  const m=normAI(msg);
+  let score=0;
+  entry.k.forEach(k=>{ if(m.includes(normAI(k))) score+=2; });
+  if(m.length>0&&entry.id&&m.includes(normAI(entry.id))) score+=1;
+  return score;
+};
+
+const pickGeneralKB=(msg,maxN=3)=>AI_GENERAL_KB
+  .map(e=>({e,score:scoreGeneralKB(msg,e)}))
+  .filter(x=>x.score>0)
+  .sort((a,b)=>b.score-a.score)
+  .slice(0,maxN)
+  .map(x=>x.e);
+
+const buildGeneralKnowledgeReply=(msg,L)=>{
+  const top=pickGeneralKB(msg,3);
+  if(!top.length) return "";
+  const byLang=(e)=>L==="CA"?e.CA:L==="EN"?e.EN:e.ES;
+  const header=L==="EN"?"🌐 General knowledge answer (multi-domain):":(L==="CA"?"🌐 Resposta de coneixement general (multidomini):":"🌐 Respuesta de conocimiento general (multidominio):");
+  const lines=[];
+  top.forEach(entry=>{
+    const points=byLang(entry).slice(0,3);
+    lines.push(`
+[${entry.id}]`);
+    points.forEach(p=>lines.push(`• ${p}`));
+  });
+  const close=L==="EN"
+    ?"\nIf you want, I can go deeper in one specific domain (step-by-step, examples, and actionable plan)."
+    :(L==="CA"
+      ?"\nSi vols, puc aprofundir en un domini concret (pas a pas, exemples i pla accionable)."
+      :"\nSi quieres, puedo profundizar en un dominio concreto (paso a paso, ejemplos y plan accionable).");
+  return [header,...lines].join("\n")+close;
+};
+
+
 const normAI=(txt="")=>txt.toLowerCase()
   .normalize("NFD").replace(/[̀-ͯ]/g,"")
   .replace(/[^\p{L}\p{N}\s%]/gu," ")
@@ -1407,7 +1539,7 @@ const detectIntent=(msg)=>{
   if(has("que puedes","que pots","what can you","que sabes","que saps","ayudame","ajuda'm","help me","para que sirves","com funciones")) return "capabilities";
 
   // Análisis y resultado
-  if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","explica","cuéntame","conta'm")) return "summary";
+  if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","cuéntame","conta'm")) return "summary";
   if(has("consejo","consell","advice","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria")) return "advice";
   if(has("plan","plan de accion","pasos","roadmap","hoja de ruta","next steps","seguent pas")) return "actionplan";
   if(has("negociar","negociacio","negotiation","oferta","offer","regatear","rebaja","descuento")) return "negotiation";
@@ -1445,7 +1577,7 @@ const detectIntent=(msg)=>{
   if(has("ipc","inflacion","inflacio","inflation","subida precios","poder adquisitivo")) return "inflation";
 
   // Riesgos
-  if(has("riesgo","risc","risk","seguro","segur","peligro","perills","crash","burbuja","burbolla","crisis")) return "risk";
+  if(has("riesgo","risc","risk","peligro","perills","crash","burbuja","burbolla","crisis")) return "risk";
 
   // Ingresos
   if(has("trabajo","feina","job","sueldo","salari","salary","ingresos","nómina","nomina")) return "income";
@@ -1479,6 +1611,10 @@ const buildReply=(intent, msg)=>{
   }
   const profile = analyzeUserProfile(c);
   const tone = getToneForProfile(profile, L);
+
+  const generalKBReply=buildGeneralKnowledgeReply(msg,L);
+  const housingIntents=new Set(["summary","advice","buyrent","mortgage","payment","downpayment","costs","rates","savings","strategy","amortize","price","rent","size","term","extras","towns","compare","market","subsidy","firsthome","inflation","risk","income","negotiation","actionplan"]);
+  if(generalKBReply&&!housingIntents.has(intent)) return generalKBReply;
 
   const expertReply=buildExpertReply(msg,c,L,intent);
   if(expertReply) return expertReply;

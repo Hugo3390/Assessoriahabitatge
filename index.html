@@ -1891,28 +1891,28 @@ click("#L_EN", () => setLang && setLang("EN"));
 
 ["inc", "sav", "m2"].forEach(id => on("#" + id, "input", liveValidate));
 ["#nm", "#ag", "#inc", "#sav", "#yrs", "#msv", "#m2", "#bed", "#bat"].forEach(sel => on(sel, "change", () => saveForm && saveForm()));
+  <script>
+                    
+  // ... TODO tu JS de arriba se queda igual ...
 
-/* ============================
-   INIT (solo una vez, sin llaves raras)
-   ============================ */
-(() => {
-  try {
-    loadZoneSel && loadZoneSel();
-    loadForm && loadForm();
-    setLang && setLang(LANG);
-    setTabsEnabled && setTabsEnabled();
-    liveValidate();
-    show && show("p");
+  /* ==========================
+     INIT (solo una vez)
+     ========================== */
+  (function () {
+    try {
+      if (typeof loadZoneSel === "function") loadZoneSel();
+      if (typeof loadForm === "function") loadForm();
+      if (typeof setLang === "function") setLang(LANG);
+      if (typeof setTabsEnabled === "function") setTabsEnabled();
+      if (typeof liveValidate === "function") liveValidate();
+      if (typeof show === "function") show("p");
 
-    // Si tu chat engine expone initChatUI, inicialízalo aquí cuando toque
-    if (typeof window.initChatUI === "function") window.initChatUI();
-
-    // Leaflet si aplica
-    if (typeof waitForLeaflet === "function") waitForLeaflet();
-  } catch (e) {
-    console.error("INIT error:", e);
-  }
-})();
-</script>
+      if (typeof window.initChatUI === "function") window.initChatUI();
+      if (typeof waitForLeaflet === "function") waitForLeaflet();
+    } catch (e) {
+      console.error("INIT error:", e);
+    }
+  })();
+  </script>
 </body>
 </html>

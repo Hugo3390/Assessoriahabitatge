@@ -1137,487 +1137,607 @@ const refreshExamplesUI=()=>{
   setTabsEnabled();
 };
 
-# Write a 1000+ line JavaScript module to a file for the user to download.
-from pathlib import Path
-
-code = r"""/* =============================================================================
+/* =============================================================================
    Assessoria d'Habitatge — AI CHAT ENGINE (Offline, No-API)
-   Version: 3.0 "Conversational"
-   Author: (generated)
+   Fixed syntax build
    -----------------------------------------------------------------------------
-   Goals:
-   - Safer chat rendering (anti-XSS)
-   - Better intent detection (scoring + confidence)
-   - Slot/entity extraction (numbers, terms, preference)
-   - Conversation memory (topic, preferences, goals)
-   - Follow-up questions to keep conversation moving
-   - What-if scenarios (rate, term, saving)
-   - Structured answers (short + why + next step)
-   - Optional: language per-message override
-   - Optional: quick suggestion chips hook
-   - Optional: periodic profile recap
-   -----------------------------------------------------------------------------
-   Integration notes:
-   - This file expects your app to already define:
-       LANG (UI language: "ES" | "CA" | "EN")
-       t(key) i18n lookup (optional; used for labels)
-       Q(selector), QA(selector) helpers (query selector)
-       fmtMoney(number) -> formatted money string
-       mort(capital, rate, years) -> monthly payment
-       last -> latest analysis object (your current structure)
-       muniLabel(code), typeLabel(code)
-       CHAT_KEY -> localStorage key for chat history
-       applyI18n() -> refresh UI text (optional)
-   - If any are missing, add simple stubs or adapt.
+   Requires (from your app):
+     LANG ("ES"|"CA"|"EN")
+     t(key) optional
+     Q(selector), QA(selector) optional (fallbacks included)
+     fmtMoney(number)
+     mort(capital, rate, years)
+     last (analysis object)
+     muniLabel(code), typeLabel(code) optional
+     CHAT_KEY (localStorage key)
+     applyI18n() optional
    ============================================================================= */
 
-/* ============================
-   SECTION 1 — GLOBAL STATE
-   ============================ */
+(function () {
+  "use strict";
 
-let chatHistory = [];
-let isAIProcessing = false;
+  /* ============================
+     FALLBACKS (in case your app doesn't define Q/QA)
+     ============================ */
+  const _Q = (sel) => (typeof Q === "function" ? Q(sel) : document.querySelector(sel));
+  const _QA = (sel) => (typeof QA === "function" ? QA(sel) : document.querySelectorAll(sel));
 
-// Separate state (memory)
-const CHAT_STATE_KEY = "ah_chat_state_v3";
+  /* ============================
+     SECTION 1 — GLOBAL STATE
+     ============================ */
+  let chatHistory = [];
+  let isAIProcessing = false;
 
-const loadChatState = () => {
-  try { return JSON.parse(localStorage.getItem(CHAT_STATE_KEY) || "{}") || {}; }
-  catch(e){ return {}; }
-};
+  const CHAT_STATE_KEY = "ah_chat_state_v3";
 
-const saveChatState = (st) => {
-  try { localStorage.setItem(CHAT_STATE_KEY, JSON.stringify(st || {})); }
-  catch(e){}
-};
-
-let chatState = loadChatState();
-chatState = {
-  // Conversation
-  turn: chatState.turn || 0,
-  topic: chatState.topic || null,         // e.g. "towns", "buyrent", "mortgage", ...
-  lastIntent: chatState.lastIntent || null,
-  lastUserText: chatState.lastUserText || "",
-  lastAssistantText: chatState.lastAssistantText || "",
-
-  // Memory: preferences and goals
-  prefs: chatState.prefs || {
-    area: null,        // "coast" | "inland" | "commute_bcn" | null
-    priority: null,    // "price" | "services" | "commute" | "schools" | "quiet" | null
-    style: "normal",   // "fast" | "normal" | "detailed"
-    language: null     // "ES"|"CA"|"EN" per-user-message override, if detected
-  },
-  goals: chatState.goals || {
-    nextStep: null,    // "choose_area" | "choose_priority" | ...
-    shortlist: []      // list of towns or notes
-  },
-
-  // Last extracted slots
-  lastSlots: chatState.lastSlots || {}
-};
-
-/* ============================
-   SECTION 2 — PERSISTENCE
-   ============================ */
-
-const loadChatHistory = () => {
-  try {
-    const s = localStorage.getItem(CHAT_KEY);
-    if (s) {
-      chatHistory = JSON.parse(s) || [];
-      renderChatHistory();
-    }
-  } catch(e) {}
-};
-
-const saveChatHistory = () => {
-  try { localStorage.setItem(CHAT_KEY, JSON.stringify(chatHistory)); }
-  catch(e){}
-};
-
-/* ============================
-   SECTION 3 — USER CONTEXT
-   ============================ */
-
-const _fm = (n) => fmtMoney(n);
-const _fp = (n) => Number(n).toFixed(1) + "%";
-
-// Use your existing analysis "last"
-const getUserContext = () => {
-  if (!window.last) return null;
-
-  const L = window.LANG || "ES";
-  const _t = (k) => (typeof t === "function" ? t(k) : k);
-
-  const extras = ["t","p","l","k"]
-    .filter(k => last.e && last.e[k])
-    .map(k => ({ t:_t("exTer"), p:_t("exPis"), l:_t("exAsc"), k:_t("exGar") }[k] || k))
-    .join(", ") || "—";
-
-  return {
-    nm: last.nm,
-    ag: last.ag,
-    inc: last.inc,
-    sav: last.sav,
-    msv: last.msv,
-
-    pb: last.pb,   // buy price estimate
-    pr: last.pr,   // rent estimate
-    pay: last.pay, // mortgage payment
-    cap: last.cap, // financed capital
-
-    rate: last.rate,
-    yrs: last.yrs,
-    dp: Math.round(last.dp * 100),
-
-    ratio: last.ratio, // mortgage effort %
-    rri: last.rri,     // rent effort %
-
-    rec: last.rec,
-    recCode: last.recCode,
-
-    need: last.need,
-    needCash: last.needCash,
-    hor: last.hor,
-
-    muni: typeof muniLabel === "function" ? muniLabel(last.muni) : (last.muni || ""),
-    m2: last.m2,
-    bd: last.bd || 0,
-    ba: last.ba,
-    type: typeof typeLabel === "function" ? typeLabel(last.type) : (last.type || ""),
-    extras,
-
-    safe: Math.round(last.inc * 0.35),
-    missing: Math.max(0, last.needCash - last.sav),
-    mosToGoal: last.msv > 0 ? Math.ceil(Math.max(0, last.needCash - last.sav) / last.msv) : null,
-    margin: Math.round(last.inc * 0.35 - last.pay),
-    rentMargin: Math.round(last.inc * 0.40 - last.pr),
-
-    // Derived
-    €/m2: last.m2 ? Math.round(last.pb / last.m2) : null
-  };
-};
-
-/* ============================
-   SECTION 4 — SAFE RENDERING
-   ============================ */
-
-// Escape HTML (anti-XSS)
-const escapeHTML = (s="") => String(s)
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
-
-// Markdown tiny-strip (avoid links/code)
-const stripMd = (text="") => {
-  const t0 = String(text);
-  return t0
-    .replace(/\*\*(.+?)\*\*/g, "$1")
-    .replace(/\*(.+?)\*/g, "$1")
-    .replace(/`(.+?)`/g, "$1")
-    .replace(/^#+\s+/gm, "")
-    .replace(/\[(.+?)\]\(.+?\)/g, "$1");
-};
-
-const renderSafeMultiline = (el, text) => {
-  if (!el) return;
-  const clean = escapeHTML(stripMd(text));
-  el.innerHTML = clean.replace(/\n/g, "<br>");
-};
-
-/* ============================
-   SECTION 5 — LANGUAGE (PER MESSAGE)
-   ============================ */
-
-const detectLanguageFromText = (msg) => {
-  const m = (msg||"").toLowerCase();
-  // Very lightweight heuristic
-  const caHits = ["què","com","on","llogar","estalviar","termini","quota","despeses","municipi","més","menys","però"];
-  const esHits = ["qué","cómo","dónde","alquilar","ahorrar","plazo","cuota","gastos","municipio","más","menos","pero"];
-  const enHits = ["what","how","where","rent","buy","mortgage","payment","savings","term","rate","town"];
-
-  const count = (arr) => arr.reduce((acc,w)=>acc+(m.includes(w)?1:0),0);
-  const ca = count(caHits), es = count(esHits), en = count(enHits);
-
-  const max = Math.max(ca, es, en);
-  if (max === 0) return null;
-  if (max === ca) return "CA";
-  if (max === en) return "EN";
-  return "ES";
-};
-
-const getLang = (msg) => {
-  // Priority: detected language in message > stored preference > UI LANG
-  const det = detectLanguageFromText(msg);
-  if (det) chatState.prefs.language = det;
-  return det || chatState.prefs.language || (window.LANG || "ES");
-};
-
-const tr = (L, es, ca, en) => (L === "CA" ? ca : (L === "EN" ? en : es));
-
-/* ============================
-   SECTION 6 — USER PROFILE TONE
-   ============================ */
-
-const analyzeUserProfile = (ctx) => {
-  if (!ctx) return null;
-
-  const profile = {
-    wealth: "middle",   // low / middle / high
-    age_group: "adult", // young / adult / senior
-    urgency: "normal",  // low / normal / high
-    risk: "medium"      // low / medium / high
-  };
-
-  if (ctx.inc >= 4000 && ctx.sav >= 50000) profile.wealth = "high";
-  else if (ctx.inc < 1800 || ctx.sav < 10000) profile.wealth = "low";
-
-  const age = ctx.ag || 35;
-  if (age < 30) profile.age_group = "young";
-  else if (age >= 55) profile.age_group = "senior";
-
-  if (ctx.need && ctx.mosToGoal && ctx.mosToGoal > 36) profile.urgency = "low";
-  else if (ctx.need && ctx.mosToGoal && ctx.mosToGoal < 12) profile.urgency = "high";
-
-  if (ctx.ratio > 35 || ctx.need) profile.risk = "high";
-  else if (ctx.ratio < 25 && !ctx.need) profile.risk = "low";
-
-  return profile;
-};
-
-const getToneForProfile = (profile, LANG) => {
-  const tones = {
-    ES: {
-      high_young: "Tienes una situación financiera sólida y juventud de tu lado",
-      high_adult: "Tu posición financiera es muy buena",
-      high_senior: "Has construido una posición financiera excelente",
-      middle_young: "Estás en buena posición para empezar",
-      middle_adult: "Tienes una base financiera razonable",
-      middle_senior: "Tu situación es estable",
-      low_young: "Aunque ahora estés empezando, tienes tiempo por delante",
-      low_adult: "Estás en un momento de construcción financiera",
-      low_senior: "Entiendo que la situación puede ser desafiante"
-    },
-    CA: {
-      high_young: "Tens una situació financera sòlida i joventut del teu costat",
-      high_adult: "La teva posició financera és molt bona",
-      high_senior: "Has construït una posició financera excel·lent",
-      middle_young: "Estàs en bona posició per començar",
-      middle_adult: "Tens una base financera raonable",
-      middle_senior: "La teva situació és estable",
-      low_young: "Tot i que ara estiguis començant, tens temps per davant",
-      low_adult: "Estàs en un moment de construcció financera",
-      low_senior: "Entenc que la situació pot ser desafiadora"
-    },
-    EN: {
-      high_young: "You have a solid financial position with youth on your side",
-      high_adult: "Your financial position is very good",
-      high_senior: "You've built an excellent financial position",
-      middle_young: "You're in a good position to get started",
-      middle_adult: "You have a reasonable financial foundation",
-      middle_senior: "Your situation is stable",
-      low_young: "Though you're just starting, you have time ahead",
-      low_adult: "You're in a financial building phase",
-      low_senior: "I understand the situation can be challenging"
+  const loadChatState = () => {
+    try {
+      return JSON.parse(localStorage.getItem(CHAT_STATE_KEY) || "{}") || {};
+    } catch (e) {
+      return {};
     }
   };
-  if (!profile) return "";
-  const key = `${profile.wealth}_${profile.age_group}`;
-  return (tones[LANG] && tones[LANG][key]) ? tones[LANG][key] : "";
-};
 
-/* ============================
-   SECTION 7 — DATA: TOWNS & TAGS
-   ============================ */
-/*
-  This is intentionally large to improve entity recognition and to give
-  more granular recommendations. Expand/adjust as needed.
-*/
+  const saveChatState = (st) => {
+    try {
+      localStorage.setItem(CHAT_STATE_KEY, JSON.stringify(st || {}));
+    } catch (e) {}
+  };
 
-const TOWNS = [
-  // Baix Penedès (core)
-  { key:"cunit", name:{ES:"Cunit",CA:"Cunit",EN:"Cunit"}, tags:["coast","train","services","family"] },
-  { key:"calafell", name:{ES:"Calafell",CA:"Calafell",EN:"Calafell"}, tags:["coast","train","services","tourism"] },
-  { key:"el_vendrell", name:{ES:"El Vendrell",CA:"El Vendrell",EN:"El Vendrell"}, tags:["services","train","center","family"] },
-  { key:"larboc", name:{ES:"L'Arboç",CA:"L'Arboç",EN:"L'Arboç"}, tags:["train","value","quiet"] },
-  { key:"la_bisbal", name:{ES:"La Bisbal del Penedès",CA:"La Bisbal del Penedès",EN:"La Bisbal del Penedès"}, tags:["value","quiet","family"] },
-  { key:"llorenc", name:{ES:"Llorenç del Penedès",CA:"Llorenç del Penedès",EN:"Llorenç del Penedès"}, tags:["value","quiet"] },
-  { key:"bellvei", name:{ES:"Bellvei",CA:"Bellvei",EN:"Bellvei"}, tags:["value","quiet","family"] },
-  { key:"santa_oliva", name:{ES:"Santa Oliva",CA:"Santa Oliva",EN:"Santa Oliva"}, tags:["value","quiet"] },
-  { key:"albinyana", name:{ES:"Albinyana",CA:"Albinyana",EN:"Albinyana"}, tags:["quiet","value"] },
-  { key:"bonastre", name:{ES:"Bonastre",CA:"Bonastre",EN:"Bonastre"}, tags:["inland","cheap","quiet"] },
-  { key:"masllorenc", name:{ES:"Masllorenç",CA:"Masllorenç",EN:"Masllorenç"}, tags:["inland","cheap","quiet"] },
-  { key:"el_montmell", name:{ES:"El Montmell",CA:"El Montmell",EN:"El Montmell"}, tags:["inland","cheap","quiet"] },
-  { key:"sant_jaume", name:{ES:"Sant Jaume dels Domenys",CA:"Sant Jaume dels Domenys",EN:"Sant Jaume dels Domenys"}, tags:["inland","value","quiet"] },
+  let chatState = loadChatState();
+  chatState = {
+    turn: chatState.turn || 0,
+    topic: chatState.topic || null,
+    lastIntent: chatState.lastIntent || null,
+    lastUserText: chatState.lastUserText || "",
+    lastAssistantText: chatState.lastAssistantText || "",
+    prefs: chatState.prefs || {
+      area: null,
+      priority: null,
+      style: "normal",
+      language: null
+    },
+    goals: chatState.goals || {
+      nextStep: null,
+      shortlist: []
+    },
+    lastSlots: chatState.lastSlots || {}
+  };
 
-  // Neighbor references (to help comparisons)
-  { key:"tarragona", name:{ES:"Tarragona",CA:"Tarragona",EN:"Tarragona"}, tags:["city","services","jobs"] },
-  { key:"barcelona", name:{ES:"Barcelona",CA:"Barcelona",EN:"Barcelona"}, tags:["city","expensive","jobs","services"] },
-  { key:"vilanova", name:{ES:"Vilanova i la Geltrú",CA:"Vilanova i la Geltrú",EN:"Vilanova i la Geltrú"}, tags:["coast","services","train"] },
-];
+  /* ============================
+     SECTION 2 — PERSISTENCE
+     ============================ */
+  const loadChatHistory = () => {
+    try {
+      const s = localStorage.getItem(window.CHAT_KEY);
+      if (s) {
+        chatHistory = JSON.parse(s) || [];
+        renderChatHistory();
+      }
+    } catch (e) {}
+  };
 
-/* Reverse lookup for text hits */
-const buildTownAliases = () => {
-  const map = new Map();
-  const add = (alias, key) => {
-    const a = alias.toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-      .replace(/['"]/g,"")
+  const saveChatHistory = () => {
+    try {
+      localStorage.setItem(window.CHAT_KEY, JSON.stringify(chatHistory));
+    } catch (e) {}
+  };
+
+  /* ============================
+     SECTION 3 — USER CONTEXT
+     ============================ */
+  const _fm = (n) => (typeof fmtMoney === "function" ? fmtMoney(n) : String(n));
+  const _fp = (n) => Number(n).toFixed(1) + "%";
+
+  const getUserContext = () => {
+    if (!window.last) return null;
+
+    const _t = (k) => (typeof t === "function" ? t(k) : k);
+
+    const extras = ["t", "p", "l", "k"]
+      .filter((k) => window.last.e && window.last.e[k])
+      .map((k) => ({ t: _t("exTer"), p: _t("exPis"), l: _t("exAsc"), k: _t("exGar") }[k] || k))
+      .join(", ") || "—";
+
+    const l = window.last;
+
+    return {
+      nm: l.nm,
+      ag: l.ag,
+      inc: l.inc,
+      sav: l.sav,
+      msv: l.msv,
+
+      pb: l.pb,
+      pr: l.pr,
+      pay: l.pay,
+      cap: l.cap,
+
+      rate: l.rate,
+      yrs: l.yrs,
+      dp: Math.round(l.dp * 100),
+
+      ratio: l.ratio,
+      rri: l.rri,
+
+      rec: l.rec,
+      recCode: l.recCode,
+
+      need: l.need,
+      needCash: l.needCash,
+      hor: l.hor,
+
+      muni: typeof muniLabel === "function" ? muniLabel(l.muni) : (l.muni || ""),
+      m2: l.m2,
+      bd: l.bd || 0,
+      ba: l.ba,
+      type: typeof typeLabel === "function" ? typeLabel(l.type) : (l.type || ""),
+      extras,
+
+      safe: Math.round(l.inc * 0.35),
+      missing: Math.max(0, l.needCash - l.sav),
+      mosToGoal: l.msv > 0 ? Math.ceil(Math.max(0, l.needCash - l.sav) / l.msv) : null,
+      margin: Math.round(l.inc * 0.35 - l.pay),
+      rentMargin: Math.round(l.inc * 0.40 - l.pr),
+
+      // FIX: valid JS identifier (was €/m2, invalid)
+      eurm2: l.m2 ? Math.round(l.pb / l.m2) : null
+    };
+  };
+
+  /* ============================
+     SECTION 4 — SAFE RENDERING
+     ============================ */
+  const escapeHTML = (s = "") =>
+    String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  const stripMd = (text = "") => {
+    const t0 = String(text);
+    return t0
+      .replace(/\*\*(.+?)\*\*/g, "$1")
+      .replace(/\*(.+?)\*/g, "$1")
+      .replace(/`(.+?)`/g, "$1")
+      .replace(/^#+\s+/gm, "")
+      .replace(/\[(.+?)\]\(.+?\)/g, "$1");
+  };
+
+  const renderSafeMultiline = (el, text) => {
+    if (!el) return;
+    const clean = escapeHTML(stripMd(text));
+    el.innerHTML = clean.replace(/\n/g, "<br>");
+  };
+
+  /* ============================
+     SECTION 5 — LANGUAGE
+     ============================ */
+  const detectLanguageFromText = (msg) => {
+    const m = (msg || "").toLowerCase();
+    const caHits = ["què", "com", "on", "llogar", "estalviar", "termini", "quota", "despeses", "municipi", "més", "menys", "però"];
+    const esHits = ["qué", "cómo", "dónde", "alquilar", "ahorrar", "plazo", "cuota", "gastos", "municipio", "más", "menos", "pero"];
+    const enHits = ["what", "how", "where", "rent", "buy", "mortgage", "payment", "savings", "term", "rate", "town"];
+
+    const count = (arr) => arr.reduce((acc, w) => acc + (m.includes(w) ? 1 : 0), 0);
+    const ca = count(caHits), es = count(esHits), en = count(enHits);
+
+    const max = Math.max(ca, es, en);
+    if (max === 0) return null;
+    if (max === ca) return "CA";
+    if (max === en) return "EN";
+    return "ES";
+  };
+
+  const getLang = (msg) => {
+    const det = detectLanguageFromText(msg);
+    if (det) chatState.prefs.language = det;
+    return det || chatState.prefs.language || (window.LANG || "ES");
+  };
+
+  const tr = (L, es, ca, en) => (L === "CA" ? ca : L === "EN" ? en : es);
+
+  /* ============================
+     SECTION 6 — PROFILE
+     ============================ */
+  const analyzeUserProfile = (ctx) => {
+    if (!ctx) return null;
+    const p = { wealth: "middle", age_group: "adult", urgency: "normal", risk: "medium" };
+
+    if (ctx.inc >= 4000 && ctx.sav >= 50000) p.wealth = "high";
+    else if (ctx.inc < 1800 || ctx.sav < 10000) p.wealth = "low";
+
+    const age = ctx.ag || 35;
+    if (age < 30) p.age_group = "young";
+    else if (age >= 55) p.age_group = "senior";
+
+    if (ctx.need && ctx.mosToGoal && ctx.mosToGoal > 36) p.urgency = "low";
+    else if (ctx.need && ctx.mosToGoal && ctx.mosToGoal < 12) p.urgency = "high";
+
+    if (ctx.ratio > 35 || ctx.need) p.risk = "high";
+    else if (ctx.ratio < 25 && !ctx.need) p.risk = "low";
+
+    return p;
+  };
+
+  const getToneForProfile = (profile, L) => {
+    if (!profile) return "";
+    const tones = {
+      ES: {
+        high_young: "Tienes una situación financiera sólida y juventud de tu lado",
+        high_adult: "Tu posición financiera es muy buena",
+        high_senior: "Has construido una posición financiera excelente",
+        middle_young: "Estás en buena posición para empezar",
+        middle_adult: "Tienes una base financiera razonable",
+        middle_senior: "Tu situación es estable",
+        low_young: "Aunque ahora estés empezando, tienes tiempo por delante",
+        low_adult: "Estás en un momento de construcción financiera",
+        low_senior: "Entiendo que la situación puede ser desafiante"
+      },
+      CA: {
+        high_young: "Tens una situació financera sòlida i joventut del teu costat",
+        high_adult: "La teva posició financera és molt bona",
+        high_senior: "Has construït una posició financera excel·lent",
+        middle_young: "Estàs en bona posició per començar",
+        middle_adult: "Tens una base financera raonable",
+        middle_senior: "La teva situació és estable",
+        low_young: "Tot i que ara estiguis començant, tens temps per davant",
+        low_adult: "Estàs en un moment de construcció financera",
+        low_senior: "Entenc que la situació pot ser desafiadora"
+      },
+      EN: {
+        high_young: "You have a solid financial position with youth on your side",
+        high_adult: "Your financial position is very good",
+        high_senior: "You've built an excellent financial position",
+        middle_young: "You're in a good position to get started",
+        middle_adult: "You have a reasonable financial foundation",
+        middle_senior: "Your situation is stable",
+        low_young: "Though you're just starting, you have time ahead",
+        low_adult: "You're in a financial building phase",
+        low_senior: "I understand the situation can be challenging"
+      }
+    };
+    const key = `${profile.wealth}_${profile.age_group}`;
+    return (tones[L] && tones[L][key]) ? tones[L][key] : "";
+  };
+
+  /* ============================
+     SECTION 7 — NORMALIZE / INTENT
+     ============================ */
+  const normText = (s = "") =>
+    String(s)
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[¿¡'"]/g, "")
       .trim();
-    if (!a) return;
-    if (!map.has(a)) map.set(a, key);
+
+  const scoreIntent = (m) => {
+    const rules = [
+      ["greet", 4, ["hola", "hello", "hi", "bon dia", "buenas", "buenos dias", "que tal", "com estas"]],
+      ["thanks", 4, ["gracias", "gracies", "thanks", "merci"]],
+      ["bye", 4, ["adios", "bye", "fins aviat", "ciao"]],
+      ["capabilities", 3, ["que puedes", "que pots", "what can you", "ayuda", "help", "para que sirves", "com funciones"]],
+      ["summary", 3, ["resumen", "resum", "summary", "resultado", "resultat", "analysis", "analisis"]],
+      ["advice", 3, ["consejo", "consell", "recomiendas", "recomanes", "recommend", "que hago", "que faig"]],
+      ["towns", 5, ["donde", "on", "where", "municipio", "municipi", "zona", "pueblo", "town"]],
+      ["buyrent", 5, ["comprar", "compra", "buy", "purchase", "alquilar", "llogar", "rent", "comprar o alquilar"]],
+      ["mortgage", 5, ["hipoteca", "mortgage", "banco", "bank", "euribor", "tipo fijo", "tipo variable", "mixta"]],
+      ["payment", 4, ["cuota", "pago mensual", "mensualidad", "monthly payment", "quota"]],
+      ["downpayment", 4, ["entrada", "down payment", "enganxe", "senyal", "anticipo"]],
+      ["costs", 3, ["gastos", "costes", "itp", "notaria", "registro", "fees", "taxes", "despeses"]],
+      ["rates", 4, ["tipo", "interes", "interest", "rate", "euribor", "sube", "baja", "puja", "baixa"]],
+      ["savings", 4, ["ahorrar", "estalviar", "save", "savings", "cuanto tardar", "quant trigar", "cuanto necesito"]],
+      ["strategy", 3, ["estrategia", "strategy", "capacidad de compra", "buying power"]],
+      ["risk", 3, ["riesgo", "risk", "burbuja", "crash", "crisis"]],
+      ["whatif", 5, ["y si", "what if", "si sube", "si baja", "si ahorro", "si puja", "si baixa"]],
+      ["identity", 2, ["quien eres", "who are you", "chatgpt", "openai", "claude"]],
+      ["joke", 2, ["chiste", "joke", "broma", "humor"]]
+    ];
+
+    const scores = {};
+    const add = (k, v) => (scores[k] = (scores[k] || 0) + v);
+
+    for (const [intent, w, keys] of rules) {
+      for (const k of keys) if (m.includes(k)) add(intent, w);
+    }
+
+    if (/\b(donde|on|where)\b/.test(m)) add("towns", 6);
+    if (/(\+|\-)?\d+([.,]\d+)?\s*%/.test(m)) add("whatif", 4);
+
+    let best = "general", bestScore = 0;
+    for (const k in scores) {
+      if (scores[k] > bestScore) { best = k; bestScore = scores[k]; }
+    }
+    return { intent: best, score: bestScore };
   };
-  for (const t of TOWNS) {
-    add(t.key.replace(/_/g," "), t.key);
-    add(t.name.ES, t.key);
-    add(t.name.CA, t.key);
-    add(t.name.EN, t.key);
-    // common variants
-    if (t.key === "el_vendrell") { add("vendrell", t.key); add("el vendrell", t.key); }
-    if (t.key === "larboc") { add("arboc", t.key); add("l arboc", t.key); add("l'arboç", t.key); }
-    if (t.key === "llorenc") { add("llorenc del penedes", t.key); add("llorenç del penedes", t.key); }
-    if (t.key === "la_bisbal") { add("la bisbal", t.key); add("bisbal del penedes", t.key); }
-  }
-  return map;
-};
-const TOWN_ALIASES = buildTownAliases();
 
-/* ============================
-   SECTION 8 — SLOT EXTRACTION
-   ============================ */
+  const detectIntent = (msg) => scoreIntent(normText(msg)).intent;
 
-const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  /* ============================
+     SECTION 8 — REPLY
+     ============================ */
+  const formatAnswer = (L, title, bullets, next) => {
+    const head = title ? `✅ ${title}\n` : "";
+    const body = (bullets && bullets.length) ? bullets.map((b) => `• ${b}`).join("\n") : "";
+    const tail = next ? `\n\n👉 ${tr(L, "Siguiente paso: ", "Següent pas: ", "Next step: ")}${next}` : "";
+    return head + body + tail;
+  };
 
-const normText = (s="") => String(s).toLowerCase()
-  .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-  .replace(/[¿¡'"]/g,"")
-  .trim();
+  const buildReply = (intent, msg) => {
+    const ctx = getUserContext();
+    const L = getLang(msg);
 
-const extractSlots = (msg, ctx, L) => {
-  const m = normText(msg).replace(",", ".");
-  const slots = {};
+    chatState.turn++;
+    chatState.lastUserText = msg;
 
-  // Vague tokens
-  if (/^(pero|però|vale|ok|daccord|doncs|i|y)\b/.test(m) || m.length <= 4) slots.vague = true;
+    if (!ctx) {
+      chatState.topic = "summary";
+      saveChatState(chatState);
+      return tr(
+        L,
+        "Para ayudarte bien, completa el análisis (pasos 1-3) y pulsa Analizar. Luego dime: ¿quieres 'comprar vs alquilar' o 'dónde buscar'?",
+        "Per ajudar-te bé, completa l'anàlisi (passos 1-3) i prem Analitzar. Després digues: vols 'comprar vs llogar' o 'on buscar'?",
+        "To help properly, complete the analysis (steps 1–3) and click Analyze. Then tell me: 'buy vs rent' or 'where to look'?"
+      );
+    }
 
-  // Ask "where"
-  if (/\b(on|donde|where)\b/.test(m)) slots.askWhere = true;
+    const profile = analyzeUserProfile(ctx);
+    const tone = getToneForProfile(profile, L);
 
-  // Preferences
-  if (/\b(playa|costa|mar|coastal|platja)\b/.test(m)) slots.preference = "coast";
-  if (/\b(interior|rural|campo|tranquilo|quiet)\b/.test(m)) slots.preference = "inland";
-  if (/\b(barcelona|bcn|tren|rodalies|commute)\b/.test(m)) slots.preference = "commute_bcn";
+    // basic
+    if (intent === "greet") {
+      return formatAnswer(L,
+        "AI Financial Advisor",
+        [
+          tr(L, `Hola ${ctx.nm}. ${tone}.`, `Hola ${ctx.nm}. ${tone}.`, `Hi ${ctx.nm}. ${tone}.`),
+          tr(L, "Puedo ayudarte con: municipios, comprar vs alquilar, cuota, entrada, tipos y escenarios.",
+                 "Et puc ajudar amb: municipis, comprar vs llogar, quota, entrada, tipus i escenaris.",
+                 "I can help with: towns, buy vs rent, payment, down payment, rates and what-if scenarios.")
+        ],
+        tr(L, "¿Qué quieres mirar primero?", "Què vols mirar primer?", "What do you want first?")
+      );
+    }
 
-  // Priorities
-  if (/\b(precio|barato|economico|cheap|budget)\b/.test(m)) slots.priority = "price";
-  if (/\b(servicios|tiendas|hospital|services|comercios)\b/.test(m)) slots.priority = "services";
-  if (/\b(colegio|escuela|institut|schools|kids|ninos|niños)\b/.test(m)) slots.priority = "schools";
-  if (/\b(tranquilo|quiet|silencio|peace)\b/.test(m)) slots.priority = "quiet";
-  if (/\b(barcelona|bcn|tren|rodalies|commute)\b/.test(m)) slots.priority = "commute";
+    if (intent === "summary") {
+      return formatAnswer(L,
+        tr(L, "Resumen de tu análisis", "Resum de la teva anàlisi", "Your analysis summary"),
+        [
+          `${ctx.muni} · ${ctx.m2}m² · ${ctx.type}`,
+          tr(L, `Precio estimado: ${_fm(ctx.pb)} (${ctx.eurm2} €/m²)`,
+                `Preu estimat: ${_fm(ctx.pb)} (${ctx.eurm2} €/m²)`,
+                `Estimated price: ${_fm(ctx.pb)} (${ctx.eurm2} €/m²)`),
+          tr(L, `Cuota: ${_fm(ctx.pay)} (${_fp(ctx.ratio)} de ingresos)`,
+                `Quota: ${_fm(ctx.pay)} (${_fp(ctx.ratio)} d'ingressos)`,
+                `Payment: ${_fm(ctx.pay)} (${_fp(ctx.ratio)} of income)`),
+          tr(L, `Alquiler: ${_fm(ctx.pr)} (${_fp(ctx.rri)} de ingresos)`,
+                `Lloguer: ${_fm(ctx.pr)} (${_fp(ctx.rri)} d'ingressos)`,
+                `Rent: ${_fm(ctx.pr)} (${_fp(ctx.rri)} of income)`),
+          tr(L, `Recomendación: ${ctx.rec}`, `Recomanació: ${ctx.rec}`, `Recommendation: ${ctx.rec}`)
+        ],
+        tr(L, "¿Quieres 'dónde buscar' o 'comprar vs alquilar'?", "Vols 'on buscar' o 'comprar vs llogar'?", "Do you want 'where to look' or 'buy vs rent'?")
+      );
+    }
 
-  // Style preference
-  if (/\b(rapido|rápido|short|breve|resumen)\b/.test(m)) slots.style = "fast";
-  if (/\b(detallado|detall|long|explica mas|explica més|more detail)\b/.test(m)) slots.style = "detailed";
+    if (intent === "buyrent") {
+      const buyOk = (!ctx.need && ctx.ratio <= 35 && ctx.hor);
+      if (buyOk) {
+        return formatAnswer(L,
+          tr(L, "Comprar vs Alquilar", "Comprar vs Llogar", "Buy vs Rent"),
+          [
+            tr(L, "Comprar te encaja: tienes cash suficiente y la cuota está dentro del 35%.",
+                  "Comprar t'encaixa: tens cash suficient i la quota és dins del 35%.",
+                  "Buying fits: you have enough cash and the payment is within 35%."),
+            tr(L, "Si te quedas 5+ años, los costes de compra se amortizan mejor.",
+                  "Si t'hi quedes 5+ anys, els costos s'amortitzen millor.",
+                  "If you stay 5+ years, purchase costs amortize better.")
+          ],
+          tr(L, "¿Lo enfocamos en municipios o en mejorar la cuota?", "Ho enfoquem en municipis o en millorar la quota?", "Focus on towns or on improving payment?")
+        );
+      }
+      if (ctx.need) {
+        return formatAnswer(L,
+          tr(L, "Comprar vs Alquilar", "Comprar vs Llogar", "Buy vs Rent"),
+          [
+            tr(L, `Ahora mismo alquilar es lo prudente: te faltan ${_fm(ctx.missing)} para entrada+gastos.`,
+                  `Ara mateix llogar és prudent: et falten ${_fm(ctx.missing)} per entrada+despeses.`,
+                  `Right now renting is prudent: you're short ${_fm(ctx.missing)} for down payment+costs.`),
+            tr(L, ctx.msv > 0 ? `Ahorrando ${_fm(ctx.msv)}/mes: objetivo en ~${ctx.mosToGoal} meses.` : "Si me dices cuánto ahorras/mes, te calculo plazo.",
+                  ctx.msv > 0 ? `Estalviant ${_fm(ctx.msv)}/mes: objectiu en ~${ctx.mosToGoal} mesos.` : "Si em dius quant estalvies/mes, et calculo termini.",
+                  ctx.msv > 0 ? `Saving ${_fm(ctx.msv)}/mo: goal in ~${ctx.mosToGoal} months.` : "Tell me monthly savings and I’ll compute the timeline.")
+          ],
+          tr(L, "¿Quieres que te recomiende municipios más baratos para acelerar?", "Vols municipis més barats per accelerar?", "Want cheaper towns to speed up?")
+        );
+      }
+      return formatAnswer(L,
+        tr(L, "Comprar vs Alquilar", "Comprar vs Llogar", "Buy vs Rent"),
+        [
+          tr(L, `Comprar está ajustado: cuota ${_fm(ctx.pay)} = ${_fp(ctx.ratio)} (>35%).`,
+                `Comprar és ajustat: quota ${_fm(ctx.pay)} = ${_fp(ctx.ratio)} (>35%).`,
+                `Buying is tight: payment ${_fm(ctx.pay)} = ${_fp(ctx.ratio)} (>35%).`),
+          tr(L, "Soluciones: bajar precio, más entrada o alargar plazo (con cuidado).",
+                "Solucions: baixar preu, més entrada o allargar termini (amb cura).",
+                "Fixes: lower price, more down payment, or longer term (carefully).")
+        ],
+        tr(L, "¿Qué quieres tocar primero: precio, entrada o plazo?", "Què vols tocar primer: preu, entrada o termini?", "What first: price, down payment, or term?")
+      );
+    }
 
-  // % (interest / euribor) and direction
-  const mPct = m.match(/(\+|\-)?\s*(\d+(\.\d+)?)\s*%/);
-  if (mPct) {
-    const sign = (mPct[1] === "-") ? -1 : 1;
-    slots.pct = sign * parseFloat(mPct[2]); // percentage points
-  }
+    // fallback
+    return tr(
+      L,
+      "Dime si quieres: 'resumen', 'comprar vs alquilar', 'cuota', 'entrada', o 'dónde comprar'.",
+      "Digues si vols: 'resum', 'comprar vs llogar', 'quota', 'entrada', o 'on comprar'.",
+      "Tell me: 'summary', 'buy vs rent', 'payment', 'down payment', or 'where to buy'."
+    );
+  };
 
-  // Years
-  const mYears = m.match(/\b(\d{1,2})\s*(anos|anys|years)\b/);
-  if (mYears) slots.years = clamp(parseInt(mYears[1],10), 5, 40);
+  /* ============================
+     SECTION 9 — UI
+     ============================ */
+  const addMsg = (role, content) => {
+    const mc = _Q("#chatMessages");
+    if (!mc) return;
 
-  // Monthly saving
-  const mSav1 = m.match(/\b(\d{2,5})\s*(€|eur|euros)?\s*(\/mes|mes|month|mo)\b/);
-  if (mSav1 && /\b(ahorr|estalv|save|savings)\b/.test(m)) {
-    slots.saveMo = clamp(parseInt(mSav1[1],10), 0, 99999);
-  }
+    const normRole = (role === "assistant") ? "ai" : role;
 
-  // Budget / price numbers
-  const mMoney = m.match(/\b(\d{2,3})(\.\d{3})+\b|\b(\d{4,6})\b/);
-  if (mMoney && /\b(€|eur|euros)?\b/.test(m)) {
-    const raw = (mMoney[0]||"").replace(/\./g,"").replace(/[^\d]/g,"");
-    const val = parseInt(raw,10);
-    if (!isNaN(val)) slots.budget = val;
-  }
+    const d = document.createElement("div");
+    d.className = `chat-message ${normRole}`;
 
-  // Town alias hit
-  for (const [alias, key] of TOWN_ALIASES.entries()) {
-    if (m.includes(alias)) { slots.townKey = key; break; }
-  }
+    const av = document.createElement("div");
+    av.className = `chat-avatar ${normRole}`;
+    av.textContent = (normRole === "user") ? ((typeof t === "function" ? t("aiYou") : null) || "TÚ") : "AI";
 
-  // buy/rent side
-  if (/\b(compr|buy|purchase)\w*\b/.test(m)) slots.side = "buy";
-  if (/\b(alquil|llog|rent)\w*\b/.test(m)) slots.side = "rent";
+    const bub = document.createElement("div");
+    bub.className = "chat-bubble";
+    renderSafeMultiline(bub, content);
 
-  // Bind to ctx (so we can reason)
-  if (ctx) {
-    slots.ctxNeed = !!ctx.need;
-    slots.ctxMissing = ctx.missing;
-    slots.ctxRatio = ctx.ratio;
-    slots.ctxRri = ctx.rri;
-  }
+    if (normRole === "user") { d.appendChild(bub); d.appendChild(av); }
+    else { d.appendChild(av); d.appendChild(bub); }
 
-  return slots;
-};
+    mc.appendChild(d);
+    mc.scrollTop = mc.scrollHeight;
+  };
 
-/* ============================
-   SECTION 9 — INTENT SCORING
-   ============================ */
+  const addThinking = () => {
+    const mc = _Q("#chatMessages");
+    if (!mc) return;
 
-const scoreIntent = (m) => {
-  // m should be normalized (normText)
-  const rules = [
-    ["greet", 4, ["hola","hello","hi","bon dia","buenas","buenos dias","que tal","com estas"]],
-    ["thanks",4, ["gracias","gracies","thanks","merci"]],
-    ["bye",   4, ["adios","bye","fins aviat","ciao"]],
-    ["capabilities",3, ["que puedes","que pots","what can you","ayuda","help","para que sirves","com funciones"]],
-    ["summary",3, ["resumen","resum","summary","resultado","resultat","analysis","analisis"]],
-    ["advice", 3, ["consejo","consell","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria"]],
-    ["towns",  5, ["donde","on","where","municipio","municipi","zona","pueblo","town","mejor zona","millor zona","on hauria"]],
-    ["compare",3, ["comparar","compare","vs","diferencia","otra zona","altra zona"]],
-    ["buyrent",5, ["comprar","compra","buy","purchase","alquilar","llogar","rent","buy or rent","comprar o alquilar"]],
-    ["mortgage",5, ["hipoteca","mortgage","banco","bank","euribor","tipo fijo","tipo variable","mixta","fixed","variable"]],
-    ["payment",4, ["cuota","pago mensual","mensualidad","monthly payment","quota"]],
-    ["downpayment",4, ["entrada","down payment","enganxe","senyal","anticipo"]],
-    ["costs",  3, ["gastos","costes","itp","notaria","registro","fees","taxes","despeses"]],
-    ["rates",  4, ["tipo","interes","interest","rate","euribor","sube","baja","puja","baixa"]],
-    ["savings",4, ["ahorrar","estalviar","save","savings","cuanto tardar","quant trigar","cuanto necesito"]],
-    ["strategy",3, ["estrategia","strategy","capacidad de compra","buying power","poder adquisitivo"]],
-    ["risk",  3, ["riesgo","risk","burbuja","crash","crisis"]],
-    ["whatif", 5, ["y si","what if","si sube","si baja","if rate","if i save","si ahorro","si puja","si baixa"]],
-    ["identity",2, ["quien eres","who are you","chatgpt","openai","claude","anthropic"]],
-    ["joke",2, ["chiste","joke","broma","humor"]],
-  ];
+    const d = document.createElement("div");
+    d.className = "chat-message ai";
+    d.id = "thinking-indicator";
 
-  const scores = {};
-  const add = (k, v) => scores[k] = (scores[k] || 0) + v;
+    const av = document.createElement("div");
+    av.className = "chat-avatar ai";
+    av.textContent = "AI";
 
-  for (const [intent, w, keys] of rules) {
-    for (const k of keys) if (m.includes(k)) add(intent, w);
-  }
+    const bub = document.createElement("div");
+    bub.className = "chat-bubble thinking";
+    bub.textContent = (typeof t === "function" ? t("aiThinking") : null) || "Analizando...";
 
-  // heuristics
-  if (/\b(donde|on|where)\b/.test(m)) add("towns", 6);
-  if (/(\+|\-)?\d+([.,]\d+)?\s*%/.test(m)) add("whatif", 4);
-  if (/\b\d+\s*(anos|anys|years)\b/.test(m)) add("whatif", 3);
+    d.appendChild(av);
+    d.appendChild(bub);
+    mc.appendChild(d);
+    mc.scrollTop = mc.scrollHeight;
+  };
 
-  let best = "general", bestScore = 0;
-  for (const k in scores) {
-    if (scores[k] > bestScore) { best = k; bestScore = scores[k]; }
-  }
-  return { intent: best, score: bestScore, scores };
-};
+  const removeThinking = () => {
+    const thinking = _Q("#thinking-indicator");
+    if (thinking) thinking.remove();
+  };
 
-const detectIntent = (msg) => {
-  const m = normText(msg);
-  return scoreIntent(m).intent;
-};
+  const sendToAI = async (msg) => {
+    if (isAIProcessing) return;
+    isAIProcessing = true;
+
+    const btnEl = _Q("#chatSend");
+    const inpEl = _Q("#chatInput");
+
+    if (btnEl) btnEl.disabled = true;
+    if (inpEl) { inpEl.disabled = true; inpEl.value = ""; }
+
+    addMsg("user", msg);
+    chatHistory.push({ role: "user", content: msg });
+
+    addThinking();
+    const delay = 450 + Math.random() * 650;
+    await new Promise((r) => setTimeout(r, delay));
+    removeThinking();
+
+    const intent = detectIntent(msg);
+    const reply = buildReply(intent, msg);
+
+    chatHistory.push({ role: "assistant", content: reply });
+    saveChatHistory();
+
+    const mc = _Q("#chatMessages");
+    const d = document.createElement("div");
+    d.className = "chat-message ai";
+
+    const av = document.createElement("div");
+    av.className = "chat-avatar ai";
+    av.textContent = "AI";
+
+    const bub = document.createElement("div");
+    bub.className = "chat-bubble";
+
+    d.appendChild(av);
+    d.appendChild(bub);
+    if (mc) mc.appendChild(d);
+
+    const clean = stripMd(reply);
+    let pos = 0;
+
+    const unlock = () => {
+      isAIProcessing = false;
+      const b = _Q("#chatSend");
+      const i = _Q("#chatInput");
+      if (b) b.disabled = false;
+      if (i) { i.disabled = false; i.style.height = "auto"; i.focus(); }
+    };
+
+    const iv = setInterval(() => {
+      pos++;
+      renderSafeMultiline(bub, clean.substring(0, pos));
+      if (mc) mc.scrollTop = mc.scrollHeight;
+      if (pos >= clean.length) { clearInterval(iv); unlock(); }
+    }, 14);
+
+    chatState.lastAssistantText = reply;
+    saveChatState(chatState);
+  };
+
+  const renderChatHistory = () => {
+    _QA(".chat-message:not(#welcome-message)").forEach((el) => el.remove());
+    chatHistory.forEach((m) => addMsg(m.role === "assistant" ? "ai" : m.role, m.content));
+  };
+
+  const initChatUI = () => {
+    if (typeof applyI18n === "function") applyI18n();
+    loadChatHistory();
+
+    const btn = _Q("#chatSend");
+    const inp = _Q("#chatInput");
+
+    if (btn && !btn.dataset.init) {
+      btn.dataset.init = "1";
+      btn.onclick = () => {
+        const m = inp?.value?.trim();
+        if (m) sendToAI(m);
+      };
+    }
+
+    if (inp && !inp.dataset.init) {
+      inp.dataset.init = "1";
+      inp.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          const m = inp.value.trim();
+          if (m) sendToAI(m);
+        }
+      });
+      inp.addEventListener("input", () => {
+        inp.style.height = "auto";
+        inp.style.height = Math.min(inp.scrollHeight, 120) + "px";
+      });
+    }
+
+    const chips = _QA(".suggestion-chip");
+    chips.forEach((ch) => ch.replaceWith(ch.cloneNode(true)));
+    _QA(".suggestion-chip").forEach((ch) => {
+      ch.addEventListener("click", () => {
+        const q = ch.getAttribute("data-q");
+        if (q && !isAIProcessing) sendToAI(q);
+      });
+    });
+  };
+
+  // expose init (so you can call it after DOM loads)
+  window.initChatUI = initChatUI;
+
+})();
+
 
 /* ============================
    SECTION 10 — ANSWER FORMATTER

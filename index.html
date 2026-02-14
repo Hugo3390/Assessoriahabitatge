@@ -1496,15 +1496,19 @@ const detectIntent=(msg)=>{
 
   // Saludos y socialización
   if(has("hola","hi ","hello","bon dia","buenos dias","buenas","hey","buen","good morning","good evening","que tal","com estas","com anem","how are")) return "greet";
+  if(has("va fatal","una mierda","de mierda","esto va mal","no sirve","no funciona","fatal","es una basura","horrible","malisimo","pésimo","shit","this sucks")) return "frustration";
   if(has("gracias","gracies","thanks","thank you","genial","perfecto","molt be","muy bien","great","awesome","guay","crack","mola")) return "thanks";
   if(has("vale","ok","de acuerdo","d'accord","perfecte","perfect","yes","si","sí","continua","continua","hazlo","fes-ho","do it")) return "affirm";
   if(has("adios","hasta luego","bye","fins aviat","ciao","chao","nos vemos")) return "bye";
   if(has("que puedes","que pots","what can you","que sabes","que saps","ayudame","ajuda'm","help me","para que sirves","com funciones")) return "capabilities";
+  if(has("faq","preguntas frecuentes","preguntes frequents","frequently asked","conceptos clave","glosario","glossary","lista conceptos")) return "glossary";
 
   // Análisis y resultado
   if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","cuéntame","conta'm")) return "summary";
+  if(has("por donde empiezo","per on comenco","where do i start","que hago primero","primer paso","primer pas","diagnostico","diagnosis","prioridades","prioritats")) return "diagnose";
   if(has("consejo","consell","advice","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria")) return "advice";
   if(has("por que","per que","why","explica por que","explica porque","justifica","com ho saps","como lo sabes")) return "rationale";
+  if(has("que es tin","que es tae","diferencia tin tae","que es ltv","que es dti","que es ratio endeudamiento","que es itp","que son arras","euribor","tipo fijo o variable")) return "concepts";
   if(has("plan","plan de accion","pasos","roadmap","hoja de ruta","next steps","seguent pas")) return "actionplan";
   if(has("semana por semana","setmana per setmana","week by week","weekly plan","plan semanal detallado")) return "weeklyplan";
   if(has("negociar","negociacio","negotiation","oferta","offer","regatear","rebaja","descuento")) return "negotiation";
@@ -1602,12 +1606,94 @@ const shouldUseDeepExplainability=(intent,msg)=>{
 
 const enrichReply=(intent,msg,reply,c,L)=>{
   if(!reply) return reply;
+  if(intent==="frustration"||intent==="glossary") return reply;
   if(/por que te digo|per que et dic|why i m saying this/i.test(normAI(reply))) return reply;
   if(!shouldUseDeepExplainability(intent,msg)){
     const tail=L==="EN"?"\n\nIf you want, I can explain the reasoning and assumptions behind this answer.":(L==="CA"?"\n\nSi vols, et puc explicar el raonament i les hipòtesis d'aquesta resposta.":"\n\nSi quieres, te explico el razonamiento y las hipótesis de esta respuesta.");
     return reply+tail;
   }
   return reply+explainabilityBlock(intent,msg,c,L);
+};
+
+const CONCEPT_QA=[
+  {id:"tin_tae",k:["tin","tae","apr"],es:"TIN = interés nominal. TAE = coste total anual (incluye comisiones y frecuencia de pagos). Para comparar hipotecas, usa TAE + coste total a 5/10 años.",ca:"TIN = interès nominal. TAE = cost total anual (inclou comissions i freqüència de pagaments). Per comparar hipoteques, usa TAE + cost total a 5/10 anys.",en:"Nominal rate is the headline interest. APR/effective annual rate includes fees and payment frequency. Compare mortgages using APR plus total cost over 5/10 years."},
+  {id:"ltv_dti",k:["ltv","dti","ratio endeudamiento","esfuerzo"],es:"LTV = préstamo/valor vivienda. DTI (esfuerzo) = cuota/ingresos. Regla prudente: DTI ≤35% y LTV contenido para reducir riesgo.",ca:"LTV = préstec/valor habitatge. DTI (esforç) = quota/ingressos. Regla prudent: DTI ≤35% i LTV contingut per reduir risc.",en:"LTV = loan-to-value. DTI (effort) = payment/income. Prudent rule: keep DTI ≤35% and moderate LTV to reduce risk."},
+  {id:"fijo_variable",k:["fijo","variable","mixta","euribor"],es:"Fijo: más estabilidad. Variable: puede empezar más barata pero asume riesgo de subidas. Mixta: equilibrio inicial. Decide con estrés +1% y margen de seguridad.",ca:"Fix: més estabilitat. Variable: pot començar més barata però assumeix risc de pujades. Mixta: equilibri inicial. Decideix amb estrès +1% i marge de seguretat.",en:"Fixed: more stability. Variable: may start cheaper but carries rate-risk. Mixed: initial balance. Decide after a +1% stress test and safety margin."},
+  {id:"arras_itp",k:["arras","itp","notaria","registro","gastos compra"],es:"Arras = señal contractual previa a escritura. En Catalunya, ITP suele ser relevante en segunda mano. Suma también notaría, registro y gestoría para coste real.",ca:"Arres = senyal contractual prèvia a escriptura. A Catalunya, l'ITP sol ser rellevant en segona mà. Suma també notaria, registre i gestoria per al cost real.",en:"Deposit agreement (arras) is the pre-closing commitment. In Catalonia, transfer tax is often key for resale homes. Add notary, registry and admin fees for true total cost."},
+  {id:"preapproval",k:["preaprobacion","preaprovacio","pre approval","banco"],es:"Preaprobación = estimación formal de cuánto te financiaría el banco según ingresos/deudas. Úsala para filtrar viviendas realistas y negociar con más fuerza.",ca:"Preaprovació = estimació formal de quant et finançaria el banc segons ingressos/deutes. Usa-la per filtrar habitatges realistes i negociar millor.",en:"Pre-approval is a formal estimate of what a bank would lend based on income/debt. Use it to filter realistic homes and negotiate from strength."}
+  ,{id:"amortizacion",k:["amortizacion","amortizacion francesa","interes compuesto hipoteca","capital intereses"],es:"En el sistema francés pagas cuota casi constante: al inicio más intereses y menos capital; al final al revés. Por eso amortizar pronto suele ahorrar más intereses.",ca:"En el sistema francès pagues quota gairebé constant: al principi més interessos i menys capital; al final a l'inrevés. Per això amortitzar aviat sol estalviar més interessos.",en:"In the French system, payment is mostly constant: early installments are interest-heavy, later ones principal-heavy. That's why early prepayment often saves more interest."}
+  ,{id:"coste_oportunidad",k:["coste oportunidad","coste de oportunidad","oportunidad","rentabilidad alternativa"],es:"Coste de oportunidad = lo que dejas de ganar al inmovilizar ahorro en la compra. Compáralo con seguridad, estabilidad y coste de alquiler para decidir bien.",ca:"Cost d'oportunitat = el que deixes de guanyar en immobilitzar estalvi en la compra. Compara-ho amb seguretat, estabilitat i cost del lloguer.",en:"Opportunity cost is what you forgo by locking savings into a purchase. Compare it against stability, security, and rent cost before deciding."}
+  ,{id:"colchon_emergencia",k:["colchon","fondo emergencia","cojin","emergencia"],es:"Antes de comprar, intenta mantener 3-6 meses de gastos básicos fuera de la entrada. Evita quedarte a cero tras notaría/impuestos/reformas.",ca:"Abans de comprar, intenta mantenir 3-6 mesos de despeses bàsiques fora de l'entrada. Evita quedar-te a zero després de notaria/impostos/reformes.",en:"Before buying, keep 3-6 months of essential expenses outside the down payment. Avoid ending up at zero after taxes/notary/renovation."}
+];
+
+const buildConceptReply=(msg,L,c)=>{
+  const m=normAI(msg);
+  const score=(entry)=>entry.k.reduce((acc,k)=>acc+(m.includes(normAI(k))?1:0),0);
+  const ranked=CONCEPT_QA.map(e=>({e,s:score(e)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s);
+  if(!ranked.length) return "";
+  const best=ranked.filter(x=>x.s===ranked[0].s).slice(0,2).map(x=>x.e);
+  const ans=best.map(top=>`• ${L==="CA"?top.ca:L==="EN"?top.en:top.es}`).join("\n");
+  const contextual=c?(
+    L==="EN"?`\nApplied to your case: effort ${_fp(c.ratio)}, savings ${_fm(c.sav)}, upfront need ${_fm(c.needCash)}.`
+    :(L==="CA"?`\nAplicat al teu cas: esforç ${_fp(c.ratio)}, estalvi ${_fm(c.sav)}, necessitat inicial ${_fm(c.needCash)}.`
+      :`\nAplicado a tu caso: esfuerzo ${_fp(c.ratio)}, ahorro ${_fm(c.sav)}, necesidad inicial ${_fm(c.needCash)}.`)
+  ):"";
+  const follow=L==="EN"?"If you want, I can turn this into a checklist for your exact case.":(L==="CA"?"Si vols, t'ho converteixo en checklist pel teu cas.":"Si quieres, te lo convierto en checklist para tu caso.");
+  return `📚 Conceptos clave:\n${ans}${contextual}\n${follow}`;
+};
+
+const GLOSSARY_QA=[
+  {q:{ES:"¿Qué es TIN/TAE?",CA:"Què és TIN/TAE?",EN:"What is nominal rate vs APR?"},a:{ES:"TIN es interés nominal; TAE refleja coste total anual (incluye comisiones/frecuencia).",CA:"TIN és interès nominal; TAE reflecteix cost total anual (inclou comissions/freqüència).",EN:"Nominal rate is headline interest; APR reflects true annual cost incl. fees/payment structure."}},
+  {q:{ES:"¿Qué es LTV y DTI?",CA:"Què és LTV i DTI?",EN:"What are LTV and DTI?"},a:{ES:"LTV=préstamo/valor. DTI=cuota/ingresos. Objetivo prudente: DTI ≤35%.",CA:"LTV=préstec/valor. DTI=quota/ingressos. Objectiu prudent: DTI ≤35%.",EN:"LTV=loan/value. DTI=payment/income. Prudent target: DTI ≤35%."}},
+  {q:{ES:"¿Fijo, variable o mixta?",CA:"Fixa, variable o mixta?",EN:"Fixed, variable or mixed?"},a:{ES:"Fija da estabilidad; variable asume riesgo de tipos; mixta combina ambas. Decide con estrés +1%.",CA:"Fixa dona estabilitat; variable assumeix risc de tipus; mixta combina. Decideix amb estrès +1%.",EN:"Fixed gives stability; variable adds rate risk; mixed combines both. Decide after +1% stress-test."}},
+  {q:{ES:"¿Qué gastos hay al comprar?",CA:"Quines despeses hi ha en comprar?",EN:"What are purchase costs?"},a:{ES:"Entrada + impuestos (ITP/IVA) + notaría + registro + gestoría + posibles reformas.",CA:"Entrada + impostos (ITP/IVA) + notaria + registre + gestoria + possibles reformes.",EN:"Down payment + taxes + notary + registry + admin + possible renovation costs."}},
+  {q:{ES:"¿Qué son arras?",CA:"Què són arres?",EN:"What is a deposit agreement (arras)?"},a:{ES:"Acuerdo previo a escritura con penalizaciones si una parte incumple.",CA:"Acord previ a escriptura amb penalitzacions si una part incompleix.",EN:"Pre-closing agreement with penalties if either party defaults."}},
+  {q:{ES:"¿Cuánto colchón debo mantener?",CA:"Quin coixí he de mantenir?",EN:"How much emergency buffer should I keep?"},a:{ES:"Idealmente 3-6 meses de gastos básicos fuera de la entrada.",CA:"Idealment 3-6 mesos de despeses bàsiques fora de l'entrada.",EN:"Ideally 3-6 months of essential expenses outside the down payment."}}
+];
+
+const buildGlossaryReply=(L)=>{
+  const lang=L==="CA"?"CA":L==="EN"?"EN":"ES";
+  const title=lang==="EN"?"📘 Quick housing glossary (FAQ):":(lang==="CA"?"📘 Glossari ràpid d'habitatge (FAQ):":"📘 Glosario rápido de vivienda (FAQ):");
+  const lines=GLOSSARY_QA.map(x=>`• ${x.q[lang]} → ${x.a[lang]}`);
+  const close=lang==="EN"?"\nTell me one and I’ll expand it with your numbers.":(lang==="CA"?"\nDigues-me'n una i te l'amplio amb els teus números.":"\nDime una y te la amplío con tus números.");
+  return [title,...lines].join("\n")+close;
+};
+
+const buildDiagnosticReply=(c,L)=>{
+  const tr=(es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
+  if(!c) return tr(
+    "🧭 Para darte prioridades reales necesito tu análisis (pasos 1-3). Si quieres, mientras tanto te doy un FAQ escribiendo: FAQ.",
+    "🧭 Per donar-te prioritats reals necessito la teva anàlisi (passos 1-3). Si vols, mentrestant et dono un FAQ escrivint: FAQ.",
+    "🧭 I need your analysis first (steps 1-3) to set real priorities. Meanwhile, type FAQ for a quick glossary."
+  );
+  const gap=Math.max(0,c.needCash-c.sav);
+  const effortHigh=c.ratio>35;
+  const actions=[];
+  if(effortHigh) actions.push(tr(
+    `1) Bajar esfuerzo a ≤35%: tu esfuerzo actual es ${_fp(c.ratio)}.`,
+    `1) Baixar esforç a ≤35%: el teu esforç actual és ${_fp(c.ratio)}.`,
+    `1) Bring effort to ≤35%: your current effort is ${_fp(c.ratio)}.`
+  ));
+  if(gap>0) actions.push(tr(
+    `2) Cerrar gap de entrada+gastos: te faltan ${_fm(gap)}.`,
+    `2) Tancar gap d'entrada+despeses: et falten ${_fm(gap)}.`,
+    `2) Close upfront gap: you are short by ${_fm(gap)}.`
+  ));
+  actions.push(tr(
+    `3) Pide preaprobación con 2-3 bancos y compara TAE+coste total.`,
+    `3) Demana preaprovació amb 2-3 bancs i compara TAE+cost total.`,
+    `3) Get pre-approval from 2-3 banks and compare APR + total cost.`
+  ));
+  if(!effortHigh&&gap<=0) actions.unshift(tr(
+    "1) Ya estás en zona sana: prioriza negociación de precio/condiciones.",
+    "1) Ja ets en zona sana: prioritza negociació de preu/condicions.",
+    "1) You are already in a healthy zone: focus on price/terms negotiation."
+  ));
+  return tr(
+    `🧭 Diagnóstico priorizado para tu caso:\n${actions.slice(0,3).join("\n")}\n\nEscribe "plan 12 semanas" y te lo detallo por semana.`,
+    `🧭 Diagnòstic prioritzat pel teu cas:\n${actions.slice(0,3).join("\n")}\n\nEscriu "pla 12 setmanes" i t'ho detallo per setmana.`,
+    `🧭 Prioritized diagnosis for your case:\n${actions.slice(0,3).join("\n")}\n\nType "12-week plan" and I'll break it down week by week.`
+  );
 };
 
 /* ---- Generador de respuestas ---- */
@@ -1618,6 +1704,9 @@ const buildReply=(intent, msg)=>{
 
   const housingIntents=new Set(["summary","advice","buyrent","mortgage","payment","downpayment","costs","rates","savings","strategy","amortize","price","rent","size","term","extras","towns","compare","market","subsidy","firsthome","inflation","risk","income","negotiation","actionplan","external_market"]);
   const generalKBReply=buildGeneralKnowledgeReply(msg,L);
+  const conceptReply=buildConceptReply(msg,L,c);
+  const glossaryReply=buildGlossaryReply(L);
+  const diagnosticReply=buildDiagnosticReply(c,L);
 
   // Si no hay análisis: responder SIEMPRE. Para vivienda, pedir análisis; para general, responder con KB universal.
   if(!c&&housingIntents.has(intent)){
@@ -1631,6 +1720,10 @@ const buildReply=(intent, msg)=>{
   const tone = c?getToneForProfile(profile, L):"";
 
   if(intent==="general"&&generalKBReply) return generalKBReply;
+  if(intent==="concepts"&&conceptReply) return conceptReply;
+  if(intent==="general"&&conceptReply) return conceptReply;
+  if(intent==="glossary") return glossaryReply;
+  if(intent==="diagnose") return diagnosticReply;
 
   const expertReply=c?buildExpertReply(msg,c,L,intent):"";
   if(expertReply) return expertReply;
@@ -1639,6 +1732,12 @@ const buildReply=(intent, msg)=>{
   const rentOk=c?c.rri<=40:false;
 
   switch(intent){
+
+    case "frustration": return es(
+      `🙏 Tienes razón en enfadarte. Vamos a hacerlo útil en 30 segundos.\nElige una opción y te respondo ultra concreto:\n1) "Plan 12 semanas"\n2) "Cómo llegar a 35% de esfuerzo"\n3) "Qué precio máximo puedo pagar"\n4) "Qué recortar para ahorrar más"${c?`\n\nAhora mismo en tu caso: esfuerzo ${_fp(c.ratio)}, ahorro ${_fm(c.sav)}, falta inicial ${_fm(Math.max(0,c.needCash-c.sav))}.`:""}`,
+      `🙏 Tens raó en estar enfadat/da. Fem-ho útil en 30 segons.\nTria una opció i et responc ultra concret:\n1) "Pla 12 setmanes"\n2) "Com arribar a 35% d'esforç"\n3) "Quin preu màxim puc pagar"\n4) "Què retallar per estalviar més"${c?`\n\nAra mateix en el teu cas: esforç ${_fp(c.ratio)}, estalvi ${_fm(c.sav)}, falta inicial ${_fm(Math.max(0,c.needCash-c.sav))}.`:""}`,
+      `🙏 You're right to be frustrated. Let's make this useful in 30 seconds.\nPick one and I'll answer ultra-concretely:\n1) "12-week plan"\n2) "How to get below 35% effort"\n3) "My maximum affordable price"\n4) "What to cut to save more"${c?`\n\nRight now in your case: effort ${_fp(c.ratio)}, savings ${_fm(c.sav)}, upfront gap ${_fm(Math.max(0,c.needCash-c.sav))}.`:""}`
+    );
 
     case "greet": {
   if(!c) return es(
@@ -1686,9 +1785,15 @@ const buildReply=(intent, msg)=>{
     );
 
     case "capabilities": return es(
-      `🤖 Puedo ayudarte con: cuotas e hipotecas, estrategias de ahorro, comparar compra vs alquiler, analizar riesgos de tipos de interés, amortización anticipada, ayudas y subvenciones, y mucho más. Todo basado en tus datos reales. ¡Pregunta lo que quieras!`,
-      `🤖 Puc ajudar-te amb: quotes i hipoteques, estratègies d'estalvi, comparar compra vs lloguer, analitzar riscos de tipus d'interès, amortització anticipada, ajudes i subvencions, i molt més. Tot basat en les teves dades reals. Pregunta el que vulguis!`,
-      `🤖 I can help you with: mortgage payments, savings strategies, buy vs rent comparison, interest rate risks, early repayment, subsidies, and much more. All based on your real data. Ask anything!`
+      `🤖 Puedo ayudarte con: cuotas e hipotecas, estrategias de ahorro, comparar compra vs alquiler, analizar riesgos de tipos de interés, amortización anticipada, ayudas y subvenciones, y mucho más.
+📘 Si escribes "FAQ" te doy un glosario rápido con preguntas frecuentes y respuestas claras.
+🧭 Si escribes "diagnóstico" te doy prioridades exactas para empezar hoy.`,
+      `🤖 Puc ajudar-te amb: quotes i hipoteques, estratègies d'estalvi, comparar compra vs lloguer, analitzar riscos de tipus d'interès, amortització anticipada, ajudes i subvencions, i molt més.
+📘 Si escrius "FAQ" et dono un glossari ràpid amb preguntes freqüents i respostes clares.
+🧭 Si escrius "diagnòstic" et dono prioritats exactes per començar avui.`,
+      `🤖 I can help you with: mortgage payments, savings strategies, buy vs rent comparison, interest rate risks, early repayment, subsidies, and much more.
+📘 If you type "FAQ" I will give you a quick glossary with common questions and clear answers.
+🧭 If you type "diagnosis" I will give you exact priorities to start today.`
     );
 
     case "summary": return es(
@@ -2219,6 +2324,14 @@ const shouldTriggerPlanFromAffirm=(msg,intent)=>{
   return m==="vale"||m==="ok"||m==="si"||m==="sí"||m==="yes";
 };
 
+const shouldSkipRepeatGuard=(msg,intent)=>{
+  const m=normAI(msg);
+  const tiny=(m.split(" ").filter(Boolean).length<=2);
+  if(["affirm","greet","thanks","bye"].includes(intent)) return true;
+  if(tiny) return true;
+  return m==="ok"||m==="vale"||m==="si"||m==="sí"||m==="yes";
+};
+
 const sendToAI=async msg=>{
 
   if(isAIProcessing)return;
@@ -2229,12 +2342,16 @@ const sendToAI=async msg=>{
   addMsg("user",msg);
   chatHistory.push({role:"user",content:msg});
 
+  let intent=detectIntent(msg);
+  if(shouldTriggerPlanFromAffirm(msg,intent)) intent="actionplan";
+
   const repCount=repeatedQuestionCount(msg);
-  if(repCount>=3){
+  if(repCount>=3&&!shouldSkipRepeatGuard(msg,intent)){
     const gentle=LANG==="EN"?"I notice this question is repeated. I'll answer in a different way:":(LANG==="CA"?"Veig que aquesta pregunta es repeteix. Et responc d'una altra manera:":"Veo que esta pregunta se repite. Te respondo de otra forma:");
     const c=getUserContext();
     const housing=isHousingQuestion(msg);
-    const alt=(c&&housing)?buildReply("rationale",msg):buildUniversalFallbackReply(msg,LANG);
+    const altRaw=(c&&housing)?buildReply("rationale",msg):buildUniversalFallbackReply(msg,LANG);
+    const alt=enrichReply((c&&housing)?"rationale":intent,msg,altRaw,c,LANG);
     const composed=`${gentle}\n${alt}`;
     chatHistory.push({role:"assistant",content:composed});
     if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);
@@ -2250,8 +2367,6 @@ const sendToAI=async msg=>{
   const delay=500+Math.random()*700;
   await new Promise(r=>setTimeout(r,delay));
   removeThinking();
-  let intent=detectIntent(msg);
-  if(shouldTriggerPlanFromAffirm(msg,intent)) intent="actionplan";
   const rawReply=buildReply(intent,msg);
   const reply=enrichReply(intent,msg,rawReply,getUserContext(),LANG);
   pendingPlanOffer=/plan semanal|pla setmanal|week-by-week plan|plan de accion|pla d'accio|action plan/i.test(normAI(reply));

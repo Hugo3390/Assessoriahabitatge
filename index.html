@@ -1216,6 +1216,345 @@ const I18N={
   let LANG=localStorage.getItem(LANG_KEY)||"ES";
   const t=(k)=> (I18N[LANG] && I18N[LANG][k]) || (I18N.ES[k]||k);
   const tpl=(s,vars)=>String(s||"").replace(/\{(\w+)\}/g,(_,k)=> (vars && vars[k]!=null)?vars[k]:"");
+/* ===========================
+   AI CHAT (LOCAL, NO BACKEND)
+   =========================== */
+
+// --- UI helpers (chat) ---
+const chatMessages = document.getElementById("chatMessages");
+const chatInput    = document.getElementById("chatInput");
+const chatSend     = document.getElementById("chatSend");
+
+function addChatMessage(role, text){
+  if(!chatMessages) return;
+  const wrap = document.createElement("div");
+  wrap.className = "chat-message " + (role==="user" ? "user" : "ai");
+
+  const av = document.createElement("div");
+  av.className = "chat-avatar " + (role==="user" ? "user" : "ai");
+  av.textContent = role==="user" ? "TÚ" : "AI";
+
+  const bub = document.createElement("div");
+  bub.className = "chat-bubble";
+  bub.textContent = text;
+
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  chatMessages.appendChild(wrap);
+
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  // persist
+  try{
+    const h = JSON.parse(localStorage.getItem(CHAT_KEY) || "[]");
+    h.push({role, text, ts: Date.now()});
+    localStorage.setItem(CHAT_KEY, JSON.stringify(h).slice(0, 50000));
+  }catch(_){}
+}
+
+function loadChatHistory(){
+  if(!chatMessages) return;
+  try{
+    const h = JSON.parse(localStorage.getItem(CHAT_KEY) || "[]");
+    if(!Array.isArray(h) || !h.length) return;
+
+    // keep your welcome bubble, append history after it
+    h.slice(-40).forEach(m => addChatMessage(m.role, m.text));
+  }catch(_){}
+}
+
+// --- Read current app state (safe) ---
+function getUserSnapshot(){
+  const name = (Q("#nm")?.value || "").trim();
+  const inc  = Number(Q("#inc")?.value || 0);
+  const sav  = Number(Q("#sav")?.value || 0);
+  const yrs  = Number(Q("#yrs")?.value || 0);
+  const msv  = Number(Q("#msv")?.value || 0);
+
+  const muni = Q("#ar")?.value || t("any");
+  const m2   = Number(Q("#m2")?.value || 0);
+  const bed  = Number(Q("#bed")?.value || 0);
+  const bath = Number(Q("#bat")?.value || 0);
+  const ty   = Q("#ty")?.value || "flat";
+
+  // results (you already render these)
+  const kPrice = Q("#k1")?.textContent || "";
+  const kRent  = Q("#k2")?.textContent || "";
+  const kPay   = Q("#k3")?.textContent || "";
+  const kRec   = Q("#k4")?.textContent || "";
+
+  // try to extract number from "1.234 €" etc
+  const parseMoney = (s)=>{
+    if(!s) return 0;
+    const cleaned = String(s).replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",",".");
+    const n = Number(cleaned);
+    return isFinite(n) ? n : 0;
+  };
+
+  const priceN = parseMoney(kPrice);
+  const rentN  = parseMoney(kRent);
+  const payN   = parseMoney(kPay);
+
+  const analyzed = (priceN>0 || rentN>0 || payN>0 || (kRec && kRec.trim() && kRec.trim()!=="–"));
+
+  return {
+    name, inc, sav, yrs, msv,
+    muni, m2, bed, bath, ty,
+    kPrice, kRent, kPay, kRec,
+    priceN, rentN, payN,
+    analyzed
+  };
+}
+
+function typeLabel(ty){
+  if(ty==="house") return (LANG==="EN" ? "House" : (LANG==="CA" ? "Casa" : "Casa"));
+  return (LANG==="EN" ? "Flat" : (LANG==="CA" ? "Pis" : "Piso"));
+}
+
+// --- Local AI brain (simple but useful) ---
+function localAIAnswer(qRaw){
+  const q = (qRaw||"").toLowerCase().trim();
+  const S = getUserSnapshot();
+
+  const safeCap = S.inc * 0.35;
+  const mortEff = (S.inc>0 && S.payN>0) ? (S.payN / S.inc * 100) : null;
+  const rentEff = (S.inc>0 && S.rentN>0) ? (S.rentN / S.inc * 100) : null;
+
+  const header = S.name ? (LANG==="EN" ? `Hi ${S.name}. ` : `Hola ${S.name}. `) : "";
+
+  if(!S.analyzed){
+    if(LANG==="EN"){
+      return header +
+        "I can help, but first click **Analyze** so I can use your numbers. " +
+        "Then ask me again (buy vs rent, savings plan, interest rate risk, etc.).";
+    }
+    if(LANG==="CA"){
+      return header +
+        "Et puc ajudar, però primer fes **Analitzar** perquè pugui usar els teus números. " +
+        "Després pregunta’m el que vulguis (comprar vs llogar, pla d’estalvi, risc de tipus, etc.).";
+    }
+    return header +
+      "Te puedo ayudar, pero primero pulsa **Analizar** para que use tus números. " +
+      "Luego pregúntame de nuevo (comprar vs alquilar, plan de ahorro, riesgo de tipos, etc.).";
+  }
+
+  // intent buckets
+  const wantsImprove = /mejor|improve|millor|situaci|capacidad|capacity|capacit/.test(q);
+  const wantsSave    = /ahorr|save|estalv|mensual|month|mes/.test(q);
+  const wantsBuyRent = /compr|buy|alquil|rent|llog/.test(q);
+  const wantsRate    = /tipo|rate|inter[eé]s|interest|puja|sube|rise/.test(q);
+  const wantsWhere   = /municip|zona|where|d[oó]nde|poble|town/.test(q);
+
+  // generic summary
+  const summaryBase = ()=>{
+    const parts = [];
+    if(S.kRec && S.kRec.trim()!=="–") parts.push((LANG==="EN" ? "Recommendation" : (LANG==="CA" ? "Recomanació" : "Recomendación")) + `: ${S.kRec}`);
+    if(S.kPay)  parts.push((LANG==="EN" ? "Mortgage" : (LANG==="CA" ? "Hipoteca" : "Hipoteca")) + `: ${S.kPay}`);
+    if(S.kRent) parts.push((LANG==="EN" ? "Rent" : (LANG==="CA" ? "Lloguer" : "Alquiler")) + `: ${S.kRent}`);
+    if(S.kPrice)parts.push((LANG==="EN" ? "Price" : (LANG==="CA" ? "Preu" : "Precio")) + `: ${S.kPrice}`);
+    return parts.join(" · ");
+  };
+
+  // 1) Buy vs Rent
+  if(wantsBuyRent){
+    if(LANG==="EN"){
+      const lines = [];
+      lines.push(header + "Based on your current inputs:");
+      lines.push("• " + summaryBase());
+      if(mortEff!=null) lines.push(`• Mortgage effort: ${mortEff.toFixed(1)}% (safe ~35%).`);
+      if(rentEff!=null) lines.push(`• Rent effort: ${rentEff.toFixed(1)}% (safe ~35%).`);
+      lines.push("If effort is above 35%, focus on lowering price, increasing down payment, extending term, or improving income/savings.");
+      return lines.join("\n");
+    }
+    if(LANG==="CA"){
+      const lines = [];
+      lines.push(header + "Amb les teves dades actuals:");
+      lines.push("• " + summaryBase());
+      if(mortEff!=null) lines.push(`• Esforç hipoteca: ${mortEff.toFixed(1)}% (segur ~35%).`);
+      if(rentEff!=null) lines.push(`• Esforç lloguer: ${rentEff.toFixed(1)}% (segur ~35%).`);
+      lines.push("Si l’esforç supera el 35%, cal baixar preu, pujar entrada, allargar termini o millorar ingressos/estalvi.");
+      return lines.join("\n");
+    }
+    const lines = [];
+    lines.push(header + "Con tus datos actuales:");
+    lines.push("• " + summaryBase());
+    if(mortEff!=null) lines.push(`• Esfuerzo hipoteca: ${mortEff.toFixed(1)}% (seguro ~35%).`);
+    if(rentEff!=null) lines.push(`• Esfuerzo alquiler: ${rentEff.toFixed(1)}% (seguro ~35%).`);
+    lines.push("Si el esfuerzo supera el 35%, toca bajar precio, subir entrada, alargar plazo o mejorar ingresos/ahorro.");
+    return lines.join("\n");
+  }
+
+  // 2) Savings plan / how much to save
+  if(wantsSave){
+    // rough target: if mortgage effort too high, suggest buffer + cash build
+    const targetExtra = Math.max(0, (safeCap - S.payN)); // if negative => already above safe cap
+    const tipSave = (S.msv>0) ? (LANG==="EN"
+      ? `You currently save about ${fmtMoney(S.msv)} / month.`
+      : (LANG==="CA"
+        ? `Ara estalvies aprox. ${fmtMoney(S.msv)} / mes.`
+        : `Ahora ahorras aprox. ${fmtMoney(S.msv)} / mes.`)) : "";
+
+    if(LANG==="EN"){
+      return header +
+        `Safe monthly housing budget is ~${fmtMoney(safeCap)} (35% of income).\n` +
+        (S.payN>0 ? `Your mortgage estimate is ${fmtMoney(S.payN)}.\n` : "") +
+        (S.rentN>0 ? `Your rent estimate is ${fmtMoney(S.rentN)}.\n` : "") +
+        (tipSave ? tipSave + "\n" : "") +
+        "To improve feasibility: increase down payment (cash), reduce target m²/extras, or aim to raise income so 35% covers the payment.";
+    }
+    if(LANG==="CA"){
+      return header +
+        `Pressupost segur d’habitatge: ~${fmtMoney(safeCap)} (35% ingressos).\n` +
+        (S.payN>0 ? `Hipoteca estimada: ${fmtMoney(S.payN)}.\n` : "") +
+        (S.rentN>0 ? `Lloguer estimat: ${fmtMoney(S.rentN)}.\n` : "") +
+        (tipSave ? tipSave + "\n" : "") +
+        "Per millorar: pujar entrada (cash), baixar m²/extres, o millorar ingressos perquè el 35% cobreixi la quota.";
+    }
+    return header +
+      `Presupuesto seguro de vivienda: ~${fmtMoney(safeCap)} (35% de ingresos).\n` +
+      (S.payN>0 ? `Hipoteca estimada: ${fmtMoney(S.payN)}.\n` : "") +
+      (S.rentN>0 ? `Alquiler estimado: ${fmtMoney(S.rentN)}.\n` : "") +
+      (tipSave ? tipSave + "\n" : "") +
+      "Para mejorar: subir entrada (cash), bajar m²/extras, o mejorar ingresos para que el 35% cubra la cuota.";
+  }
+
+  // 3) Interest rate sensitivity (simple explanation)
+  if(wantsRate){
+    if(LANG==="EN"){
+      return header +
+        "Rates mainly affect your monthly payment risk.\n" +
+        `• Safe capacity: ~${fmtMoney(safeCap)} / month.\n` +
+        (S.payN>0 ? `• Current mortgage estimate: ${fmtMoney(S.payN)}.\n` : "") +
+        "If rates rise, the payment increases: keep a buffer below 35%, prefer fixed rate if you want certainty, or reduce financed amount (higher down payment / lower price).";
+    }
+    if(LANG==="CA"){
+      return header +
+        "El tipus afecta sobretot el risc de la quota mensual.\n" +
+        `• Capacitat segura: ~${fmtMoney(safeCap)} / mes.\n` +
+        (S.payN>0 ? `• Hipoteca estimada: ${fmtMoney(S.payN)}.\n` : "") +
+        "Si puja el tipus, puja la quota: deixa marge sota el 35%, prefereix fix si vols estabilitat, o baixa capital (més entrada / menys preu).";
+    }
+    return header +
+      "El tipo afecta sobre todo el riesgo de la cuota mensual.\n" +
+      `• Capacidad segura: ~${fmtMoney(safeCap)} / mes.\n` +
+      (S.payN>0 ? `• Hipoteca estimada: ${fmtMoney(S.payN)}.\n` : "") +
+      "Si sube el tipo, sube la cuota: deja margen bajo el 35%, fija si quieres estabilidad, o baja capital (más entrada / menor precio).";
+  }
+
+  // 4) Where / municipalities
+  if(wantsWhere){
+    const base = (LANG==="EN"
+      ? `Your current preference is: ${S.muni} · ${S.m2||"?"} m² · ${S.bed||0} bd · ${S.bath||1} ba · ${typeLabel(S.ty)}.`
+      : (LANG==="CA"
+        ? `La teva preferència actual és: ${S.muni} · ${S.m2||"?"} m² · ${S.bed||0} hab · ${S.bath||1} banys · ${typeLabel(S.ty)}.`
+        : `Tu preferencia actual es: ${S.muni} · ${S.m2||"?"} m² · ${S.bed||0} hab · ${S.bath||1} baños · ${typeLabel(S.ty)}.`));
+
+    const hint = (LANG==="EN"
+      ? "Tip: use the Map to select multiple towns and then open Real examples."
+      : (LANG==="CA"
+        ? "Consell: usa el Mapa per triar diversos municipis i després obre Exemples reals."
+        : "Tip: usa el Mapa para elegir varios municipios y luego abre Ejemplos reales."));
+
+    return header + base + "\n" + hint;
+  }
+
+  // 5) Improve situation (default helpful)
+  if(wantsImprove){
+    const lines = [];
+    if(LANG==="EN"){
+      lines.push(header + "Quick levers to improve feasibility:");
+      lines.push(`• Keep housing effort ≤ 35% (safe ~${fmtMoney(safeCap)} / mo).`);
+      lines.push("• Increase down payment (more savings) to reduce financed amount.");
+      lines.push("• Reduce target m²/extras, or pick a cheaper municipality.");
+      lines.push("• Extend term carefully (reduces payment but increases total interest).");
+      lines.push("• Improve income stability (helps approval).");
+      return lines.join("\n");
+    }
+    if(LANG==="CA"){
+      lines.push(header + "Palancas ràpides per millorar:");
+      lines.push(`• Mantén l’esforç ≤ 35% (segur ~${fmtMoney(safeCap)} / mes).`);
+      lines.push("• Pujar entrada (més estalvi) per baixar capital finançat.");
+      lines.push("• Baixar m²/extres o triar municipi més econòmic.");
+      lines.push("• Allargar termini amb cap (baixa quota però puja interessos totals).");
+      lines.push("• Millorar estabilitat d’ingressos (ajuda aprovació).");
+      return lines.join("\n");
+    }
+    lines.push(header + "Palancas rápidas para mejorar:");
+    lines.push(`• Mantén el esfuerzo ≤ 35% (seguro ~${fmtMoney(safeCap)} / mes).`);
+    lines.push("• Subir entrada (más ahorro) para bajar capital financiado.");
+    lines.push("• Bajar m²/extras o elegir municipio más económico.");
+    lines.push("• Alargar plazo con cabeza (baja cuota pero suben intereses totales).");
+    lines.push("• Mejorar estabilidad de ingresos (ayuda a aprobación).");
+    return lines.join("\n");
+  }
+
+  // fallback: show summary + suggest questions
+  if(LANG==="EN"){
+    return header +
+      "Here’s your current snapshot:\n" +
+      "• " + summaryBase() + "\n" +
+      "Ask me: “buy or rent?”, “how much should I save?”, “what if rates rise?”, or “which towns?”.";
+  }
+  if(LANG==="CA"){
+    return header +
+      "Aquí tens el teu resum actual:\n" +
+      "• " + summaryBase() + "\n" +
+      "Pregunta’m: “comprar o llogar?”, “quant he d’estalviar?”, “i si puja el tipus?”, o “quins municipis?”.";
+  }
+  return header +
+    "Aquí tienes tu resumen actual:\n" +
+    "• " + summaryBase() + "\n" +
+    "Pregúntame: “¿comprar o alquilar?”, “¿cuánto ahorrar?”, “¿y si sube el tipo?”, o “¿qué municipios?”.";
+}
+
+// money formatter using existing fmtEN/fmtES
+function fmtMoney(n){
+  if(!isFinite(n)) return "–";
+  const s = (LANG==="EN" ? fmtEN(n) : fmtES(n));
+  return s + " €";
+}
+
+// --- Send flow ---
+function handleSendChat(text){
+  const msg = (text||"").trim();
+  if(!msg) return;
+
+  addChatMessage("user", msg);
+
+  // local answer
+  const ans = localAIAnswer(msg);
+  addChatMessage("ai", ans);
+}
+
+// wire UI
+if(chatSend && chatInput){
+  chatSend.addEventListener("click", ()=> handleSendChat(chatInput.value));
+  chatInput.addEventListener("keydown", (e)=>{
+    if(e.key==="Enter" && !e.shiftKey){
+      e.preventDefault();
+      handleSendChat(chatInput.value);
+      chatInput.value="";
+    }
+  });
+  chatSend.addEventListener("click", ()=>{
+    chatInput.value="";
+    chatInput.focus();
+  });
+}
+
+// suggestion chips
+const sugWrap = document.getElementById("aiSuggestions");
+if(sugWrap){
+  sugWrap.addEventListener("click",(e)=>{
+    const el = e.target.closest(".suggestion-chip");
+    if(!el) return;
+    const q = el.getAttribute("data-q") || el.textContent || "";
+    handleSendChat(q);
+  });
+}
+
+// on load: restore chat history
+loadChatHistory();
 
   const fmtMoney=(n)=>{
     if(!isFinite(n)) return "–";

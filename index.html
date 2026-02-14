@@ -2110,6 +2110,15 @@ const buildReply=msg=>{
 
   }// end switch
 };
+  
+// Fallback seguro si algún sitio llama a buildReply2
+if (typeof window.buildReply2 !== "function") {
+  window.buildReply2 = function(msg){
+    return (typeof window.buildReply === "function")
+      ? window.buildReply(msg)
+      : "No tengo respuesta local ahora mismo. Intenta reformular la pregunta.";
+  };
+}
 
 /* ── ENVIAR MENSAJE AL AI ── */
 const sendToAI=async (msg)=>{

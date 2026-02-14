@@ -852,30 +852,51 @@ const callGroqViaWorker = async (messages, opts = {}) => {
   }
 };
 
-// Construir prompt para LLM con contexto
-const buildLLMPrompt=(userMsg)=>{
-  const ctx=calcContext();
-  let systemContext="";
-  
-  if(ctx){
-    systemContext=`Usuario: ${ctx.nm||"Anónimo"}, ${ctx.ag||"??"} años
-Ingresos: ${ctx.inc?fmtMoney(ctx.inc)+"/mes":"no especificado"}
-Ahorros: ${ctx.sav?fmtMoney(ctx.sav):"no especificado"}
-Municipio: ${ctx.muni||"no especificado"}
-Precio objetivo: ${ctx.pb?fmtMoney(ctx.pb):"no especificado"}
-Cuota hipoteca: ${ctx.pay?fmtMoney(ctx.pay)+"/mes":"no calculado"}
-Esfuerzo: ${ctx.ratio?(ctx.ratio*100).toFixed(1)+"%":"no calculado"}
-Recomendación: ${ctx.rec||"pendiente de análisis"}`;
+// Construir prompt para LLM con contexto (robusto, sin romper si falta algo)
+const buildLLMPrompt = (userMsg) => {
+  let ctx = null;
+
+  // 1) Intentar obtener contexto si existe calcContext()
+  try {
+    if (typeof calcContext === "function") ctx = calcContext();
+  } catch (e) {
+    console.warn("calcContext failed:", e);
+    ctx = null;
   }
-  
-  const lang=LANG==="CA"?"català":LANG==="EN"?"English":"español";
-  
-  return `Eres un asesor financiero e inmobiliario experto. El usuario habla ${lang}.
 
-${systemContext?`CONTEXTO DEL USUARIO:\n${systemContext}\n\n`:""}PREGUNTA DEL USUARIO: ${userMsg}
+  // 2) Construir "systemContext" sin petar aunque falten campos
+  let systemContext = "";
+  if (ctx && typeof ctx === "object") {
+    const nm = ctx.nm ?? "Anónimo";
+    const ag = (ctx.ag ?? "?");
+    const inc = (ctx.inc ?? null);
+    const sav = (ctx.sav ?? null);
+    const muni = ctx.muni ?? "no especificado";
+    const pb = (ctx.pb ?? null);
+    const pay = (ctx.pay ?? null);
+    const ratio = (ctx.ratio ?? null);
+    const rec = ctx.rec ?? "pendiente de análisis";
 
-Responde en ${lang} de forma clara, práctica y personalizada. Usa los datos del contexto si están disponibles. Sé directo y útil.`;
+    systemContext =
+`Usuario: ${nm}, ${ag} años
+Ingresos: ${inc!=null?fmtMoney(inc)+"/mes":"no especificado"}
+Ahorros: ${sav!=null?fmtMoney(sav):"no especificado"}
+Municipio: ${muni}
+Precio objetivo: ${pb!=null?fmtMoney(pb):"no especificado"}
+Cuota hipoteca: ${pay!=null?fmtMoney(pay)+"/mes":"no calculado"}
+Esfuerzo: ${ratio!=null?(ratio*100).toFixed(1)+"%":"no calculado"}
+Recomendación: ${rec}`;
+  }
+
+  // 3) Prompt final
+  return [
+    "Eres un asesor inmobiliario/financiero en España (Baix Penedès).",
+    "Da recomendaciones concretas con pasos y motivos. No repitas literalmente los datos del usuario; úsalos para razonar.",
+    systemContext ? ("Datos del usuario:\n" + systemContext) : "",
+    "Pregunta del usuario:\n" + userMsg
+  ].filter(Boolean).join("\n\n");
 };
+
 const fmtPct=n=>Number(n).toFixed(1)+"%";
 const toast=m=>{const e=Q("#ts");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),1900)};
 

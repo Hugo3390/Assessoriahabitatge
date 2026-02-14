@@ -828,7 +828,7 @@ const AI_PROXY_URL="https://soft-poetry-232f.hibanezborreguero.workers.dev/";
 // Llamar a Groq vía Worker
 const callGroqViaWorker = async (messages, opts = {}) => {
   try {
-    const response = await fetch(AI_PROXY_URL, {
+    const res = await fetch(AI_PROXY_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -838,19 +838,14 @@ const callGroqViaWorker = async (messages, opts = {}) => {
       })
     });
 
-    // Si el Worker devuelve error, lo leemos en texto para ver el motivo
-    if (!response.ok) {
-      const txt = await response.text();
-      console.error("Worker HTTP error:", response.status, txt);
+    if (!res.ok) {
+      const t = await res.text();
+      console.error("Worker HTTP error:", res.status, t);
       return null;
     }
 
-    const data = await response.json();
-
-    // Respuesta tipo OpenAI-compatible
-    const out = data?.choices?.[0]?.message?.content;
-    return (out && String(out).trim()) ? String(out).trim() : null;
-
+    const data = await res.json();
+    return (data?.choices?.[0]?.message?.content || "").trim() || null;
   } catch (e) {
     console.error("Worker fetch failed:", e);
     return null;
@@ -2106,46 +2101,46 @@ const sendToAI=async (msg)=>{
   chatHistory.push({role:"user",content:msg});
   addThinking();
   
-  // Determinar si usar IA real o local
-  const m=msg.toLowerCase().trim();
-  const useRealAI=(
-    m.length>100|| // Preguntas largas
-    /\b(plan|estrategia|consejo|recomiend|analiza|compara|explica|detalla|como|por que|cuando|donde)\b/i.test(m)|| // Palabras clave complejas
-    /\b(inversion|negocio|tecnologia|programacion|viaje|cocina|historia)\b/i.test(m) // Temas fuera de vivienda
-  );
-  
-  let reply="";
-  
-  if(useRealAI && AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL)){
-    // Intentar con IA real
-    try{
-      const prompt=buildLLMPrompt(msg);
-      const systemMsg={
-        role:"system",
-        content:LANG==="CA"?"Ets un assessor financer expert. Respon en català de forma clara i pràctica.":
-                LANG==="EN"?"You are an expert financial advisor. Respond in English clearly and practically.":
-                "Eres un asesor financiero experto. Responde en español de forma clara y práctica."
-      };
-      const messages=[systemMsg,{role:"user",content:prompt}];
-      
-      const aiReply=await callGroqViaWorker(messages,{temperature:0.4,max_tokens:900});
-      
-      if(aiReply&&aiReply.trim().length>10){
-        reply=aiReply;
-      }else{
-        // Fallback a local
-        reply=buildReply(msg);
-      }
-    }catch(e){
-      console.error("AI call error:",e);
-      // Fallback a local
-      reply=buildReply(msg);
-    }
-  }else{
-    // Usar motor local
-    reply=buildReply(msg);
+// Determinar si usar IA real o local
+const m = msg.toLowerCase().trim();
+const useRealAI = (
+  m.length > 100 ||
+  /\b(plan|estrategia|consejo|recomiend|analiza|compara|explica|detalla|como|por que|cuando|donde)\b/i.test(m) ||
+  /\b(inversion|negocio|tecnologia|programacion|viaje|cocina|historia)\b/i.test(m)
+);
+
+let reply = "";
+
+// Intentar IA real (Worker)
+if (useRealAI && AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL)) {
+  try {
+    const prompt = buildLLMPrompt(msg);
+
+    const systemMsg = {
+      role: "system",
+      content: LANG === "CA"
+        ? "Ets un assessor financer expert. Respon en català de forma clara i pràctica."
+        : LANG === "EN"
+          ? "You are an expert financial advisor. Respond in English clearly and practically."
+          : "Eres un asesor financiero experto. Responde en español de forma clara y práctica."
+    };
+
+    const messages = [systemMsg, { role: "user", content: prompt }];
+
+    const aiReply = await callGroqViaWorker(messages, { temperature: 0.4, max_tokens: 900 });
+
+    if (aiReply) reply = aiReply;
+
+  } catch (e) {
+    console.error("AI via Worker failed:", e);
   }
-  
+}
+
+// Fallback local si la IA real no responde
+if (!reply) {
+  reply = buildReply2(msg);
+}
+
   // Pequeño delay para efecto visual
   setTimeout(()=>{
     removeThinking();

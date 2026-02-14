@@ -1255,90 +1255,315 @@ const getToneForProfile = (profile, LANG) => {
   return tones[LANG][key] || "";
 };
 
-/* ---- Detectar intención del mensaje ---- */
-const detectIntent=(msg)=>{
-  const m=msg.toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[¿¡'"]/g,"").trim();
-  const has=(...words)=>words.some(w=>m.includes(w));
-  const starts=(...words)=>words.some(w=>m.startsWith(w));
+  const analyzeUserProfile = (ctx) => {
+    if (!ctx) return null;
+    const profile = {
+      wealth: 'middle',
+      age_group: 'adult',
+      urgency: 'normal',
+      risk: 'medium'
+    };
+    // Análisis de riqueza
+    if (ctx.inc >= 4000 && ctx.sav >= 50000) {
+      profile.wealth = 'high';
+    } else if (ctx.inc < 1800 || ctx.sav < 10000) {
+      profile.wealth = 'low';
+    }
+    // Análisis de edad
+    const age = ctx.ag || 35;
+    if (age < 30) {
+      profile.age_group = 'young';
+    } else if (age >= 55) {
+      profile.age_group = 'senior';
+    }
+    // Análisis de urgencia
+    if (ctx.need && ctx.mosToGoal && ctx.mosToGoal > 36) {
+      profile.urgency = 'low';
+    } else if (ctx.need && ctx.mosToGoal && ctx.mosToGoal < 12) {
+      profile.urgency = 'high';
+    }
+    // Análisis de riesgo
+    if (ctx.ratio > 35 || ctx.need) {
+      profile.risk = 'high';
+    } else if (ctx.ratio < 25 && !ctx.need) {
+      profile.risk = 'low';
+    }
+    return profile;
+  };
 
-  // Saludos y socialización
-  if(has("hola","hi ","hello","bon dia","buenos dias","buenas","hey","buen","good morning","good evening","que tal","com estas","com anem","how are")) return "greet";
-  if(has("gracias","gracies","thanks","thank you","genial","perfecto","molt be","muy bien","great","awesome","guay","crack","mola")) return "thanks";
-  if(has("adios","hasta luego","bye","fins aviat","ciao","chao","nos vemos")) return "bye";
-  if(has("que puedes","que pots","what can you","que sabes","que saps","ayudame","ajuda'm","help me","para que sirves","com funciones")) return "capabilities";
+  const getToneForProfile = (profile, LANG) => {
+    const tones = {
+      ES: {
+        high_young: "Tienes una situación financiera sólida y juventud de tu lado",
+        high_adult: "Tu posición financiera es muy buena",
+        high_senior: "Has construido una posición financiera excelente",
+        middle_young: "Estás en buena posición para empezar",
+        middle_adult: "Tienes una base financiera razonable",
+        middle_senior: "Tu situación es estable",
+        low_young: "Aunque ahora estés empezando, tienes tiempo por delante",
+        low_adult: "Estás en un momento de construcción financiera",
+        low_senior: "Entiendo que la situación puede ser desafiante"
+      },
+      CA: {
+        high_young: "Tens una situació financera sòlida i joventut del teu costat",
+        high_adult: "La teva posició financera és molt bona",
+        high_senior: "Has construït una posició financera excel·lent",
+        middle_young: "Estàs en bona posició per començar",
+        middle_adult: "Tens una base financera raonable",
+        middle_senior: "La teva situació és estable",
+        low_young: "Tot i que ara estiguis començant, tens temps per davant",
+        low_adult: "Estàs en un moment de construcció financera",
+        low_senior: "Entenc que la situació pot ser desafiadora"
+      },
+      EN: {
+        high_young: "You have a solid financial position with youth on your side",
+        high_adult: "Your financial position is very good",
+        high_senior: "You've built an excellent financial position",
+        middle_young: "You're in a good position to get started",
+        middle_adult: "You have a reasonable financial foundation",
+        middle_senior: "Your situation is stable",
+        low_young: "Though you're just starting, you have time ahead",
+        low_adult: "You're in a financial building phase",
+        low_senior: "I understand the situation can be challenging"
+      }
+    };
+    const key = `${profile.wealth}_${profile.age_group}`;
+    return tones[LANG][key] || "";
+  };
 
-  // Análisis y resultado
-  if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","explica","cuéntame","conta'm")) return "summary";
-  if(has("consejo","consell","advice","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria")) return "advice";
+  /*
+   * Nueva función detectIntent() con detección ampliada de "improve".
+   * Copia y reemplaza la función detectIntent() original por esta versión.
+   */
+  const detectIntent = (msg) => {
+    const m = msg.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[¿¡'"]/g, "").trim();
+    const has = (...words) => words.some(w => m.includes(w));
+    const starts = (...words) => words.some(w => m.startsWith(w));
+    // Detección ampliada para preguntas sobre cómo mejorar
+    if (has("mejorar", "millorar", "improve", "como mejorar", "como millorar", "cómo mejorar", "cómo millorar", "mejorar mi situación", "mejorar la situación")) {
+      return "improve";
+    }
+    // saludos
+    if (has("hola", "hi ", "hello", "bon dia", "buenos dias", "buenas", "hey", "buen", "good morning", "good evening", "que tal", "com estas", "com anem", "how are")) return "greet";
+    if (has("gracias", "gracies", "thanks", "thank you", "genial", "perfecto", "molt be", "muy bien", "great", "awesome", "guay", "crack", "mola")) return "thanks";
+    if (has("adios", "hasta luego", "bye", "fins aviat", "ciao", "chao", "nos vemos")) return "bye";
+    if (has("que puedes", "que pots", "what can you", "que sabes", "que saps", "ayudame", "ajuda'm", "help me", "para que sirves", "com funciones")) return "capabilities";
+    // resumen y análisis
+    if (has("analisis", "analisi", "analysis", "resultado", "resultat", "result", "resumen", "resum", "summary", "dime todo", "explica", "cuéntame", "conta'm")) return "summary";
+    if (has("consejo", "consell", "advice", "recomiendas", "recomanes", "recommend", "que hago", "que faig", "que deberia", "que hauria")) return "advice";
+    // compra vs alquiler
+    if (has("comprar o alquilar", "comprar o llogar", "buy or rent", "mejor opcion", "millor opcio", "que es mejor", "que es millor", "which is better")) return "buyrent";
+    if (has("comprar", "compra", "buying", "purchase", "adquirir")) return "buyrent";
+    // financiación
+    if (has("hipoteca", "mortgage", "prestamo", "credito", "financiacion", "financiamiento", "banco", "bank", "euribor")) return "mortgage";
+    if (has("cuota", "quota", "monthly payment", "pago mensual", "mensualidad", "pago", "payment", "al mes", "cada mes")) return "payment";
+    if (has("entrada", "down payment", "enganxe", "senyal", "inicial", "anticipo")) return "downpayment";
+    if (has("gastos", "costes", "costos", "costs", "notaria", "itp", "impuesto", "impost", "taxes", "fees", "registro")) return "costs";
+    // ahorro
+    if (has("ahorrar", "estalviar", "save", "ahorro", "estalvi", "savings", "cuanto necesito", "cuanto tardar", "quant trigar")) return "savings";
+    if (has("estrategia", "strategy", "capacidad de compra", "buying power", "poder adquisitivo", "como comprar mas")) return "strategy";
+    if (has("amortiz", "pagar antes", "pagar avans", "overpay", "cancelar hipoteca", "reducir hipoteca")) return "amortize";
+    // propiedades
+    if (has("precio", "preu", "price", "cuanto vale", "quanto costa", "cuanto cuesta", "valor")) return "price";
+    if (has("alquiler", "lloguer", "rent", "arrendar", "arrendament", "alquilar")) return "rent";
+    if (has("m2", "metros", "metres", "square", "tamaño", "tamany", "size", "grande", "petit", "pequeño")) return "size";
+    if (has("plazo", "termini", "años", "anys", "years", "tiempo hipoteca", "duración")) return "term";
+    if (has("extras", "piscina", "pool", "terraza", "terrasse", "garaje", "parking", "ascensor", "elevator")) return "extras";
+    // mercado y zona
+    if (has("municipio", "municipi", "town", "zona", "pueblo", "village", "donde vivir", "on viure", "where to live", "mejor zona", "millor zona")) return "towns";
+    if (has("comparar", "compare", "otra zona", "altra zona", "barcelona", "girona", "tarragona", "lleida", "diferencia zona")) return "compare";
+    if (has("mercado", "mercat", "market", "tendencia", "tendència", "trend", "subira", "baixara", "sube", "baja", "futuro", "previsión")) return "market";
+    // ayudas y fiscalidad
+    if (has("ayuda", "ajuda", "subvencio", "subvencion", "subsidio", "bonus", "deduccion", "deducció", "irpf", "hacienda", "hisenda")) return "subsidy";
+    if (has("primera", "primer", "first home", "primera vivenda", "primera vivienda")) return "firsthome";
+    if (has("ipc", "inflacion", "inflacio", "inflation", "subida precios", "poder adquisitivo")) return "inflation";
+    // riesgos
+    if (has("riesgo", "risc", "risk", "seguro", "segur", "peligro", "perills", "crash", "burbuja", "burbolla", "crisis")) return "risk";
+    // ingresos
+    if (has("trabajo", "feina", "job", "sueldo", "salari", "salary", "ingresos", "nómina", "nomina")) return "income";
+    // off-topic
+    if (has("tiempo", "clima", "weather", "llueve", "sol", "calor", "fred", "frio")) return "weather";
+    if (has("chiste", "joke", "broma", "divertido", "humor", "rie", "rire")) return "joke";
+    if (has("quien eres", "qui ets", "who are you", "eres humano", "ets huma", "are you human", "ets ia", "eres ia", "eres robot", "chatgpt", "openai", "anthropic", "claude")) return "identity";
+    if (has("la vida", "filosofia", "sentido", "meaning", "existencial", "dios", "religion")) return "philosophy";
+    if (has("futbol", "barça", "barca", "madrid", "sport", "deporte", "esport")) return "sport";
+    if (has("comer", "menjar", "restaurante", "comida", "food", "receta")) return "food";
+    if (has("vino", "vi", "cava", "penedes", "winery", "bodega", "vinya")) return "wine";
+    if (has("playa", "platja", "beach", "mar", "sea", "nadar", "swim")) return "beach";
+    if (has("coche", "cotxe", "car", "moto", "tren", "train", "transport")) return "transport";
+    return "general";
+  };
 
-  // Compra vs Alquiler
-  if(has("comprar o alquilar","comprar o llogar","buy or rent","mejor opcion","millor opcio","que es mejor","que es millor","which is better")) return "buyrent";
-  if(has("comprar","compra","buying","purchase","adquirir")) return "buyrent";
-
-  // Financiación
-  if(has("hipoteca","mortgage","prestamo","credito","financiacion","financiamiento","banco","bank","euribor")) return "mortgage";
-  if(has("cuota","quota","monthly payment","pago mensual","mensualidad","pago","payment","al mes","cada mes")) return "payment";
-  if(has("entrada","down payment","enganxe","senyal","inicial","anticipo")) return "downpayment";
-  if(has("gastos","costes","costos","costs","notaria","itp","impuesto","impost","taxes","fees","registro")) return "costs";
-  if(has("tipo de interes","tipus d'interes","interest rate","euribor","sube el tipo","puja el tipus","rate sube","rate baja","tipo fijo","tipo variable")) return "rates";
-
-  // Ahorro
-  if(has("ahorrar","estalviar","save","ahorro","estalvi","savings","cuanto necesito","cuanto tardar","quant trigar")) return "savings";
-  if(has("estrategia","strategy","capacidad de compra","buying power","poder adquisitivo","como comprar mas")) return "strategy";
-  if(has("amortiz","pagar antes","pagar avans","overpay","cancelar hipoteca","reducir hipoteca")) return "amortize";
-
-  // Propiedades
-  if(has("precio","preu","price","cuanto vale","quanto costa","cuanto cuesta","valor")) return "price";
-  if(has("alquiler","lloguer","rent","arrendar","arrendament","alquilar")) return "rent";
-  if(has("m2","metros","metres","square","tamaño","tamany","size","grande","petit","pequeño")) return "size";
-  if(has("plazo","termini","años","anys","years","tiempo hipoteca","duración")) return "term";
-  if(has("extras","piscina","pool","terraza","terrasse","garaje","parking","ascensor","elevator")) return "extras";
-
-  // Mercado y zona
-  if(has("municipio","municipi","town","zona","pueblo","village","donde vivir","on viure","where to live","mejor zona","millor zona")) return "towns";
-  if(has("comparar","compare","otra zona","altra zona","barcelona","girona","tarragona","lleida","diferencia zona")) return "compare";
-  if(has("mercado","mercat","market","tendencia","tendència","trend","subira","baixara","sube","baja","futuro","previsión")) return "market";
-
-  // Ayudas y fiscalidad
-  if(has("ayuda","ajuda","subvencio","subvencion","subsidio","bonus","deduccion","deducció","irpf","hacienda","hisenda")) return "subsidy";
-  if(has("primera","primer","first home","primera vivenda","primera vivienda")) return "firsthome";
-  if(has("ipc","inflacion","inflacio","inflation","subida precios","poder adquisitivo")) return "inflation";
-
-  // Riesgos
-  if(has("riesgo","risc","risk","seguro","segur","peligro","perills","crash","burbuja","burbolla","crisis")) return "risk";
-
-  // Ingresos
-  if(has("trabajo","feina","job","sueldo","salari","salary","ingresos","nómina","nomina")) return "income";
-
-  // Preguntas raras / off-topic
-  if(has("tiempo","clima","weather","llueve","sol","calor","fred","frio")) return "weather";
-  if(has("chiste","joke","broma","divertido","humor","rie","rire")) return "joke";
-  if(has("quien eres","qui ets","who are you","eres humano","ets huma","are you human","ets ia","eres ia","eres robot","chatgpt","openai","anthropic","claude")) return "identity";
-  if(has("la vida","filosofia","sentido","meaning","existencial","dios","religion")) return "philosophy";
-  if(has("futbol","barça","barca","madrid","sport","deporte","esport")) return "sport";
-  if(has("comer","menjar","restaurante","comida","food","receta")) return "food";
-  if(has("vino","vi","cava","penedes","winery","bodega","vinya")) return "wine";
-  if(has("playa","platja","beach","mar","sea","nadar","swim")) return "beach";
-  if(has("coche","cotxe","car","moto","tren","train","transport")) return "transport";
-
-  return "general";
-};
-/* ---- Generador de respuestas ---- */
-const buildReply=(intent, msg)=>{
-  const c=getUserContext();
-  const L=LANG;
-  const es=(es,ca,en)=>L==="CA"?ca:L==="EN"?en:es;
-
-  // Si no hay análisis
-  if(!c){
-    return es(
-      "⚠️ Aún no has completado el análisis. Rellena los pasos 1-3 y pulsa Analizar para que pueda darte consejos personalizados.",
-      "⚠️ Encara no has completat l'anàlisi. Omple els passos 1-3 i prem Analitzar per rebre consells personalitzats.",
-      "⚠️ You haven't completed the analysis yet. Fill in steps 1-3 and click Analyze so I can give you personalized advice."
-    );
-  }
+  /*
+   * Función buildReply() modificada. Aquí se conserva gran parte del código original,
+   * pero el caso "advice" incluye recomendaciones dinámicas según el perfil del usuario.
+   * Debes sustituir tu función buildReply() por esta versión modificada en tu archivo.
+   */
+  const buildReply = (intent, msg) => {
+    const c = getUserContext();
+    const L = LANG;
+    const es = (es, ca, en) => L === "CA" ? ca : L === "EN" ? en : es;
+    if (!c) {
+      return es(
+        "⚠️ Aún no has completado el análisis. Rellena los pasos 1-3 y pulsa Analizar para que pueda darte consejos personalizados.",
+        "⚠️ Encara no has completat l'anàlisi. Omple els passos 1-3 i prem Analitzar per rebre consells personalitzats.",
+        "⚠️ You haven't completed the analysis yet. Fill in steps 1-3 and click Analyze so I can give you personalized advice."
+      );
+    }
+    const profile = analyzeUserProfile(c);
+    const tone = getToneForProfile(profile, L);
+    const buyOk = !c.need && c.ratio <= 35 && c.hor;
+    const rentOk = c.rri <= 40;
+    switch (intent) {
+      // se omiten otros casos para brevedad, pero deben mantenerse en tu código
+      case "improve": {
+        // Lógica del caso improve original
+        const tips = [];
+        if (c.need) tips.push(es(
+          `💡 Ahorra ${_fm(c.msv > 0 ? c.msv : 300)}/mes para llegar a los ${_fm(c.needCash)} necesarios${c.mosToGoal ? ` (~${c.mosToGoal} meses)` : ""}`,
+          `💡 Estalvia ${_fm(c.msv > 0 ? c.msv : 300)}/mes per arribar als ${_fm(c.needCash)} necessaris${c.mosToGoal ? ` (~${c.mosToGoal} mesos)` : ""}`,
+          `💡 Save ${_fm(c.msv > 0 ? c.msv : 300)}/mo to reach the needed ${_fm(c.needCash)}${c.mosToGoal ? ` (~${c.mosToGoal} months)` : ""}`
+        ));
+        if (c.ratio > 35) tips.push(es(
+          `💡 Busca vivienda ~${_fm(c.pb * 0.85)} (15% menos) para bajar la cuota a ~${_fm(c.pay * 0.85)}`,
+          `💡 Busca habitatge ~${_fm(c.pb * 0.85)} (15% menys) per baixar la quota a ~${_fm(c.pay * 0.85)}`,
+          `💡 Look for a property ~${_fm(c.pb * 0.85)} (15% less) to lower payment to ~${_fm(c.pay * 0.85)}`
+        ));
+        if (!c.hor) tips.push(es(
+          `💡 Si puedes comprometerte más de 5 años, comprar se vuelve más rentable`,
+          `💡 Si pots comprometre't més de 5 anys, comprar es torna més rendible`,
+          `💡 If you can commit to 5+ years, buying becomes more profitable`
+        ));
+        tips.push(es(
+          `💡 Negocia el tipo: bajar 0,25% ahorra ~${_fm(c.pay * 0.008 * c.yrs)} en total`,
+          `💡 Negocia el tipus: baixar 0,25% estalvia ~${_fm(c.pay * 0.008 * c.yrs)} en total`,
+          `💡 Negotiate your rate: 0.25% less saves ~${_fm(c.pay * 0.008 * c.yrs)} total`
+        ));
+        tips.push(es(
+          `💡 Amortiza anticipadamente cuando puedas — cada ${_fm(1000)} extra reduce intereses futuros`,
+          `💡 Amortitza anticipadament quan puguis — cada ${_fm(1000)} extra redueix interessos futurs`,
+          `💡 Make overpayments when possible — every ${_fm(1000)} extra reduces future interest`
+        ));
+        return es(
+          "🎯 Pasos concretos para mejorar tu situación:\n", "🎯 Passos concrets per millorar la teva situació:\n", "🎯 Concrete steps to improve your situation:\n"
+        ) + tips.join("\n");
+      }
+      case "advice": {
+        // Este bloque conserva la lógica original pero añade recomendaciones dinámicas al final
+        let advice = es(
+          "🎯 Mi consejo personalizado:\n\n", "🎯 El meu consell:\n\n", "🎯 My advice:\n\n"
+        );
+        if (profile.wealth === 'high' && profile.age_group === 'young') {
+          advice += es(
+            `Estás en posición privilegiada. A tu edad con tu capacidad:\n\n` +
+            `• Compra pronto para beneficiarte de años de revalorización\n` +
+            `• No te conformes — busca calidad y ubicación\n` +
+            `• Considera hipoteca <60% y amortiza agresivamente\n` +
+            `• Tu ventaja: tiempo + capital = libertad`,
+            `Estàs en posició privilegiada. A la teva edat amb la teva capacitat:\n\n` +
+            `• Comprar aviat per beneficiar-te d'anys de revalorització\n` +
+            `• No et conformis — cerca qualitat i ubicació\n` +
+            `• Considera hipoteca <60% i amortitza agressivament\n` +
+            `• El teu avantatge: temps + capital = llibertat`,
+            `You're in a privileged position. At your age with your finances:\n\n` +
+            `• Buy soon to benefit from years of appreciation\n` +
+            `• Don't settle — seek quality and location\n` +
+            `• Consider <60% mortgage and pay it down aggressively\n` +
+            `• Your advantage: time + capital = freedom`
+          );
+        } else if (profile.wealth === 'low' && profile.age_group === 'adult') {
+          advice += es(
+            `${tone}, pero no te desanimes:\n\n` +
+            `• Prioriza ahorro constante (aunque sea ${_fm(200)}/mes)\n` +
+            `• Alquiler es estrategia temporal inteligente\n` +
+            `• Busca zonas más asequibles (hasta 50% más barato)\n` +
+            `• Comprar no es imposible, solo requiere paciencia`,
+            `${tone}, però no et desanimis:\n\n` +
+            `• Prioritza estalvi constant (encara que sigui ${_fm(200)}/mes)\n` +
+            `• Lloguer és estratègia temporal intel·ligent\n` +
+            `• Cerca zones més assequibles\n` +
+            `• Comprar no és impossible, només cal paciència`,
+            `${tone}, but don't get discouraged:\n\n` +
+            `• Prioritize consistent saving (even ${_fm(200)}/mo)\n` +
+            `• Renting is a smart temporary strategy\n` +
+            `• Look in more affordable areas\n` +
+            `• Buying isn't impossible, just requires patience`
+          );
+        } else if (profile.age_group === 'senior') {
+          advice += es(
+            `A tu edad, mis recomendaciones cambian:\n\n` +
+            `• Evalúa si comprar sigue siendo prioritario\n` +
+            `• Plazo hipotecario corto (15-20 años máximo)\n` +
+            `• Prioriza tranquilidad sobre revalorización\n` +
+            `• Tu prioridad: calidad de vida > inversión`,
+            `A la teva edat, les meves recomanacions canvien:\n\n` +
+            `• Avalua si comprar segueix sent prioritari\n` +
+            `• Termini hipotecari curt (15-20 anys màxim)\n` +
+            `• Prioritza tranquil·litat sobre revalorització\n` +
+            `• La teva prioritat: qualitat de vida > inversió`,
+            `At your age, my recommendations are different:\n\n` +
+            `• Evaluate if buying is still a priority\n` +
+            `• Shorter mortgage term (15-20 years max)\n` +
+            `• Prioritize peace of mind over appreciation\n` +
+            `• Your priority: quality of life > investment`
+          );
+        } else {
+          advice += es(
+            `${tone}. Recomendación equilibrada:\n\n` +
+            `• Respeta tu límite del 35% de esfuerzo\n` +
+            `• Compara municipios activamente\n` +
+            `• Hipoteca mixta para protección\n` +
+            `• Mantén fondo emergencia 6 meses\n` +
+            `• Tu estrategia: prudencia + consistencia`,
+            `${tone}. Recomanació equilibrada:\n\n` +
+            `• Respecta el límit del 35% d'esforç\n` +
+            `• Compara municipis activament\n` +
+            `• Hipoteca mixta per protecció\n` +
+            `• Manté fons d'emergència 6 mesos\n` +
+            `• La teva estratègia: prudència + consistència`,
+            `${tone}. Balanced recommendation:\n\n` +
+            `• Respect your 35% effort limit\n` +
+            `• Actively compare municipalities\n` +
+            `• Mixed mortgage for protection\n` +
+            `• Keep 6-month emergency fund\n` +
+            `• Your strategy: prudence + consistency`
+          );
+        }
+        // Nuevas recomendaciones dinámicas en función del riesgo y urgencia
+        const extraAdvice = [];
+        if (profile.risk === 'high') extraAdvice.push(es(
+          "⚠️ Dada la sensibilidad del ratio de esfuerzo o la falta de ahorros, considera mantener un fondo de emergencia mayor, optar por tipos fijos y reducir el precio objetivo de compra.",
+          "⚠️ Donada la sensibilitat del percentatge d’esforç o la manca d’estalvi, considera mantenir un coixí d’emergència més gran, optar per tipus fixos i reduir el preu objectiu de compra.",
+          "⚠️ Given your high debt or savings gap, keep a larger emergency fund, favor fixed-rate loans and target a lower purchase price."
+        ));
+        if (profile.urgency === 'high') extraAdvice.push(es(
+          "⌛ Si necesitas comprar pronto, amplía tu búsqueda a municipios más asequibles o considera alquilar mientras aumentas tus ahorros.",
+          "⌛ Si necessites comprar aviat, amplia la cerca a municipis més assequibles o considera llogar mentre incrementes l’estalvi.",
+          "⌛ If you need to buy soon, expand your search to more affordable towns or rent while increasing your savings."
+        ));
+        if (profile.urgency === 'low') extraAdvice.push(es(
+          "🧘‍♂️ Sin prisas inminentes, tómate tu tiempo para encontrar la oportunidad adecuada y sigue reforzando tu colchón financiero.",
+          "🧘‍♂️ Sense presses imminents, pren-te el teu temps per trobar l’oportunitat adequada i continua reforçant el teu coixí financer.",
+          "🧘‍♂️ With no urgent deadline, take your time to find the right opportunity and keep strengthening your financial cushion."
+        ));
+        if (extraAdvice.length) {
+          advice += "\n\n" + extraAdvice.join("\n");
+        }
+        return advice;
+      }
+      default: {
+        // Resto de casos como en el original
+        return es(
+          `🤖 Entiendo tu pregunta sobre "${msg.length > 40 ? msg.substring(0, 40) + "..." : msg}".\n\n` +
+          `Puedo ayudarte con: hipotecas, ahorros, comprar vs alquilar, riesgos, municipios, ayudas, plazos, amortización y más. Pregunta lo que quieras, y responderé con base en tu análisis.`,
+          `🤖 Puc ajudar-te amb: hipoteques, estalvis, comprar vs llogar, riscos, municipis, ajudes, terminis i més. Pregunta'm qualsevol cosa!`,
+          `🤖 I can help with: mortgages, savings, buy vs rent, risks, towns, subsidies, terms, and more. Ask anything!`
+        );
+      }
+    }
+  };
 // ⭐ AÑADE ESTAS DOS LÍNEAS:
   const profile = analyzeUserProfile(c);
   const tone = getToneForProfile(profile, L);

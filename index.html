@@ -1032,7 +1032,7 @@ const initMap=()=>{
   MUNI_NAMES.forEach(name=>{
     const relId=OSM_IDS[name];
     const url=`https://nominatim.openstreetmap.org/lookup?osm_type=R&osm_ids=R${relId}&format=geojson&polygon_geojson=1`;
-    fetch(url,{headers:{"Accept-Language":"es","User-Agent":"HousingAdvisor/1.0"}})
+    fetch(url,{headers:{"Accept-Language":"es"}})
       .then(r=>r.json())
       .then(data=>{
         if(!data.features||!data.features.length)throw new Error("no features");
@@ -1063,8 +1063,6 @@ const initMap=()=>{
         onDone();
       })
       .catch(()=>{
-        // Fallback: polígono de respaldo si falla la carga
-        const fb=FALLBACK_POLYGONS[name];
         if(fb){
           const on=zoneSel.has(name);
           const style={fillColor:on?"#38bdf8":"#4ade80",fillOpacity:on?.35:.10,
@@ -1168,7 +1166,7 @@ const refreshExamplesUI=()=>{
   let chatHistory = [];
   let isAIProcessing = false;
 
-  const CHAT_STATE_KEY = "ah_chat_state_v3";
+  const s = localStorage.getItem(CHAT_KEY);
 
   const loadChatState = () => {
     try {
@@ -1207,7 +1205,7 @@ const refreshExamplesUI=()=>{
   /* ============================
      SECTION 2 — PERSISTENCE
      ============================ */
-  const loadChatHistory = () => {
+  localStorage.setItem(CHAT_KEY, JSON.stringify(chatHistory));
     try {
       const s = localStorage.getItem(window.CHAT_KEY);
       if (s) {
@@ -1737,642 +1735,183 @@ const refreshExamplesUI=()=>{
   window.initChatUI = initChatUI;
 
 })();
-
-
-/* ============================
-   SECTION 10 — ANSWER FORMATTER
-   ============================ */
-
-const formatAnswer = (L, title, bullets, next) => {
-  const head = title ? `✅ ${title}\n` : "";
-  const body = (bullets && bullets.length) ? bullets.map(b => `• ${b}`).join("\n") : "";
-  const tail = next ? `\n\n👉 ${tr(L,"Siguiente paso: ","Següent pas: ","Next step: ")}${next}` : "";
-  return head + body + tail;
-};
-
-/* ============================
-   SECTION 11 — FOLLOW-UP QUESTIONS
-   ============================ */
-
-const buildFollowUp = (topic, slots, ctx, L) => {
-  const qs = [];
-  const add = (q) => { if (q && qs.length < 2) qs.push(q); };
-
-  if (topic === "towns") {
-    add(tr(L,
-      "¿Prefieres costa (playa) o interior (más barato y tranquilo)?",
-      "Prefereixes costa (platja) o interior (més barat i tranquil)?",
-      "Do you prefer coast (beach) or inland (cheaper and quieter)?"
-    ));
-    add(tr(L,
-      "¿Prioridad: precio, servicios o conexión con Barcelona?",
-      "Prioritat: preu, serveis o connexió amb Barcelona?",
-      "Priority: price, services, or Barcelona commute?"
-    ));
-  }
-
-  if (topic === "buyrent") {
-    add(tr(L,
-      "¿Te quedarías 5+ años en esa vivienda?",
-      "T'hi quedaries 5+ anys?",
-      "Would you stay 5+ years?"
-    ));
-    add(tr(L,
-      "¿Buscas estabilidad o flexibilidad ahora mismo?",
-      "Busques estabilitat o flexibilitat ara mateix?",
-      "Do you want stability or flexibility right now?"
-    ));
-  }
-
-  if (topic === "mortgage" || topic === "rates" || topic === "whatif") {
-    add(tr(L,
-      "¿Prefieres tipo fijo, variable o mixto?",
-      "Prefereixes tipus fix, variable o mixt?",
-      "Do you prefer fixed, variable, or mixed?"
-    ));
-    add(tr(L,
-      "¿Plazo objetivo: 25, 30 o 35 años?",
-      "Termini objectiu: 25, 30 o 35 anys?",
-      "Target term: 25, 30 or 35 years?"
-    ));
-  }
-
-  if (topic === "savings") {
-    add(tr(L,
-      "¿Cuánto puedes ahorrar al mes de forma realista?",
-      "Quant pots estalviar al mes de forma realista?",
-      "How much can you realistically save per month?"
-    ));
-    add(tr(L,
-      "¿Quieres priorizar ahorrar entrada o mejorar ingresos primero?",
-      "Vols prioritzar estalviar entrada o millorar ingressos primer?",
-      "Do you want to prioritize down payment saving or increasing income first?"
-    ));
-  }
-
-  if (topic === "general") {
-    add(tr(L,
-      "¿Lo enfocamos en cuota, entrada o en dónde comprar?",
-      "Ho enfoquem en quota, entrada o en on comprar?",
-      "Do we focus on payment, down payment, or where to buy?"
-    ));
-  }
-
-  return qs.length ? ("\n\n" + qs.map(q => "• " + q).join("\n")) : "";
-};
-
-/* ============================
-   SECTION 12 — OPTIONAL: PROFILE RECAP
-   ============================ */
-
-const maybeProfileRecap = (ctx, L) => {
-  // Every 6 turns, give a tiny recap (only if ctx exists)
-  if (!ctx) return "";
-  if ((chatState.turn % 6) !== 0) return "";
-  return "\n\n" + tr(L,
-    `📌 Resumen rápido: ingresos ${_fm(ctx.inc)}/mes · ahorros ${_fm(ctx.sav)} · falta para compra ${_fm(ctx.missing)} · esfuerzo hipoteca ${_fp(ctx.ratio)}.`,
-    `📌 Resum ràpid: ingressos ${_fm(ctx.inc)}/mes · estalvis ${_fm(ctx.sav)} · falta per comprar ${_fm(ctx.missing)} · esforç hipoteca ${_fp(ctx.ratio)}.`,
-    `📌 Quick recap: income ${_fm(ctx.inc)}/mo · savings ${_fm(ctx.sav)} · missing for buying ${_fm(ctx.missing)} · mortgage effort ${_fp(ctx.ratio)}.`
-  );
-};
-
-/* ============================
-   SECTION 13 — MAIN REPLY ENGINE
-   ============================ */
-
-const buildReply = (intent, msg) => {
-  const ctx = getUserContext();
-  const L = getLang(msg);
-  const m = normText(msg);
-
-  const profile = analyzeUserProfile(ctx);
-  const tone = getToneForProfile(profile, L);
-
-  // Slots
-  const slots = extractSlots(msg, ctx, L);
-
-  // Update global memory
-  chatState.turn++;
-  chatState.lastUserText = msg;
-
-  if (slots.preference) chatState.prefs.area = slots.preference;
-  if (slots.priority) chatState.prefs.priority = slots.priority;
-  if (slots.style) chatState.prefs.style = slots.style;
-
-  // Intent scoring + confidence gate
-  const scored = scoreIntent(m);
-  let effIntent = scored.intent;
-
-  // Rescue topic if user is vague
-  if (slots.vague && chatState.topic) effIntent = chatState.topic;
-
-  // Force towns if user asks where
-  if (slots.askWhere) effIntent = "towns";
-
-  // Low confidence gate (avoid nonsense answers)
-  const lowConf = (scored.score < 3) && !slots.vague && !slots.askWhere;
-  if (lowConf) {
-    const opts = [
-      tr(L,"Comprar vs alquilar","Comprar vs llogar","Buy vs rent"),
-      tr(L,"Cuota / hipoteca","Quota / hipoteca","Payment / mortgage"),
-      tr(L,"Entrada y gastos","Entrada i despeses","Down payment & costs"),
-      tr(L,"Dónde buscar (municipios)","On buscar (municipis)","Where to look (towns)")
-    ];
-    chatState.topic = "general";
-    chatState.lastIntent = effIntent;
-    chatState.lastSlots = {...chatState.lastSlots, ...slots};
-    saveChatState(chatState);
-
-    return tr(L,
-      "Te he entendido a medias. Elige qué quieres mirar:\n• " + opts.join("\n• "),
-      "T'he entès a mitges. Tria què vols mirar:\n• " + opts.join("\n• "),
-      "I only partially got that. Pick what you want:\n• " + opts.join("\n• ")
-    );
-  }
-
-  // If no analysis yet
-  if (!ctx) {
-    chatState.topic = "summary";
-    chatState.lastIntent = "summary";
-    chatState.lastSlots = {...chatState.lastSlots, ...slots};
-    saveChatState(chatState);
-    return tr(L,
-      "Para ayudarte bien necesito que completes el análisis (pasos 1-3) y pulses Analizar. Luego dime: ¿quieres comparar comprar vs alquilar o quieres saber en qué municipio buscar?",
-      "Per ajudar-te bé necessito que completis l'anàlisi (passos 1-3) i premis Analitzar. Després digues: vols comparar comprar vs llogar o vols saber en quin municipi buscar?",
-      "To help properly, complete the analysis (steps 1–3) and click Analyze. Then tell me: buy vs rent, or where to search?"
-    );
-  }
-
-  // Save topic if not vague
-  if (!slots.vague && effIntent !== "general") chatState.topic = effIntent;
-  chatState.lastIntent = effIntent;
-  chatState.lastSlots = {...chatState.lastSlots, ...slots};
-  saveChatState(chatState);
-
-  const recap = maybeProfileRecap(ctx, L);
-
-  /* ======== INTENT HANDLERS ======== */
-
-  if (effIntent === "greet") {
-    const bullets = [
-      tr(L, `Hola ${ctx.nm}. ${tone}.`, `Hola ${ctx.nm}. ${tone}.`, `Hi ${ctx.nm}. ${tone}.`),
-      tr(L, "Puedo ayudarte con: municipios, comprar vs alquilar, cuota, entrada, tipos, escenarios.",
-             "Et puc ajudar amb: municipis, comprar vs llogar, quota, entrada, tipus, escenaris.",
-             "I can help with: towns, buy vs rent, payment, down payment, rates, scenarios."),
-    ];
-    return formatAnswer(L, tr(L,"AI Financial Advisor","AI Financial Advisor","AI Financial Advisor"), bullets,
-      tr(L,"¿Qué quieres mirar primero?","Què vols mirar primer?","What do you want first?")
-    ) + recap;
-  }
-
-  if (effIntent === "thanks") {
-    return tr(L,
-      `De nada, ${ctx.nm}. Si quieres, dime: “dónde comprar”, “comprar vs alquilar” o “cuota”.`,
-      `De res, ${ctx.nm}. Si vols, digues: “on comprar”, “comprar vs llogar” o “quota”.`,
-      `You're welcome, ${ctx.nm}. Tell me: “where to buy”, “buy vs rent”, or “payment”.`
-    ) + recap;
-  }
-
-  if (effIntent === "towns") {
-    const area = chatState.prefs.area || null;
-    const prio = chatState.prefs.priority || null;
-
-    const bullets = [];
-    // Main suggestion
-    if (area === "coast") {
-      bullets.push(tr(L,
-        "Costa: Calafell, Cunit y El Vendrell (zona playa). Más servicios y tren, más caro.",
-        "Costa: Calafell, Cunit i El Vendrell (zona platja). Més serveis i tren, més car.",
-        "Coast: Calafell, Cunit, El Vendrell (beach area). More services/train, pricier."
-      ));
-    } else if (area === "inland") {
-      bullets.push(tr(L,
-        "Interior: Bonastre, Masllorenç, El Montmell. Mejor €/m² y más tranquilidad.",
-        "Interior: Bonastre, Masllorenç, El Montmell. Millor €/m² i més tranquil·litat.",
-        "Inland: Bonastre, Masllorenç, El Montmell. Better €/m² and quieter."
-      ));
-    } else if (area === "commute_bcn") {
-      bullets.push(tr(L,
-        "Conexión BCN: prioriza estaciones y enlaces (El Vendrell / Calafell / Cunit).",
-        "Connexió BCN: prioritza estacions i connexió (El Vendrell / Calafell / Cunit).",
-        "Barcelona commute: prioritize train-linked towns (El Vendrell / Calafell / Cunit)."
-      ));
-    } else {
-      bullets.push(tr(L,
-        "Para afinarlo necesito tu preferencia: costa o interior.",
-        "Per afinar-ho necessito la teva preferència: costa o interior.",
-        "To tailor it I need your preference: coast or inland."
-      ));
-    }
-
-    // Financial adjustment
-    if (ctx.need) {
-      bullets.push(tr(L,
-        `Vas corto de entrada: te faltan ${_fm(ctx.missing)}. Mirar interior suele acelerar el objetivo.`,
-        `Vas curt d'entrada: et falten ${_fm(ctx.missing)}. Mirar interior accelera l'objectiu.`,
-        `You're short ${_fm(ctx.missing)} for down payment. Inland often speeds your goal.`
-      ));
-    } else {
-      bullets.push(tr(L,
-        "Como cubres entrada+gastos, puedes priorizar calidad y ubicación.",
-        "Com que cobreixes entrada+despeses, pots prioritzar qualitat i ubicació.",
-        "Since you cover costs, you can prioritize quality and location."
-      ));
-    }
-
-    // Priority hint
-    if (prio === "price") bullets.push(tr(L,"Si prima el precio: interior y pueblos con más €/m² bajo.","Si prima el preu: interior i pobles més barats.","If price-first: inland & cheaper towns."));
-    if (prio === "services") bullets.push(tr(L,"Si priman servicios: El Vendrell y zonas con comercio/colegios.","Si primen serveis: El Vendrell i zones amb comerç/escoles.","If services-first: El Vendrell and service hubs."));
-    if (prio === "commute") bullets.push(tr(L,"Si prima BCN: tren y frecuencia mandan.","Si prima BCN: tren i freqüència manen.","If commute-first: train frequency matters."));
-
-    const next =
-      (!area) ? tr(L,"¿Costa o interior?","Costa o interior?","Coast or inland?")
-      : (!prio) ? tr(L,"¿Prioridad: precio, servicios o BCN?","Prioritat: preu, serveis o BCN?","Priority: price, services, or BCN?")
-      : tr(L,"Dime tu prioridad exacta y te doy 3 municipios top con pros/contras.","Digues la prioritat exacta i et dono 3 municipis top amb pros/contres.","Tell me your exact priority and I’ll give 3 top towns with pros/cons.");
-
-    return formatAnswer(L, tr(L,"Dónde buscar (Baix Penedès)","On buscar (Baix Penedès)","Where to look (Baix Penedès)"), bullets, next) + recap;
-  }
-
-  if (effIntent === "buyrent") {
-    const buyOk = (!ctx.need && ctx.ratio <= 35 && ctx.hor);
-    const bullets = [];
-
-    if (buyOk) {
-      bullets.push(tr(L,
-        `Comprar encaja: tienes cash suficiente (${_fm(ctx.sav)} vs ${_fm(ctx.needCash)}) y cuota ${_fm(ctx.pay)} = ${_fp(ctx.ratio)}.`,
-        `Comprar encaixa: tens cash suficient (${_fm(ctx.sav)} vs ${_fm(ctx.needCash)}) i quota ${_fm(ctx.pay)} = ${_fp(ctx.ratio)}.`,
-        `Buying fits: enough cash (${_fm(ctx.sav)} vs ${_fm(ctx.needCash)}) and payment ${_fm(ctx.pay)} = ${_fp(ctx.ratio)}.`
-      ));
-      bullets.push(tr(L,"Si te quedas 5+ años, los costes de compra se amortizan mejor.",
-                       "Si t'hi quedes 5+ anys, els costos de compra s'amortitzen millor.",
-                       "If you stay 5+ years, purchase costs amortize better."));
-    } else if (ctx.need) {
-      bullets.push(tr(L,
-        `Ahora mismo alquilar es prudente: te faltan ${_fm(ctx.missing)} para entrada+gastos.`,
-        `Ara mateix llogar és prudent: et falten ${_fm(ctx.missing)} per entrada+despeses.`,
-        `Right now renting is prudent: you're short ${_fm(ctx.missing)} for down payment+costs.`
-      ));
-      bullets.push(tr(L,
-        `Con ahorro mensual ${_fm(ctx.msv)}, objetivo en ~${ctx.mosToGoal} meses.`,
-        `Amb estalvi mensual ${_fm(ctx.msv)}, objectiu en ~${ctx.mosToGoal} mesos.`,
-        `With monthly saving ${_fm(ctx.msv)}, goal in ~${ctx.mosToGoal} months.`
-      ));
-    } else {
-      bullets.push(tr(L,
-        `Comprar está ajustado: cuota ${_fm(ctx.pay)} es ${_fp(ctx.ratio)} (>35%).`,
-        `Comprar és ajustat: quota ${_fm(ctx.pay)} és ${_fp(ctx.ratio)} (>35%).`,
-        `Buying is tight: payment ${_fm(ctx.pay)} is ${_fp(ctx.ratio)} (>35%).`
-      ));
-      bullets.push(tr(L,
-        "Soluciones típicas: bajar precio, aumentar entrada o alargar plazo (con cuidado).",
-        "Solucions típiques: baixar preu, augmentar entrada o allargar termini (amb cura).",
-        "Typical fixes: lower price, increase down payment, or extend term (carefully)."
-      ));
-    }
-
-    const next = tr(L,
-      "¿Quieres que lo enfoquemos en dónde buscar (municipios) o en ajustar cuota/entrada?",
-      "Vols enfocar-ho en on buscar (municipis) o en ajustar quota/entrada?",
-      "Do you want to focus on towns, or on adjusting payment/down payment?"
-    );
-
-    return formatAnswer(L, tr(L,"Comprar vs Alquilar","Comprar vs Llogar","Buy vs Rent"), bullets, next) + recap;
-  }
-
-  if (effIntent === "whatif" || effIntent === "rates" || effIntent === "mortgage") {
-    const bullets = [];
-    let did = false;
-
-    // Rate delta scenario
-    if (slots.pct != null && (m.includes("tipo") || m.includes("euribor") || m.includes("interes") || m.includes("rate"))) {
-      const delta = slots.pct / 100;
-      const nr = Math.max(0, ctx.rate + delta);
-      const np = mort(ctx.cap, nr, ctx.yrs);
-      bullets.push(tr(L,
-        `Tipo ${_fp(ctx.rate*100)} → ${_fp(nr*100)} | cuota ${_fm(ctx.pay)} → ${_fm(np)} (${np>ctx.pay?"+":"-"}${_fm(Math.abs(np-ctx.pay))}/mes)`,
-        `Tipus ${_fp(ctx.rate*100)} → ${_fp(nr*100)} | quota ${_fm(ctx.pay)} → ${_fm(np)} (${np>ctx.pay?"+":"-"}${_fm(Math.abs(np-ctx.pay))}/mes)`,
-        `Rate ${_fp(ctx.rate*100)} → ${_fp(nr*100)} | payment ${_fm(ctx.pay)} → ${_fm(np)} (${np>ctx.pay?"+":"-"}${_fm(Math.abs(np-ctx.pay))}/mo)`
-      ));
-      did = true;
-    }
-
-    // Term scenario
-    if (slots.years != null) {
-      const np = mort(ctx.cap, ctx.rate, slots.years);
-      bullets.push(tr(L,
-        `Plazo ${ctx.yrs} → ${slots.years} años | cuota ${_fm(ctx.pay)} → ${_fm(np)} (${np>ctx.pay?"+":"-"}${_fm(Math.abs(np-ctx.pay))}/mes)`,
-        `Termini ${ctx.yrs} → ${slots.years} anys | quota ${_fm(ctx.pay)} → ${_fm(np)} (${np>ctx.pay?"+":"-"}${_fm(Math.abs(np-ctx.pay))}/mes)`,
-        `Term ${ctx.yrs} → ${slots.years} years | payment ${_fm(ctx.pay)} → ${_fm(np)} (${np>ctx.pay?"+":"-"}${_fm(Math.abs(np-ctx.pay))}/mo)`
-      ));
-      did = true;
-    }
-
-    // Saving scenario
-    if (slots.saveMo != null) {
-      const missing = Math.max(0, ctx.needCash - ctx.sav);
-      const mos = slots.saveMo > 0 ? Math.ceil(missing / slots.saveMo) : null;
-      bullets.push(tr(L,
-        `Ahorro ${_fm(ctx.msv)} → ${_fm(slots.saveMo)} | faltan ${_fm(missing)} | objetivo en ${mos?`~${mos} meses`:"no calculable"}`,
-        `Estalvi ${_fm(ctx.msv)} → ${_fm(slots.saveMo)} | falten ${_fm(missing)} | objectiu en ${mos?`~${mos} mesos`:"no calculable"}`,
-        `Saving ${_fm(ctx.msv)} → ${_fm(slots.saveMo)} | missing ${_fm(missing)} | goal in ${mos?`~${mos} months`:"not calculable"}`
-      ));
-      did = true;
-    }
-
-    if (!did) {
-      const next = tr(L,
-        "Escríbeme un escenario: “si sube el tipo +1%”, “a 30 años”, o “si ahorro 300€/mes”.",
-        "Escriu un escenari: “si puja el tipus +1%”, “a 30 anys”, o “si estalvio 300€/mes”.",
-        "Write a scenario: “rate +1%”, “30 years”, or “save 300€/mo”."
-      );
-      return formatAnswer(L, tr(L,"Escenarios (What-if)","Escenaris (What-if)","What-if Scenarios"), [
-        tr(L,"Puedo calcular impactos con tus números actuales.","Puc calcular impactes amb les teves dades.","I can calculate impacts using your current numbers.")
-      ], next) + recap;
-    }
-
-    const next = tr(L,
-      "¿Quieres verlo con tipo fijo, variable o mixto?",
-      "Ho vols veure amb tipus fix, variable o mixt?",
-      "Do you want fixed, variable or mixed?"
-    );
-
-    return formatAnswer(L, tr(L,"Escenarios (What-if)","Escenaris (What-if)","What-if Scenarios"), bullets, next) + recap;
-  }
-
-  if (effIntent === "summary") {
-    const bullets = [
-      `${ctx.muni} · ${ctx.m2}m² · ${ctx.type}`,
-      tr(L, `Precio estimado: ${_fm(ctx.pb)} (${ctx["€/m2"]} €/m²)`, `Preu estimat: ${_fm(ctx.pb)} (${ctx["€/m2"]} €/m²)`, `Estimated price: ${_fm(ctx.pb)} (${ctx["€/m2"]} €/m²)`),
-      tr(L, `Cuota: ${_fm(ctx.pay)} (${_fp(ctx.ratio)} de ingresos)`, `Quota: ${_fm(ctx.pay)} (${_fp(ctx.ratio)} d'ingressos)`, `Payment: ${_fm(ctx.pay)} (${_fp(ctx.ratio)} of income)`),
-      tr(L, `Alquiler: ${_fm(ctx.pr)} (${_fp(ctx.rri)} de ingresos)`, `Lloguer: ${_fm(ctx.pr)} (${_fp(ctx.rri)} d'ingressos)`, `Rent: ${_fm(ctx.pr)} (${_fp(ctx.rri)} of income)`),
-      tr(L, `Recomendación: ${ctx.rec}`, `Recomanació: ${ctx.rec}`, `Recommendation: ${ctx.rec}`)
-    ];
-    return formatAnswer(L, tr(L,"Resumen de tu análisis","Resum de la teva anàlisi","Your analysis summary"), bullets,
-      tr(L,"¿Quieres que vayamos a “dónde buscar” o a “comprar vs alquilar”?",
-           "Vols que anem a “on buscar” o a “comprar vs llogar”?",
-           "Do you want “where to look” or “buy vs rent”?")
-    ) + recap;
-  }
-
-  // Handle vague follow-ups: keep conversation alive
-  if (slots.vague) {
-    const topic = chatState.topic || "general";
-    const follow = buildFollowUp(topic, slots, ctx, L);
-    return tr(L,
-      `Te sigo. Estamos con “${topic}”. Dime qué parte quieres concretar.` + follow,
-      `Et segueixo. Estem amb “${topic}”. Digues quina part vols concretar.` + follow,
-      `Got it. We’re on “${topic}”. Tell me what to narrow down.` + follow
-    ) + recap;
-  }
-
-  // Default fallback
-  const follow = buildFollowUp(chatState.topic || "general", slots, ctx, L);
-  return tr(L,
-    "Entiendo tu mensaje, pero necesito concretar 1 cosa para responder bien." + follow,
-    "T'entenc, però necessito concretar 1 cosa per respondre bé." + follow,
-    "I get it, but I need 1 detail to answer well." + follow
-  ) + recap;
-};
-
-/* ============================
-   SECTION 14 — UI HELPERS
-   ============================ */
-
-const addMsg = (role, content) => {
-  const mc = (typeof Q === "function") ? Q("#chatMessages") : document.querySelector("#chatMessages");
-  if (!mc) return;
-
-  const normRole = (role === "assistant" ? "ai" : role);
-
-  const d = document.createElement("div");
-  d.className = `chat-message ${normRole}`;
-
-  const av = document.createElement("div");
-  av.className = `chat-avatar ${normRole}`;
-  av.textContent = (normRole === "user") ? ((typeof t === "function" ? t("aiYou") : null) || "TÚ") : "AI";
-
-  const bub = document.createElement("div");
-  bub.className = "chat-bubble";
-  renderSafeMultiline(bub, content);
-
-  if (normRole === "user") { d.appendChild(bub); d.appendChild(av); }
-  else { d.appendChild(av); d.appendChild(bub); }
-
-  mc.appendChild(d);
-  mc.scrollTop = mc.scrollHeight;
-};
-
-const addThinking = () => {
-  const mc = (typeof Q === "function") ? Q("#chatMessages") : document.querySelector("#chatMessages");
-  if (!mc) return;
-
-  const d = document.createElement("div");
-  d.className = "chat-message ai";
-  d.id = "thinking-indicator";
-
-  const av = document.createElement("div");
-  av.className = "chat-avatar ai";
-  av.textContent = "AI";
-
-  const bub = document.createElement("div");
-  bub.className = "chat-bubble thinking";
-  bub.textContent = (typeof t === "function" ? t("aiThinking") : null) || "Analizando...";
-
-  d.appendChild(av);
-  d.appendChild(bub);
-  mc.appendChild(d);
-  mc.scrollTop = mc.scrollHeight;
-};
-
-const removeThinking = () => {
-  const thinking = (typeof Q === "function") ? Q("#thinking-indicator") : document.querySelector("#thinking-indicator");
-  if (thinking) thinking.remove();
-};
-
-/* ============================
-   SECTION 15 — SEND / TYPING ENGINE
-   ============================ */
-
-const sendToAI = async (msg) => {
-  if (isAIProcessing) return;
-  isAIProcessing = true;
-
-  const btnEl = (typeof Q === "function") ? Q("#chatSend") : document.querySelector("#chatSend");
-  const inpEl = (typeof Q === "function") ? Q("#chatInput") : document.querySelector("#chatInput");
-
-  if (btnEl) btnEl.disabled = true;
-  if (inpEl) { inpEl.disabled = true; inpEl.value = ""; }
-
-  addMsg("user", msg);
-  chatHistory.push({ role: "user", content: msg });
-
-  addThinking();
-  const delay = 450 + Math.random() * 650;
-  await new Promise(r => setTimeout(r, delay));
-  removeThinking();
-
-  const intent = detectIntent(msg);
-  const reply = buildReply(intent, msg);
-
-  chatHistory.push({ role: "assistant", content: reply });
-  saveChatHistory();
-
-  // typing effect
-  const mc = (typeof Q === "function") ? Q("#chatMessages") : document.querySelector("#chatMessages");
-
-  const d = document.createElement("div");
-  d.className = "chat-message ai";
-
-  const av = document.createElement("div");
-  av.className = "chat-avatar ai";
-  av.textContent = "AI";
-
-  const bub = document.createElement("div");
-  bub.className = "chat-bubble";
-
-  d.appendChild(av); d.appendChild(bub);
-  if (mc) mc.appendChild(d);
-
-  const clean = stripMd(reply);
-  let pos = 0;
-
-  const unlock = () => {
-    isAIProcessing = false;
-    const b = (typeof Q === "function") ? Q("#chatSend") : document.querySelector("#chatSend");
-    const i = (typeof Q === "function") ? Q("#chatInput") : document.querySelector("#chatInput");
-    if (b) b.disabled = false;
-    if (i) { i.disabled = false; i.style.height = "auto"; i.focus(); }
-  };
-
-  const iv = setInterval(() => {
-    pos++;
-    renderSafeMultiline(bub, clean.substring(0, pos));
-    if (mc) mc.scrollTop = mc.scrollHeight;
-    if (pos >= clean.length) { clearInterval(iv); unlock(); }
-  }, 14);
-
-  // Save assistant text in memory
-  chatState.lastAssistantText = reply;
-  saveChatState(chatState);
-};
-
-/* ============================
-   SECTION 16 — HISTORY RENDER
-   ============================ */
-
-const renderChatHistory = () => {
-  const remove = (typeof QA === "function") ? QA(".chat-message:not(#welcome-message)") : document.querySelectorAll(".chat-message:not(#welcome-message)");
-  remove.forEach(el => el.remove());
-
-  chatHistory.forEach(m => {
-    const r = (m.role === "assistant") ? "ai" : m.role;
-    addMsg(r, m.content);
-  });
-};
-
-/* ============================
-   SECTION 17 — INIT UI
-   ============================ */
-
-const initChatUI = () => {
-  if (typeof applyI18n === "function") applyI18n();
-  loadChatHistory();
-
-  const btn = (typeof Q === "function") ? Q("#chatSend") : document.querySelector("#chatSend");
-  const inp = (typeof Q === "function") ? Q("#chatInput") : document.querySelector("#chatInput");
-
-  if (btn && !btn.dataset.init) {
-    btn.dataset.init = "1";
-    btn.onclick = () => {
-      const m = inp?.value?.trim();
-      if (m) sendToAI(m);
-    };
-  }
-
-  if (inp && !inp.dataset.init) {
-    inp.dataset.init = "1";
-    inp.addEventListener("keypress", e => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        const m = inp.value.trim();
-        if (m) sendToAI(m);
-      }
-    });
-    inp.addEventListener("input", () => {
-      inp.style.height = "auto";
-      inp.style.height = Math.min(inp.scrollHeight, 120) + "px";
-    });
-  }
-
-  // rebind suggestion chips
-  const chips = (typeof QA === "function") ? QA(".suggestion-chip") : document.querySelectorAll(".suggestion-chip");
-  chips.forEach(ch => ch.replaceWith(ch.cloneNode(true)));
-  const chips2 = (typeof QA === "function") ? QA(".suggestion-chip") : document.querySelectorAll(".suggestion-chip");
-  chips2.forEach(ch => {
-    ch.addEventListener("click", () => {
-      const q = ch.getAttribute("data-q");
-      if (q && !isAIProcessing) sendToAI(q);
-    });
-  });
-};
-
 /* ============================
    VALIDACIÓN LIVE
    ============================ */
-const liveValidate=()=>{
-  const setHint=(id,msg,ok)=>{const el=Q("#hint-"+id);if(!el)return;el.textContent=msg||"";el.className="field-hint "+(msg?(ok?"ok":"err"):"");Q("#"+id)?.classList.toggle("field-ok",!!ok&&!!msg);Q("#"+id)?.classList.toggle("field-err",!ok&&!!msg);};
-  const inc=+Q("#inc")?.value||0;if(inc>0&&inc<500)setHint("inc",LANG==="EN"?"Very low income":"Ingresos muy bajos, ¿es neto?",false);else if(inc>0)setHint("inc","✓",true);else setHint("inc","","");
-  const sav=+Q("#sav")?.value||0;if(sav>0&&sav<5000)setHint("sav",LANG==="EN"?"Very low savings":"Ahorros muy bajos",false);else if(sav>0)setHint("sav","✓",true);else setHint("sav","","");
-  const m2=+Q("#m2")?.value||0;if(m2>0&&m2<50)setHint("m2",LANG==="EN"?"Minimum 50 m²":"Mínimo 50 m²",false);else if(m2>=50)setHint("m2","✓",true);else setHint("m2","","");
+const liveValidate = () => {
+  if (typeof Q !== "function") return;
+
+  const setHint = (id, msg, ok) => {
+    const el = Q("#hint-" + id);
+    if (!el) return;
+    el.textContent = msg || "";
+    el.className = "field-hint " + (msg ? (ok ? "ok" : "err") : "");
+    const f = Q("#" + id);
+    if (f) {
+      f.classList.toggle("field-ok", !!ok && !!msg);
+      f.classList.toggle("field-err", !ok && !!msg);
+    }
+  };
+
+  const inc = +Q("#inc")?.value || 0;
+  if (inc > 0 && inc < 500) setHint("inc", (LANG === "EN" ? "Very low income" : "Ingresos muy bajos, ¿es neto?"), false);
+  else if (inc > 0) setHint("inc", "✓", true);
+  else setHint("inc", "", false);
+
+  const sav = +Q("#sav")?.value || 0;
+  if (sav > 0 && sav < 5000) setHint("sav", (LANG === "EN" ? "Very low savings" : "Ahorros muy bajos"), false);
+  else if (sav > 0) setHint("sav", "✓", true);
+  else setHint("sav", "", false);
+
+  const m2 = +Q("#m2")?.value || 0;
+  if (m2 > 0 && m2 < 50) setHint("m2", (LANG === "EN" ? "Minimum 50 m²" : "Mínimo 50 m²"), false);
+  else if (m2 >= 50) setHint("m2", "✓", true);
+  else setHint("m2", "", false);
 };
 
 /* ============================
-   EVENTOS
+   EVENTOS (con guardas)
    ============================ */
-Q("#np").onclick=()=>{const nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0;if(!nm||ag<18||ag>100){toast(t("toastCheck"));return;}saveForm();show("e");};
-Q("#ne").onclick=()=>{saveForm();show("f");};
-Q("#go").onclick=analyze;
-Q("#cp").onclick=()=>{if(!last){toast(t("toastFirst"));return;}navigator.clipboard?.writeText(Q("#rt").textContent||"").then(()=>toast(t("toastCopied"))).catch(()=>{const ta=document.createElement("textarea");ta.value=Q("#rt").textContent||"";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast(t("toastCopied"));});};
-Q("#rs").onclick=()=>{if(confirm(LANG==="EN"?"Reset everything?":"¿Reiniciar todo?")){localStorage.clear();location.reload();}};
-Q("#jumpX").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("x");};
-Q("#jumpAI").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("ai");};
-Q("#shareWa").onclick=()=>{if(!last){toast(t("toastFirst"));return;}window.open("https://wa.me/?text="+encodeURIComponent(Q("#rt").textContent||""),"_blank","noopener");};
-Q("#shareCl").onclick=()=>Q("#cp").click();
-
-Q("#t_p").onclick=()=>show("p");
-Q("#t_e").onclick=()=>show("e");
-Q("#t_f").onclick=()=>show("f");
-Q("#t_r").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("r");};
-Q("#t_m").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("m");};
-Q("#t_x").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("x");};
-Q("#t_ai").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("ai");};
-
-Q("#toggleMap").onclick=()=>{const box=Q("#zoneWrap"),open=box.style.display!=="none";box.style.display=open?"none":"block";if(!open){initMap();setTimeout(()=>{zmap?.invalidateSize();box.scrollIntoView({behavior:"smooth",block:"nearest"});},250);}};;
-Q("#zoneClear").onclick=()=>{zoneSel.clear();polygonsByName.forEach((_,n)=>applyPolygonState(n));renderZoneUI();saveZoneSel();toast(t("toastZoneCleared"));};
-Q("#zoneApply").onclick=()=>{
-  if(!zoneSel.size){toast(t("toastNoZone"));return;}
-  const pm=Q("#ar").querySelector('[value="__multi__"]');if(pm)pm.remove();
-  if(zoneSel.size===1){Q("#ar").value=[...zoneSel][0];}
-  else{const mo=document.createElement("option");mo.value="__multi__";mo.textContent=[...zoneSel].join(", ");Q("#ar").insertBefore(mo,Q("#ar").options[1]);Q("#ar").value="__multi__";}
-  saveZoneSel();saveForm();toast(t("toastZoneApplied"));
+const on = (sel, ev, fn) => {
+  if (typeof Q !== "function") return;
+  const el = Q(sel);
+  if (el) el.addEventListener(ev, fn);
 };
-Q("#bc").onclick=compare;
-Q("#autoFillCmp").onclick=fillFromLast;
-Q("#cm").onchange=upMap;
-Q("#L_CA").onclick=()=>setLang("CA");
-Q("#L_ES").onclick=()=>setLang("ES");
-Q("#L_EN").onclick=()=>setLang("EN");
-["inc","sav","m2"].forEach(id=>Q("#"+id)?.addEventListener("input",liveValidate));
-["#nm","#ag","#inc","#sav","#yrs","#msv","#m2","#bed","#bat"].forEach(id=>Q(id)?.addEventListener("change",saveForm));
+const click = (sel, fn) => {
+  if (typeof Q !== "function") return;
+  const el = Q(sel);
+  if (el) el.onclick = fn;
+};
+
+click("#np", () => {
+  const nm = (Q("#nm")?.value || "").trim();
+  const ag = +Q("#ag")?.value || 0;
+  if (!nm || ag < 18 || ag > 100) { toast(t("toastCheck")); return; }
+  saveForm(); show("e");
+});
+
+click("#ne", () => { saveForm(); show("f"); });
+click("#go", () => analyze && analyze());
+
+click("#cp", () => {
+  if (!window.last) { toast(t("toastFirst")); return; }
+  const txt = Q("#rt")?.textContent || "";
+  if (!txt) return;
+  navigator.clipboard?.writeText(txt)
+    .then(() => toast(t("toastCopied")))
+    .catch(() => {
+      const ta = document.createElement("textarea");
+      ta.value = txt;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toast(t("toastCopied"));
+    });
+});
+
+click("#rs", () => {
+  if (confirm(LANG === "EN" ? "Reset everything?" : "¿Reiniciar todo?")) {
+    localStorage.clear();
+    location.reload();
+  }
+});
+
+click("#jumpX", () => { if (!window.last) { toast(t("toastFirst")); return; } show("x"); });
+click("#jumpAI", () => { if (!window.last) { toast(t("toastFirst")); return; } show("ai"); });
+
+click("#shareWa", () => {
+  if (!window.last) { toast(t("toastFirst")); return; }
+  const txt = Q("#rt")?.textContent || "";
+  window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank", "noopener");
+});
+click("#shareCl", () => Q("#cp")?.click());
+
+click("#t_p", () => show("p"));
+click("#t_e", () => show("e"));
+click("#t_f", () => show("f"));
+click("#t_r", () => { if (!window.last) { toast(t("toastFirst")); return; } show("r"); });
+click("#t_m", () => { if (!window.last) { toast(t("toastFirst")); return; } show("m"); });
+click("#t_x", () => { if (!window.last) { toast(t("toastFirst")); return; } show("x"); });
+click("#t_ai", () => { if (!window.last) { toast(t("toastFirst")); return; } show("ai"); });
+
+click("#toggleMap", () => {
+  const box = Q("#zoneWrap");
+  if (!box) return;
+  const open = box.style.display !== "none";
+  box.style.display = open ? "none" : "block";
+  if (!open) {
+    initMap && initMap();
+    setTimeout(() => {
+      if (window.zmap && typeof window.zmap.invalidateSize === "function") window.zmap.invalidateSize();
+      box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 250);
+  }
+});
+
+click("#zoneClear", () => {
+  if (!window.zoneSel || !window.polygonsByName) return;
+  zoneSel.clear();
+  polygonsByName.forEach((_, n) => applyPolygonState && applyPolygonState(n));
+  renderZoneUI && renderZoneUI();
+  saveZoneSel && saveZoneSel();
+  toast(t("toastZoneCleared"));
+});
+
+click("#zoneApply", () => {
+  if (!window.zoneSel || !zoneSel.size) { toast(t("toastNoZone")); return; }
+  const ar = Q("#ar");
+  if (!ar) return;
+
+  const pm = ar.querySelector('[value="__multi__"]');
+  if (pm) pm.remove();
+
+  if (zoneSel.size === 1) {
+    ar.value = [...zoneSel][0];
+  } else {
+    const mo = document.createElement("option");
+    mo.value = "__multi__";
+    mo.textContent = [...zoneSel].join(", ");
+    ar.insertBefore(mo, ar.options[1] || null);
+    ar.value = "__multi__";
+  }
+  saveZoneSel && saveZoneSel();
+  saveForm && saveForm();
+  toast(t("toastZoneApplied"));
+});
+
+click("#bc", () => compare && compare());
+click("#autoFillCmp", () => fillFromLast && fillFromLast());
+on("#cm", "change", () => upMap && upMap());
+
+click("#L_CA", () => setLang && setLang("CA"));
+click("#L_ES", () => setLang && setLang("ES"));
+click("#L_EN", () => setLang && setLang("EN"));
+
+["inc", "sav", "m2"].forEach(id => on("#" + id, "input", liveValidate));
+["#nm", "#ag", "#inc", "#sav", "#yrs", "#msv", "#m2", "#bed", "#bat"].forEach(sel => on(sel, "change", () => saveForm && saveForm()));
 
 /* ============================
-   INIT
+   INIT (solo una vez, sin llaves raras)
    ============================ */
-loadZoneSel();loadForm();setLang(LANG);setTabsEnabled();liveValidate();show("p");
+(() => {
+  try {
+    loadZoneSel && loadZoneSel();
+    loadForm && loadForm();
+    setLang && setLang(LANG);
+    setTabsEnabled && setTabsEnabled();
+    liveValidate();
+    show && show("p");
 
-})();}
+    // Si tu chat engine expone initChatUI, inicialízalo aquí cuando toque
+    if (typeof window.initChatUI === "function") window.initChatUI();
 
-waitForLeaflet();
+    // Leaflet si aplica
+    if (typeof waitForLeaflet === "function") waitForLeaflet();
+  } catch (e) {
+    console.error("INIT error:", e);
+  }
+})();
 </script>
 </body>
 </html>

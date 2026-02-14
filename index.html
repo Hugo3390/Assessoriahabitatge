@@ -1098,153 +1098,193 @@ const addThinking=()=>{
 const removeThinking=()=>{const el=Q("#thinking-msg");if(el)el.remove();};
 
 // ===== AI DEMO REALISTA (sin API, sin pagar, sin claves) =====
-// Reemplaza el bloque DEMO IA anterior por este.
-// Objetivo: entender texto, extraer dinero/rangos, usar "last" si existe, memoria y respuestas coherentes.
-// Respeta tu regla: NO markdown, máximo ~130 palabras, emojis, frases cortas.
+// Pega este bloque donde estaba el "DEMO IA" anterior.
+// No redeclara isAIProcessing (ya existe arriba: let chatHistory=[],isAIProcessing=false;).
 
-let isAIProcessing = false;
+const AI_MEM_KEY = "hx_ai_mem_v1";
 
-// Memoria conversacional (persistente mientras la pestaña esté abierta)
-const AI_STATE = {
-  lang: "ES",
-  intent: null,           // "buy" | "rent" | "compare" | "advice"
-  municipality: null,
-  priceMax: null,
-  priceMin: null,
-  incomeMonthly: null,
-  savings: null,
-  currentRent: null,
-  years: null,
-  interestPct: null,      // % anual (ej 3.25)
-  lastAsked: null,
-  facts: []
-};
-
-const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
+// ---------- Helpers ----------
 const clamp = (n,a,b)=>Math.max(a,Math.min(b,n));
+const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
 
-function detectLangFromApp(msg){
-  // Usa tu LANG global si existe, sino heurística rápida
+function fmtEUR(n){
+  if(!Number.isFinite(n)) return "—";
+  // usa tu LANG si existe, si no es ES
   const L = (typeof LANG !== "undefined" ? LANG : "ES");
-  if (L === "CA" || L === "ES" || L === "EN") return L;
-  const s = (msg||"").toLowerCase();
+  const locale = (L==="EN") ? "en-US" : "es-ES";
+  return new Intl.NumberFormat(locale,{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n);
+}
+function fmtPct(n){
+  if(!Number.isFinite(n)) return "—";
+  return (Math.round(n*10)/10).toFixed(1)+"%";
+}
+function wordLimit(text, maxWords){
+  const w = String(text||"").split(/\s+/).filter(Boolean);
+  if(w.length<=maxWords) return text;
+  return w.slice(0,maxWords).join(" ")+"…";
+}
+
+function safeLangFromApp(msg){
+  // prioridad: LANG global de tu app
+  const L = (typeof LANG !== "undefined" ? LANG : "ES");
+  if(L==="ES"||L==="CA"||L==="EN") return L;
+
+  // fallback heurístico
+  const s=(msg||"").toLowerCase();
   if (s.includes("vull") || s.includes("lloguer") || /[àèéíïòóúüç]/.test(s)) return "CA";
   if (s.includes("i want") || s.includes("rent") || s.includes("buy")) return "EN";
   return "ES";
 }
 
-// --- Parseo de dinero ---
+// ---------- Estado IA (memoria) ----------
+function defaultAIState(){
+  return {
+    lang: "ES",
+    intent: null,           // buy | rent | compare | advice
+    municipality: null,     // string bonito
+    priceMax: null,
+    priceMin: null,
+    incomeMonthly: null,
+    savings: null,
+    currentRent: null,
+    years: null,
+    interestPct: null,      // ej 2.99
+    lastAsked: null,
+    facts: [],
+    lastUserMsgAt: 0
+  };
+}
+
+function loadAIState(){
+  try{
+    const raw = localStorage.getItem(AI_MEM_KEY);
+    if(!raw) return defaultAIState();
+    const s = JSON.parse(raw);
+    return { ...defaultAIState(), ...s };
+  }catch(e){
+    return defaultAIState();
+  }
+}
+function saveAIState(){
+  try{ localStorage.setItem(AI_MEM_KEY, JSON.stringify(AI_STATE)); }catch(e){}
+}
+
+let AI_STATE = loadAIState();
+
+// ---------- NLU: parseo dinero ----------
 function parseMoneyToken(token){
-  if (!token) return null;
+  if(!token) return null;
   let t = token.toLowerCase().trim().replace(/[€\s]/g,"");
 
-  const k = t.match(/^(\d+([.,]\d+)?)k$/i);
-  if (k) return Math.round(parseFloat(k[1].replace(",", ".")) * 1000);
+  // 300k / 0.3m
+  const km = t.match(/^(\d+([.,]\d+)?)k$/i);
+  if(km) return Math.round(parseFloat(km[1].replace(",", "."))*1000);
 
-  const m = t.match(/^(\d+([.,]\d+)?)m$/i);
-  if (m) return Math.round(parseFloat(m[1].replace(",", ".")) * 1000000);
+  const mm = t.match(/^(\d+([.,]\d+)?)m$/i);
+  if(mm) return Math.round(parseFloat(mm[1].replace(",", "."))*1000000);
 
-  if (t.includes(".") && t.includes(",")) {
+  // mixto 250.000,50
+  if(t.includes(".") && t.includes(",")){
     const norm = t.replace(/\./g,"").replace(",",".");
     const v = parseFloat(norm);
     return Number.isFinite(v) ? Math.round(v) : null;
   }
 
+  // 250.000 o 1.800 o 1800
   const sep = t.match(/^(\d+)([.,])(\d+)$/);
-  if (sep) {
+  if(sep){
     const after = sep[3];
-    if (after.length === 3) {
-      const v = parseInt(sep[1] + after, 10);
+    if(after.length===3){
+      const v = parseInt(sep[1]+after,10);
       return Number.isFinite(v) ? v : null;
+    }else{
+      const v = parseFloat(sep[1]+"."+after);
+      return Number.isFinite(v) ? Math.round(v) : null;
     }
-    const v = parseFloat(sep[1] + "." + after);
-    return Number.isFinite(v) ? Math.round(v) : null;
   }
 
-  if (/^\d+$/.test(t)) {
+  if(/^\d+$/.test(t)){
     const v = parseInt(t,10);
     return Number.isFinite(v) ? v : null;
   }
-
   return null;
 }
 
 function parseMoneyFromText(text){
-  const out = { min:null, max:null, range:null, approx:null, mentions:[] };
-  if (!text) return out;
+  const out={min:null,max:null,range:null,approx:null,mentions:[]};
+  if(!text) return out;
   const t = text.toLowerCase();
 
-  // Rangos: "entre X y Y" / "de X a Y"
+  // rangos
   const rangeRegex = /(entre|de)\s+([0-9.,]+\s*[km]?)\s+(y|a)\s+([0-9.,]+\s*[km]?)/i;
   const rm = t.match(rangeRegex);
-  if (rm) {
-    const a = parseMoneyToken(rm[2].replace(/\s/g,""));
-    const b = parseMoneyToken(rm[4].replace(/\s/g,""));
-    if (a!=null && b!=null) {
-      out.min = Math.min(a,b);
-      out.max = Math.max(a,b);
-      out.range = [out.min, out.max];
+  if(rm){
+    const a=parseMoneyToken(rm[2].replace(/\s/g,""));
+    const b=parseMoneyToken(rm[4].replace(/\s/g,""));
+    if(a!=null && b!=null){
+      out.min=Math.min(a,b);
+      out.max=Math.max(a,b);
+      out.range=[out.min,out.max];
       out.mentions.push(a,b);
       return out;
     }
   }
 
-  // Máximo: "menos de", "hasta", "máximo"
-  const maxRegex = /(menos de|por debajo de|máximo|maximo|hasta|tope)\s+([0-9.,]+\s*[km]?)/i;
-  const mx = t.match(maxRegex);
-  if (mx) {
-    const v = parseMoneyToken(mx[2].replace(/\s/g,""));
-    if (v!=null) { out.max=v; out.mentions.push(v); return out; }
+  // max
+  const maxRegex=/(menos de|por debajo de|máximo|maximo|hasta|tope)\s+([0-9.,]+\s*[km]?)/i;
+  const mx=t.match(maxRegex);
+  if(mx){
+    const v=parseMoneyToken(mx[2].replace(/\s/g,""));
+    if(v!=null){out.max=v;out.mentions.push(v);return out;}
   }
 
-  // Mínimo: "más de", "desde"
-  const minRegex = /(más de|mas de|a partir de|desde)\s+([0-9.,]+\s*[km]?)/i;
-  const mn = t.match(minRegex);
-  if (mn) {
-    const v = parseMoneyToken(mn[2].replace(/\s/g,""));
-    if (v!=null) { out.min=v; out.mentions.push(v); return out; }
+  // min
+  const minRegex=/(más de|mas de|a partir de|desde)\s+([0-9.,]+\s*[km]?)/i;
+  const mn=t.match(minRegex);
+  if(mn){
+    const v=parseMoneyToken(mn[2].replace(/\s/g,""));
+    if(v!=null){out.min=v;out.mentions.push(v);return out;}
   }
 
-  // Token suelto
-  const moneyTokenRegex = /([0-9]{1,3}(?:[.,][0-9]{3})+(?:[.,][0-9]+)?\s*[km]?|[0-9]+(?:[.,][0-9]+)?\s*[km]?)/gi;
-  const candidates = (text.match(moneyTokenRegex) || []).map(s=>s.trim()).slice(0,6);
-  for (const c of candidates) {
-    const v = parseMoneyToken(c.replace(/\s/g,""));
-    if (v!=null) out.mentions.push(v);
+  // tokens sueltos
+  const moneyTokenRegex=/([0-9]{1,3}(?:[.,][0-9]{3})+(?:[.,][0-9]+)?\s*[km]?|[0-9]+(?:[.,][0-9]+)?\s*[km]?)/gi;
+  const candidates=(text.match(moneyTokenRegex)||[]).map(s=>s.trim()).slice(0,8);
+  for(const c of candidates){
+    const v=parseMoneyToken(c.replace(/\s/g,""));
+    if(v!=null) out.mentions.push(v);
   }
-  if (out.mentions.length) out.approx = out.mentions[0];
+  if(out.mentions.length) out.approx=out.mentions[0];
   return out;
 }
 
-// --- Intent / municipio / ingresos-ahorros ---
+// ---------- NLU: intención / municipio / ingresos-ahorros ----------
 function extractIntent(text){
-  const s = (text||"").toLowerCase();
-  const buy = /(compr|hipotec|entrada|financi|casa|piso|vivienda)/.test(s);
-  const rent = /(alquil|llog|rent|arrend)/.test(s);
-  if (buy && !rent) return "buy";
-  if (rent && !buy) return "rent";
-  if (buy && rent) return "compare";
-  if (/(conviene|recomiendas|ayuda|advisor|help|qué hago|que hago)/.test(s)) return "advice";
+  const s=(text||"").toLowerCase();
+  const buy=/(compr|hipotec|entrada|financi|casa|piso|vivienda)/.test(s);
+  const rent=/(alquil|llog|rent|arrend)/.test(s);
+  if(buy && !rent) return "buy";
+  if(rent && !buy) return "rent";
+  if(buy && rent) return "compare";
+  if(/(conviene|recomiendas|advisor|ayuda|help|qué hago|que hago)/.test(s)) return "advice";
   return null;
 }
 
 function extractMunicipality(text){
-  const s = (text||"").toLowerCase().replace(/[’']/g,"'");
-  // lista basada en tus selects + mapa
-  const list = [
+  const s=(text||"").toLowerCase().replace(/[’']/g,"'");
+  const list=[
     "cunit","el vendrell","calafell","santa oliva","bellvei","l'arboç","banyeres del penedès",
     "albinyana","bonastre","masllorenç","la bisbal del penedès","llorenç del penedès",
     "sant jaume dels domenys","el montmell"
   ];
-  for (const m of list) {
-    if (s.includes(m)) {
-      if (m==="el vendrell") return "El Vendrell";
-      if (m==="l'arboç") return "L'Arboç";
-      if (m==="banyeres del penedès") return "Banyeres del Penedès";
-      if (m==="la bisbal del penedès") return "La Bisbal del Penedès";
-      if (m==="llorenç del penedès") return "Llorenç del Penedès";
-      if (m==="sant jaume dels domenys") return "Sant Jaume dels Domenys";
-      if (m==="el montmell") return "El Montmell";
+  for(const m of list){
+    if(s.includes(m)){
+      if(m==="el vendrell") return "El Vendrell";
+      if(m==="l'arboç") return "L'Arboç";
+      if(m==="banyeres del penedès") return "Banyeres del Penedès";
+      if(m==="la bisbal del penedès") return "La Bisbal del Penedès";
+      if(m==="llorenç del penedès") return "Llorenç del Penedès";
+      if(m==="sant jaume dels domenys") return "Sant Jaume dels Domenys";
+      if(m==="el montmell") return "El Montmell";
       return m.split(" ").map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(" ");
     }
   }
@@ -1252,231 +1292,287 @@ function extractMunicipality(text){
 }
 
 function extractIncomeSavingsRent(text){
-  const s = (text||"").toLowerCase();
-  const money = parseMoneyFromText(text);
-  let income = null, savings = null, rent = null;
+  const s=(text||"").toLowerCase();
+  const money=parseMoneyFromText(text);
+  let income=null, savings=null, rent=null;
 
-  if (/(gano|ingreso|sueldo|neto|mensual)/.test(s) && money.mentions.length) {
-    const cand = money.mentions.find(v => v > 300 && v < 20000);
-    if (cand!=null) income = cand;
+  if (/(gano|ingreso|sueldo|neto|mensual)/.test(s) && money.mentions.length){
+    const cand = money.mentions.find(v=>v>300 && v<20000);
+    if(cand!=null) income=cand;
   }
-  if (/(ahorr|ahorro|tengo|dispongo|entrada)/.test(s) && money.mentions.length) {
-    const cand = money.mentions.find(v => v >= 2000);
-    if (cand!=null) savings = cand;
+  if (/(ahorr|ahorro|tengo|dispongo|entrada)/.test(s) && money.mentions.length){
+    // si dice "tengo 15000 ahorrados"
+    const cand = money.mentions.find(v=>v>=1500);
+    if(cand!=null) savings=cand;
   }
-  if (/(alquiler|lloguer|rent)/.test(s) && money.mentions.length) {
-    const cand = money.mentions.find(v => v > 200 && v < 5000);
-    if (cand!=null) rent = cand;
+  if (/(alquiler|lloguer|rent)/.test(s) && money.mentions.length){
+    const cand = money.mentions.find(v=>v>200 && v<6000);
+    if(cand!=null) rent=cand;
   }
-  return { incomeMonthly: income, savings, currentRent: rent };
+  return {incomeMonthly:income, savings, currentRent:rent};
 }
 
-// --- Finanzas: cuota / escenarios ---
-function calcMortgagePaymentEUR(loanAmount, interestPct, years){
-  // usa tu mort() existente si está, si no, fórmula estándar
-  const r = (interestPct/100);
-  if (typeof mort === "function") return mort(loanAmount, r, years);
-  const m = r/12, n = years*12;
-  if (m<=0) return loanAmount/n;
-  const pow = Math.pow(1+m,n);
-  return loanAmount*(m*pow)/(pow-1);
+// ---------- Sincronizar con tu análisis "last" ----------
+function syncFromLast(){
+  if(!last) return;
+
+  // idioma
+  AI_STATE.lang = (typeof LANG !== "undefined" ? LANG : AI_STATE.lang);
+
+  // municipio (si last es multi, no forzamos)
+  if(!AI_STATE.municipality){
+    if(last.muni && last.muni!=="*" && last.muni!=="__multi__") AI_STATE.municipality = last.muni;
+  }
+
+  // datos fuertes
+  if(!AI_STATE.incomeMonthly && Number.isFinite(last.inc) && last.inc>0) AI_STATE.incomeMonthly = last.inc;
+  if(!AI_STATE.savings && Number.isFinite(last.sav) && last.sav>0) AI_STATE.savings = last.sav;
+
+  // tu last.pr es alquiler estimado, útil como “referencia”
+  if(!AI_STATE.currentRent && Number.isFinite(last.pr) && last.pr>0) AI_STATE.currentRent = last.pr;
+
+  if(!AI_STATE.years && Number.isFinite(last.yrs) && last.yrs>0) AI_STATE.years = last.yrs;
+
+  // last.rate viene como decimal (0.0299)
+  if(!AI_STATE.interestPct && Number.isFinite(last.rate) && last.rate>0) AI_STATE.interestPct = last.rate*100;
+
+  // si el usuario no ha dicho precio objetivo, usa tu precio estimado como base “por defecto”
+  if(!AI_STATE.priceMax && !AI_STATE.priceMin && Number.isFinite(last.pb) && last.pb>0){
+    AI_STATE.priceMax = last.pb;
+  }
 }
 
+// ---------- Finanzas ----------
+function calcMortgagePaymentEUR(loanAmount, annualPct, years){
+  if(!Number.isFinite(loanAmount) || loanAmount<=0) return 0;
+  if(!Number.isFinite(annualPct) || annualPct<=0) annualPct = 0.01;
+  if(!Number.isFinite(years) || years<=0) years = 25;
+
+  // usa tu mort() si existe (espera rate decimal)
+  if(typeof mort === "function"){
+    return mort(loanAmount, (annualPct/100), years);
+  }
+  const r=(annualPct/100)/12, n=years*12;
+  const pow=Math.pow(1+r,n);
+  return loanAmount*(r*pow)/(pow-1);
+}
 function estimateCosts(price, pct=0.11){ return price*pct; }
 
-function effortTraffic(effPct){
-  if (!Number.isFinite(effPct)) return {c:"gris", label:"Sin datos"};
-  if (effPct<=30) return {c:"verde", label:"Verde"};
-  if (effPct<=40) return {c:"ambar", label:"Ámbar"};
-  return {c:"rojo", label:"Rojo"};
+function effortLabel(pct){
+  if(!Number.isFinite(pct)) return {emoji:"⚪",label:"Sin datos"};
+  if(pct<=30) return {emoji:"🟢",label:"Verde"};
+  if(pct<=40) return {emoji:"🟠",label:"Ámbar"};
+  return {emoji:"🔴",label:"Rojo"};
 }
 
 function pickTargetPrice(){
-  if (AI_STATE.priceMax) return AI_STATE.priceMax;
-  if (AI_STATE.priceMin && AI_STATE.priceMax) return Math.round((AI_STATE.priceMin + AI_STATE.priceMax)/2);
-  if (AI_STATE.priceMin) return AI_STATE.priceMin;
+  if(Number.isFinite(AI_STATE.priceMax)) return AI_STATE.priceMax;
+  if(Number.isFinite(AI_STATE.priceMin) && Number.isFinite(AI_STATE.priceMax)) return Math.round((AI_STATE.priceMin+AI_STATE.priceMax)/2);
+  if(Number.isFinite(AI_STATE.priceMin)) return AI_STATE.priceMin;
   return null;
 }
 
 function buildScenarios(price){
   const years = AI_STATE.years || 25;
-  const ratePct = AI_STATE.interestPct || 2.99;
+  const rate = AI_STATE.interestPct || 2.99;
   const income = AI_STATE.incomeMonthly || 0;
 
-  const list = [
+  const sc = [
     {name:"Entrada 10%", downPct:0.10, costPct:0.11},
-    {name:"Entrada 20%", downPct:0.20, costPct:0.11}
+    {name:"Entrada 20%", downPct:0.20, costPct:0.11},
   ];
 
-  return list.map(s=>{
-    const down = price*s.downPct;
-    const costs = estimateCosts(price, s.costPct);
-    const cashNeed = down + costs;
-    const loan = price - down;
-    const monthly = calcMortgagePaymentEUR(loan, ratePct, years);
-    const effort = income>0 ? (monthly/income)*100 : NaN;
-    return { ...s, price, down, costs, cashNeed, loan, monthly, effortPct: effort, traffic: effortTraffic(effort) };
+  return sc.map(s=>{
+    const down=price*s.downPct;
+    const costs=estimateCosts(price, s.costPct);
+    const cash=down+costs;
+    const loan=price-down;
+    const cuota=calcMortgagePaymentEUR(loan, rate, years);
+    const effort=income>0 ? (cuota/income)*100 : NaN;
+    const sem=effortLabel(effort);
+    return {...s, price, down, costs, cash, loan, cuota, effort, sem};
   });
 }
 
-function syncFromLastAnalysis(){
-  // Si el usuario ya analizó, "last" es tu oro: lo usamos SI NO existe ya en memoria.
-  if (!last) return;
-
-  AI_STATE.municipality = AI_STATE.municipality || (last.muni==="*"||last.muni==="__multi__" ? null : last.muni);
-  AI_STATE.incomeMonthly = AI_STATE.incomeMonthly || (Number.isFinite(last.inc) ? last.inc : null);
-  AI_STATE.savings = AI_STATE.savings || (Number.isFinite(last.sav) ? last.sav : null);
-  AI_STATE.currentRent = AI_STATE.currentRent || (Number.isFinite(last.pr) ? last.pr : null);
-  AI_STATE.years = AI_STATE.years || (Number.isFinite(last.yrs) ? last.yrs : 25);
-  AI_STATE.interestPct = AI_STATE.interestPct || (Number.isFinite(last.rate) ? (last.rate*100) : 2.99);
-
-  // Si el usuario ya tiene un precio estimado del análisis, úsalo como “referencia” si no ha dicho otro
-  if (!AI_STATE.priceMax && Number.isFinite(last.pb) && last.pb>0) AI_STATE.priceMax = last.pb;
+// ---------- Gestión de “pregunta mínima” ----------
+function nextQuestion(){
+  // Solo 1 pregunta útil, priorizada
+  if(!AI_STATE.incomeMonthly) return {key:"income"};
+  if(!AI_STATE.savings) return {key:"savings"};
+  if(!AI_STATE.priceMax && !AI_STATE.priceMin) return {key:"price"};
+  return null;
+}
+function questionText(q){
+  const L=AI_STATE.lang;
+  if(!q) return "";
+  if(q.key==="income") return (L==="EN" ? "❓ What is your net monthly income? (e.g. 1800€)" :
+                              L==="CA" ? "❓ Quins són els teus ingressos nets mensuals? (ex. 1800€)" :
+                              "❓ ¿Cuánto ingresas neto al mes? (ej. 1800€)");
+  if(q.key==="savings") return (L==="EN" ? "❓ How much savings do you have for down payment + costs? (e.g. 15000€)" :
+                               L==="CA" ? "❓ Quants estalvis tens per a entrada + despeses? (ex. 15000€)" :
+                               "❓ ¿Cuánto tienes ahorrado para entrada + gastos? (ej. 15000€)");
+  if(q.key==="price") return (L==="EN" ? "❓ What target price do you have? (e.g. under 250k / between 200k and 280k)" :
+                             L==="CA" ? "❓ Quin preu objectiu tens? (ex. menys de 250k / entre 200k i 280k)" :
+                             "❓ ¿Qué precio objetivo tienes? (ej. menos de 250k / entre 200k y 280k)");
+  return "";
 }
 
+// ---------- Actualizar estado con mensaje ----------
 function updateStateFromMessage(msg){
-  AI_STATE.lang = detectLangFromApp(msg);
+  AI_STATE.lang = safeLangFromApp(msg);
 
   const intent = extractIntent(msg);
-  if (intent) AI_STATE.intent = intent;
+  if(intent) AI_STATE.intent = intent;
 
   const muni = extractMunicipality(msg);
-  if (muni) AI_STATE.municipality = muni;
+  if(muni) AI_STATE.municipality = muni;
 
   const money = parseMoneyFromText(msg);
-  if (money.range) { AI_STATE.priceMin = money.range[0]; AI_STATE.priceMax = money.range[1]; }
-  else if (money.max) { AI_STATE.priceMax = money.max; AI_STATE.priceMin = null; }
-  else if (money.min) { AI_STATE.priceMin = money.min; }
-  else if (money.approx && /(casa|piso|vivienda|compr|alquil|llog|rent)/i.test(msg)) {
+  if(money.range){
+    AI_STATE.priceMin = money.range[0];
+    AI_STATE.priceMax = money.range[1];
+    AI_STATE.facts.push("Rango precio: "+money.range[0]+"-"+money.range[1]);
+  }else if(money.max){
+    AI_STATE.priceMax = money.max;
+    AI_STATE.priceMin = null;
+    AI_STATE.facts.push("Precio máx: "+money.max);
+  }else if(money.min){
+    AI_STATE.priceMin = money.min;
+    AI_STATE.facts.push("Precio mín: "+money.min);
+  }else if(money.approx && /(casa|piso|vivienda|compr|alquil|llog|rent)/i.test(msg)){
     AI_STATE.priceMax = AI_STATE.priceMax || money.approx;
   }
 
   const ext = extractIncomeSavingsRent(msg);
-  if (ext.incomeMonthly!=null) AI_STATE.incomeMonthly = ext.incomeMonthly;
-  if (ext.savings!=null) AI_STATE.savings = ext.savings;
-  if (ext.currentRent!=null) AI_STATE.currentRent = ext.currentRent;
+  if(ext.incomeMonthly!=null){ AI_STATE.incomeMonthly = ext.incomeMonthly; AI_STATE.facts.push("Ingresos: "+ext.incomeMonthly); }
+  if(ext.savings!=null){ AI_STATE.savings = ext.savings; AI_STATE.facts.push("Ahorros: "+ext.savings); }
+  if(ext.currentRent!=null){ AI_STATE.currentRent = ext.currentRent; AI_STATE.facts.push("Alquiler: "+ext.currentRent); }
+
+  AI_STATE.lastUserMsgAt = Date.now();
+  saveAIState();
 }
 
-function chooseOneQuestion(){
-  // Preguntas mínimas. Solo 1.
-  if (!AI_STATE.incomeMonthly) return {key:"income", q: (AI_STATE.lang==="EN"?"❓ What is your net monthly income?":"❓ ¿Cuánto ingresas neto al mes? (ej. 1800€)")};
-  if (!AI_STATE.savings) return {key:"savings", q: (AI_STATE.lang==="EN"?"❓ How much savings do you have for down payment + costs?":"❓ ¿Cuánto tienes ahorrado para entrada+gastos? (ej. 15000€)")};
-  if (!AI_STATE.priceMax && !AI_STATE.priceMin) return {key:"price", q: (AI_STATE.lang==="EN"?"❓ What target price do you have? (e.g. under 250k)":"❓ ¿Qué precio objetivo tienes? (ej. menos de 250k)")};
-  return null;
-}
-
-function renderReply(){
-  const L = AI_STATE.lang;
-  const muni = AI_STATE.municipality ? `📍 ${AI_STATE.municipality}\n` : "";
+// ---------- Render de respuesta ----------
+function renderAIReply(){
+  const L=AI_STATE.lang;
+  const muni = AI_STATE.municipality ? ("📍 "+AI_STATE.municipality+"\n") : "";
   const intent = AI_STATE.intent;
   const goal =
-    !intent ? "" :
     intent==="buy" ? (L==="EN"?"🎯 Goal: BUY\n":L==="CA"?"🎯 Objectiu: COMPRAR\n":"🎯 Objetivo: COMPRAR\n") :
     intent==="rent" ? (L==="EN"?"🎯 Goal: RENT\n":L==="CA"?"🎯 Objectiu: LLOGAR\n":"🎯 Objetivo: ALQUILAR\n") :
-    (L==="EN"?"🎯 Goal: COMPARE\n":L==="CA"?"🎯 Objectiu: COMPARAR\n":"🎯 Objetivo: COMPARAR\n");
+    intent==="compare" ? (L==="EN"?"🎯 Goal: COMPARE\n":L==="CA"?"🎯 Objectiu: COMPARAR\n":"🎯 Objetivo: COMPARAR\n") :
+    intent==="advice" ? (L==="EN"?"🎯 Goal: ADVICE\n":L==="CA"?"🎯 Objectiu: CONSELL\n":"🎯 Objetivo: CONSEJO\n") :
+    "";
 
-  const priceTxt = AI_STATE.priceMax ? fmtMoney(AI_STATE.priceMax) :
-                   (AI_STATE.priceMin ? (L==="EN"?"from ":"desde ") + fmtMoney(AI_STATE.priceMin) : "—");
-  const incTxt = AI_STATE.incomeMonthly ? fmtMoney(AI_STATE.incomeMonthly) : "—";
-  const savTxt = AI_STATE.savings ? fmtMoney(AI_STATE.savings) : "—";
+  const priceTxt = AI_STATE.priceMax ? ("≤ "+fmtEUR(AI_STATE.priceMax)) :
+                   AI_STATE.priceMin ? ("≥ "+fmtEUR(AI_STATE.priceMin)) : "—";
+  const incTxt = AI_STATE.incomeMonthly ? fmtEUR(AI_STATE.incomeMonthly) : "—";
+  const savTxt = AI_STATE.savings ? fmtEUR(AI_STATE.savings) : "—";
 
   const years = AI_STATE.years || 25;
-  const ratePct = AI_STATE.interestPct || 2.99;
+  const rate = AI_STATE.interestPct || 2.99;
 
-  const targetPrice = pickTargetPrice();
-  const q = chooseOneQuestion();
+  const target = pickTargetPrice();
+  const q = nextQuestion();
 
-  // Si aún no hay precio, no inventamos escenarios
-  if (!targetPrice) {
-    const intro = (L==="EN"
+  // Si no hay target price todavía, no inventamos escenarios
+  if(!target){
+    const base = (L==="EN"
       ? `🧠 AI Advisor (demo local)\n${muni}${goal}💬 Quick summary:\n💰 Target price: ${priceTxt}\n📊 Income: ${incTxt}\n🏦 Savings: ${savTxt}`
       : L==="CA"
       ? `🧠 AI Advisor (demo local)\n${muni}${goal}💬 Resum ràpid:\n💰 Preu objectiu: ${priceTxt}\n📊 Ingressos: ${incTxt}\n🏦 Estalvis: ${savTxt}`
       : `🧠 AI Advisor (demo local)\n${muni}${goal}💬 Resumen rápido:\n💰 Precio objetivo: ${priceTxt}\n📊 Ingresos: ${incTxt}\n🏦 Ahorros: ${savTxt}`
     );
-
-    const ask = q ? `\n\n${q.q}` : "";
-    return limitWords(intro + ask, 130);
+    const ask = q ? ("\n\n"+questionText(q)) : "";
+    AI_STATE.lastAsked = q ? q.key : null;
+    saveAIState();
+    return wordLimit(base+ask, 170);
   }
 
-  const sc = buildScenarios(targetPrice);
+  const sc = buildScenarios(target);
 
-  // Mejor escenario por esfuerzo + cash gap
+  // Elegir mejor escenario: menos gap y mejor esfuerzo
   let best = sc[0], bestScore = Infinity;
-  for (const s of sc) {
-    const gap = AI_STATE.savings ? Math.max(0, s.cashNeed - AI_STATE.savings) : 999999;
-    const eff = Number.isFinite(s.effortPct) ? s.effortPct : 999;
+  for(const s of sc){
+    const gap = AI_STATE.savings ? Math.max(0, s.cash - AI_STATE.savings) : 999999;
+    const eff = Number.isFinite(s.effort) ? s.effort : 999;
     const score = (gap/1000) + (eff<=30?0:eff<=40?10:30);
-    if (score < bestScore) { bestScore = score; best = s; }
+    if(score<bestScore){ bestScore=score; best=s; }
   }
 
-  const head = (L==="EN"
-    ? `🧠 AI Advisor (demo local)\n${muni}${goal}`
-    : L==="CA"
-    ? `🧠 AI Advisor (demo local)\n${muni}${goal}`
-    : `🧠 AI Advisor (demo local)\n${muni}${goal}`
-  );
+  const header = (L==="EN" ? `🧠 AI Advisor (demo local)\n${muni}${goal}` :
+                  L==="CA" ? `🧠 AI Advisor (demo local)\n${muni}${goal}` :
+                             `🧠 AI Advisor (demo local)\n${muni}${goal}`);
 
   const summary = (L==="EN"
-    ? `💬 Summary:\n💰 Target: ${fmtMoney(targetPrice)} | 📊 Income: ${incTxt} | 🏦 Savings: ${savTxt}\n🗓️ ${years}y | 📈 ${ratePct.toFixed(2)}%`
+    ? `💬 Summary: target ${fmtEUR(target)} | income ${incTxt} | savings ${savTxt}\n🗓️ ${years}y | 📈 ${rate.toFixed(2)}%`
     : L==="CA"
-    ? `💬 Resum:\n💰 Objectiu: ${fmtMoney(targetPrice)} | 📊 Ingressos: ${incTxt} | 🏦 Estalvis: ${savTxt}\n🗓️ ${years} anys | 📈 ${ratePct.toFixed(2)}%`
-    : `💬 Resumen:\n💰 Objetivo: ${fmtMoney(targetPrice)} | 📊 Ingresos: ${incTxt} | 🏦 Ahorros: ${savTxt}\n🗓️ ${years} años | 📈 ${ratePct.toFixed(2)}%`
+    ? `💬 Resum: objectiu ${fmtEUR(target)} | ingressos ${incTxt} | estalvis ${savTxt}\n🗓️ ${years} anys | 📈 ${rate.toFixed(2)}%`
+    : `💬 Resumen: objetivo ${fmtEUR(target)} | ingresos ${incTxt} | ahorros ${savTxt}\n🗓️ ${years} años | 📈 ${rate.toFixed(2)}%`
   );
 
-  const scenLines = sc.map(s=>{
-    const effort = Number.isFinite(s.effortPct) ? `${fmtPct(s.effortPct)} (${s.traffic.label})` : "—";
-    return (L==="EN"
-      ? `🏠 ${s.name}: cuota ${fmtMoney(s.monthly)}/mes | esfuerzo ${effort}\n   Cash: ${fmtMoney(s.cashNeed)} (entrada ${fmtMoney(s.down)} + gastos ${fmtMoney(s.costs)})`
+  const scen = sc.map(s=>{
+    const eff = Number.isFinite(s.effort) ? (fmtPct(s.effort)+" "+s.sem.emoji+" "+s.sem.label) : "—";
+    const line1 = (L==="EN"
+      ? `🏠 ${s.name}: payment ${fmtEUR(s.cuota)}/mo | effort ${eff}`
       : L==="CA"
-      ? `🏠 ${s.name}: quota ${fmtMoney(s.monthly)}/mes | esforç ${effort}\n   Cash: ${fmtMoney(s.cashNeed)} (entrada ${fmtMoney(s.down)} + despeses ${fmtMoney(s.costs)})`
-      : `🏠 ${s.name}: cuota ${fmtMoney(s.monthly)}/mes | esfuerzo ${effort}\n   Cash: ${fmtMoney(s.cashNeed)} (entrada ${fmtMoney(s.down)} + gastos ${fmtMoney(s.costs)})`
+      ? `🏠 ${s.name}: quota ${fmtEUR(s.cuota)}/mes | esforç ${eff}`
+      : `🏠 ${s.name}: cuota ${fmtEUR(s.cuota)}/mes | esfuerzo ${eff}`
     );
+    const line2 = (L==="EN"
+      ? `   Cash needed ${fmtEUR(s.cash)} (down ${fmtEUR(s.down)} + costs ${fmtEUR(s.costs)})`
+      : L==="CA"
+      ? `   Cash necessari ${fmtEUR(s.cash)} (entrada ${fmtEUR(s.down)} + despeses ${fmtEUR(s.costs)})`
+      : `   Cash necesario ${fmtEUR(s.cash)} (entrada ${fmtEUR(s.down)} + gastos ${fmtEUR(s.costs)})`
+    );
+    return line1+"\n"+line2;
   }).join("\n");
 
-  // Reco
+  // Recomendación
   let reco = "";
-  if (AI_STATE.incomeMonthly && Number.isFinite(best.effortPct)) {
-    if (best.effortPct <= 30) reco = (L==="EN"?"✅ Recommendation: Buying looks comfortable if job is stable."
-      : L==="CA"?"✅ Recomanació: Comprar és còmode si la feina és estable."
-      :"✅ Recomendación: Comprar es cómodo si tu trabajo es estable.");
-    else if (best.effortPct <= 40) reco = (L==="EN"?"⚠️ Recommendation: It’s possible but tight. Lower price or increase down payment."
-      : L==="CA"?"⚠️ Recomanació: És possible però ajustat. Baixa preu o puja entrada."
-      :"⚠️ Recomendación: Es posible pero ajustado. Baja precio o sube entrada.");
-    else reco = (L==="EN"?"❌ Recommendation: High risk. Better rent or reduce price before buying."
-      : L==="CA"?"❌ Recomanació: Risc alt. Millor llogar o baixar preu abans de comprar."
-      :"❌ Recomendación: Riesgo alto. Mejor alquilar o bajar precio antes de comprar.");
-  } else {
-    reco = (L==="EN"?"💡 I can refine the recommendation with your net monthly income."
-      : L==="CA"?"💡 Puc afinar amb els teus ingressos nets mensuals."
-      :"💡 Puedo afinar con tus ingresos netos mensuales.");
+  if(AI_STATE.incomeMonthly && Number.isFinite(best.effort)){
+    if(best.effort<=30){
+      reco = (L==="EN" ? "✅ Recommendation: Buying looks comfortable if your job is stable." :
+              L==="CA" ? "✅ Recomanació: Comprar és còmode si la feina és estable." :
+                         "✅ Recomendación: Comprar es cómodo si tu trabajo es estable.");
+    }else if(best.effort<=40){
+      reco = (L==="EN" ? "🟠 Recommendation: Possible but tight. Lower price or increase down payment." :
+              L==="CA" ? "🟠 Recomanació: Possible però ajustat. Baixa preu o puja entrada." :
+                         "🟠 Recomendación: Posible pero ajustado. Baja precio o sube entrada.");
+    }else{
+      reco = (L==="EN" ? "🔴 Recommendation: High risk. Better rent or reduce the target price before buying." :
+              L==="CA" ? "🔴 Recomanació: Risc alt. Millor llogar o baixar el preu abans de comprar." :
+                         "🔴 Recomendación: Riesgo alto. Mejor alquilar o bajar el precio antes de comprar.");
+    }
+  }else{
+    reco = (L==="EN" ? "💡 I can refine the recommendation if you share your income + savings." :
+            L==="CA" ? "💡 Puc afinar la recomanació amb ingressos + estalvis." :
+                       "💡 Puedo afinar la recomendación con ingresos + ahorros.");
   }
 
   // Gap cash
   let gapLine = "";
-  if (AI_STATE.savings) {
-    const gap = Math.max(0, best.cashNeed - AI_STATE.savings);
+  if(AI_STATE.savings){
+    const gap = Math.max(0, best.cash - AI_STATE.savings);
     gapLine = gap>0
-      ? (L==="EN"?`⚠️ Cash gap for ${best.name}: ~${fmtMoney(gap)}.`:L==="CA"?`⚠️ Et falta cash per ${best.name}: ~${fmtMoney(gap)}.`:`⚠️ Te falta cash para ${best.name}: ~${fmtMoney(gap)}.`)
-      : (L==="EN"?`✅ Savings cover cash needed for ${best.name}.`:L==="CA"?`✅ Els estalvis cobreixen el cash necessari per ${best.name}.`:`✅ Tus ahorros cubren el cash necesario para ${best.name}.`);
+      ? (L==="EN" ? `⚠️ Cash gap for ${best.name}: ~${fmtEUR(gap)}.` :
+         L==="CA" ? `⚠️ Et falta cash per ${best.name}: ~${fmtEUR(gap)}.` :
+                    `⚠️ Te falta cash para ${best.name}: ~${fmtEUR(gap)}.`)
+      : (L==="EN" ? `✅ Savings cover the cash needed for ${best.name}.` :
+         L==="CA" ? `✅ Els estalvis cobreixen el cash necessari per ${best.name}.` :
+                    `✅ Tus ahorros cubren el cash necesario para ${best.name}.`);
   }
 
-  // 1 pregunta inteligente si falta algo clave
-  const ask = q && AI_STATE.lastAsked !== q.key ? `\n\n${q.q}` : "";
-
-  const full = `${head}${summary}\n\n${scenLines}\n\n${reco}\n${gapLine}${ask}`;
+  // 1 pregunta inteligente si falta
+  const ask = q && AI_STATE.lastAsked !== q.key ? ("\n\n"+questionText(q)) : "";
   AI_STATE.lastAsked = q ? q.key : null;
+  saveAIState();
 
-  return limitWords(full, 130);
+  const full = `${header}${summary}\n\n${scen}\n\n${reco}\n${gapLine}${ask}`;
+  return wordLimit(full, 220);
 }
 
-function limitWords(text, maxWords){
-  const words = String(text||"").split(/\s+/).filter(Boolean);
-  if (words.length <= maxWords) return text;
-  return words.slice(0, maxWords).join(" ") + "…";
-}
-
-// --- Tu sendToAI conectado a tu UI actual ---
+// ---------- Conectar a tu UI actual ----------
 const sendToAI = async (msg) => {
   if (isAIProcessing) return;
   isAIProcessing = true;
@@ -1490,16 +1586,16 @@ const sendToAI = async (msg) => {
   addThinking();
 
   try {
-    // 1) Sincroniza con análisis (si existe)
-    syncFromLastAnalysis();
+    // 1) Cargar contexto del análisis si existe
+    syncFromLast();
 
-    // 2) Aplica el mensaje a memoria
+    // 2) Interpretar el mensaje
     updateStateFromMessage(msg);
 
-    // 3) Simula “pensar”
-    await sleep(clamp(450 + msg.length*6, 450, 1100));
+    // 3) Simular “pensar”
+    await sleep(clamp(450 + msg.length*6, 450, 1200));
 
-    const reply = renderReply();
+    const reply = renderAIReply();
 
     removeThinking();
     addMsg("ai", reply);
@@ -1510,7 +1606,7 @@ const sendToAI = async (msg) => {
   } catch (err) {
     removeThinking();
     console.error("AI DEMO error:", err);
-    addMsg("ai", (typeof t === "function") ? t("aiErrNet") : "Error al conectar. Intenta de nuevo.");
+    addMsg("ai", (typeof t === "function") ? t("aiErrNet") : "Error. Intenta de nuevo.");
   } finally {
     isAIProcessing = false;
     if (btn) btn.disabled = false;
@@ -1522,7 +1618,6 @@ const sendToAI = async (msg) => {
     }
   }
 };
-
 
 const renderChatHistory=()=>{
   QA(".chat-message:not(#welcome-message)").forEach(el=>el.remove());

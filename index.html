@@ -1,682 +1,763 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Assessoria d'Habitatge - AI Advisor</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessoria d'Habitatge - Suite Profesional v2.0</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-:root{
-  --bg:#020617;
-  --card:rgba(15,23,42,.70);
-  --card2:rgba(11,18,32,.88);
-  --bd:rgba(148,163,184,.22);
-  --bd2:rgba(148,163,184,.30);
-  --t:#e5e7eb;
-  --m:#94a3b8;
-  --mut:#cbd5e1;
-  --pill:#38bdf8;
-  --p:#06b6d4;--ph:#0891b2;
-  --ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;
-  --g1:#3b4a60;--g2:#0b1220;
-  --shadow-lg:0 10px 40px rgba(0,0,0,.35);
-  --shadow-xl:0 20px 60px rgba(0,0,0,.48);
-  --gradient-3:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);
-  --gradient-4:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);
-}
-html,body{height:100%}
-body{margin:0;background:var(--bg);position:relative;overflow-x:hidden;}
-body::before{
-  content:"";position:fixed;inset:0;
-  background:
-    radial-gradient(1400px 700px at 20% -10%,rgba(56,189,248,.18),transparent 60%),
-    radial-gradient(1000px 600px at 85% 0%,rgba(34,197,94,.14),transparent 60%),
-    radial-gradient(900px 520px at 60% 110%,rgba(168,85,247,.12),transparent 62%),
-    linear-gradient(180deg,#0f172a 0%,#020617 55%,#000 100%);
-  z-index:-1;pointer-events:none;animation:pulse 18s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:.80}50%{opacity:1}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 18px rgba(56,189,248,.22)}50%{box-shadow:0 0 30px rgba(56,189,248,.42)}}
-@keyframes typing{from{opacity:.4}to{opacity:1}}
+    <style>
+        /* --- CORE THEME & VARIABLES --- */
+        :root {
+            --bg-deep: #020617;
+            --bg-card: #0f172a;
+            --bg-card-hover: #1e293b;
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --secondary: #22c55e;
+            --accent: #818cf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.15);
+            --glass: rgba(15, 23, 42, 0.7);
+            --gradient-main: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
 
-#hx{color:var(--t);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;-webkit-font-smoothing:antialiased;}
-#hx *{box-sizing:border-box}
-.w{max-width:1200px;margin:22px auto 18px;padding:0 16px}
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+        }
 
-.c{
-  background:rgba(15,23,42,.86);border:1px solid var(--bd);border-radius:20px;
-  padding:22px;margin:16px 0;backdrop-filter:blur(14px);box-shadow:var(--shadow-lg);
-  animation:fadeIn .5s ease-out;transition:all .25s ease;position:relative;
-  /* Cambio importante: visible para que los tooltips no se corten */
-  overflow:visible; 
-}
-.c::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.6),transparent);opacity:.55}
-.c:hover{border-color:rgba(56,189,248,.42);box-shadow:var(--shadow-xl)}
+        /* --- LAYOUT & CONTAINERS --- */
+        .app-container { max-width: 1280px; margin: 0 auto; padding: 20px; }
+        
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 0; margin-bottom: 30px; border-bottom: 1px solid var(--border);
+        }
 
-.r{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.n{opacity:.95;font-size:.95rem;color:#cbd5e1;line-height:1.6}
-.small{font-size:.88rem;color:#b6c2d3;line-height:1.5}
+        .brand-pill {
+            background: var(--gradient-main); color: #000;
+            padding: 8px 20px; border-radius: 999px;
+            font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;
+            box-shadow: var(--shadow-glow); text-transform: uppercase;
+        }
 
-.pill{background:var(--gradient-3);color:#001018;border-radius:999px;padding:10px 16px;font-weight:950;letter-spacing:.6px;text-transform:uppercase;font-size:.88rem;box-shadow:0 4px 16px rgba(56,189,248,.32);animation:glow 6s ease-in-out infinite;white-space:nowrap;}
-.lang{display:flex;gap:10px;align-items:center}
-.langbtn{border:1px solid rgba(148,163,184,.28);background:rgba(11,18,32,.85);color:#cbd5e1;border-radius:999px;padding:8px 14px;font-weight:900;cursor:pointer;transition:all .18s ease;font-size:.84rem;letter-spacing:.5px;}
-.langbtn:hover{border-color:rgba(56,189,248,.55);transform:translateY(-1px)}
-.langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 4px 14px rgba(56,189,248,.28)}
+        /* --- NAVIGATION STEPS --- */
+        .stepper {
+            display: flex; justify-content: space-between; position: relative;
+            margin: 40px 0; max-width: 800px; margin-left: auto; margin-right: auto;
+        }
+        .stepper::before {
+            content: ''; position: absolute; top: 15px; left: 0; right: 0;
+            height: 2px; background: #1e293b; z-index: 0;
+        }
+        .step-item {
+            position: relative; z-index: 1; text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .step-circle {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: var(--bg-card); border: 2px solid #334155;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--text-muted); transition: all 0.3s;
+        }
+        .step-item.active .step-circle {
+            background: var(--primary); color: #000; border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+        .step-item.completed .step-circle {
+            background: var(--secondary); border-color: var(--secondary); color: #000;
+        }
+        .step-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .step-item.active .step-label { color: var(--primary); }
 
-.tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;animation:slideIn .6s ease-out}
-.tab{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.80);color:#cbd5e1;border-radius:999px;padding:10px 18px;cursor:pointer;font-weight:900;transition:all .18s ease;user-select:none;position:relative;overflow:hidden;font-size:.90rem;letter-spacing:.35px;}
-.tab:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(56,189,248,.28)}
-.tab.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 4px 14px rgba(56,189,248,.36)}
-.tab.dis{opacity:.40;cursor:not-allowed;filter:grayscale(.35)}
-.tab.dis:hover{transform:none;box-shadow:none}
+        /* --- MAIN TABS --- */
+        .nav-tabs {
+            display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto;
+            padding-bottom: 5px; scrollbar-width: none;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            color: var(--text-muted); padding: 12px 24px; border-radius: 12px;
+            font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.08); }
+        .nav-btn.active {
+            background: var(--bg-card-hover); border-color: var(--primary);
+            color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .nav-btn.special-ai {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+            border-color: var(--accent); color: var(--accent);
+        }
 
-.b{background:var(--gradient-3);color:#001018;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;font-weight:950;transition:all .18s ease;box-shadow:0 4px 15px rgba(56,189,248,.28);font-size:.95rem;letter-spacing:.3px;position:relative;overflow:hidden}
-.b:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(56,189,248,.42)}
-.b.ok{background:var(--gradient-4);box-shadow:0 4px 15px rgba(67,233,123,.22)}
-.b.ok:hover{box-shadow:0 6px 20px rgba(67,233,123,.42)}
-.b.dis{opacity:.45;cursor:not-allowed;filter:grayscale(.25);transform:none;pointer-events:none}
+        /* --- CARDS & PANELS --- */
+        .panel { display: none; animation: fadeIn 0.4s ease; }
+        .panel.active { display: block; }
+        
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 25px; margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
 
-.g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-@media(max-width:900px){.g{grid-template-columns:1fr}}
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
 
-#hx input[type=text],#hx input[type=number],#hx select,#hx textarea{
-  width:100%;padding:12px 14px;border:1px solid rgba(148,163,184,.30);border-radius:12px;
-  background:rgba(2,6,23,.86);color:var(--t);outline:none;transition:all .18s ease;font-size:.95rem;font-family:inherit;
-}
-#hx textarea{min-height:100px;resize:vertical;}
-#hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus,#hx textarea:focus{
-  border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.14);background:rgba(2,6,23,.96)
-}
-#hx input[type=checkbox]{accent-color:#38bdf8;width:18px;height:18px;cursor:pointer}
-#hx label{color:#cbd5e1;font-weight:750;margin-bottom:6px;display:block;font-size:.9rem;letter-spacing:.25px}
+        @media(max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
 
-.gu{margin-top:12px;padding:14px 16px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);border-radius:14px;color:#dbeafe;display:flex;gap:12px;align-items:flex-start;border-left:4px solid #38bdf8}
-.gu .a{font-weight:950;line-height:1.2;margin-top:1px;font-size:1.15rem}
+        /* --- FORMS --- */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); }
+        .input-box {
+            width: 100%; background: #020617; border: 1px solid #334155;
+            padding: 14px; border-radius: 10px; color: white; font-size: 1rem;
+            transition: 0.3s;
+        }
+        .input-box:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+        
+        .btn-action {
+            width: 100%; padding: 16px; border-radius: 12px; font-weight: 800;
+            text-transform: uppercase; cursor: pointer; border: none; font-size: 1rem;
+            margin-top: 10px; transition: transform 0.2s;
+        }
+        .btn-primary { background: var(--gradient-main); color: #020617; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
 
-.tst{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(2,6,23,.94);border:1px solid rgba(148,163,184,.35);color:var(--t);padding:10px 14px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;z-index:99999}
-.tst.s{opacity:1}
+        /* --- RESULT DASHBOARD --- */
+        .kpi-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            padding: 20px; border-radius: 16px; border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        .kpi-card::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05), transparent);
+        }
+        .kpi-label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        .kpi-value { font-size: 1.8rem; font-weight: 900; color: white; margin: 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .kpi-sub { font-size: 0.85rem; color: #64748b; display: flex; align-items: center; gap: 5px; }
+        
+        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+        .bg-ok { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .bg-bad { background: rgba(239, 68, 68, 0.2); color: #f87171; }
 
-.sig{max-width:1100px;margin:10px auto 18px;padding:10px 12px;color:#a5b4fc;background:rgba(10,16,28,.65);border:1px solid rgba(148,163,184,.25);border-radius:12px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:.95rem}
-.sig .br{font-weight:950;color:#e2e8f0}
-.sig a{color:#93c5fd;text-decoration:none}
-.sig a:hover{text-decoration:underline}
+        /* --- MAPS --- */
+        .map-wrapper { height: 450px; width: 100%; border-radius: 16px; overflow: hidden; position: relative; z-index: 1; }
+        #mainMap, #compareMap { width: 100%; height: 100%; }
 
-.cardx{margin-top:16px;background:linear-gradient(135deg,rgba(15,23,42,.86),rgba(11,18,32,.92));border:1px solid rgba(148,163,184,.25);border-radius:16px;padding:20px;box-shadow:0 4px 22px rgba(0,0,0,.22)}
-.cardx .top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid rgba(148,163,184,.14)}
-.cardx .title{font-weight:1000;color:#f1f5f9;font-size:1.15rem}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1px solid rgba(148,163,184,.30);background:rgba(11,18,32,.82);color:#cbd5e1;border-radius:999px;padding:8px 14px;font-weight:850;font-size:.85rem;transition:.15s;text-shadow:0 1px 8px rgba(0,0,0,.25);}
-.chip:hover{transform:translateY(-1px)}
-.chip.good{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.12);color:#86efac}
-.chip.bad{border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12);color:#fca5a5}
-.chip.warn{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.12);color:#fde68a}
-.chip.neu{border-color:rgba(148,163,184,.35);color:#e2e8f0}
+        /* --- AI CHAT --- */
+        .chat-interface {
+            height: 600px; display: flex; flex-direction: column;
+            background: #0b1120; border-radius: 20px; border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .chat-header {
+            padding: 15px 20px; background: #1e293b; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .ai-status { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; }
+        .chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 80%; padding: 12px 18px; border-radius: 18px; line-height: 1.5; font-size: 0.95rem; animation: slideIn 0.3s; }
+        .msg.ai { background: #1e293b; color: #e2e8f0; border-bottom-left-radius: 4px; align-self: flex-start; border: 1px solid var(--border); }
+        .msg.user { background: var(--gradient-main); color: #020617; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; }
+        .chat-input-area { padding: 20px; background: #0f172a; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+        .typing-indicator { font-size: 0.8rem; color: var(--text-muted); margin-left: 10px; font-style: italic; opacity: 0; transition: 0.3s; }
+        
+        /* --- EXAMPLES LIST --- */
+        .listing-item {
+            display: flex; gap: 15px; padding: 15px; background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s;
+        }
+        .listing-item:hover { background: rgba(255,255,255,0.05); }
+        .listing-price { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .listing-details { font-size: 0.85rem; color: var(--text-muted); }
 
-.body{margin-top:16px;color:#cbd5e1;line-height:1.65;font-size:.95rem}
-.body b{color:#f8fafc;font-weight:800}
-
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
-@media(max-width:980px){.grid3{grid-template-columns:1fr}}
-
-.mini{background:linear-gradient(135deg,rgba(14,165,233,.10),rgba(6,182,212,.06));border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:14px;transition:.15s}
-.mini:hover{border-color:rgba(56,189,248,.40);transform:translateY(-1px)}
-.mini .h{color:#94a3b8;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
-.mini .v{font-weight:1000;color:#f8fafc;margin-top:6px;font-size:1.15rem;text-shadow:0 2px 12px rgba(0,0,0,.35);}
-.note{margin-top:16px;color:#cbd5e1;white-space:pre-wrap;background:rgba(2,6,23,.62);padding:16px;border-radius:12px;border:1px solid rgba(148,163,184,.20);line-height:1.7;font-size:.92rem}
-
-.k{background:linear-gradient(145deg,rgba(14,165,233,.10),rgba(6,182,212,.06));border:1px solid rgba(56,189,248,.30);border-radius:18px;padding:18px 14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.25);min-height:86px;}
-.k::before{content:"";position:absolute;inset:-40%;background:radial-gradient(circle,rgba(56,189,248,.10),transparent 70%);pointer-events:none;transition:transform .6s ease;}
-.k:hover::before{transform:scale(1.12)}
-.k span{color:#a6b3c6;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.9px;display:block}
-.k b{font-size:30px;display:block;color:#f1f5f9;margin-top:10px;font-weight:1000;text-shadow:0 2px 14px rgba(0,0,0,.45);line-height:1.05;}
-.k .sub{margin-top:8px;font-size:.82rem;color:#9fb0c6;line-height:1.25;}
-@media(max-width:520px){.k b{font-size:26px}}
-
-.pbar-wrap{margin-top:8px;background:rgba(255,255,255,.07);border-radius:999px;height:8px;overflow:hidden}
-.pbar{height:8px;border-radius:999px;transition:width .9s cubic-bezier(.4,0,.2,1)}
-.pbar.good{background:linear-gradient(90deg,#22c55e,#4ade80)}
-.pbar.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
-.pbar.bad{background:linear-gradient(90deg,#ef4444,#f87171)}
-
-.tip{position:relative;display:inline-flex;align-items:center;gap:4px;width:100%}
-.tip-icon{width:16px;height:16px;border-radius:50%;background:rgba(148,163,184,.22);color:#b6c2d3;font-size:10px;font-weight:950;cursor:help;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(148,163,184,.30);flex-shrink:0;user-select:none}
-.tip-box{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0f172a;border:1px solid rgba(56,189,248,.35);border-radius:10px;padding:10px 14px;color:#cbd5e1;font-size:.82rem;line-height:1.5;width:240px;z-index:9999;box-shadow:0 10px 26px rgba(0,0,0,.55);pointer-events:none;opacity:0;transition:opacity .14s;}
-.tip:hover .tip-box,.tip:focus-within .tip-box{opacity:1}
-
-.steps{display:flex;align-items:center;margin-bottom:16px;animation:fadeIn .45s ease-out}
-.step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative}
-.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:1000;font-size:.85rem;transition:all .25s ease;border:2px solid rgba(148,163,184,.22);background:rgba(11,18,32,.82);color:#94a3b8;z-index:1}
-.step.done .step-dot{background:var(--gradient-4);color:#001018;border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.35)}
-.step.active .step-dot{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,.42)}
-.step-label{font-size:.72rem;color:#475569;font-weight:850;text-align:center;white-space:nowrap}
-.step.done .step-label,.step.active .step-label{color:#94a3b8}
-.step-line{position:absolute;top:15px;left:calc(50% + 17px);width:calc(100% - 34px);height:2px;background:rgba(148,163,184,.14);transition:background .3s;z-index:0}
-.step.done .step-line{background:rgba(34,197,94,.28)}
-
-.share-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,.12)}
-.share-btn{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.82);color:#cbd5e1;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:850;font-size:.82rem;transition:all .18s ease;display:flex;align-items:center;gap:6px}
-.share-btn:hover{transform:translateY(-2px)}
-.share-btn.wa{border-color:rgba(37,211,102,.40);color:#4ade80}
-.share-btn.wa:hover{background:rgba(37,211,102,.10);box-shadow:0 4px 12px rgba(37,211,102,.18)}
-.share-btn.cl{border-color:rgba(56,189,248,.40);color:#7dd3fc}
-.share-btn.cl:hover{background:rgba(56,189,248,.10);box-shadow:0 4px 12px rgba(56,189,248,.18)}
-
-#hx input.field-ok{border-color:rgba(34,197,94,.50)!important}
-#hx input.field-err{border-color:rgba(239,68,68,.52)!important;box-shadow:0 0 0 3px rgba(239,68,68,.10)!important}
-.field-hint{font-size:.78rem;margin-top:4px;min-height:16px;transition:all .2s}
-.field-hint.ok{color:#4ade80}
-.field-hint.err{color:#f87171}
-
-.range-bar{display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap}
-.range-tag{font-size:.75rem;border-radius:8px;padding:2px 7px;font-weight:850}
-.range-tag.lo{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25)}
-.range-tag.hi{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
-
-.countdown{margin-top:10px;padding:12px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;border-left:4px solid #f59e0b;color:#fde68a;font-size:.88rem;line-height:1.6}
-
-#zoneWrap{margin-top:12px}
-#zmap,#cmap{height:420px;border-radius:12px;border:1px solid rgba(148,163,184,.22);overflow:hidden;max-width:100%;position:relative}
-.muni-tooltip{background:#0f172a!important;border:1px solid rgba(56,189,248,.5)!important;border-radius:8px!important;color:#e2e8f0!important;font-size:13px!important;font-weight:800!important;padding:5px 10px!important;box-shadow:0 4px 14px rgba(0,0,0,.5)!important;}
-.muni-tooltip::before{display:none!important}
-.leaflet-container{font-family:system-ui,sans-serif}
-.pchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.pchip{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.75);color:#cbd5e1;border-radius:999px;padding:6px 10px;font-weight:1000;font-size:.85rem;cursor:pointer}
-.pchip.on{border-color:#38bdf8;color:#dbeafe}
-.pchip.off{opacity:.75}
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;background:rgba(2,6,23,.45);border:1px solid rgba(148,163,184,.18);border-radius:12px;color:#bcd0ea;font-size:.86rem;}
-.legdot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
-.leg1{background:#38bdf8}.leg2{background:#22c55e}
-
-.chartCard{background:linear-gradient(135deg,rgba(2,6,23,.35),rgba(15,23,42,.35));border:1px solid rgba(148,163,184,.18);border-radius:14px;padding:14px;}
-.canvasWrap{border:1px solid rgba(148,163,184,.16);border-radius:12px;overflow:hidden;background:rgba(2,6,23,.45);}
-canvas{display:block;width:100%;height:240px}
-@media(max-width:700px){canvas{height:220px}}
-
-.chat-container{display:flex;flex-direction:column;height:600px;background:linear-gradient(135deg,rgba(15,23,42,.86),rgba(11,18,32,.92));border:1px solid rgba(148,163,184,.25);border-radius:16px;overflow:hidden;}
-.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;}
-.chat-message{display:flex;gap:12px;animation:fadeIn .3s ease-out;}
-.chat-message.user{flex-direction:row-reverse;}
-.chat-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;}
-.chat-avatar.ai{background:var(--gradient-3);color:#001018;}
-.chat-avatar.user{background:var(--gradient-4);color:#001018;}
-.chat-bubble{max-width:75%;padding:12px 16px;border-radius:16px;line-height:1.6;font-size:.92rem;}
-.chat-message.user .chat-bubble{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.25);color:#e5e7eb;}
-.chat-message.ai .chat-bubble{background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.18);color:#cbd5e1;}
-.chat-bubble.thinking{font-style:italic;opacity:.7;animation:typing 1s ease-in-out infinite;}
-.chat-input-wrap{padding:16px;background:rgba(2,6,23,.8);border-top:1px solid rgba(148,163,184,.18);display:flex;gap:10px;}
-.chat-input{flex:1;padding:12px 14px;border:1px solid rgba(148,163,184,.30);border-radius:12px;background:rgba(2,6,23,.86);color:var(--t);outline:none;transition:all .18s ease;font-size:.95rem;font-family:inherit;resize:none;min-height:44px;max-height:120px;}
-.chat-input:focus{border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.14);}
-.chat-send-btn{padding:12px 20px;background:var(--gradient-3);color:#001018;border:0;border-radius:12px;cursor:pointer;font-weight:900;transition:all .18s ease;box-shadow:0 4px 15px rgba(56,189,248,.28);white-space:nowrap;}
-.chat-send-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(56,189,248,.42);}
-.chat-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.suggestion-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-.suggestion-chip{padding:6px 12px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);border-radius:999px;color:#7dd3fc;font-size:.82rem;cursor:pointer;transition:all .18s ease;}
-.suggestion-chip:hover{background:rgba(56,189,248,.18);transform:translateY(-1px);}
-::selection{background:rgba(56,189,248,.25)}
-</style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
 </head>
 <body>
-<div class="w" id="hx">
 
-  <div class="c hrow">
-    <div class="pill" data-i="hdrTitle">Assessoria d'Habitatge · Baix Penedès</div>
-    <div class="r" style="justify-content:flex-end;flex:1">
-      <div class="n" data-i="hdrHint">Ejemplos reales: solo después de Analizar.</div>
-      <div class="lang" aria-label="Idioma">
-        <button class="langbtn" id="L_CA" type="button">CA</button>
-        <button class="langbtn a" id="L_ES" type="button">ES</button>
-        <button class="langbtn" id="L_EN" type="button">EN</button>
-      </div>
-    </div>
-  </div>
+<div class="app-container">
+    
+    <header class="header">
+        <div class="brand-pill">Assessoria d'Habitatge v2.0</div>
+        <div style="color: var(--text-muted); font-size: 0.9rem;">Baix Penedès · Tarragona</div>
+    </header>
 
-  <div class="steps" id="stepBar">
-    <div class="step active" id="stp1"><div class="step-dot" id="sdot1">1</div><div class="step-label" id="slbl1">Personal</div><div class="step-line"></div></div>
-    <div class="step" id="stp2"><div class="step-dot" id="sdot2">2</div><div class="step-label" id="slbl2">Economía</div><div class="step-line"></div></div>
-    <div class="step" id="stp3"><div class="step-dot" id="sdot3">3</div><div class="step-label" id="slbl3">Preferencias</div><div class="step-line"></div></div>
-    <div class="step" id="stp4"><div class="step-dot" id="sdot4">4</div><div class="step-label" id="slbl4">Resultado</div></div>
-  </div>
-
-  <div class="tabs">
-    <div id="t_p" class="tab a" data-i="tab1">1 Personal</div>
-    <div id="t_e" class="tab" data-i="tab2">2 Economía</div>
-    <div id="t_f" class="tab" data-i="tab3">3 Preferencias</div>
-    <div id="t_r" class="tab dis" data-i="tab4">4 Resultado</div>
-    <div id="t_m" class="tab dis" data-i="tab5">5 Comparador</div>
-    <div id="t_x" class="tab dis" data-i="tab6">6 Ejemplos reales</div>
-    <div id="t_ai" class="tab dis" data-i="tab7">🤖 AI Advisor</div>
-  </div>
-
-  <div class="c" data-p="p">
-    <div class="g">
-      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name"></div>
-      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100"></div>
-    </div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintP">Rellena los datos básicos para continuar.</div></div>
-    <div class="r" style="margin-top:10px"><button class="b" id="np" type="button" data-i="btnContinue">Continuar</button></div>
-  </div>
-
-  <div class="c" data-p="e" style="display:none">
-    <div class="g">
-      <div>
-        <label data-i="lblInc">Ingresos mensuales (€)</label>
-        <div class="tip">
-          <input id="inc" type="number" min="0">
-          <span class="tip-icon" tabindex="0">i</span>
-          <span class="tip-box" data-i="tipInc">Sueldo neto que entra en el banco cada mes.</span>
+    <div class="stepper">
+        <div class="step-item active" id="step1">
+            <div class="step-circle">1</div>
+            <div class="step-label">Perfil</div>
         </div>
-        <div class="field-hint" id="hint-inc"></div>
-      </div>
-      <div>
-        <label data-i="lblSav">Ahorros disponibles (€)</label>
-        <div class="tip">
-          <input id="sav" type="number" min="0">
-          <span class="tip-icon" tabindex="0">i</span>
-          <span class="tip-box" data-i="tipSav">Capital para entrada (20%) y gastos (10%).</span>
+        <div class="step-item" id="step2">
+            <div class="step-circle">2</div>
+            <div class="step-label">Economía</div>
         </div>
-        <div class="field-hint" id="hint-sav"></div>
-      </div>
-      <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25"></div>
-      <div><label data-i="lblHor">¿Vivirás más de 5 años aquí?</label><select id="hor"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
-      <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
-      <div>
-        <label data-i="lblMsv">Ahorro mensual (€)</label>
-        <div class="tip">
-          <input id="msv" type="number" min="0">
-          <span class="tip-icon" tabindex="0">i</span>
-          <span class="tip-box" data-i="tipMsv">Cuánto dinero guardas a final de mes.</span>
+        <div class="step-item" id="step3">
+            <div class="step-circle">3</div>
+            <div class="step-label">Preferencias</div>
         </div>
-      </div>
+        <div class="step-item" id="step4">
+            <div class="step-circle">4</div>
+            <div class="step-label">Análisis</div>
+        </div>
     </div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
-    <div class="r" style="margin-top:10px"><button class="b" id="ne" type="button" data-i="btnContinue">Continuar</button></div>
-  </div>
 
-  <div class="c" data-p="f" style="display:none">
-    <div class="g">
-      <div>
-        <label data-i="lblMuni">Municipio (Baix Penedès)</label>
-        <select id="ar">
-          <option value="*">Cualquiera</option>
-          <option>Cunit</option><option>El Vendrell</option><option>Calafell</option><option>Santa Oliva</option><option>Bellvei</option>
-          <option>L'Arboç</option><option>Banyeres del Penedès</option><option>Albinyana</option><option>Bonastre</option><option>Masllorenç</option>
-          <option>La Bisbal del Penedès</option><option>Llorenç del Penedès</option><option>Sant Jaume dels Domenys</option><option>El Montmell</option>
-        </select>
-        <div class="small" style="margin-top:6px" data-i="lblMuniHelp">Si usas el mapa puedes elegir varios municipios.</div>
-      </div>
-      <div>
-        <label data-i="lblM2">Metros cuadrados (≥50)</label>
-        <input id="m2" type="number" min="50">
-        <div class="field-hint" id="hint-m2"></div>
-      </div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="0" max="10" value="2"></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1"></div>
-      <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
-      <div class="r" style="align-items:flex-start">
-        <div style="width:100%">
-          <label data-i="lblExtras">Extras (opcional)</label>
-          <div class="small" data-i="lblExtrasHint">Cambian el precio estimado y los filtros de ejemplos reales.</div>
-          <div class="r" style="margin-top:8px">
-            <label><input type="checkbox" id="et"><span data-i="exTer">Terraza</span></label>
-            <label><input type="checkbox" id="ep"><span data-i="exPis">Piscina</span></label>
-            <label><input type="checkbox" id="el"><span data-i="exAsc">Ascensor</span></label>
-            <label><input type="checkbox" id="ek"><span data-i="exGar">Aparcamiento</span></label>
-          </div>
-        </div>
-      </div>
+    <div class="nav-tabs">
+        <button class="nav-btn active" onclick="app.nav('personal')">1. Personal</button>
+        <button class="nav-btn" onclick="app.nav('economy')">2. Economía</button>
+        <button class="nav-btn" onclick="app.nav('prefs')">3. Preferencias</button>
+        <button class="nav-btn" onclick="app.nav('results')" id="btn-res" disabled style="opacity:0.5">4. Resultados</button>
+        <button class="nav-btn" onclick="app.nav('examples')" id="btn-ex" disabled style="opacity:0.5">5. Ejemplos Reales</button>
+        <button class="nav-btn" onclick="app.nav('compare')" id="btn-cmp" disabled style="opacity:0.5">6. Comparador</button>
+        <button class="nav-btn special-ai" onclick="app.nav('ai')" id="btn-ai" disabled style="opacity:0.5">🤖 AI Advisor</button>
     </div>
-    <div class="r" style="margin-top:10px">
-      <button class="b" id="go" type="button" data-i="btnAnalyze">Analizar</button>
-      <button class="b ok" id="toggleMap" type="button" data-i="btnMap">Mapa (zona real)</button>
-    </div>
-    <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintF">Si cambias preferencias, vuelve a Analizar para actualizar el resultado.</div></div>
-    <div id="zoneWrap" class="cardx" style="display:none">
-      <div class="top">
-        <div>
-          <div class="title" data-i="zoneTitle">Zona preferida (mapa real)</div>
-          <div class="n" data-i="zoneHint">Haz clic en un municipio para seleccionarlo.</div>
-          <div class="small" style="color:#64748b;margin-top:3px" data-i="zoneLoadHint">Los límites se cargan de OpenStreetMap en tiempo real.</div>
-          <div class="n" id="zoneNote" style="margin-top:6px">Seleccionados: ninguno</div>
-        </div>
-        <div class="pchips" id="zoneChips"></div>
-      </div>
-      <div class="r" style="margin-top:10px;justify-content:flex-end">
-        <button class="b" id="zoneClear" type="button" data-i="btnClear">Limpiar</button>
-        <button class="b ok" id="zoneApply" type="button" data-i="btnUse">Usar en Ejemplos reales</button>
-      </div>
-      <div id="zmap" style="margin-top:10px"></div>
-      <div class="legend">
-        <span><span class="legdot leg1"></span><span data-i="legSel">Seleccionado</span></span>
-        <span><span class="legdot leg2"></span><span data-i="legOk">Límites municipales reales</span></span>
-      </div>
-      <div class="n" id="zoneApplied" style="margin-top:10px"></div>
-    </div>
-  </div>
 
-  <div class="c" data-p="r" style="display:none">
-    <div class="g">
-      <div class="k"><span data-i="kPrice">Precio estimado</span><b id="k1">0 €</b><div class="sub" id="k1sub"></div></div>
-      <div class="k"><span data-i="kRent">Alquiler estimado</span><b id="k2">0 €</b><div class="sub" id="k2sub"></div></div>
-      <div class="k"><span data-i="kPay">Cuota hipoteca</span><b id="k3">0 €</b><div class="sub" id="k3sub"></div></div>
-      <div class="k"><span data-i="kRec">Recomendación</span><b id="k4">–</b><div class="sub" id="k4sub"></div></div>
-    </div>
-    <div id="rCard" class="cardx" style="display:none">
-      <div class="top"><div class="title" id="rTitle"></div><div class="chips" id="rChips"></div></div>
-      <div class="grid3" id="rMini"></div>
-      <div class="grid3" style="margin-top:14px">
-        <div class="chartCard">
-          <div style="font-weight:950;color:#eaf2ff" data-i="chartEffTitle">Esfuerzo mensual (visual)</div>
-          <div class="small" data-i="chartEffHint">Línea: capacidad segura (35% ingresos). Barras: hipoteca vs alquiler.</div>
-          <div class="canvasWrap" style="margin-top:10px"><canvas id="effChart"></canvas></div>
+    <div id="view-personal" class="panel active">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <h2 style="margin-top:0">Datos Personales</h2>
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" class="input-box" id="inp-name" placeholder="Ej. Marc García">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Edad</label>
+                    <input type="number" class="input-box" id="inp-age" value="30">
+                </div>
+                <div class="form-group">
+                    <label>Residencia Actual</label>
+                    <select class="input-box" id="inp-residency">
+                        <option>Alquiler</option>
+                        <option>Padres</option>
+                        <option>Propiedad</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-action btn-primary" onclick="app.nav('economy')">Siguiente: Economía</button>
         </div>
-        <div class="chartCard">
-          <div style="font-weight:950;color:#eaf2ff" data-i="chartSensTitle">Sensibilidad (tipo de interés)</div>
-          <div class="small" data-i="chartSensHint">Cómo cambia la cuota si sube el tipo. No predice el futuro, solo muestra el riesgo.</div>
-          <div class="canvasWrap" style="margin-top:10px"><canvas id="sensChart"></canvas></div>
-        </div>
-        <div class="chartCard">
-          <div style="font-weight:950;color:#eaf2ff" data-i="chartTipsTitle">Lectura rápida</div>
-          <div class="small" id="chartTips"></div>
-          <div style="margin-top:10px;padding:12px;border-radius:12px;border:1px solid rgba(148,163,184,.18);background:rgba(2,6,23,.35);color:#cbd5e1;line-height:1.65" id="quickExplain"></div>
-        </div>
-      </div>
-      <div class="body" id="rBody"></div>
-      <div class="note" id="rt"></div>
     </div>
-    <div class="r" style="margin-top:10px">
-      <button class="b" id="cp" type="button" data-i="btnCopy">Copiar resumen</button>
-      <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
-      <button class="b ok" id="jumpX" type="button" data-i="btnGoExamples">Ir a Ejemplos reales</button>
-      <button class="b ok" id="jumpAI" type="button" data-i="btnAskAI">💬 Consultar con AI</button>
-    </div>
-    <div class="share-bar">
-      <button class="share-btn wa" id="shareWa" type="button">📱 WhatsApp</button>
-      <button class="share-btn cl" id="shareCl" type="button">📋 <span data-i="btnCopy2">Copiar</span></button>
-    </div>
-  </div>
 
-  <div class="c" data-p="m" style="display:none">
-    <div class="g">
-      <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
-      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="0" max="10"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10"></div>
-      <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
-      <div class="r" style="align-items:flex-start">
-        <div style="width:100%">
-          <label data-i="lblExtras2">Extras (comparador)</label>
-          <div class="small" data-i="lblExtrasHint2">Mismas características, distinta zona.</div>
-          <div class="r" style="margin-top:8px">
-            <label><input type="checkbox" id="ct"><span data-i="exTer">Terraza</span></label>
-            <label><input type="checkbox" id="cp0"><span data-i="exPis">Piscina</span></label>
-            <label><input type="checkbox" id="cl0"><span data-i="exAsc">Ascensor</span></label>
-            <label><input type="checkbox" id="ck0"><span data-i="exGar">Aparcamiento</span></label>
-          </div>
+    <div id="view-economy" class="panel">
+        <div class="card">
+            <h2 style="margin-top:0">Perfil Financiero</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Ingresos Netos Mensuales (Hogar)</label>
+                    <input type="number" class="input-box" id="inp-income" placeholder="2500" value="2500">
+                    <small style="color: #64748b">Suma de todas las nóminas netas x 12 / 12.</small>
+                </div>
+                <div class="form-group">
+                    <label>Ahorros Disponibles (Total)</label>
+                    <input type="number" class="input-box" id="inp-savings" placeholder="50000" value="40000">
+                    <small style="color: #64748b">Entrada + Gastos.</small>
+                </div>
+                <div class="form-group">
+                    <label>Deudas / Préstamos Mensuales</label>
+                    <input type="number" class="input-box" id="inp-debts" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Años de Hipoteca Deseados</label>
+                    <input type="number" class="input-box" id="inp-years" value="30" max="40">
+                </div>
+            </div>
+            <button class="btn-action btn-primary" onclick="app.nav('prefs')">Siguiente: Preferencias</button>
         </div>
-      </div>
     </div>
-    <div id="cmap" style="width:100%;height:320px;border:0;border-radius:12px;margin-top:12px"></div>
-    <div class="r" style="margin-top:10px">
-      <button class="b" id="bc" type="button" data-i="btnCompare">Comparar</button>
-      <button class="b ok" id="autoFillCmp" type="button" data-i="btnUseMine">Usar mis datos</button>
-    </div>
-    <div class="cardx" style="margin-top:12px">
-      <div class="top"><div class="title" data-i="cmpTitle">Resultado del comparador</div><div class="chips" id="cmpChips"></div></div>
-      <div class="body" id="cmg"></div>
-      <div class="chartCard" style="margin-top:14px">
-        <div style="font-weight:950;color:#eaf2ff" data-i="cmpChartTitle">Comparación visual</div>
-        <div class="small" data-i="cmpChartHint">Tu zona vs provincia. Misma vivienda, distinto contexto.</div>
-        <div class="canvasWrap" style="margin-top:10px"><canvas id="cmpChart"></canvas></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="c" data-p="x" style="display:none">
-    <div class="n" id="xinfo"></div>
-    <div class="r" style="margin-top:10px" id="xbtns"></div>
-    <div class="gu"><span class="a">📍</span><div class="n" data-i="hintX">Si elegiste varios municipios, salen botones por municipio.</div></div>
-  </div>
-
-  <div class="c" data-p="ai" style="display:none">
-    <div class="cardx">
-      <div class="top">
-        <div class="title">🤖 AI Financial Advisor</div>
-        <div class="chips"><span class="chip good" id="aiStatus" data-i="aiConnected">Conectado</span></div>
-      </div>
-      <div class="gu" style="margin-top:0;margin-bottom:16px">
-        <span class="a">💡</span>
-        <div class="n"><b>Tu asesor financiero personal.</b> Conoce toda tu situación y te da consejos específicos.</div>
-      </div>
-      <div class="suggestion-chips" id="aiSuggestions">
-        <div class="suggestion-chip" data-q="¿Qué puedo hacer para mejorar mi situación?">¿Cómo mejorar?</div>
-        <div class="suggestion-chip" data-q="¿Cuánto necesito ahorrar mensualmente para comprar?">¿Cuánto ahorrar?</div>
-        <div class="suggestion-chip" data-q="¿Es mejor comprar o alquilar en mi caso específico?">¿Comprar o alquilar?</div>
-        <div class="suggestion-chip" data-q="¿Qué municipios del Baix Penedès me recomiendas?">¿Qué municipios?</div>
-      </div>
-      <div class="chat-container">
-          <div class="chat-messages" id="chatMsgs">
-              <div class="chat-message ai">
-                  <div class="chat-avatar ai">AI</div>
-                  <div class="chat-bubble">Hola. He analizado tus datos. ¿En qué puedo ayudarte hoy sobre tu futura vivienda en el Baix Penedès?</div>
-              </div>
-          </div>
-          <div class="chat-input-wrap">
-              <textarea class="chat-input" id="chatIn" placeholder="Escribe tu consulta..."></textarea>
-              <button class="chat-send-btn" id="chatSend">Enviar</button>
-          </div>
-      </div>
+    <div id="view-prefs" class="panel">
+        <div class="grid-2">
+            <div class="card">
+                <h3 style="margin-top:0">¿Qué estás buscando?</h3>
+                <div class="form-group">
+                    <label>Municipio Preferente</label>
+                    <select class="input-box" id="inp-town" onchange="app.updateMapSelection()">
+                        <option value="calafell">Calafell</option>
+                        <option value="cunit">Cunit</option>
+                        <option value="vendrell">El Vendrell</option>
+                        <option value="arboc">L'Arboç</option>
+                        <option value="bellvei">Bellvei</option>
+                        <option value="santas">Santa Oliva</option>
+                    </select>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Superficie Mínima (m²)</label>
+                        <input type="number" class="input-box" id="inp-m2" value="80">
+                    </div>
+                    <div class="form-group">
+                        <label>Habitaciones</label>
+                        <input type="number" class="input-box" id="inp-rooms" value="3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Inmueble</label>
+                    <select class="input-box" id="inp-type">
+                        <option value="flat">Piso / Apartamento</option>
+                        <option value="house">Casa / Chalet</option>
+                        <option value="duplex">Dúplex</option>
+                    </select>
+                </div>
+                <button class="btn-action btn-primary" onclick="app.calculate()">ANALIZAR VIABILIDAD</button>
+            </div>
+            
+            <div class="card" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
+                <div style="padding:15px; background:var(--bg-card-hover); border-bottom:1px solid var(--border)">
+                    <span style="font-weight:700">Explorador de Zona</span>
+                </div>
+                <div class="map-wrapper" id="map-container-pref">
+                    <div id="mainMap"></div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div id="view-results" class="panel">
+        
+        <div class="grid-4" style="margin-bottom:25px">
+            <div class="kpi-card">
+                <div class="kpi-label">Precio Máximo Recomendado</div>
+                <div class="kpi-value" id="res-max-price">0 €</div>
+                <div class="kpi-sub">Basado en endeudamiento 35%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Cuota Hipoteca Estimada</div>
+                <div class="kpi-value" id="res-quota">0 €</div>
+                <div class="kpi-sub" id="res-rate-info">Interés fijo 3.2%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Ahorro Necesario (Entrada)</div>
+                <div class="kpi-value" id="res-savings-needed">0 €</div>
+                <div class="kpi-sub">20% Entrada + 10% ITP + Gastos</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Diagnóstico</div>
+                <div class="kpi-value" id="res-status">--</div>
+                <div class="kpi-sub" id="res-effort">Esfuerzo: 0%</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Análisis Visual de Esfuerzo</h3>
+                <div style="height: 300px;">
+                    <canvas id="chartResults"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Detalle del Asesor</h3>
+                <div id="res-text-analysis" style="line-height:1.7; color: #cbd5e1;">
+                    </div>
+                <div style="margin-top:20px; padding:15px; background:rgba(56,189,248,0.1); border-left:4px solid var(--primary); border-radius:4px;">
+                    <strong>Consejo Rápido:</strong> <span id="res-tip">...</span>
+                </div>
+                <div style="margin-top:20px; display:flex; gap:10px;">
+                    <button class="btn-action btn-primary" style="font-size:0.9rem" onclick="app.nav('ai')">Preguntar a la IA</button>
+                    <button class="btn-action" style="background:#1e293b; color:white; font-size:0.9rem" onclick="app.nav('examples')">Ver Casas Reales</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-examples" class="panel">
+        <div class="grid-2" style="grid-template-columns: 1fr 2fr;">
+            <div class="card" style="height: 600px; overflow-y: auto; padding:0;">
+                <div style="padding:15px; position:sticky; top:0; background:var(--bg-card); border-bottom:1px solid var(--border); z-index:10;">
+                    <h3 style="margin:0">Inmuebles Disponibles</h3>
+                    <small>Datos simulados del mercado real</small>
+                </div>
+                <div id="listings-container">
+                    </div>
+            </div>
+            <div class="card" style="padding:0; overflow:hidden;">
+                 <div class="map-wrapper" style="height:100%" id="map-container-ex">
+                    <div id="exMap" style="width:100%; height:100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-ai" class="panel">
+        <div class="chat-interface">
+            <div class="chat-header">
+                <div class="ai-status"></div>
+                <div>
+                    <div style="font-weight:700">Financial AI Advisor</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted)">Especialista en Mercado Inmobiliario Baix Penedès</div>
+                </div>
+            </div>
+            <div class="chat-body" id="chat-feed">
+                <div class="msg ai">
+                    Hola. He procesado todo tu perfil financiero. Veo que tienes unos ingresos de <span id="ai-mem-inc">...</span> y buscas en <span id="ai-mem-town">...</span>.
+                    <br><br>¿En qué puedo ayudarte? Puedes preguntarme sobre "riesgos", "impuestos", "mejor zona" o "alquiler vs compra".
+                </div>
+            </div>
+            <div class="typing-indicator" id="typing">AI está escribiendo...</div>
+            <div class="chat-input-area">
+                <input type="text" class="input-box" id="chat-input" placeholder="Escribe tu consulta aquí..." onkeydown="if(event.key==='Enter') app.chat.send()">
+                <button class="btn-action btn-primary" style="width:auto; margin:0;" onclick="app.chat.send()">Enviar</button>
+            </div>
+        </div>
+    </div>
 
 </div>
 
 <script>
-// --- Variables Globales ---
-const els = {};
-['t_p','t_e','t_f','t_r','t_m','t_x','t_ai', 'inc','sav','yrs','m2','ar','effChart','sensChart','cmpChart','zmap','cmap'].forEach(id => {
-    els[id] = document.getElementById(id);
-});
+/* --- 1. MOCK DATABASE (Datos Reales Simulados) --- */
+const DB_VIVIENDAS = [
+    { id: 1, town: 'cunit', price: 215000, m2: 90, rooms: 3, type: 'flat', lat: 41.1985, lng: 1.635, title: "Piso céntrico cerca playa" },
+    { id: 2, town: 'cunit', price: 350000, m2: 150, rooms: 4, type: 'house', lat: 41.2010, lng: 1.630, title: "Casa adosada reformada" },
+    { id: 3, town: 'calafell', price: 185000, m2: 75, rooms: 2, type: 'flat', lat: 41.1920, lng: 1.570, title: "Apartamento Calafell Playa" },
+    { id: 4, town: 'calafell', price: 420000, m2: 200, rooms: 5, type: 'house', lat: 41.2050, lng: 1.560, title: "Torre con piscina privada" },
+    { id: 5, town: 'vendrell', price: 145000, m2: 85, rooms: 3, type: 'flat', lat: 41.2220, lng: 1.535, title: "Piso económico El Tancat" },
+    { id: 6, town: 'vendrell', price: 260000, m2: 140, rooms: 4, type: 'house', lat: 41.2150, lng: 1.540, title: "Casa en zona escolar" },
+    { id: 7, town: 'arboc', price: 120000, m2: 95, rooms: 3, type: 'flat', lat: 41.2650, lng: 1.605, title: "Oportunidad L'Arboç Centro" },
+    { id: 8, town: 'bellvei', price: 210000, m2: 130, rooms: 4, type: 'house', lat: 41.2400, lng: 1.575, title: "Casa de pueblo tranquila" },
+    { id: 9, town: 'santas', price: 295000, m2: 180, rooms: 4, type: 'house', lat: 41.2500, lng: 1.550, title: "Chalet independiente" },
+    { id: 10, town: 'cunit', price: 175000, m2: 65, rooms: 2, type: 'flat', lat: 41.1960, lng: 1.640, title: "Ático con vistas" }
+];
 
-let charts = {};
-let mapZ = null;
-let mapC = null;
-let currentTab = 0;
+const TOWN_COORDS = {
+    cunit: [41.198, 1.637],
+    calafell: [41.200, 1.568],
+    vendrell: [41.222, 1.533],
+    arboc: [41.267, 1.603],
+    bellvei: [41.242, 1.576],
+    santas: [41.253, 1.551]
+};
 
-// --- Inicialización ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Eventos de Pestañas
-    document.getElementById('t_p').onclick = () => showTab('p');
-    document.getElementById('t_e').onclick = () => showTab('e');
-    document.getElementById('t_f').onclick = () => showTab('f');
-    document.getElementById('t_r').onclick = () => showTab('r');
-    document.getElementById('t_m').onclick = () => showTab('m');
-    document.getElementById('t_x').onclick = () => showTab('x');
-    document.getElementById('t_ai').onclick = () => showTab('ai');
+/* --- 2. APPLICATION STATE & LOGIC --- */
+const app = {
+    state: {
+        name: '', age: 30,
+        income: 2500, savings: 40000, debts: 0, years: 30,
+        town: 'calafell', m2: 80,
+        results: null
+    },
+    maps: {},
+    chart: null,
 
-    // Botones de Navegación
-    document.getElementById('np').onclick = () => showTab('e');
-    document.getElementById('ne').onclick = () => showTab('f');
-    document.getElementById('go').onclick = calculate;
-    document.getElementById('rs').onclick = () => location.reload();
-    
-    document.getElementById('jumpX').onclick = () => showTab('x');
-    document.getElementById('jumpAI').onclick = () => showTab('ai');
+    init: function() {
+        // Inicializar mapas (Lazy load se maneja en nav)
+        this.maps.main = L.map('mainMap').setView(TOWN_COORDS.calafell, 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(this.maps.main);
+        
+        this.maps.ex = L.map('exMap').setView(TOWN_COORDS.calafell, 12);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(this.maps.ex);
+    },
 
-    // Botones Mapa
-    document.getElementById('toggleMap').onclick = () => {
-        const wrap = document.getElementById('zoneWrap');
-        wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
-        if(wrap.style.display === 'block') initMapZ();
-    };
+    nav: function(viewId) {
+        // UI Switching
+        document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+        document.getElementById('view-'+viewId).classList.add('active');
+        
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        // Find button that calls this nav
+        const btns = Array.from(document.querySelectorAll('.nav-btn'));
+        const activeBtn = btns.find(b => b.getAttribute('onclick').includes(viewId));
+        if(activeBtn) activeBtn.classList.add('active');
 
-    // Chat AI
-    document.getElementById('chatSend').onclick = sendChat;
-    document.querySelectorAll('.suggestion-chip').forEach(c => {
-        c.onclick = () => {
-            document.getElementById('chatIn').value = c.getAttribute('data-q');
-            sendChat();
-        }
-    });
-});
-
-// --- Lógica de Pestañas ---
-function showTab(id) {
-    // Ocultar todas las secciones
-    document.querySelectorAll('.c[data-p]').forEach(el => el.style.display = 'none');
-    
-    // Mostrar la seleccionada
-    const target = document.querySelector(`.c[data-p="${id}"]`);
-    if(target) target.style.display = 'block';
-
-    // Actualizar estilo de pestañas
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('a'));
-    const tabBtn = document.getElementById('t_' + id);
-    if(tabBtn) {
-        tabBtn.classList.add('a');
-        tabBtn.classList.remove('dis');
-    }
-
-    // Actualizar barra de pasos
-    updateSteps(id);
-}
-
-function updateSteps(id) {
-    const map = {'p':1, 'e':2, 'f':3, 'r':4};
-    const step = map[id] || 4;
-    
-    for(let i=1; i<=4; i++) {
-        const el = document.getElementById('stp'+i);
-        el.classList.remove('active', 'done');
-        if(i < step) el.classList.add('done');
-        if(i === step) el.classList.add('active');
-    }
-}
-
-// --- Cálculos ---
-function calculate() {
-    // Obtener valores
-    const inc = parseFloat(document.getElementById('inc').value) || 0;
-    const sav = parseFloat(document.getElementById('sav').value) || 0;
-    const yrs = parseFloat(document.getElementById('yrs').value) || 25;
-    const m2 = parseFloat(document.getElementById('m2').value) || 0;
-    const muni = document.getElementById('ar').value;
-    
-    // Precios base simulados (Baix Penedès)
-    let pricePerM2 = 1800; // Default
-    if(muni === 'Cunit') pricePerM2 = 2100;
-    if(muni === 'El Vendrell') pricePerM2 = 1600;
-    if(muni === 'Calafell') pricePerM2 = 2000;
-    
-    // Calcular
-    const totalPrice = m2 * pricePerM2;
-    const taxes = totalPrice * 0.10;
-    const needLoan = Math.max(0, totalPrice + taxes - sav);
-    
-    // Hipoteca (Sistema Francés)
-    const annualRate = 0.035; // 3.5%
-    const monthlyRate = annualRate / 12;
-    const months = yrs * 12;
-    
-    let quota = 0;
-    if(needLoan > 0) {
-        quota = needLoan * (monthlyRate * Math.pow(1+monthlyRate, months)) / (Math.pow(1+monthlyRate, months) - 1);
-    }
-    
-    const effort = inc > 0 ? (quota / inc) * 100 : 0;
-
-    // Renderizar UI Resultados
-    document.getElementById('k1').innerText = totalPrice.toLocaleString('es-ES', {style:'currency', currency:'EUR'});
-    document.getElementById('k3').innerText = quota.toLocaleString('es-ES', {style:'currency', currency:'EUR'}) + '/mes';
-    document.getElementById('k1sub').innerText = `~${pricePerM2} €/m²`;
-    
-    const k4 = document.getElementById('k4');
-    if(effort > 40) { k4.innerText = "NO VIABLE"; k4.style.color = "#ef4444"; }
-    else if(effort > 30) { k4.innerText = "RIESGO"; k4.style.color = "#f59e0b"; }
-    else { k4.innerText = "VIABLE"; k4.style.color = "#22c55e"; }
-    
-    document.getElementById('k4sub').innerText = `Esfuerzo: ${effort.toFixed(1)}%`;
-
-    // Activar pestañas resultantes
-    ['t_r', 't_m', 't_x', 't_ai'].forEach(id => {
-        document.getElementById(id).classList.remove('dis');
-    });
-
-    // Mostrar Resultado
-    document.getElementById('rCard').style.display = 'block';
-    showTab('r');
-    
-    // Render Charts
-    renderEffortChart(inc, quota);
-}
-
-// --- Gráficos (Chart.js) ---
-function renderEffortChart(inc, quota) {
-    const ctx = document.getElementById('effChart').getContext('2d');
-    if(charts.eff) charts.eff.destroy();
-    
-    charts.eff = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Ingresos', 'Cuota Hipoteca', 'Límite Seguro (30%)'],
-            datasets: [{
-                data: [inc, quota, inc*0.3],
-                backgroundColor: ['#38bdf8', '#ef4444', '#22c55e'],
-                borderRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } }
+        // Step Update
+        const stepMap = { 'personal':1, 'economy':2, 'prefs':3, 'results':4 };
+        if(stepMap[viewId]) {
+            for(let i=1; i<=4; i++) {
+                const el = document.getElementById('step'+i);
+                el.classList.remove('active', 'completed');
+                if(i < stepMap[viewId]) el.classList.add('completed');
+                if(i === stepMap[viewId]) el.classList.add('active');
             }
         }
-    });
-}
 
-// --- Mapas (Leaflet) ---
-function initMapZ() {
-    if(mapZ) return;
-    mapZ = L.map('zmap').setView([41.22, 1.56], 12); // Centrado en Baix Penedès
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO'
-    }).addTo(mapZ);
-}
+        // Map Fix (Invalidate Size para evitar gris)
+        if(viewId === 'prefs') setTimeout(() => this.maps.main.invalidateSize(), 200);
+        if(viewId === 'examples') {
+            setTimeout(() => {
+                this.maps.ex.invalidateSize();
+                this.populateExamples();
+            }, 200);
+        }
+        if(viewId === 'ai') this.chat.init();
+    },
 
-// --- Chat AI Mock ---
-function sendChat() {
-    const input = document.getElementById('chatIn');
-    const msg = input.value.trim();
-    if(!msg) return;
-    
-    // User Message
-    addMsg(msg, 'user');
-    input.value = '';
-    
-    // AI Thinking
-    setTimeout(() => {
-        addMsg("Analizando tu situación en Baix Penedès...", 'ai');
-    }, 800);
-}
+    updateMapSelection: function() {
+        const town = document.getElementById('inp-town').value;
+        const coords = TOWN_COORDS[town];
+        if(coords) {
+            this.maps.main.flyTo(coords, 14);
+            // Dibujar radio
+            if(this.maps.main.circle) this.maps.main.removeLayer(this.maps.main.circle);
+            this.maps.main.circle = L.circle(coords, {
+                color: '#38bdf8', fillColor: '#38bdf8', fillOpacity: 0.2, radius: 1000
+            }).addTo(this.maps.main);
+        }
+    },
 
-function addMsg(text, type) {
-    const div = document.createElement('div');
-    div.className = `chat-message ${type}`;
-    div.innerHTML = `
-        <div class="chat-avatar ${type}">${type === 'ai' ? 'AI' : 'Tú'}</div>
-        <div class="chat-bubble">${text}</div>
-    `;
-    document.getElementById('chatMsgs').appendChild(div);
-    div.scrollIntoView({behavior: "smooth"});
-}
+    calculate: function() {
+        // 1. Get Values
+        const s = this.state;
+        s.name = document.getElementById('inp-name').value;
+        s.age = parseInt(document.getElementById('inp-age').value);
+        s.income = parseFloat(document.getElementById('inp-income').value);
+        s.savings = parseFloat(document.getElementById('inp-savings').value);
+        s.debts = parseFloat(document.getElementById('inp-debts').value);
+        s.years = parseInt(document.getElementById('inp-years').value);
+        s.town = document.getElementById('inp-town').value;
 
+        // 2. Math Logic
+        const maxEffortRate = 0.35; // 35% limite sano
+        const availableForQuota = (s.income * maxEffortRate) - s.debts;
+        const interestRate = 0.032; // 3.2%
+        const r = interestRate / 12;
+        const n = s.years * 12;
+
+        // Cuánto dinero puede pedir prestado con esa cuota máxima
+        // Formula PV = PMT * (1 - (1+r)^-n) / r
+        let maxLoan = 0;
+        if(availableForQuota > 0) {
+            maxLoan = availableForQuota * (1 - Math.pow(1+r, -n)) / r;
+        }
+
+        // Costes Compraventa (ITP 10% + Notaria 3%)
+        // Si es joven (<33) y vivienda habitual en Cat, ITP es 5% (simplificación lógica)
+        const itpRate = s.age <= 32 && s.income < 30000 ? 0.05 : 0.10;
+        const expensesRate = itpRate + 0.03; 
+
+        // Precio Casa = (Ahorro + Hipoteca) / (1 + Gastos)
+        // Pero el banco solo da el 80% del valor de tasación/compra.
+        // Limitante 1: Capacidad endeudamiento (maxLoan)
+        // Limitante 2: Ahorros (deben cubrir 20% + Gastos)
+        
+        // Calculamos Precio Máximo según Ahorros:
+        // Ahorros = Precio * 0.20 + Precio * Gastos -> Ahorros = Precio * (0.20 + Gastos)
+        const maxPriceBySavings = s.savings / (0.20 + expensesRate);
+        
+        // Calculamos Precio Máximo según Hipoteca (Banco da 80%):
+        // Hipoteca = Precio * 0.80 -> Precio = Hipoteca / 0.80
+        const maxPriceByIncome = maxLoan / 0.80;
+
+        // El real es el menor de los dos
+        const feasiblePrice = Math.min(maxPriceBySavings, maxPriceByIncome);
+        const estimatedQuota = (feasiblePrice * 0.80) * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+        const effortPercent = (estimatedQuota / s.income) * 100;
+
+        // Store Results
+        s.results = {
+            price: feasiblePrice,
+            quota: estimatedQuota,
+            effort: effortPercent,
+            expenses: feasiblePrice * expensesRate,
+            loan: feasiblePrice * 0.80,
+            neededSavings: (feasiblePrice * 0.20) + (feasiblePrice * expensesRate)
+        };
+
+        // 3. Render
+        document.getElementById('res-max-price').innerText = this.fmt(feasiblePrice);
+        document.getElementById('res-quota').innerText = this.fmt(estimatedQuota) + "/mes";
+        document.getElementById('res-savings-needed').innerText = this.fmt(s.results.neededSavings);
+        
+        const stEl = document.getElementById('res-status');
+        const efEl = document.getElementById('res-effort');
+        
+        efEl.innerText = `Esfuerzo Real: ${effortPercent.toFixed(1)}%`;
+        
+        if(effortPercent > 40) {
+            stEl.innerText = "NO VIABLE"; stEl.className = "kpi-value text-danger";
+            document.getElementById('res-text-analysis').innerHTML = `Tu nivel de endeudamiento superaría el 40%. Ningún banco tradicional aprobará la operación sin avalistas fuertes. Te faltan ahorros o ingresos.`;
+            document.getElementById('res-tip').innerText = "Busca en zonas más baratas como L'Arboç o reduce m².";
+        } else if(effortPercent > 33) {
+            stEl.innerText = "AL LÍMITE"; stEl.className = "kpi-value text-warning";
+             document.getElementById('res-text-analysis').innerHTML = `Es viable pero arriesgado. Estás justo en el límite del 35%. Cualquier subida del Euribor (si fuera variable) te pondría en aprietos.`;
+             document.getElementById('res-tip').innerText = "Intenta negociar una rebaja del 5-10% en el precio final.";
+        } else {
+            stEl.innerText = "OPTIMO"; stEl.className = "kpi-value text-success";
+             document.getElementById('res-text-analysis').innerHTML = `Situación financiera excelente. Tienes luz verde para comprar. Tu cuota es cómoda y tienes colchón de seguridad.`;
+             document.getElementById('res-tip').innerText = "Pide hipoteca a tipo fijo y compara 3 bancos.";
+        }
+
+        // Enable Tabs
+        document.getElementById('btn-res').disabled = false;
+        document.getElementById('btn-ex').disabled = false;
+        document.getElementById('btn-cmp').disabled = false;
+        document.getElementById('btn-ai').disabled = false;
+        
+        document.querySelectorAll('.nav-btn').forEach(b => b.style.opacity = 1);
+        
+        this.nav('results');
+        this.renderChart();
+        this.updateAIContext();
+    },
+
+    fmt: function(n) {
+        return n.toLocaleString('es-ES', {style:'currency', currency:'EUR', maximumFractionDigits:0});
+    },
+
+    renderChart: function() {
+        const ctx = document.getElementById('chartResults').getContext('2d');
+        if(this.chart) this.chart.destroy();
+        
+        const res = this.state.results;
+        
+        this.chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cuota Hipoteca', 'Resto Ingresos'],
+                datasets: [{
+                    data: [res.quota, this.state.income - res.quota],
+                    backgroundColor: [
+                        res.effort > 35 ? '#ef4444' : '#38bdf8', 
+                        '#1e293b'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: {color: '#94a3b8'} }
+                },
+                cutout: '70%'
+            }
+        });
+    },
+
+    populateExamples: function() {
+        const list = document.getElementById('listings-container');
+        list.innerHTML = '';
+        
+        // Filtrar por precio similar (hasta +20% de lo viable)
+        const limit = this.state.results ? this.state.results.price * 1.2 : 1000000;
+        const matches = DB_VIVIENDAS.filter(v => v.price <= limit);
+
+        // Limpiar mapa viejo
+        this.maps.ex.eachLayer((layer) => {
+            if(!!layer.toGeoJSON) this.maps.ex.removeLayer(layer);
+        });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(this.maps.ex);
+
+        matches.forEach(v => {
+            // HTML List
+            const div = document.createElement('div');
+            div.className = 'listing-item';
+            div.innerHTML = `
+                <div style="width:60px; height:60px; background:#334155; border-radius:8px; display:flex; align-items:center; justify-content:center;">🏠</div>
+                <div>
+                    <div style="font-weight:700; color:white">${v.title}</div>
+                    <div class="listing-price">${this.fmt(v.price)}</div>
+                    <div class="listing-details">${v.town} · ${v.m2}m² · ${v.rooms} hab</div>
+                </div>
+            `;
+            div.onclick = () => {
+                this.maps.ex.flyTo([v.lat, v.lng], 16);
+                marker.openPopup();
+            };
+            list.appendChild(div);
+
+            // Map Marker
+            const marker = L.marker([v.lat, v.lng]).addTo(this.maps.ex);
+            marker.bindPopup(`<b>${v.title}</b><br>${this.fmt(v.price)}`);
+        });
+    },
+
+    /* --- 3. AI LOGIC (Regex Mock) --- */
+    updateAIContext: function() {
+        if(this.state.income) document.getElementById('ai-mem-inc').innerText = this.fmt(this.state.income);
+        if(this.state.town) document.getElementById('ai-mem-town').innerText = this.state.town.toUpperCase();
+    },
+
+    chat: {
+        init: function() {
+            setTimeout(() => {
+                const feed = document.getElementById('chat-feed');
+                if(feed.childElementCount <= 1) { // Solo saludo inicial
+                   // Nada que hacer, ya está el saludo
+                }
+            }, 500);
+        },
+        send: function() {
+            const inp = document.getElementById('chat-input');
+            const txt = inp.value.trim();
+            if(!txt) return;
+
+            // User msg
+            this.addMsg(txt, 'user');
+            inp.value = '';
+
+            // Loading
+            const typing = document.getElementById('typing');
+            typing.style.opacity = 1;
+
+            // Logic Simulation
+            setTimeout(() => {
+                typing.style.opacity = 0;
+                const response = this.generateResponse(txt);
+                this.addMsg(response, 'ai');
+            }, 1200);
+        },
+        addMsg: function(txt, type) {
+            const div = document.createElement('div');
+            div.className = `msg ${type}`;
+            div.innerHTML = txt;
+            const feed = document.getElementById('chat-feed');
+            feed.appendChild(div);
+            feed.scrollTop = feed.scrollHeight;
+        },
+        generateResponse: function(q) {
+            const low = q.toLowerCase();
+            const s = app.state;
+            const res = s.results || { price: 0, effort: 0 };
+
+            if(low.includes('hola') || low.includes('buen')) return "¡Hola! ¿Listo para analizar tu futura vivienda?";
+            
+            if(low.includes('viab') || low.includes('puedo comprar')) {
+                if(res.effort > 35) return `Siendo sincero, lo veo complicado. Tu tasa de esfuerzo es del ${res.effort.toFixed(1)}%. Deberías reducir deuda o buscar algo más económico.`;
+                return `Sí, es viable. Tu tasa de esfuerzo es del ${res.effort.toFixed(1)}%, lo cual entra dentro de los parámetros de riesgo aceptables.`;
+            }
+
+            if(low.includes('ahorr') || low.includes('entrada')) {
+                return `Para una casa de ${app.fmt(res.price)}, necesitarás tener en el banco unos ${app.fmt(res.neededSavings)}. Esto cubre el 20% que no financia el banco más el 10-12% de impuestos y gastos.`;
+            }
+
+            if(low.includes('calafell') || low.includes('zona')) {
+                return "Calafell es excelente, pero el precio por m² ronda los 2.100€. Si buscas algo más barato, Cunit o El Vendrell (zona Tancat) suelen ser opciones más asequibles.";
+            }
+
+            if(low.includes('alquiler') || low.includes('rent')) {
+                const rentEst = res.price * 0.045 / 12; // 4.5% yield
+                return `Un alquiler equivalente te costaría unos ${app.fmt(rentEst)}/mes. Si tu cuota hipotecaria es ${app.fmt(res.quota)}, compara ambas cifras. Normalmente comprar es mejor a largo plazo si te quedas +5 años.`;
+            }
+
+            return "Entendido. Como asesor inmobiliario, te sugiero que revises bien el cálculo del ITP (Impuesto Transmisiones). ¿Quieres que te explique cómo afecta a tus ahorros?";
+        }
+    }
+};
+
+// Start
+window.onload = function() {
+    app.init();
+};
 </script>
 </body>
 </html>

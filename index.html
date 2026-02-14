@@ -833,7 +833,7 @@ const callGroqViaWorker=async(messages,opts={})=>{
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
         messages,
-        model:opts.model||"llama-3.1-70b-versatile",
+        model: opts.model || "llama3-70b-8192",
         temperature:opts.temperature||0.4,
         max_tokens:opts.max_tokens||900
       })

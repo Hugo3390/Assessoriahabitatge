@@ -1059,23 +1059,6 @@ const initMap=()=>{
   setTimeout(()=>zmap.invalidateSize(),200);
 };
 
-// Polígonos de respaldo (fallback) si Nominatim no está disponible
-const FALLBACK_POLYGONS={
-  "El Vendrell":[[41.222,1.531],[41.231,1.545],[41.234,1.558],[41.228,1.571],[41.215,1.576],[41.203,1.570],[41.196,1.553],[41.198,1.537],[41.208,1.524],[41.222,1.531]],
-  "Calafell":[[41.192,1.552],[41.203,1.558],[41.212,1.574],[41.213,1.592],[41.206,1.608],[41.193,1.614],[41.181,1.606],[41.176,1.589],[41.179,1.568],[41.186,1.554],[41.192,1.552]],
-  "Cunit":[[41.199,1.620],[41.207,1.628],[41.214,1.642],[41.212,1.654],[41.202,1.659],[41.194,1.653],[41.189,1.639],[41.191,1.624],[41.199,1.620]],
-  "Bellvei":[[41.215,1.559],[41.224,1.564],[41.231,1.578],[41.230,1.593],[41.221,1.602],[41.209,1.604],[41.199,1.595],[41.197,1.579],[41.205,1.566],[41.215,1.559]],
-  "Santa Oliva":[[41.240,1.521],[41.252,1.530],[41.259,1.547],[41.257,1.563],[41.246,1.573],[41.233,1.570],[41.226,1.554],[41.230,1.538],[41.240,1.521]],
-  "Albinyana":[[41.231,1.490],[41.244,1.499],[41.251,1.514],[41.249,1.528],[41.238,1.538],[41.224,1.535],[41.216,1.520],[41.218,1.503],[41.231,1.490]],
-  "L'Arboç":[[41.259,1.594],[41.272,1.604],[41.278,1.619],[41.273,1.635],[41.261,1.641],[41.249,1.633],[41.244,1.617],[41.249,1.601],[41.259,1.594]],
-  "Llorenç del Penedès":[[41.271,1.564],[41.283,1.573],[41.290,1.588],[41.288,1.602],[41.277,1.610],[41.264,1.607],[41.258,1.592],[41.261,1.577],[41.271,1.564]],
-  "Banyeres del Penedès":[[41.286,1.576],[41.298,1.583],[41.306,1.597],[41.303,1.612],[41.291,1.619],[41.278,1.615],[41.272,1.600],[41.276,1.583],[41.286,1.576]],
-  "Sant Jaume dels Domenys":[[41.299,1.561],[41.313,1.570],[41.320,1.588],[41.317,1.605],[41.303,1.613],[41.290,1.608],[41.283,1.591],[41.287,1.573],[41.299,1.561]],
-  "La Bisbal del Penedès":[[41.268,1.482],[41.282,1.492],[41.290,1.509],[41.287,1.525],[41.273,1.534],[41.259,1.528],[41.253,1.511],[41.257,1.494],[41.268,1.482]],
-  "Bonastre":[[41.214,1.432],[41.227,1.441],[41.233,1.458],[41.229,1.473],[41.215,1.480],[41.203,1.471],[41.198,1.453],[41.205,1.437],[41.214,1.432]],
-  "Masllorenç":[[41.259,1.409],[41.275,1.419],[41.282,1.436],[41.278,1.452],[41.264,1.460],[41.250,1.452],[41.244,1.434],[41.250,1.416],[41.259,1.409]],
-  "El Montmell":[[41.293,1.448],[41.311,1.462],[41.319,1.483],[41.314,1.502],[41.296,1.513],[41.278,1.505],[41.271,1.483],[41.278,1.462],[41.293,1.448]]
-};
 const MUNI_SLUG={"Cunit":"cunit-tarragona","El Vendrell":"el-vendrell-tarragona","Calafell":"calafell-tarragona","Santa Oliva":"santa-oliva-tarragona","Bellvei":"bellvei-tarragona","L'Arboç":"l-arboc-tarragona","Banyeres del Penedès":"banyeres-del-penedes-tarragona","Albinyana":"albinyana-tarragona","Bonastre":"bonastre-tarragona","Masllorenç":"masllorenc-tarragona","La Bisbal del Penedès":"la-bisbal-del-penedes-tarragona","Llorenç del Penedès":"llorenc-del-penedes-tarragona","Sant Jaume dels Domenys":"sant-jaume-dels-domenys-tarragona","El Montmell":"el-montmell-tarragona"};
 const bedSlug=n=>{n=+n||0;if(n<=0)return"estudios";if(n===1)return"de-un-dormitorio";if(n===2)return"de-dos-dormitorios";if(n===3)return"de-tres-dormitorios";return"de-cuatro-cinco-habitaciones-o-mas";};
 const bathSlug=n=>{n=+n||0;if(n<=1)return"un-bano";if(n===2)return"dos-banos";return"tres-banos-o-mas";};
@@ -2177,7 +2160,14 @@ const removeThinking = () => {
 };
 
 /* ---- Motor principal: simula escritura progresiva ---- */
+const repeatedQuestionCount=(msg)=>{
+  const q=normAI(msg);
+  const users=chatHistory.filter(x=>x.role==="user").map(x=>normAI(x.content));
+  return users.filter(x=>x===q).length;
+};
+
 const sendToAI=async msg=>{
+
   if(isAIProcessing)return;
   isAIProcessing=true;
   const btnEl=Q("#chatSend"), inpEl=Q("#chatInput");
@@ -2185,6 +2175,22 @@ const sendToAI=async msg=>{
   if(inpEl){inpEl.disabled=true;inpEl.value="";}
   addMsg("user",msg);
   chatHistory.push({role:"user",content:msg});
+
+  const repCount=repeatedQuestionCount(msg);
+  if(repCount>=3){
+    const gentle=LANG==="EN"?"I notice this question is repeated. I'll answer in a different way:":(LANG==="CA"?"Veig que aquesta pregunta es repeteix. Et responc d'una altra manera:":"Veo que esta pregunta se repite. Te respondo de otra forma:");
+    const alt=buildUniversalFallbackReply(msg,LANG);
+    const composed=`${gentle}\n${alt}`;
+    chatHistory.push({role:"assistant",content:composed});
+    if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);
+    saveChatHistory();
+    addMsg("ai",composed);
+    isAIProcessing=false;
+    if(btnEl)btnEl.disabled=false;
+    if(inpEl){inpEl.disabled=false;inpEl.focus();}
+    return;
+  }
+
   addThinking();
   const delay=500+Math.random()*700;
   await new Promise(r=>setTimeout(r,delay));

@@ -1344,7 +1344,6 @@ const buildReply=(intent, msg)=>{
   const tone = getToneForProfile(profile, L);
 
   const buyOk=!c.need&&c.ratio<=35&&c.hor;
-  const buyOk=!c.need&&c.ratio<=35&&c.hor;
   const rentOk=c.rri<=40;
 
   switch(intent){
@@ -1711,6 +1710,75 @@ const buildReply=(intent, msg)=>{
       `🤖 I can help with: mortgages, savings, buy vs rent, risks, towns, subsidies, terms, and more. What exactly would you like to know?`
     );
   }
+};
+
+// ============ FUNCIONES AUXILIARES CHAT ============
+
+// Limpiar markdown simple
+const stripMd = (text) => {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/^#+\s+/gm, '')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1');
+};
+
+// Añadir mensaje al chat
+const addMsg = (role, content) => {
+  const mc = Q("#chatMessages");
+  if (!mc) return;
+  
+  const d = document.createElement("div");
+  d.className = `chat-message ${role}`;
+  
+  const av = document.createElement("div");
+  av.className = `chat-avatar ${role}`;
+  av.textContent = role === "user" ? (t("aiYou") || "TÚ") : "AI";
+  
+  const bub = document.createElement("div");
+  bub.className = "chat-bubble";
+  bub.innerHTML = stripMd(content).replace(/\n/g, "<br>");
+  
+  if (role === "user") {
+    d.appendChild(bub);
+    d.appendChild(av);
+  } else {
+    d.appendChild(av);
+    d.appendChild(bub);
+  }
+  
+  mc.appendChild(d);
+  mc.scrollTop = mc.scrollHeight;
+};
+
+// Añadir indicador "pensando"
+const addThinking = () => {
+  const mc = Q("#chatMessages");
+  if (!mc) return;
+  
+  const d = document.createElement("div");
+  d.className = "chat-message ai";
+  d.id = "thinking-indicator";
+  
+  const av = document.createElement("div");
+  av.className = "chat-avatar ai";
+  av.textContent = "AI";
+  
+  const bub = document.createElement("div");
+  bub.className = "chat-bubble thinking";
+  bub.textContent = t("aiThinking") || "Analizando...";
+  
+  d.appendChild(av);
+  d.appendChild(bub);
+  mc.appendChild(d);
+  mc.scrollTop = mc.scrollHeight;
+};
+
+// Remover indicador "pensando"
+const removeThinking = () => {
+  const thinking = Q("#thinking-indicator");
+  if (thinking) thinking.remove();
 };
 
 /* ---- Motor principal: simula escritura progresiva ---- */

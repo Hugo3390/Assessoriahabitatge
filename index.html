@@ -1097,37 +1097,473 @@ const addThinking=()=>{
 };
 const removeThinking=()=>{const el=Q("#thinking-msg");if(el)el.remove();};
 
-const sendToAI=async msg=>{
-  if(isAIProcessing)return;isAIProcessing=true;
-  const btn=Q("#chatSend"),inp=Q("#chatInput");
-  if(btn)btn.disabled=true;if(inp)inp.disabled=true;
-  addMsg("user",msg);chatHistory.push({role:"user",content:msg});addThinking();
-  try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
-      body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",
-        max_tokens:600,
-        system:getSystemPrompt(),
-        messages:chatHistory.slice(-12).map(m=>({role:m.role==="ai"?"assistant":m.role,content:m.content}))
-      })
-    });
-    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
-    const data=await res.json();removeThinking();
-    const txt=data.content?.[0]?.text;
-    if(!txt)throw new Error("Respuesta vacía");
-    addMsg("ai",txt);chatHistory.push({role:"assistant",content:txt});saveChatHistory();
-  }catch(err){
-    removeThinking();console.error("AI error:",err);
-    const errMsg=err.message?.includes("401")?t("aiErrAuth"):err.message?.includes("429")?t("aiErrRate"):t("aiErrNet");
-    addMsg("ai",errMsg);
-  }finally{
-    isAIProcessing=false;
-    if(btn)btn.disabled=false;
-    if(inp){inp.disabled=false;inp.value="";inp.style.height="auto";inp.focus();}
+// ===== DEMO IA (sin API, sin pagar, sin claves) =====
+// Sustituye TODA la función sendToAI anterior por esta.
+// No toca el resto del archivo.
+
+let demoHistory = [];
+
+const sendToAI = async msg => {
+  if (isAIProcessing) return;
+  isAIProcessing = true;
+
+  const btn = Q("#chatSend"), inp = Q("#chatInput");
+  if (btn) btn.disabled = true;
+  if (inp) inp.disabled = true;
+
+  addMsg("user", msg);
+  chatHistory.push({ role: "user", content: msg });
+  addThinking();
+
+  try {
+    // “Perfil” básico: intenta leer inputs típicos si existen.
+    const profile = getDemoProfileSafe();
+
+    // Respuesta demo con “inteligencia” basada en intención + contexto.
+    const reply = buildDemoReply(msg, profile);
+
+    // Simula tiempo de respuesta
+    await sleep(650);
+
+    removeThinking();
+    addMsg("ai", reply);
+
+    chatHistory.push({ role: "assistant", content: reply });
+    saveChatHistory?.();
+
+    demoHistory.push({ role: "user", content: msg });
+    demoHistory.push({ role: "assistant", content: reply });
+
+  } catch (err) {
+    removeThinking();
+    console.error("DEMO AI error:", err);
+    addMsg("ai", (typeof t === "function") ? t("aiErrNet") : "Connection error. Please try again.");
+  } finally {
+    isAIProcessing = false;
+    if (btn) btn.disabled = false;
+    if (inp) {
+      inp.disabled = false;
+      inp.value = "";
+      inp.style.height = "auto";
+      inp.focus();
+    }
   }
 };
+
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+function getDemoProfileSafe(){
+  // Detecta idioma si ya lo tienes en tu app
+  const lang = (window.LANG || window.lang || (typeof getLang === "function" ? getLang() : "ES")) || "ES";
+
+  // Intenta leer campos habituales. Si no existen, devuelve 0 o "" sin romper nada.
+  const v = sel => {
+    const el = document.querySelector(sel);
+    return el ? (el.value ?? "") : "";
+  };
+
+  const num = x => {
+    const n = parseFloat(String(x).replace(",", "."));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const municipality =
+    v("#municipality") || v("#muni") || v("[name='municipality']") || "";
+
+  const income =
+    num(v("#income")) || num(v("#incomeMonthly")) || num(v("[name='income']")) || 0;
+
+  const savings =
+    num(v("#savings")) || num(v("#ahorros")) || num(v("[name='savings']")) || 0;
+
+  const rent =
+    num(v("#rent")) || num(v("#alquiler")) || num(v("[name='rent']")) || 0;
+
+  const price =
+    num(v("#price")) || num(v("#precio")) || num(v("[name='price']")) || 0;
+
+  const years =
+    num(v("#years")) || num(v("#termYears")) || num(v("[name='years']")) || 0;
+
+  const rate =
+    num(v("#rate")) || num(v("#interest")) || num(v("[name='rate']")) || 0;
+
+  const objective =
+    (window.userObjective || "").toString().toLowerCase() || "buy";
+
+  return {
+    lang,
+    municipality,
+    income,
+    savings,
+    rent,
+    price,
+    years,
+    rate,
+    objective,
+  };
+}
+
+function buildDemoReply(message, p){
+  const lang = (p.lang || "ES").toUpperCase();
+  const m = (message || "").trim();
+  const lower = m.toLowerCase();
+
+  // Intenciones rápidas
+  const wantsSaving = /ahorr|save|estalvi/.test(lower);
+  const wantsBuyRent = /compr|buy|llog|rent/.test(lower);
+  const wantsRates = /tipos|interes|interest|rates/.test(lower);
+  const wantsTowns = /municip|pueblo|town|ciudad|towns|quins municipis|which towns/.test(lower);
+  const wantsStrategy = /estrateg|strategy|plan|mejorar|improve|power|poder de compra/.test(lower);
+
+  // Respuesta por idioma
+  if (lang === "EN") {
+    if (wantsSaving) return enSaving(p);
+    if (wantsBuyRent) return enBuyRent(p);
+    if (wantsRates) return enRates(p);
+    if (wantsTowns) return enTowns(p);
+    if (wantsStrategy) return enStrategy(p);
+    return enGeneric(p);
+  }
+  if (lang === "CA") {
+    if (wantsSaving) return caSaving(p);
+    if (wantsBuyRent) return caBuyRent(p);
+    if (wantsRates) return caRates(p);
+    if (wantsTowns) return caTowns(p);
+    if (wantsStrategy) return caStrategy(p);
+    return caGeneric(p);
+  }
+  // ES por defecto
+  if (wantsSaving) return esSaving(p);
+  if (wantsBuyRent) return esBuyRent(p);
+  if (wantsRates) return esRates(p);
+  if (wantsTowns) return esTowns(p);
+  if (wantsStrategy) return esStrategy(p);
+  return esGeneric(p);
+}
+
+// ===== ES =====
+function esSaving(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  const targetRate = income ? Math.round(income * 0.25) : 0;
+  const muni = p.municipality ? ` en ${p.municipality}` : "";
+  return (
+`Vale. Para ahorrar de forma realista${muni}:
+
+1) Objetivo de ahorro mensual: ${income ? (targetRate + "€") : "20–30% de tus ingresos"}.
+2) Primero: fondo de emergencia (3–6 meses de gastos). Con ${savings}€ ahora, prioriza estabilidad.
+3) Regla simple: “págate a ti primero” el día 1 del mes (transferencia automática).
+4) Si quieres comprar: apunta a entrada + gastos (10–20% + 8–12% aprox). Si no llegas, ajusta precio objetivo o horizonte.
+
+Si me das tu precio objetivo y alquiler actual, te saco un plan de 3 escenarios (conservador / medio / agresivo).`
+  );
+}
+
+function esBuyRent(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  const rent = p.rent || 0;
+  const price = p.price || 0;
+
+  const effort = income ? Math.round((rent / income) * 100) : null;
+
+  return (
+`Comprar vs alquilar (sin humo):
+
+• Si alquilas ${rent ? rent + "€/mes" : ""}${effort!==null ? ` (≈${effort}% de tu ingreso)` : ""}, estás “comprando tiempo”: flexibilidad.
+• Comprar empieza a tener sentido si:
+  - Tienes ahorros suficientes para entrada + gastos.
+  - La cuota estimada no supera el 30–35% de tu ingreso.
+  - Te quedas mínimo 5–7 años (si no, impuestos y gastos te comen).
+
+Con lo que has puesto:
+- Ingresos: ${income}€
+- Ahorros: ${savings}€
+- Precio objetivo: ${price ? price + "€" : "no indicado"}
+
+Dime plazo (años) e interés (si lo sabes) y te hago una comparación clara: cuota aproximada, esfuerzo y riesgo.`
+  );
+}
+
+function esRates(p){
+  return (
+`Tipos de interés: lo que importa de verdad.
+
+1) Si suben tipos, sube la cuota (especialmente en variable).
+2) La regla sana: vivienda total (cuota + comunidad + suministros) ≤ 30–35% de ingresos.
+3) Cuanto más alto el tipo, más importante:
+   - más entrada (baja cuota),
+   - plazo razonable (no “hipoteca eterna”),
+   - colchón (6–12 meses de cuota guardados).
+
+Si me dices: precio, entrada disponible, plazo y tipo (o “no lo sé”), te estimo la cuota y un “semáforo” de riesgo.`
+  );
+}
+
+function esTowns(p){
+  const muni = p.municipality ? p.municipality : "tu municipio";
+  return (
+`Municipios del Baix Penedès: no hay un “mejor”, hay un “mejor para ti”.
+
+• Más servicios y demanda suelen = más caro.
+• Más distancia / menos demanda suelen = más barato, pero ojo: transporte y tiempo también cuestan.
+
+Ahora mismo me has puesto "${muni}". Si me dices:
+1) si priorizas precio o servicios,
+2) si necesitas tren/coche,
+3) si buscas comprar o alquilar,
+te digo 3 municipios “candidatos” y por qué, en 30 segundos.`
+  );
+}
+
+function esStrategy(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  return (
+`Estrategias para aumentar tu poder de compra (en orden de impacto real):
+
+1) Aumentar ahorro mensual (subir 200–400€/mes cambia el juego).
+2) Entrada más alta: reduce cuota y te da mejores condiciones.
+3) Bajar precio objetivo (10–15% menos de precio suele ser “años” menos de espera).
+4) Mejorar perfil bancario: estabilidad laboral, menos deudas, historial limpio.
+5) Comparar hipotecas y negociar: diferencia pequeña en tipo = miles de euros.
+
+Tu foto actual:
+- Ingresos: ${income}€
+- Ahorros: ${savings}€
+
+Dime si tu objetivo es comprar en 2, 5 o 10 años y te doy un plan con números (no motivación barata).`
+  );
+}
+
+function esGeneric(p){
+  const muni = p.municipality ? ` en ${p.municipality}` : "";
+  return (
+`Estoy en modo demo (sin API), pero puedo ayudarte igual a estructurar decisiones${muni}.
+
+Escríbeme una de estas:
+- “¿Cuánto necesito ahorrar al mes para comprar?”
+- “¿Me conviene comprar o alquilar con mis números?”
+- “¿Qué pasa si suben tipos?”
+- “Estrategias para aumentar poder de compra”
+
+Y si me das 3 datos (ingresos, ahorros, alquiler o precio objetivo), te lo dejo claro y accionable.`
+  );
+}
+
+// ===== CA =====
+function caSaving(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  const targetRate = income ? Math.round(income * 0.25) : 0;
+  const muni = p.municipality ? ` a ${p.municipality}` : "";
+  return (
+`D’acord. Per estalviar de manera realista${muni}:
+
+1) Objectiu d’estalvi mensual: ${income ? (targetRate + "€") : "20–30% dels ingressos"}.
+2) Primer: fons d’emergència (3–6 mesos de despeses). Amb ${savings}€ ara, prioritat: estabilitat.
+3) Transferència automàtica el dia 1 (això és el que funciona).
+4) Si vols comprar: entrada + despeses (10–20% + 8–12% aprox). Si no hi arribes, ajusta preu o termini.
+
+Si em dius el preu objectiu i el teu lloguer actual, et faig 3 escenaris clars.`
+  );
+}
+
+function caBuyRent(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  const rent = p.rent || 0;
+  const price = p.price || 0;
+  const effort = income ? Math.round((rent / income) * 100) : null;
+
+  return (
+`Comprar vs llogar (sense fum):
+
+• Llogar ${rent ? rent + "€/mes" : ""}${effort!==null ? ` (≈${effort}% dels ingressos)` : ""} = flexibilitat.
+• Comprar té sentit si:
+  - tens entrada + despeses,
+  - la quota no supera el 30–35% del sou,
+  - t’hi quedes 5–7 anys.
+
+Ara:
+- Ingressos: ${income}€
+- Estalvis: ${savings}€
+- Preu objectiu: ${price ? price + "€" : "no indicat"}
+
+Digues termini i tipus (si el saps) i t’ho comparo amb números.`
+  );
+}
+
+function caRates(p){
+  return (
+`Tipus d’interès: el que importa.
+
+1) Si pugen tipus, puja la quota (sobretot en variable).
+2) Regla sana: habitatge total ≤ 30–35% dels ingressos.
+3) Amb tipus alts: més entrada, termini raonable i coixí (6–12 mesos de quota).
+
+Dona’m preu, entrada, termini i tipus (o “no ho sé”) i et calculo una estimació + semàfor de risc.`
+  );
+}
+
+function caTowns(p){
+  const muni = p.municipality ? p.municipality : "el teu municipi";
+  return (
+`Baix Penedès: no hi ha un “millor”, hi ha el que encaixa amb tu.
+
+• Més serveis i demanda = més car.
+• Més distància = més barat, però transport i temps també costen.
+
+Has posat "${muni}". Si em dius:
+1) si prioritzes preu o serveis,
+2) si necessites tren/cotxe,
+3) comprar o llogar,
+et dono 3 municipis candidats i per què.`
+  );
+}
+
+function caStrategy(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  return (
+`Estratègies per pujar el teu poder de compra (impacte real):
+
+1) Pujar estalvi mensual (200–400€/mes canvia el resultat).
+2) Entrada més alta: baixa quota i millora condicions.
+3) Baixar preu objectiu (10–15% menys = anys menys).
+4) Millorar perfil bancari: estabilitat, menys deutes.
+5) Comparar i negociar hipoteca.
+
+Ara:
+- Ingressos: ${income}€
+- Estalvis: ${savings}€
+
+Digues si vols comprar en 2, 5 o 10 anys i t’ho converteixo en pla amb números.`
+  );
+}
+
+function caGeneric(p){
+  const muni = p.municipality ? ` a ${p.municipality}` : "";
+  return (
+`Estic en mode demo (sense API), però puc ajudar-te a decidir${muni}.
+
+Prova amb:
+- “Quant he d’estalviar al mes per comprar?”
+- “Em convé comprar o llogar?”
+- “Què passa si pugen els tipus?”
+- “Estratègies”
+
+Amb 3 dades (ingressos, estalvis i lloguer o preu), t’ho deixo clar i accionable.`
+  );
+}
+
+// ===== EN =====
+function enSaving(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  const targetRate = income ? Math.round(income * 0.25) : 0;
+  const muni = p.municipality ? ` in ${p.municipality}` : "";
+  return (
+`Saving plan${muni} (practical, not inspirational):
+
+1) Monthly savings target: ${income ? ("€" + targetRate) : "20–30% of income"}.
+2) Build an emergency fund first (3–6 months of expenses). Current savings: €${savings}.
+3) Automate it on day 1 of the month.
+4) For buying: down payment + costs (10–20% + ~8–12%). If you can’t reach it, reduce target price or extend horizon.
+
+Share target price + current rent and I’ll give you 3 clear scenarios.`
+  );
+}
+
+function enBuyRent(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  const rent = p.rent || 0;
+  const price = p.price || 0;
+  const effort = income ? Math.round((rent / income) * 100) : null;
+
+  return (
+`Buy vs rent (simple rules):
+
+• Rent ${rent ? "€" + rent + "/mo" : ""}${effort!==null ? ` (~${effort}% of income)` : ""} = flexibility.
+• Buying makes sense if:
+  - you can cover down payment + costs,
+  - mortgage payment stays under 30–35% of income,
+  - you’ll stay 5–7+ years.
+
+Your snapshot:
+- Income: €${income}
+- Savings: €${savings}
+- Target price: ${price ? "€" + price : "not provided"}
+
+Give me term (years) + interest rate (or “unknown”) and I’ll estimate payment + risk.`
+  );
+}
+
+function enRates(p){
+  return (
+`Interest rates: what matters.
+
+1) Higher rates = higher payments (especially variable loans).
+2) Healthy rule: total housing cost ≤ 30–35% of income.
+3) With high rates: bigger down payment, reasonable term, strong buffer (6–12 payments saved).
+
+Tell me price, down payment, term and rate (or “unknown”) and I’ll compute a rough payment and a risk traffic-light.`
+  );
+}
+
+function enTowns(p){
+  const muni = p.municipality ? p.municipality : "your town";
+  return (
+`Baix Penedès towns: there’s no “best”, only “best for your needs”.
+
+• More services/demand usually means higher prices.
+• Cheaper towns can cost you time/transport.
+
+You entered "${muni}". If you tell me:
+1) price vs services priority,
+2) car vs train needs,
+3) buy vs rent,
+I’ll suggest 3 candidate towns and why.`
+  );
+}
+
+function enStrategy(p){
+  const income = p.income || 0;
+  const savings = p.savings || 0;
+  return (
+`Strategies to increase buying power (high impact first):
+
+1) Increase monthly savings (extra €200–€400/mo changes the outcome).
+2) Higher down payment: lower payment, better approval odds.
+3) Lower target price (10–15% less price can mean years saved).
+4) Improve bank profile: stable income, low debt.
+5) Compare and negotiate mortgages.
+
+Now:
+- Income: €${income}
+- Savings: €${savings}
+
+Tell me if your goal is buying in 2, 5 or 10 years and I’ll translate that into a numbers-based plan.`
+  );
+}
+
+function enGeneric(p){
+  const muni = p.municipality ? ` in ${p.municipality}` : "";
+  return (
+`Demo mode (no API), but I can still structure your decision${muni}.
+
+Try:
+- “How much should I save per month to buy?”
+- “Should I buy or rent with my numbers?”
+- “What if rates rise?”
+- “Give me strategies”
+
+If you share income + savings + rent or target price, I’ll make it actionable.`
+  );
+}
+
 
 const renderChatHistory=()=>{
   QA(".chat-message:not(#welcome-message)").forEach(el=>el.remove());

@@ -212,6 +212,12 @@ canvas{display:block;width:100%;height:240px}
 .suggestion-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
 .suggestion-chip{padding:6px 12px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);border-radius:999px;color:#7dd3fc;font-size:.82rem;cursor:pointer;transition:all .18s ease;}
 .suggestion-chip:hover{background:rgba(56,189,248,.18);transform:translateY(-1px);}
+.ai-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.ai-tool-btn{padding:7px 12px;border-radius:999px;border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.75);color:#cbd5e1;font-size:.82rem;font-weight:900;cursor:pointer;transition:all .18s ease;}
+.ai-tool-btn:hover{border-color:rgba(56,189,248,.55);transform:translateY(-1px);}
+.ai-context{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.ai-context-chip{padding:6px 10px;border-radius:999px;background:rgba(56,189,248,.10);border:1px solid rgba(56,189,248,.28);color:#dbeafe;font-size:.80rem;font-weight:850;}
+.ai-context-chip.warn{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.35);color:#fde68a;}
 ::selection{background:rgba(56,189,248,.25)}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
@@ -456,6 +462,12 @@ canvas{display:block;width:100%;height:240px}
         <span class="a">💡</span>
         <div class="n"><b>Tu asesor financiero personal.</b> Conoce toda tu situación y te da consejos específicos.</div>
       </div>
+      <div class="ai-toolbar">
+        <button class="ai-tool-btn" id="aiPlanBtn" type="button">🧭 Plan de acción</button>
+        <button class="ai-tool-btn" id="aiClearBtn" type="button">🗑️ Limpiar chat</button>
+        <button class="ai-tool-btn" id="aiCopyBtn" type="button">📋 Copiar chat</button>
+      </div>
+      <div class="ai-context" id="aiContext"></div>
       <div class="suggestion-chips" id="aiSuggestions">
         <div class="suggestion-chip" data-q="¿Qué puedo hacer para mejorar mi situación?">¿Cómo mejorar?</div>
         <div class="suggestion-chip" data-q="¿Cuánto necesito ahorrar mensualmente para comprar?">¿Cuánto ahorrar?</div>
@@ -656,9 +668,11 @@ const applyI18n=()=>{
   const sb=Q("#chatSend");if(sb)sb.textContent=t("aiSend");
   // AI status chip
   const ais=Q("#aiStatus");if(ais)ais.textContent=t("aiConnected");
-  // Suggestion chips
-  const scs=Q("#aiSuggestions");
-  if(scs){scs.innerHTML=[1,2,3,4,5,6].map(i=>`<div class="suggestion-chip" data-q="${t("aiSug"+i)}">${t("aiSugLbl"+i)}</div>`).join("");}
+  const planBtn=Q("#aiPlanBtn");if(planBtn)planBtn.textContent=LANG==="EN"?"🧭 Action plan":(LANG==="CA"?"🧭 Pla d'acció":"🧭 Plan de acción");
+  const clearBtn=Q("#aiClearBtn");if(clearBtn)clearBtn.textContent=LANG==="EN"?"🗑️ Clear chat":(LANG==="CA"?"🗑️ Netejar xat":"🗑️ Limpiar chat");
+  const copyBtn=Q("#aiCopyBtn");if(copyBtn)copyBtn.textContent=LANG==="EN"?"📋 Copy chat":(LANG==="CA"?"📋 Copiar xat":"📋 Copiar chat");
+  renderAISuggestions();
+  renderAIContext();
 };
 const setLang=l=>{
   LANG=l;localStorage.setItem(LANG_KEY,l);
@@ -811,7 +825,7 @@ const analyze=()=>{
   Q("#k3sub").textContent=`${yrs} ${LANG==="EN"?"years":"años"} · ${(rate*100).toFixed(2)}%`;
   Q("#k4sub").textContent=recCode==="BUY"?(LANG==="EN"?"You fit cash + effort":"Encajas cash + esfuerzo"):recCode==="RENT"?(LANG==="EN"?"Buying is tight":"Comprar aprieta"):(LANG==="EN"?"Neither option fits safely":"No encaja con seguridad");
 
-  renderResult();setTabsEnabled();saveForm();show("r");
+  renderResult();renderAIContext();renderAISuggestions();setTabsEnabled();saveForm();show("r");
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
 };
 
@@ -1147,6 +1161,50 @@ const loadChatHistory=()=>{
 };
 const saveChatHistory=()=>{try{localStorage.setItem(CHAT_KEY,JSON.stringify(chatHistory));}catch(e){}};
 
+const renderAIContext=()=>{
+  const box=Q("#aiContext");
+  if(!box) return;
+  const c=getUserContext();
+  if(!c){
+    box.innerHTML=`<span class="ai-context-chip warn">${LANG==="EN"?"Complete and analyze your case to activate smart context":(LANG==="CA"?"Completa i analitza el teu cas per activar context intel·ligent":"Completa y analiza tu caso para activar contexto inteligente")}</span>`;
+    return;
+  }
+  const gap=Math.max(0,c.needCash-c.sav);
+  const chips=[
+    `<span class="ai-context-chip">🎯 ${c.rec}</span>`,
+    `<span class="ai-context-chip ${c.ratio>35?"warn":""}">🏦 ${LANG==="EN"?"Mortgage effort":(LANG==="CA"?"Esforç hipoteca":"Esfuerzo hipoteca")}: ${_fp(c.ratio)}</span>`,
+    `<span class="ai-context-chip">🏠 ${LANG==="EN"?"Estimated rent":(LANG==="CA"?"Lloguer estimat":"Alquiler estimado")}: ${_fm(c.pr)}</span>`,
+    gap>0?`<span class="ai-context-chip warn">💸 ${LANG==="EN"?"Savings gap":(LANG==="CA"?"Falta estalvi":"Falta ahorro")}: ${_fm(gap)}</span>`:`<span class="ai-context-chip">✅ ${LANG==="EN"?"Upfront cash covered":(LANG==="CA"?"Estalvi inicial cobert":"Ahorro inicial cubierto")}</span>`
+  ];
+  box.innerHTML=chips.join("");
+};
+
+const renderAISuggestions=()=>{
+  const scs=Q("#aiSuggestions");
+  if(!scs) return;
+  const base=[1,2,3,4,5,6].map(i=>({q:t("aiSug"+i),lbl:t("aiSugLbl"+i)}));
+  const c=getUserContext();
+  if(!c){
+    scs.innerHTML=base.map(x=>`<div class="suggestion-chip" data-q="${x.q}">${x.lbl}</div>`).join("");
+    return;
+  }
+  const extra=[];
+  if(c.need) extra.push({
+    q:LANG==="EN"?"Give me a monthly savings plan to close my upfront cash gap":(LANG==="CA"?"Dona'm un pla d'estalvi mensual per cobrir la manca d'entrada":"Dame un plan de ahorro mensual para cubrir la falta de entrada"),
+    lbl:LANG==="EN"?"Close savings gap":(LANG==="CA"?"Cobrir falta d'estalvi":"Cubrir ahorro")
+  });
+  if(c.ratio>35) extra.push({
+    q:LANG==="EN"?"How can I reduce my mortgage effort below 35%?":(LANG==="CA"?"Com puc baixar l'esforç hipotecari per sota del 35%?":"¿Cómo reduzco mi esfuerzo hipotecario por debajo del 35%?"),
+    lbl:LANG==="EN"?"Lower effort <35%":(LANG==="CA"?"Baixar esforç <35%":"Bajar esfuerzo <35%")
+  });
+  if(c.recCode==="BUY") extra.push({
+    q:LANG==="EN"?"Give me a negotiation checklist before making an offer":(LANG==="CA"?"Dona'm un checklist de negociació abans de fer oferta":"Dame un checklist de negociación antes de ofertar"),
+    lbl:LANG==="EN"?"Negotiate better":(LANG==="CA"?"Negociar millor":"Negociar mejor")
+  });
+  const list=[...extra,...base].slice(0,8);
+  scs.innerHTML=list.map(x=>`<div class="suggestion-chip" data-q="${x.q}">${x.lbl}</div>`).join("");
+};
+
 const getUserContext=()=>{
   if(!last)return null;
   const extras=["t","p","l","k"].filter(k=>last.e[k]).map(k=>({t:t("exTer"),p:t("exPis"),l:t("exAsc"),k:t("exGar")}[k]||k)).join(", ")||"—";
@@ -1272,6 +1330,8 @@ const detectIntent=(msg)=>{
   // Análisis y resultado
   if(has("analisis","analisi","analysis","resultado","resultat","result","resumen","resum","summary","dime todo","explica","cuéntame","conta'm")) return "summary";
   if(has("consejo","consell","advice","recomiendas","recomanes","recommend","que hago","que faig","que deberia","que hauria")) return "advice";
+  if(has("plan","plan de accion","pasos","roadmap","hoja de ruta","next steps","seguent pas")) return "actionplan";
+  if(has("negociar","negociacio","negotiation","oferta","offer","regatear","rebaja","descuento")) return "negotiation";
 
   // Compra vs Alquiler
   if(has("comprar o alquilar","comprar o llogar","buy or rent","mejor opcion","millor opcio","que es mejor","que es millor","which is better")) return "buyrent";
@@ -1554,6 +1614,55 @@ const buildReply=(intent, msg)=>{
       `🏊 Selected extras: ${c.extras}\n💡 Each extra increases estimated price: Terrace +5% · Pool +8% · Elevator +4% · Parking +3%.`
     );
 
+    case "negotiation": return es(
+      `🤝 Checklist de negociación (rápido):
+1) Lleva 3 comparables reales de la zona (€/m²).
+2) Abre oferta un 8-12% por debajo de tu tope.
+3) Prioriza precio + arras + plazo de firma (pack completo).
+4) Pide revisión técnica y usa incidencias para ajustar precio.
+5) No superes tu límite: ${_fm(c.pb*(c.ratio>35?0.90:1))}.
+💡 Si quieres, te preparo un guion de llamada al vendedor.`,
+      `🤝 Checklist de negociació:
+1) Porta 3 comparables reals de la zona.
+2) Obre oferta 8-12% per sota del teu topall.
+3) Negocia preu + arres + termini de signatura.
+4) Revisa incidències tècniques per ajustar preu.
+5) No superis el teu límit: ${_fm(c.pb*(c.ratio>35?0.90:1))}.`,
+      `🤝 Negotiation checklist:
+1) Bring 3 local comparables (€/m²).
+2) Start 8-12% below your max budget.
+3) Negotiate price + deposit terms + closing date as a package.
+4) Use technical issues to support price adjustments.
+5) Do not exceed your cap: ${_fm(c.pb*(c.ratio>35?0.90:1))}.`
+    );
+
+    case "actionplan": {
+      const gap=Math.max(0,c.needCash-c.sav);
+      const msv=Math.max(0,c.msv||0);
+      const mos=(gap>0&&msv>0)?Math.ceil(gap/msv):0;
+      return es(
+        `🧭 Plan de acción en 90 días:
+1) Semana 1: fija presupuesto de vivienda en torno a ${_fm(c.pb*(c.ratio>35?0.85:1))}.
+2) Semana 2-3: reduce gastos fijos para liberar al menos ${_fm(Math.max(100,c.inc*0.08))}/mes.
+3) Mes 2: mejora perfil bancario (sin descubiertos y recibos al día).
+4) Mes 3: compara 3 hipotecas y pide preaprobación.
+${gap>0?`5) Objetivo ahorro: te faltan ${_fm(gap)}${msv>0?` (~${mos} meses a ${_fm(msv)}/mes).`:"."}`:`5) Ya cubres la entrada+gastos: prioriza negociar precio y condiciones.`}
+✅ Si quieres, te preparo un plan semanal detallado.`,
+        `🧭 Pla d'acció en 90 dies:
+1) Defineix pressupost de compra (~${_fm(c.pb*(c.ratio>35?0.85:1))}).
+2) Allibera despesa fixa mensual i reforça estalvi.
+3) Millora perfil bancari i demana preaprovació.
+4) Compara 3 hipoteques abans de decidir.
+${gap>0?`5) Et falten ${_fm(gap)}${msv>0?` (~${mos} mesos).`:"."}`:`5) Ja tens estalvi suficient: prioritza negociació.`}`,
+        `🧭 90-day action plan:
+1) Set a target budget around ${_fm(c.pb*(c.ratio>35?0.85:1))}.
+2) Free monthly cashflow and boost savings.
+3) Improve bank profile and request pre-approval.
+4) Compare at least 3 mortgage offers.
+${gap>0?`5) Savings gap: ${_fm(gap)}${msv>0?` (~${mos} months).`:"."}`:`5) You already cover upfront cash: focus on price/terms negotiation.`}`
+      );
+    }
+
     case "advice": {
   let advice = es("🎯 Mi consejo personalizado:\n\n", "🎯 El meu consell:\n\n", "🎯 My advice:\n\n");
   
@@ -1724,6 +1833,13 @@ const stripMd = (text) => {
     .replace(/\[(.+?)\]\(.+?\)/g, '$1');
 };
 
+const escapeHTML=(text="")=>String(text)
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#39;");
+
 // Añadir mensaje al chat
 const addMsg = (role, content) => {
   const mc = Q("#chatMessages");
@@ -1738,7 +1854,7 @@ const addMsg = (role, content) => {
   
   const bub = document.createElement("div");
   bub.className = "chat-bubble";
-  bub.innerHTML = stripMd(content).replace(/\n/g, "<br>");
+  bub.innerHTML = escapeHTML(stripMd(content)).replace(/\n/g, "<br>");
   
   if (role === "user") {
     d.appendChild(bub);
@@ -1797,6 +1913,7 @@ const sendToAI=async msg=>{
   const intent=detectIntent(msg);
   const reply=buildReply(intent,msg);
   chatHistory.push({role:"assistant",content:reply});
+  if(chatHistory.length>40)chatHistory=chatHistory.slice(-40);
   saveChatHistory();
   // Efecto typing usando intervalo (más robusto que recursión)
   const mc=Q("#chatMessages");
@@ -1808,7 +1925,7 @@ const sendToAI=async msg=>{
   bub.className="chat-bubble";
   d.appendChild(av);d.appendChild(bub);
   if(mc)mc.appendChild(d);
-  const clean=stripMd(reply);
+  const clean=escapeHTML(stripMd(reply));
   let pos=0;
   const unlock=()=>{
     isAIProcessing=false;
@@ -1831,6 +1948,7 @@ const renderChatHistory=()=>{
 const initChatUI=()=>{
   applyI18n(); // refresca welcome bubble, chips y textos
   loadChatHistory();
+  renderAIContext();
   const btn=Q("#chatSend"),inp=Q("#chatInput");
   if(btn&&!btn.dataset.init){btn.dataset.init="1";btn.onclick=()=>{const m=inp?.value?.trim();if(m)sendToAI(m);};}
   if(inp&&!inp.dataset.init){
@@ -1838,6 +1956,33 @@ const initChatUI=()=>{
     inp.addEventListener("keypress",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();const m=inp.value.trim();if(m)sendToAI(m);}});
     inp.addEventListener("input",()=>{inp.style.height="auto";inp.style.height=Math.min(inp.scrollHeight,120)+"px";});
   }
+  const clearBtn=Q("#aiClearBtn"),planBtn=Q("#aiPlanBtn"),copyBtn=Q("#aiCopyBtn");
+  if(clearBtn&&!clearBtn.dataset.init){
+    clearBtn.dataset.init="1";
+    clearBtn.addEventListener("click",()=>{
+      chatHistory=[];
+      saveChatHistory();
+      renderChatHistory();
+      toast(LANG==="EN"?"Chat cleared":(LANG==="CA"?"Xat netejat":"Chat limpiado"));
+    });
+  }
+  if(copyBtn&&!copyBtn.dataset.init){
+    copyBtn.dataset.init="1";
+    copyBtn.addEventListener("click",()=>{
+      const lines=chatHistory.map(m=>`${m.role==="user"?(LANG==="EN"?"YOU":(LANG==="CA"?"TU":"TÚ")):"AI"}: ${stripMd(m.content)}`);
+      const txt=lines.join("\n\n") || (LANG==="EN"?"No messages yet":(LANG==="CA"?"Encara no hi ha missatges":"Aún no hay mensajes"));
+      navigator.clipboard?.writeText(txt)
+        .then(()=>toast(LANG==="EN"?"Chat copied":(LANG==="CA"?"Xat copiat":"Chat copiado")))
+        .catch(()=>toast(LANG==="EN"?"Could not copy chat":(LANG==="CA"?"No s'ha pogut copiar el xat":"No se pudo copiar el chat")));
+    });
+  }
+  if(planBtn&&!planBtn.dataset.init){
+    planBtn.dataset.init="1";
+    planBtn.addEventListener("click",()=>{
+      if(!isAIProcessing)sendToAI(LANG==="EN"?"Create a 90-day action plan for my case":(LANG==="CA"?"Fes-me un pla d'acció de 90 dies pel meu cas":"Hazme un plan de accion de 90 dias para mi caso"));
+    });
+  }
+
   // Re-bind suggestion chips (se regeneran al cambiar idioma)
   QA(".suggestion-chip").forEach(ch=>{
     ch.replaceWith(ch.cloneNode(true)); // quitar listeners viejos

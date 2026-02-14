@@ -2131,18 +2131,20 @@ const sendToAI=async (msg)=>{
   chatHistory.push({role:"user",content:msg});
   addThinking();
   
-// Determinar si usar IA real o local
-const m = msg.toLowerCase().trim();
-const useRealAI = (
-  m.length > 100 ||
-  /\b(plan|estrategia|consejo|recomiend|analiza|compara|explica|detalla|como|por que|cuando|donde)\b/i.test(m) ||
-  /\b(inversion|negocio|tecnologia|programacion|viaje|cocina|historia)\b/i.test(m)
-);
+// SOLO IA (sin motor local)
+const L = LANG;
+const t = (esStr, caStr, enStr) => L==="CA" ? caStr : (L==="EN" ? enStr : esStr);
 
 let reply = "";
 
-// Intentar IA real (Worker)
-if (useRealAI && AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL)) {
+// Si no hay URL de IA configurada, lo decimos claro
+if (!(AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL))) {
+  reply = t(
+    "⚠️ IA no configurada. Falta AI_PROXY_URL (proxy/worker).",
+    "⚠️ IA no configurada. Falta AI_PROXY_URL (proxy/worker).",
+    "⚠️ AI not configured. Missing AI_PROXY_URL (proxy/worker)."
+  );
+} else {
   try {
     const prompt = buildLLMPrompt(msg);
 
@@ -2159,16 +2161,23 @@ if (useRealAI && AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL)) {
 
     const aiReply = await callGroqViaWorker(messages, { temperature: 0.4, max_tokens: 900 });
 
-    if (aiReply) reply = aiReply;
-
+    if (aiReply && String(aiReply).trim()) {
+      reply = aiReply;
+    } else {
+      reply = t(
+        "⚠️ La IA no devolvió respuesta (vacía).",
+        "⚠️ La IA no ha retornat resposta (buida).",
+        "⚠️ The AI returned an empty response."
+      );
+    }
   } catch (e) {
-    console.error("AI via Worker failed:", e);
+    console.error("AI via worker failed:", e);
+    reply = t(
+      "⚠️ La IA no está disponible ahora mismo (falló el proxy/worker).",
+      "⚠️ La IA no està disponible ara mateix (ha fallat el proxy/worker).",
+      "⚠️ The AI is not available right now (proxy/worker failed)."
+    );
   }
-}
-
-// Fallback local si la IA real no responde
-if (!reply) {
-  reply = buildReply2(msg);
 }
 
   // Pequeño delay para efecto visual

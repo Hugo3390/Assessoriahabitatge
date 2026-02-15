@@ -294,12 +294,12 @@ canvas{display:block;width:100%;height:240px}
     <div class="g">
       <div>
         <label data-i="lblInc">Ingresos mensuales (€)</label>
-        <div class="tip"><input id="inc" type="number" min="0" data-i-ph="phInc"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
+        <div class="tip"><input id="inc" type="number" min="100" max="10000000" step="100" data-i-ph="phInc"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
         <div class="field-hint" id="hint-inc"></div>
       </div>
       <div>
         <label data-i="lblSav">Ahorros disponibles (€)</label>
-        <div class="tip"><input id="sav" type="number" min="0" data-i-ph="phSav"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
+        <div class="tip"><input id="sav" type="number" min="1000" max="10000000" step="1000" data-i-ph="phSav"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
         <div class="field-hint" id="hint-sav"></div>
       </div>
       <div style="grid-column:1/-1;margin-bottom:-4px">
@@ -1041,8 +1041,8 @@ const callGroqViaWorker = async (messages, opts = {}) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        temperature: typeof opts.temperature === "number" ? opts.temperature : 0.4,
-        max_tokens: typeof opts.max_tokens === "number" ? opts.max_tokens : 900,
+        temperature: typeof opts.temperature === "number" ? opts.temperature : 0.7,
+        max_tokens: typeof opts.max_tokens === "number" ? opts.max_tokens : 350,
         messages
       })
     });
@@ -1065,44 +1065,42 @@ const callGroqViaWorker = async (messages, opts = {}) => {
 const buildLLMPrompt = (userMsg) => {
   let ctx = null;
 
-  // 1) Intentar obtener contexto si existe calcContext()
+  // 1) Intentar obtener contexto del usuario
   try {
-    if (typeof calcContext === "function") ctx = calcContext();
+    ctx = getUserContext();
   } catch (e) {
-    console.warn("calcContext failed:", e);
+    console.warn("getUserContext failed:", e);
     ctx = null;
   }
 
-  // 2) Construir "systemContext" sin petar aunque falten campos
+  // 2) Detectar si la pregunta es sobre VIVIENDA específicamente
+  const msgLower = userMsg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const isHousingQuestion = /\b(vivienda|vivenda|casa|pis|piso|comprar|llogar|alquilar|alquiler|lloguer|hipoteca|hipotec|entrada|enganxe|itp|notaria|notari)\b/.test(msgLower);
+  
+  // 3) Construir contexto SOLO si es pregunta de vivienda
   let systemContext = "";
-  if (ctx && typeof ctx === "object") {
+  if (isHousingQuestion && ctx && typeof ctx === "object") {
     const nm = ctx.nm ?? "Anónimo";
-    const ag = (ctx.ag ?? "?");
     const inc = (ctx.inc ?? null);
     const sav = (ctx.sav ?? null);
-    const muni = ctx.muni ?? "no especificado";
-    const pb = (ctx.pb ?? null);
-    const pay = (ctx.pay ?? null);
-    const ratio = (ctx.ratio ?? null);
-    const rec = ctx.rec ?? "pendiente de análisis";
+    const rec = ctx.rec ?? "pendent";
+    const canBuyCash = last?.canBuyCash ?? false;
 
     systemContext =
-`Usuario: ${nm}, ${ag} años
-Ingresos: ${inc!=null?fmtMoney(inc)+"/mes":"no especificado"}
-Ahorros: ${sav!=null?fmtMoney(sav):"no especificado"}
-Municipio: ${muni}
-Precio objetivo: ${pb!=null?fmtMoney(pb):"no especificado"}
-Cuota hipoteca: ${pay!=null?fmtMoney(pay)+"/mes":"no calculado"}
-Esfuerzo: ${ratio!=null?(ratio*100).toFixed(1)+"%":"no calculado"}
-Recomendación: ${rec}`;
+`[Dades vivienda: ${inc!=null?fmtMoney(inc)+"/mes":""}, ${sav!=null?fmtMoney(sav)+" est":""}, ${rec}${canBuyCash?" (pot pagar al comptat)":""}]`;
   }
 
-  // 3) Prompt final
+  // 4) Instrucciones DEFINITIVAS - máxima inteligencia conversacional
+  const baseInstructions = LANG === "CA" 
+    ? "Ets un assessor financer expert i amigable. Llegeix SEMPRE els missatges anteriors per mantenir coherència. Si l'usuari parla de temes generals (inversions, estalvi, fons, ETFs, criptos), respon sobre AQUELL tema sense mencionar vivienda. NOMÉS usa dades de vivienda si et pregunten específicament sobre comprar/llogar/hipoteca. Respostes naturals, directes i útils. CATALÀ PERFECTE: estalvis (mai 'ahorros'), préstec (mai 'préstamo'), quota (mai 'cuota'). 2-3 frases concises."
+    : LANG === "EN"
+      ? "You are an expert and friendly financial advisor. ALWAYS read previous messages to maintain coherence. If user discusses general topics (investing, savings, funds, ETFs, crypto), respond about THAT topic without mentioning housing. ONLY use housing data if specifically asked about buying/renting/mortgage. Natural, direct, useful responses. 2-3 concise sentences."
+      : "Eres un asesor financiero experto y amigable. Lee SIEMPRE los mensajes anteriores para mantener coherencia. Si el usuario habla de temas generales (inversiones, ahorro, fondos, ETFs, cripto), responde sobre ESE tema sin mencionar vivienda. SOLO usa datos de vivienda si preguntan específicamente sobre comprar/alquilar/hipoteca. Respuestas naturales, directas y útiles. 2-3 frases concisas.";
+  
   return [
-    "Eres un asesor inmobiliario/financiero en España (Baix Penedès).",
-    "Da recomendaciones concretas con pasos y motivos. No repitas literalmente los datos del usuario; úsalos para razonar.",
-    systemContext ? ("Datos del usuario:\n" + systemContext) : "",
-    "Pregunta del usuario:\n" + userMsg
+    baseInstructions,
+    systemContext,
+    (LANG==="CA"?"Pregunta:":LANG==="EN"?"Question:":"Pregunta:") + " " + userMsg
   ].filter(Boolean).join("\n\n");
 };
 
@@ -1278,10 +1276,29 @@ const analyze=()=>{
   const pay=mort(cap,rate,yrs);
   const ratio=inc>0?(pay/inc)*100:1e9,rri=inc>0?(pr/inc)*100:1e9;
   const need=sav<needCash,ratioOK=isFinite(ratio)&&ratio<=35,rentOK=isFinite(rri)&&rri<=40;
-  const recCode=(!need&&ratioOK&&hor)?"BUY":(rentOK?"RENT":"NOT_FEASIBLE");
+  
+  // LÓGICA MEJORADA: Si tiene dinero para comprar SIN hipoteca (al contado), recomendar COMPRAR
+  const canBuyCash=sav>=(pb+cl); // Puede pagar precio + gastos de cierre sin hipoteca
+  const canBuyWithMortgage=!need&&ratioOK; // Tiene entrada + esfuerzo hipotecario razonable
+  
+  let recCode;
+  if(canBuyCash){
+    // Tiene suficiente dinero para comprar al contado → SIEMPRE recomendar COMPRAR
+    recCode="BUY";
+  }else if(canBuyWithMortgage&&hor){
+    // Puede comprar con hipoteca y tiene horizonte largo → COMPRAR
+    recCode="BUY";
+  }else if(rentOK){
+    // No puede comprar pero puede alquilar → ALQUILAR
+    recCode="RENT";
+  }else{
+    // Ni comprar ni alquilar son factibles → NO FACTIBLE
+    recCode="NOT_FEASIBLE";
+  }
+  
   const rec=recCode==="BUY"?t("recBuy"):recCode==="RENT"?t("recRent"):t("recNotFeasible");
 
-  last={nm,muni:ar,m2,bd:Math.max(0,bd),ba,type,pb,pr,pbRange,prRange,muniList,cap,rate,yrs,dp,sav,down,cl,pay,ratio,rri,rec,recCode,e,need,hor,inc,msv:+Q("#msv").value||0,needCash,ag};
+  last={nm,muni:ar,m2,bd:Math.max(0,bd),ba,type,pb,pr,pbRange,prRange,muniList,cap,rate,yrs,dp,sav,down,cl,pay,ratio,rri,rec,recCode,e,need,hor,inc,msv:+Q("#msv").value||0,needCash,ag,canBuyCash};
   lastReq=reqFromUI();lastReqSig=sigOfReq(lastReq);
 
   Q("#k1").textContent=fmtMoney(pb);Q("#k2").textContent=fmtMoney(pr);Q("#k3").textContent=fmtMoney(pay);Q("#k4").textContent=rec;
@@ -1328,9 +1345,17 @@ const renderResult=()=>{
   const safe=last.inc*.35;
   const why=[];
   if(last.recCode==="BUY"){
-    why.push(LANG==="EN"?"Savings cover down payment + costs":(LANG==="CA"?"Estalvis cobreixen entrada + despeses":"Ahorros cubren entrada + costes"));
-    why.push(LANG==="EN"?"Mortgage effort within recommended band":(LANG==="CA"?"Esforç hipoteca dins la banda recomanada":"Esfuerzo hipoteca en banda recomendada"));
-    if(last.hor)why.push(LANG==="EN"?"Staying >5 years amortizes costs":(LANG==="CA"?"Horitzó >5 anys amortitza costos":"Horizonte >5 años amortiza costes"));
+    if(last.canBuyCash){
+      // CASO ESPECIAL: Puede comprar al contado (sin hipoteca)
+      why.push(LANG==="EN"?"💰 You have enough cash to buy WITHOUT a mortgage!":(LANG==="CA"?"💰 Tens prou efectiu per comprar SENSE hipoteca!":"💰 ¡Tienes suficiente efectivo para comprar SIN hipoteca!"));
+      why.push(LANG==="EN"?"No monthly mortgage payments needed":(LANG==="CA"?"No cal pagar quota hipotecària mensual":"No necesitas pagar cuota hipotecaria mensual"));
+      why.push(LANG==="EN"?"Buying is the best option in your case":(LANG==="CA"?"Comprar és la millor opció en el teu cas":"Comprar es la mejor opción en tu caso"));
+    }else{
+      // CASO NORMAL: Compra con hipoteca
+      why.push(LANG==="EN"?"Savings cover down payment + costs":(LANG==="CA"?"Estalvis cobreixen entrada + despeses":"Ahorros cubren entrada + costes"));
+      why.push(LANG==="EN"?"Mortgage effort within recommended band":(LANG==="CA"?"Esforç hipoteca dins la banda recomanada":"Esfuerzo hipoteca en banda recomendada"));
+      if(last.hor)why.push(LANG==="EN"?"Staying >5 years amortizes costs":(LANG==="CA"?"Horitzó >5 anys amortitza costos":"Horizonte >5 años amortiza costes"));
+    }
   }else if(last.recCode==="RENT"){
     if(last.need)why.push((LANG==="EN"?"Not enough savings":(LANG==="CA"?"Falta efectivo":"Falta efectivo"))+": "+fmtMoney(last.needCash-last.sav));
     if(dti>35)why.push((LANG==="EN"?"High mortgage effort":(LANG==="CA"?"Esforç hipoteca alt":"Esfuerzo hipoteca alto"))+": "+fmtPct(dti));
@@ -1688,6 +1713,7 @@ const getUserContext=()=>{
     rate:last.rate,yrs:last.yrs,dp:Math.round(last.dp*100),
     ratio:last.ratio,rri:last.rri,rec:last.rec,recCode:last.recCode,
     need:last.need,needCash:last.needCash,hor:last.hor,
+    canBuyCash:last.canBuyCash||false,
     muni:muniLabel(last.muni),m2:last.m2,bd:last.bd||0,ba:last.ba,
     type:typeLabel(last.type),extras,
     safe:Math.round(last.inc*0.35),
@@ -2415,15 +2441,22 @@ if (!(AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL))) {
     const systemMsg = {
       role: "system",
       content: LANG === "CA"
-        ? "Ets un assessor financer expert. Respon en català de forma clara i pràctica."
+        ? "Ets un assessor financer professional i proper. SEMPRE llegeix l'historial complet abans de respondre per mantenir coherència total. Si l'última conversa tracta de fons indexats, ETFs, criptomonedes, plans de pensions o inversions generals, CONTINUA amb aquell tema exact. NO introdueixis el tema de vivienda tret que et preguntin explícitament sobre comprar/llogar/hipoteques. Prioritza ser útil i mantenir el fil conversacional per sobre de tot. Respostes precises en CATALÀ CORRECTE (estalvis, préstec, quota). 2-3 frases clares i directes."
         : LANG === "EN"
-          ? "You are an expert financial advisor. Respond in English clearly and practically."
-          : "Eres un asesor financiero experto. Responde en español de forma clara y práctica."
+          ? "You are a professional and approachable financial advisor. ALWAYS read full history before responding to maintain total coherence. If last conversation is about index funds, ETFs, cryptocurrencies, pension plans or general investing, CONTINUE with that exact topic. Do NOT introduce housing topic unless explicitly asked about buying/renting/mortgages. Prioritize being helpful and maintaining conversational flow above all. Precise responses. 2-3 clear direct sentences."
+          : "Eres un asesor financiero profesional y cercano. SIEMPRE lee el historial completo antes de responder para mantener coherencia total. Si la última conversación trata de fondos indexados, ETFs, criptomonedas, planes de pensiones o inversión general, CONTINÚA con ese tema exacto. NO introduzcas el tema de vivienda a menos que pregunten explícitamente sobre comprar/alquilar/hipotecas. Prioriza ser útil y mantener el hilo conversacional por encima de todo. Respuestas precisas. 2-3 frases claras y directas."
     };
 
-    const messages = [systemMsg, { role: "user", content: prompt }];
+    // Construir array de mensajes con historial de conversación reciente
+    // Formato: [system, historial_antiguo..., user_nuevo, assistant, user_nuevo...]
+    const recentHistory = chatHistory.slice(-10); // Últimos 5 intercambios completos
+    const messages = [
+      systemMsg,
+      ...recentHistory,
+      { role: "user", content: prompt }
+    ];
 
-    const aiReply = await callGroqViaWorker(messages, { temperature: 0.4, max_tokens: 900 });
+    const aiReply = await callGroqViaWorker(messages, { temperature: 0.7, max_tokens: 350 });
 
     if (aiReply && String(aiReply).trim()) {
       reply = aiReply;
@@ -2528,13 +2561,13 @@ const initChatUI=()=>{
    ===================== */
 const liveValidate=()=>{
   const setHint=(id,msg,ok)=>{const el=Q("#hint-"+id);if(!el)return;el.textContent=msg||"";el.className="field-hint "+(msg?(ok?"ok":"err"):"");Q("#"+id)?.classList.toggle("field-ok",!!ok&&!!msg);Q("#"+id)?.classList.toggle("field-err",!ok&&!!msg);};
-  const inc=+Q("#inc")?.value||0;if(inc>0&&inc<500)setHint("inc",LANG==="EN"?"Very low income":(LANG==="CA"?"Ingressos molt baixos":"Ingresos muy bajos, ¿es neto?"),false);else if(inc>0)setHint("inc","✓",true);else setHint("inc","","");
-  const sav=+Q("#sav")?.value||0;if(sav>0&&sav<5000)setHint("sav",LANG==="EN"?"Very low savings":(LANG==="CA"?"Estalvis molt baixos":"Ahorros muy bajos"),false);else if(sav>0)setHint("sav","✓",true);else setHint("sav","","");
+  const inc=+Q("#inc")?.value||0;if(inc>0&&inc<100)setHint("inc",LANG==="EN"?"Minimum 100€":(LANG==="CA"?"Mínim 100€":"Mínimo 100€"),false);else if(inc>10000000)setHint("inc",LANG==="EN"?"Max 10M€":(LANG==="CA"?"Màx 10M€":"Máx 10M€"),false);else if(inc>0)setHint("inc","✓",true);else setHint("inc","","");
+  const sav=+Q("#sav")?.value||0;if(sav>0&&sav<1000)setHint("sav",LANG==="EN"?"Minimum 1,000€":(LANG==="CA"?"Mínim 1.000€":"Mínimo 1.000€"),false);else if(sav>10000000)setHint("sav",LANG==="EN"?"Max 10M€":(LANG==="CA"?"Màx 10M€":"Máx 10M€"),false);else if(sav>0)setHint("sav","✓",true);else setHint("sav","","");
   const m2=+Q("#m2")?.value||0;if(m2>0&&m2<50)setHint("m2",LANG==="EN"?"Minimum 50 m²":(LANG==="CA"?"Mínim 50 m²":"Mínimo 50 m²"),false);else if(m2>=50)setHint("m2","✓",true);else setHint("m2","","");
   // Pulse hint on continue/analyze
   const nm=(Q("#nm")?.value||"").trim(),ag=+Q("#ag")?.value||0;
   const npBtn=Q("#np");if(npBtn){const ok=nm&&ag>=18&&ag<=100;npBtn.classList.toggle("pulse-hint",ok);}
-  const neBtn=Q("#ne");if(neBtn){const ok=inc>0&&sav>=0;neBtn.classList.toggle("pulse-hint",ok);}
+  const neBtn=Q("#ne");if(neBtn){const ok=inc>=100&&inc<=10000000&&sav>=1000&&sav<=10000000;neBtn.classList.toggle("pulse-hint",ok);}
   const goBtn=Q("#go");if(goBtn){const ok=m2>=50;goBtn.classList.toggle("pulse-hint",ok);}
 };
 

@@ -222,8 +222,8 @@ canvas{display:block;width:100%;height:240px}
   <!-- 1 Personal -->
   <div class="c" data-p="p">
     <div class="g">
-      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name"></div>
-      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100"></div>
+      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-ph="phName"></div>
+      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-ph="phAge"></div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintP">Rellena los datos básicos para continuar.</div></div>
     <div class="r" style="margin-top:10px"><button class="b" id="np" type="button" data-i="btnContinue">Continuar</button></div>
@@ -234,12 +234,12 @@ canvas{display:block;width:100%;height:240px}
     <div class="g">
       <div>
         <label data-i="lblInc">Ingresos mensuales (€)</label>
-        <div class="tip"><input id="inc" type="number" min="0"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
+        <div class="tip"><input id="inc" type="number" min="0" data-ph="phIncome"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
         <div class="field-hint" id="hint-inc"></div>
       </div>
       <div>
         <label data-i="lblSav">Ahorros disponibles (€)</label>
-        <div class="tip"><input id="sav" type="number" min="0"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
+        <div class="tip"><input id="sav" type="number" min="0" data-ph="phSavings"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
         <div class="field-hint" id="hint-sav"></div>
       </div>
       <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25"></div>
@@ -247,7 +247,7 @@ canvas{display:block;width:100%;height:240px}
       <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
       <div>
         <label data-i="lblMsv">Ahorro mensual (€)</label>
-        <div class="tip"><input id="msv" type="number" min="0"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
+        <div class="tip"><input id="msv" type="number" min="0" data-ph="phMonthlySave"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
       </div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
@@ -269,11 +269,11 @@ canvas{display:block;width:100%;height:240px}
       </div>
       <div>
         <label data-i="lblM2">Metros cuadrados (≥50)</label>
-        <input id="m2" type="number" min="50" max="1000">
+        <input id="m2" type="number" min="50" max="1000" data-ph="phM2">
         <div class="field-hint" id="hint-m2"></div>
       </div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="0" max="10" value="2"></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1"></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="1" max="10" value="2" data-ph="phBed"><div class="field-hint" id="hint-bed"></div></div>
+      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1" data-ph="phBath"><div class="field-hint" id="hint-bat"></div></div>
       <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -363,9 +363,9 @@ canvas{display:block;width:100%;height:240px}
   <div class="c" data-p="m" style="display:none">
     <div class="g">
       <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
-      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="0" max="10"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10"></div>
+      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50" max="1000" data-ph="phM2"></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="1" max="10" data-ph="phBed"></div>
+      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10" data-ph="phBath"></div>
       <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -614,6 +614,7 @@ ES:{
   tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",
   tab6:"6 Ejemplos reales",tab7:"🤖 AI Advisor",
   lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",
+  phName:"Ej: Hugo Ibáñez",phAge:"Ej: 25",phIncome:"Ej: 2400",phSavings:"Ej: 35000",phMonthlySave:"Ej: 500",phM2:"Ej: 85",phBed:"Ej: 3",phBath:"Ej: 2",
   hintP:"Rellena los datos básicos para continuar.",
   lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",
   lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",
@@ -640,7 +641,7 @@ ES:{
   hintX:"Si elegiste varios municipios, salen botones por municipio.",
   yes:"Sí",no:"No",
   recBuy:"COMPRAR",recRent:"ALQUILAR",recNotFeasible:"NO FACTIBLE",
-  toastCheck:"Revisa nombre/edad y que m²/baños sean válidos.",toastFirst:"Primero analiza.",
+  toastCheck:"Revisa nombre/edad y que m² (50–1000), habitaciones (1–10) y baños (1–10) sean válidos.",toastFirst:"Primero analiza.",
   toastPrefs:"Preferencias cambiadas: vuelve a Analizar.",toastNoLink:"No se pudo generar el link",
   toastCopied:"Copiado",toastZoneCleared:"Zona limpiada",toastNoZone:"No hay municipios seleccionados",
   toastZoneApplied:"Zona aplicada",
@@ -655,7 +656,7 @@ ES:{
   avgZone:"Media de {n} municipios",
   stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",
   cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",cmpExplTitle:"Interpretación",
-  any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² y baños (mínimo 1).",
+  any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² (50–1000), habitaciones y baños (1–10).",
   // I18N completado: claves de resultado
   yrs:"años",beds:"hab.",baths:"baño(s)",noExtras:"Sin extras",
   safeCapacity:"Capacidad segura",buyLabel:"COMPRA",rentLabel:"ALQUILER",
@@ -683,6 +684,7 @@ CA:{
   tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",
   tab6:"6 Exemples reals",tab7:"🤖 AI Advisor",
   lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",
+  phName:"Ex: Hugo Ibáñez",phAge:"Ex: 25",phIncome:"Ex: 2400",phSavings:"Ex: 35000",phMonthlySave:"Ex: 500",phM2:"Ex: 85",phBed:"Ex: 3",phBath:"Ex: 2",
   hintP:"Omple les dades bàsiques per continuar.",
   lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",
   lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",
@@ -709,7 +711,7 @@ CA:{
   hintX:"Si has triat diversos municipis, surten botons per municipi.",
   yes:"Sí",no:"No",
   recBuy:"COMPRAR",recRent:"LLOGAR",recNotFeasible:"NO FACTIBLE",
-  toastCheck:"Revisa nom/edat i que m²/banys siguin vàlids.",toastFirst:"Primer analitza.",
+  toastCheck:"Revisa nom/edat i que m² (50–1000), habitacions (1–10) i banys (1–10) siguin vàlids.",toastFirst:"Primer analitza.",
   toastPrefs:"Preferències canviades: torna a Analitzar.",toastNoLink:"No s'ha pogut generar l'enllaç",
   toastCopied:"Copiat",toastZoneCleared:"Zona netejada",toastNoZone:"No hi ha municipis seleccionats",
   toastZoneApplied:"Zona aplicada",
@@ -724,7 +726,7 @@ CA:{
   avgZone:"Mitjana de {n} municipis",
   stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",
   cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",cmpExplTitle:"Interpretació",
-  any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² i banys (mínim 1).",
+  any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² (50–1000), habitacions i banys (1–10).",
   yrs:"anys",beds:"hab.",baths:"bany(s)",noExtras:"Sense extres",
   safeCapacity:"Capacitat segura",buyLabel:"COMPRA",rentLabel:"LLOGUER",
   strictLabel:"estricte",flexLabel:"flex",
@@ -750,6 +752,7 @@ EN:{
   tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",
   tab6:"6 Real examples",tab7:"🤖 AI Advisor",
   lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",
+  phName:"E.g. Hugo Ibáñez",phAge:"E.g. 25",phIncome:"E.g. 2400",phSavings:"E.g. 35000",phMonthlySave:"E.g. 500",phM2:"E.g. 85",phBed:"E.g. 3",phBath:"E.g. 2",
   hintP:"Fill in the basics to continue.",
   lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",
   lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",
@@ -776,7 +779,7 @@ EN:{
   hintX:"If you chose multiple towns, you get buttons per town.",
   yes:"Yes",no:"No",
   recBuy:"BUY",recRent:"RENT",recNotFeasible:"NOT FEASIBLE",
-  toastCheck:"Check name/age and ensure m²/bathrooms are valid.",toastFirst:"Analyze first.",
+  toastCheck:"Check name/age and ensure m² (50–1000), bedrooms (1–10), and bathrooms (1–10) are valid.",toastFirst:"Analyze first.",
   toastPrefs:"Preferences changed: analyze again.",toastNoLink:"Could not generate the link",
   toastCopied:"Copied",toastZoneCleared:"Area cleared",toastNoZone:"No towns selected",
   toastZoneApplied:"Area applied",
@@ -791,7 +794,7 @@ EN:{
   avgZone:"Average of {n} towns",
   stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",
   cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",cmpExplTitle:"Interpretation",
-  any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² and bathrooms (min 1).",
+  any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² (50–1000), bedrooms and bathrooms (1–10).",
   yrs:"years",beds:"bed(s)",baths:"bath(s)",noExtras:"No extras",
   safeCapacity:"Safe capacity",buyLabel:"BUY",rentLabel:"RENT",
   strictLabel:"strict",flexLabel:"flex",
@@ -905,6 +908,7 @@ const applyI18n=()=>{
   // Tooltips — se regeneran al cambiar idioma
   const tipMap={tipIncBox:"tipInc",tipSavBox:"tipSav",tipMsvBox:"tipMsv"};
   Object.entries(tipMap).forEach(([id,key])=>{const el=Q("#"+id);if(el)el.textContent=t(key);});
+  QA("[data-ph]").forEach(el=>{const key=el.getAttribute("data-ph");const val=t(key);if(val)el.placeholder=val;});
   // Chat
   const wb=Q("#welcome-bubble");if(wb&&!wb.dataset.set)wb.textContent=t("aiWelcome");
   const ci=Q("#chatInput");if(ci)ci.placeholder=t("aiPlaceholder");
@@ -1024,7 +1028,7 @@ const analyze=()=>{
   const nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0,inc=+Q("#inc").value||0,sav=+Q("#sav").value||0;
   const yrs=+Q("#yrs").value||25,hor=Q("#hor").value==="y",fst=Q("#fst").value==="y";
   const ar=Q("#ar").value,m2=+Q("#m2").value||0,bd=Q("#bed").value===""?0:+Q("#bed").value||0,ba=+Q("#bat").value||0,type=Q("#ty").value;
-  if(!nm||ag<18||ag>100||m2<50||ba<1){toast(t("toastCheck"));return;}
+  if(!nm||ag<18||ag>100||m2<50||m2>1000||bd<1||bd>10||ba<1||ba>10){toast(t("toastCheck"));return;}
   const e={t:Q("#et").checked,p:Q("#ep").checked,l:Q("#el").checked,k:Q("#ek").checked};
 
   let pb,pr,pbRange=null,prRange=null,muniList=[];
@@ -1202,7 +1206,7 @@ const compare=()=>{
   if(!last){Q("#cmg").textContent=t("toastFirst");return;}
   const m=Q("#cm").value,m2=+Q("#cm2").value||0,bd=+Q("#cbd").value||0,ba=+Q("#cba").value||0;
   const e={t:Q("#ct").checked,p:Q("#cp0").checked,l:Q("#cl0").checked,k:Q("#ck0").checked};
-  if(!M[m]||!(m2>0&&ba>0)){Q("#cmg").textContent=t("missingDataCmp");Q("#cmpChips").innerHTML="";return;}
+  if(!M[m]||m2<50||m2>1000||bd<1||bd>10||ba<1||ba>10){Q("#cmg").textContent=t("missingDataCmp");Q("#cmpChips").innerHTML="";return;}
   const p2=buyM(m,m2,Math.max(0,bd),ba,e),r2=rentM(m,m2,Math.max(0,bd),ba,e);
   const d=p2-last.pb,pct=last.pb>0?(d/last.pb)*100:0;
   const cls=d>0?"bad":d<0?"good":"neu",arrow=d>0?"↑":d<0?"↓":"→",sign=d>0?"+":"";
@@ -2266,7 +2270,9 @@ const liveValidate=()=>{
   const setHint=(id,msg,ok)=>{const el=Q("#hint-"+id);if(!el)return;el.textContent=msg||"";el.className="field-hint "+(msg?(ok?"ok":"err"):"");Q("#"+id)?.classList.toggle("field-ok",!!ok&&!!msg);Q("#"+id)?.classList.toggle("field-err",!ok&&!!msg);};
   const inc=+Q("#inc")?.value||0;if(inc>0&&inc<500)setHint("inc",LANG==="EN"?"Very low income":(LANG==="CA"?"Ingressos molt baixos":"Ingresos muy bajos, ¿es neto?"),false);else if(inc>0)setHint("inc","✓",true);else setHint("inc","","");
   const sav=+Q("#sav")?.value||0;if(sav>0&&sav<5000)setHint("sav",LANG==="EN"?"Very low savings":(LANG==="CA"?"Estalvis molt baixos":"Ahorros muy bajos"),false);else if(sav>0)setHint("sav","✓",true);else setHint("sav","","");
-  const m2=+Q("#m2")?.value||0;if(m2>0&&m2<50)setHint("m2",LANG==="EN"?"Minimum 50 m²":(LANG==="CA"?"Mínim 50 m²":"Mínimo 50 m²"),false);else if(m2>=50)setHint("m2","✓",true);else setHint("m2","","");
+  const m2=+Q("#m2")?.value||0;if(m2>0&&(m2<50||m2>1000))setHint("m2",LANG==="EN"?"Allowed range: 50–1000 m²":(LANG==="CA"?"Rang permès: 50–1000 m²":"Rango permitido: 50–1000 m²"),false);else if(m2>=50&&m2<=1000)setHint("m2","✓",true);else setHint("m2","","");
+  const bed=Q("#bed")?.value===""?0:+Q("#bed")?.value||0;if(bed>0&&(bed<1||bed>10))setHint("bed",LANG==="EN"?"Bedrooms: 1 to 10":(LANG==="CA"?"Habitacions: 1 a 10":"Habitaciones: 1 a 10"),false);else if(bed>=1&&bed<=10)setHint("bed","✓",true);else setHint("bed","","");
+  const bat=+Q("#bat")?.value||0;if(bat>0&&(bat<1||bat>10))setHint("bat",LANG==="EN"?"Bathrooms: 1 to 10":(LANG==="CA"?"Banys: 1 a 10":"Baños: 1 a 10"),false);else if(bat>=1&&bat<=10)setHint("bat","✓",true);else setHint("bat","","");
 };
 
 /* =====================
@@ -2310,8 +2316,8 @@ Q("#cm").onchange=upMap;
 Q("#L_CA").onclick=()=>setLang("CA");
 Q("#L_ES").onclick=()=>setLang("ES");
 Q("#L_EN").onclick=()=>setLang("EN");
-["inc","sav","m2"].forEach(id=>Q("#"+id)?.addEventListener("input",liveValidate));
-["nm","ag","inc","sav","yrs","msv","m2","bed","ar","em","tel","notes"].forEach(id=>Q("#"+id)?.addEventListener("blur",saveForm));
+["inc","sav","m2","bed","bat"].forEach(id=>Q("#"+id)?.addEventListener("input",liveValidate));
+["nm","ag","inc","sav","yrs","msv","m2","bed","bat","cm2","cbd","cba","ar","em","tel","notes"].forEach(id=>Q("#"+id)?.addEventListener("blur",saveForm));
 
 })();}
 

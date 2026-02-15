@@ -223,8 +223,8 @@ canvas{display:block;width:100%;height:240px}
   <!-- 1 Personal -->
   <div class="c" data-p="p">
     <div class="g">
-      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-ph="phName" placeholder="Ej: Hugo Ibáñez"></div>
-      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-ph="phAge" placeholder="Ej: 25"></div>
+      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-ph="phName" placeholder="Hugo Ibáñez"></div>
+      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-ph="phAge" placeholder="25"></div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintP">Rellena los datos básicos para continuar.</div></div>
     <div class="r" style="margin-top:10px"><button class="b" id="np" type="button" data-i="btnContinue">Continuar</button></div>
@@ -235,12 +235,12 @@ canvas{display:block;width:100%;height:240px}
     <div class="g">
       <div>
         <label data-i="lblInc">Ingresos mensuales (€)</label>
-        <div class="tip"><input id="inc" type="number" min="0" data-ph="phIncome" placeholder="Ej: 2400"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
+        <div class="tip"><input id="inc" type="number" min="0" data-ph="phIncome" placeholder="2400"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
         <div class="field-hint" id="hint-inc"></div>
       </div>
       <div>
         <label data-i="lblSav">Ahorros disponibles (€)</label>
-        <div class="tip"><input id="sav" type="number" min="0" data-ph="phSavings" placeholder="Ej: 35000"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
+        <div class="tip"><input id="sav" type="number" min="0" data-ph="phSavings" placeholder="35000"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
         <div class="field-hint" id="hint-sav"></div>
       </div>
       <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25"></div>
@@ -248,7 +248,7 @@ canvas{display:block;width:100%;height:240px}
       <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
       <div>
         <label data-i="lblMsv">Ahorro mensual (€)</label>
-        <div class="tip"><input id="msv" type="number" min="0" data-ph="phMonthlySave" placeholder="Ej: 500"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
+        <div class="tip"><input id="msv" type="number" min="0" data-ph="phMonthlySave" placeholder="500"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
       </div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
@@ -270,11 +270,11 @@ canvas{display:block;width:100%;height:240px}
       </div>
       <div>
         <label data-i="lblM2">Metros cuadrados (≥50)</label>
-        <input id="m2" type="number" min="50" max="1000" data-ph="phM2" placeholder="Ej: 85">
+        <input id="m2" type="number" min="50" max="1000" data-ph="phM2" placeholder="85">
         <div class="field-hint" id="hint-m2"></div>
       </div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="1" max="10" value="2" data-ph="phBed" placeholder="Ej: 3"><div class="field-hint" id="hint-bed"></div></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1" data-ph="phBath" placeholder="Ej: 2"><div class="field-hint" id="hint-bat"></div></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="1" max="10" value="2" data-ph="phBed" placeholder="3"><div class="field-hint" id="hint-bed"></div></div>
+      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1" data-ph="phBath" placeholder="2"><div class="field-hint" id="hint-bat"></div></div>
       <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -364,9 +364,9 @@ canvas{display:block;width:100%;height:240px}
   <div class="c" data-p="m" style="display:none">
     <div class="g">
       <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
-      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50" max="1000" data-ph="phM2" placeholder="Ej: 85"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="1" max="10" data-ph="phBed" placeholder="Ej: 3"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10" data-ph="phBath" placeholder="Ej: 2"></div>
+      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50" max="1000" data-ph="phM2" placeholder="85"></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="1" max="10" data-ph="phBed" placeholder="3"></div>
+      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10" data-ph="phBath" placeholder="2"></div>
       <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -615,7 +615,7 @@ ES:{
   tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",
   tab6:"6 Ejemplos reales",tab7:"🤖 AI Advisor",
   lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",
-  phName:"Ej: Hugo Ibáñez",phAge:"Ej: 25",phIncome:"Ej: 2400",phSavings:"Ej: 35000",phMonthlySave:"Ej: 500",phM2:"Ej: 85",phBed:"Ej: 3",phBath:"Ej: 2",
+  phName:"Hugo Ibáñez",phAge:"25",phIncome:"2400",phSavings:"35000",phMonthlySave:"500",phM2:"85",phBed:"3",phBath:"2",
   hintP:"Rellena los datos básicos para continuar.",
   lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",
   lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",
@@ -685,7 +685,7 @@ CA:{
   tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",
   tab6:"6 Exemples reals",tab7:"🤖 AI Advisor",
   lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",
-  phName:"Ex: Hugo Ibáñez",phAge:"Ex: 25",phIncome:"Ex: 2400",phSavings:"Ex: 35000",phMonthlySave:"Ex: 500",phM2:"Ex: 85",phBed:"Ex: 3",phBath:"Ex: 2",
+  phName:"Hugo Ibáñez",phAge:"25",phIncome:"2400",phSavings:"35000",phMonthlySave:"500",phM2:"85",phBed:"3",phBath:"2",
   hintP:"Omple les dades bàsiques per continuar.",
   lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",
   lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",
@@ -753,7 +753,7 @@ EN:{
   tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",
   tab6:"6 Real examples",tab7:"🤖 AI Advisor",
   lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",
-  phName:"E.g. Hugo Ibáñez",phAge:"E.g. 25",phIncome:"E.g. 2400",phSavings:"E.g. 35000",phMonthlySave:"E.g. 500",phM2:"E.g. 85",phBed:"E.g. 3",phBath:"E.g. 2",
+  phName:"Hugo Ibáñez",phAge:"25",phIncome:"2400",phSavings:"35000",phMonthlySave:"500",phM2:"85",phBed:"3",phBath:"2",
   hintP:"Fill in the basics to continue.",
   lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",
   lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",
@@ -1234,9 +1234,10 @@ const fillFromLast=()=>{
 };
 
 /* =====================
-   MAPA MUNICIPAL — Versión mejorada
+   MAPA MUNICIPAL — límites reales + fallback
    ===================== */
 let zmap=null,zReady=false,zoneSel=new Set(),polygonsByName=new Map(),labelsByName=new Map();
+const MUNI_REAL_KEY="hx_real_muni_v1";
 const loadZoneSel=()=>{try{const s=localStorage.getItem(ZONE_KEY);if(s)zoneSel=new Set(JSON.parse(s)||[]);}catch(e){}};
 const saveZoneSel=()=>localStorage.setItem(ZONE_KEY,JSON.stringify([...zoneSel]));
 
@@ -1255,12 +1256,12 @@ const applyPolygonState=name=>{
   const on=zoneSel.has(name);
   poly.setStyle({
     fillColor:on?"#38bdf8":"#22c55e",
-    fillOpacity:on?0.7:0.3,
+    fillOpacity:on?0.64:0.26,
     color:on?"#0ea5e9":"#4ade80",
-    weight:on?3:2,
+    weight:on?2.8:1.8,
     opacity:1
   });
-  if(on)poly.bringToFront();
+  if(on&&poly.bringToFront)poly.bringToFront();
 };
 
 const toggleZone=(name,fromChip)=>{
@@ -1269,83 +1270,105 @@ const toggleZone=(name,fromChip)=>{
   if(!fromChip)saveZoneSel();
 };
 
-const initMap=()=>{
+const normalizeMuniName=name=>{
+  const map={"Arbós":"L'Arboç","L Arboc":"L'Arboç","Arboç":"L'Arboç","El Vendrell":"El Vendrell","Sant Jaume dels Domenys":"Sant Jaume dels Domenys"};
+  return map[name]||name;
+};
+
+const loadRealMunicipalPolygons=async()=>{
+  try{
+    const raw=localStorage.getItem(MUNI_REAL_KEY);
+    if(raw){
+      const cached=JSON.parse(raw);
+      if(cached&&cached.ts&&Date.now()-cached.ts<1000*60*60*24*15&&cached.data)return cached.data;
+    }
+  }catch(e){}
+
+  const names=[...MUNI_NAMES];
+  const out={};
+  const fetchOne=async(name)=>{
+    const q=`${name}, Baix Penedès, Tarragona, Catalunya, España`;
+    const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&polygon_geojson=1&q=${encodeURIComponent(q)}`;
+    const r=await fetch(url,{headers:{"Accept":"application/json"}});
+    if(!r.ok)return;
+    const arr=await r.json();
+    if(!Array.isArray(arr)||!arr.length)return;
+    const hit=arr.find(x=>x.geojson&&(x.geojson.type==="Polygon"||x.geojson.type==="MultiPolygon"))||arr[0];
+    const key=normalizeMuniName(hit.name||name);
+    if(hit.geojson)out[key]=hit.geojson;
+  };
+
+  await Promise.all(names.map(n=>fetchOne(n).catch(()=>{})));
+
+  if(Object.keys(out).length>=10){
+    try{localStorage.setItem(MUNI_REAL_KEY,JSON.stringify({ts:Date.now(),data:out}));}catch(e){}
+    return out;
+  }
+  return null;
+};
+
+const addZoneLayer=(name,geojsonOrPts)=>{
+  const on=zoneSel.has(name);
+  const style={
+    fillColor:on?"#38bdf8":"#22c55e",
+    fillOpacity:on?0.64:0.26,
+    color:on?"#0ea5e9":"#4ade80",
+    weight:on?2.8:1.8,
+    opacity:1,
+    smoothFactor:0.25
+  };
+
+  const layer=Array.isArray(geojsonOrPts)
+    ? L.polygon(geojsonOrPts,style).addTo(zmap)
+    : L.geoJSON(geojsonOrPts,{style:()=>style}).addTo(zmap);
+
+  layer.bindTooltip(name,{permanent:false,direction:"top",offset:[0,-10],opacity:1,className:"muni-tooltip"});
+  layer.on("mouseover",function(){if(!zoneSel.has(name)){this.setStyle({fillOpacity:0.45,weight:2.6});}this.openTooltip();});
+  layer.on("mouseout",function(){if(!zoneSel.has(name)){this.setStyle({fillOpacity:0.26,weight:1.8});}this.closeTooltip();});
+  layer.on("click",()=>toggleZone(name,false));
+  polygonsByName.set(name,layer);
+
+  const center=layer.getBounds?layer.getBounds().getCenter():null;
+  if(center){
+    const fs=name.length>18?"7px":name.length>14?"8px":"9px";
+    const lbl=L.marker(center,{icon:L.divIcon({className:"muni-label",html:`<span style="font-size:${fs};font-weight:900;text-shadow:0 2px 6px rgba(0,0,0,1),0 0 15px rgba(0,0,0,0.9);color:#fff;">${name}</span>`,iconSize:[150,26],iconAnchor:[75,13]}),interactive:false,zIndexOffset:1000}).addTo(zmap);
+    labelsByName.set(name,lbl);
+  }
+};
+
+const initMap=async()=>{
   if(zReady)return;zReady=true;
   zmap=L.map("zmap",{scrollWheelZoom:false,tap:true,zoomControl:true}).setView([41.235,1.52],10);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{
-    maxZoom:19,
-    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',
-    subdomains:"abcd"
-  }).addTo(zmap);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',subdomains:"abcd"}).addTo(zmap);
 
   renderZoneUI();
+  Q("#zoneApplied").textContent=LANG==="EN"?"Loading real municipal boundaries…":(LANG==="CA"?"Carregant límits municipals reals…":"Cargando límites municipales reales…");
+
+  const real=await loadRealMunicipalPolygons();
 
   MUNI_NAMES.forEach(name=>{
-    const pts=FALLBACK_POLYGONS[name];
-    if(!pts)return;
-    const on=zoneSel.has(name);
-    
-    const layer=L.polygon(pts,{
-      fillColor:on?"#38bdf8":"#22c55e",
-      fillOpacity:on?0.7:0.3,
-      color:on?"#0ea5e9":"#4ade80",
-      weight:on?3:2,
-      opacity:1,
-      smoothFactor:0.3
-    }).addTo(zmap);
-
-    layer.bindTooltip(name,{
-      permanent:false,
-      direction:"top",
-      offset:[0,-10],
-      opacity:1,
-      className:"muni-tooltip"
-    });
-
-    layer.on("mouseover",function(){
-      if(!zoneSel.has(name)){
-        this.setStyle({fillOpacity:0.55,weight:3});
-      }
-      this.openTooltip();
-    });
-    
-    layer.on("mouseout",function(){
-      if(!zoneSel.has(name)){
-        this.setStyle({fillOpacity:0.3,weight:2});
-      }
-      this.closeTooltip();
-    });
-
-    layer.on("click",()=>toggleZone(name,false));
-    polygonsByName.set(name,layer);
-
-    const ctr=MUNI_CENTROIDS[name];
-    if(ctr){
-      const fs=name.length>18?"7px":name.length>14?"8px":"9px";
-      const lbl=L.marker(ctr,{
-        icon:L.divIcon({
-          className:"muni-label",
-          html:`<span style="font-size:${fs};font-weight:900;text-shadow:0 2px 6px rgba(0,0,0,1),0 0 15px rgba(0,0,0,0.9);color:#fff;">${name}</span>`,
-          iconSize:[150,26],
-          iconAnchor:[75,13]
-        }),
-        interactive:false,
-        zIndexOffset:1000
-      }).addTo(zmap);
-      labelsByName.set(name,lbl);
-    }
+    const realGeo=real&&real[name];
+    const fallbackPts=FALLBACK_POLYGONS[name];
+    if(realGeo)addZoneLayer(name,realGeo);
+    else if(fallbackPts)addZoneLayer(name,fallbackPts);
   });
+
+  if(real&&Object.keys(real).length>=10){
+    Q("#zoneApplied").textContent=LANG==="EN"?"Real municipal boundaries loaded.":(LANG==="CA"?"Límits municipals reals carregats.":"Límites municipales reales cargados.");
+  }else{
+    Q("#zoneApplied").textContent=LANG==="EN"?"Using approximate boundaries for some municipalities.":(LANG==="CA"?"S'estan usant límits aproximats en alguns municipis.":"Se están usando límites aproximados en algunos municipios.");
+  }
 
   setTimeout(()=>{
     try{
       const allLayers=[...polygonsByName.values()];
       if(allLayers.length){
         const group=L.featureGroup(allLayers);
-        zmap.fitBounds(group.getBounds(),{padding:[40,40],maxZoom:10.5});
+        zmap.fitBounds(group.getBounds(),{padding:[40,40],maxZoom:11});
       }
     }catch(e){}
     zmap.invalidateSize();
-  },300);
+  },250);
 
   const mapEl=Q("#zmap");
   if(mapEl&&window.ResizeObserver){

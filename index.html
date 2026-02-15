@@ -62,9 +62,9 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .small{font-size:.88rem;color:#b6c2d3;line-height:1.5}
 .pill{background:var(--gradient-3);color:#001018;border-radius:10px;padding:10px 18px;font-weight:800;letter-spacing:.4px;font-size:.88rem;box-shadow:0 4px 16px rgba(56,189,248,.25);white-space:nowrap;}
 .lang{display:flex;gap:10px;align-items:center}
-.langbtn{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:8px;padding:7px 13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s ease;font-size:.82rem;letter-spacing:.3px;}
+.langbtn{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:8px;padding:7px 13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s ease;font-size:.82rem;letter-spacing:.3px;font-style:normal!important;}
 .langbtn:hover{border-color:rgba(56,189,248,.55);transform:translateY(-1px)}
-.langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 3px 10px rgba(56,189,248,.25);font-weight:700}
+.langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 3px 10px rgba(56,189,248,.25);font-weight:700;font-style:normal!important;}
 .tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;animation:slideIn .6s ease-out}
 .tab{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:999px;padding:9px 18px;cursor:pointer;font-weight:600;font-family:inherit;transition:all .18s cubic-bezier(.4,0,.2,1);user-select:none;position:relative;overflow:hidden;font-size:.85rem;letter-spacing:.2px;}
 .tab:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(56,189,248,.28)}
@@ -252,7 +252,7 @@ canvas{display:block;width:100%;height:240px}
   <div class="c hrow">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
           <div class="pill" data-i="hdrTitle">🏠 Assessoria d'Habitatge · Baix Penedès</div>
-          <div style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#86efac;border-radius:6px;padding:4px 10px;font-size:.72rem;font-weight:700;letter-spacing:.3px;white-space:nowrap">✓ Eina gratuïta</div>
+          <div style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#86efac;border-radius:6px;padding:4px 10px;font-size:.72rem;font-weight:700;letter-spacing:.3px;white-space:nowrap" data-i="freeTool">✓ Eina gratuïta</div>
         </div>
     <div class="r" style="justify-content:flex-end;flex:1">
       <div class="n" data-i="hdrHint">Rellena los 3 pasos y pulsa Analizar para ver tu resultado.</div>
@@ -617,7 +617,7 @@ canvas{display:block;width:100%;height:240px}
 </div>
 <div id="ts" class="tst" role="status" aria-live="polite"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ─────────────────────────────────────────
 //  MAPA: Polígonos de alta fidelidad (30+ puntos por municipio)
 //  Coordenadas reales del Baix Penedès (ICGC / OpenStreetMap)
@@ -780,6 +780,7 @@ const STORE_KEY="hx_form_v10",ZONE_KEY="hx_zoneSel_v7",LANG_KEY="hx_lang",CHAT_K
 const I18N={
 ES:{
   hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Rellena los 3 pasos y pulsa Analizar para ver tu resultado.",
+  freeTool:"✓ Herramienta gratuita",
   tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",
   tab6:"6 Ejemplos reales",tab7:"🤖 AI Advisor",
   lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",
@@ -863,6 +864,7 @@ ES:{
 },
 CA:{
   hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Omple els 3 passos i prem Analitzar per veure el teu resultat.",
+  freeTool:"✓ Eina gratuïta",
   tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",
   tab6:"6 Exemples reals",tab7:"🤖 AI Advisor",
   lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",
@@ -944,6 +946,7 @@ CA:{
 },
 EN:{
   hdrTitle:"Housing Advisor · Baix Penedès",hdrHint:"Fill in the 3 steps and press Analyze to see your result.",
+  freeTool:"✓ Free tool",
   tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",
   tab6:"6 Real examples",tab7:"🤖 AI Advisor",
   lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",

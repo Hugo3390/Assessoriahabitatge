@@ -138,8 +138,6 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .share-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,.12)}
 .share-btn{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-family:inherit;font-size:.82rem;transition:all .18s ease;display:flex;align-items:center;gap:6px}
 .share-btn:hover{transform:translateY(-2px)}
-.share-btn.wa{border-color:rgba(37,211,102,.40);color:#4ade80}
-.share-btn.wa:hover{background:rgba(37,211,102,.10)}
 .share-btn.cl{border-color:rgba(56,189,248,.40);color:#7dd3fc}
 .share-btn.cl:hover{background:rgba(56,189,248,.10)}
 #hx input.field-ok{border-color:rgba(34,197,94,.50)!important}
@@ -505,7 +503,6 @@ canvas{display:block;width:100%;height:240px}
       <button class="b ok" id="jumpAI" type="button" data-i="btnAskAI">💬 Consultar con AI</button>
     </div>
     <div class="share-bar">
-      <button class="share-btn wa" id="shareWa" type="button">📱 WhatsApp</button>
       <button class="share-btn cl" id="shareCl" type="button">📋 <span data-i="btnCopy2">Copiar</span></button>
     </div>
   </div>
@@ -598,8 +595,6 @@ canvas{display:block;width:100%;height:240px}
         <div>📍 Cunit · Baix Penedès · Tarragona</div>
         <div style="margin-top:4px">
           <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none">assesoriahabitatge.com</a>
-          <span style="color:#1e293b;margin:0 6px">·</span>
-          <a href="https://wa.me/34600000000" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none">💬 WhatsApp</a>
         </div>
       </div>
     </div>
@@ -2641,7 +2636,6 @@ Q("#jumpAmort").onclick=()=>{
   }
 };
 Q("#amortiCalcBtn").onclick=calcAmort;
-Q("#shareWa").onclick=()=>{if(!last){toast(t("toastFirst"));return;}window.open("https://wa.me/?text="+encodeURIComponent(Q("#rt").textContent||""),"_blank","noopener");};
 Q("#shareCl").onclick=()=>Q("#cp").click();
 
 Q("#t_p").onclick=()=>show("p");

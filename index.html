@@ -3,7 +3,33 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Assessoria d'Habitatge - AI Advisor v2</title>
+<title>Assessoria d'Habitatge Baix Penedès - Calculadora Hipoteca y Alquiler | Cunit</title>
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="Asesoría de vivienda en Baix Penedès. Calculadora gratuita de hipoteca y alquiler con IA. Compara precios en Cunit, Calafell, El Vendrell y más. Simulador de amortización anticipada."/>
+<meta name="keywords" content="assessoria habitatge, cunit, baix penedès, calculadora hipoteca, alquiler, vivienda, calafell, el vendrell, asesor inmobiliario, amortización anticipada"/>
+<meta name="author" content="Assessoria d'Habitatge - Baix Penedès"/>
+<meta name="robots" content="index, follow"/>
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://assessoriahabitatge.com/"/>
+<meta property="og:title" content="Assessoria d'Habitatge - Calculadora Hipoteca Baix Penedès"/>
+<meta property="og:description" content="Calcula tu hipoteca, compara precios y recibe asesoramiento gratuito para comprar o alquilar en el Baix Penedès. Con IA y simulador de amortización."/>
+<meta property="og:image" content="https://assessoriahabitatge.com/preview.png"/>
+<meta property="og:locale" content="es_ES"/>
+<meta property="og:locale:alternate" content="ca_ES"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:url" content="https://assessoriahabitatge.com/"/>
+<meta name="twitter:title" content="Assessoria d'Habitatge - Calculadora Hipoteca Baix Penedès"/>
+<meta name="twitter:description" content="Calcula tu hipoteca, compara precios y recibe asesoramiento gratuito para comprar o alquilar en el Baix Penedès."/>
+<meta name="twitter:image" content="https://assessoriahabitatge.com/preview.png"/>
+
+<!-- Favicon - SVG moderno -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%234facfe'/%3E%3Cstop offset='100%25' style='stop-color:%2300f2fe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' fill='%23001830' rx='20'/%3E%3Cpath d='M50 25 L65 40 L65 70 L35 70 L35 40 Z' fill='url(%23grad)'/%3E%3Crect x='45' y='50' width='10' height='12' fill='%23001830'/%3E%3Crect x='40' y='35' width='8' height='8' fill='%23001830'/%3E%3Crect x='52' y='35' width='8' height='8' fill='%23001830'/%3E%3C/svg%3E"/>
+
 <style>
 :root{
   --bg:#020617;--card:rgba(15,23,42,.70);--card2:rgba(11,18,32,.88);
@@ -24,41 +50,40 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 @keyframes glow{0%,100%{box-shadow:0 0 18px rgba(56,189,248,.22)}50%{box-shadow:0 0 30px rgba(56,189,248,.42)}}
 @keyframes typing{from{opacity:.4}to{opacity:1}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-#hx{color:var(--t);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;-webkit-font-smoothing:antialiased;}
+#hx{color:var(--t);font-family:"DM Sans","Inter",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 #hx *{box-sizing:border-box}
 .w{max-width:1200px;margin:22px auto 18px;padding:0 16px}
-.c{background:rgba(15,23,42,.86);border:1px solid var(--bd);border-radius:20px;padding:22px;margin:16px 0;backdrop-filter:blur(14px);box-shadow:var(--shadow-lg);animation:fadeIn .5s ease-out;transition:all .25s ease;position:relative;overflow:hidden;}
+.c{background:rgba(15,23,42,.86);border:1px solid var(--bd);border-radius:20px;padding:24px 26px;margin:16px 0;backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);animation:fadeIn .5s ease-out;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden;}
 .c::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.6),transparent);opacity:.55}
 .c:hover{border-color:rgba(56,189,248,.42);box-shadow:var(--shadow-xl)}
 .r{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .n{opacity:.95;font-size:.95rem;color:#cbd5e1;line-height:1.6}
 .small{font-size:.88rem;color:#b6c2d3;line-height:1.5}
-.pill{background:var(--gradient-3);color:#001018;border-radius:999px;padding:10px 16px;font-weight:950;letter-spacing:.6px;text-transform:uppercase;font-size:.88rem;box-shadow:0 4px 16px rgba(56,189,248,.32);animation:glow 6s ease-in-out infinite;white-space:nowrap;}
+.pill{background:var(--gradient-3);color:#001018;border-radius:10px;padding:10px 18px;font-weight:800;letter-spacing:.4px;font-size:.88rem;box-shadow:0 4px 16px rgba(56,189,248,.25);white-space:nowrap;}
 .lang{display:flex;gap:10px;align-items:center}
-.langbtn{border:1px solid rgba(148,163,184,.28);background:rgba(11,18,32,.85);color:#cbd5e1;border-radius:999px;padding:8px 14px;font-weight:900;cursor:pointer;transition:all .18s ease;font-size:.84rem;letter-spacing:.5px;}
+.langbtn{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:8px;padding:7px 13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s ease;font-size:.82rem;letter-spacing:.3px;}
 .langbtn:hover{border-color:rgba(56,189,248,.55);transform:translateY(-1px)}
-.langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 4px 14px rgba(56,189,248,.28)}
+.langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 3px 10px rgba(56,189,248,.25);font-weight:700}
 .tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;animation:slideIn .6s ease-out}
-.tab{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.80);color:#cbd5e1;border-radius:999px;padding:10px 18px;cursor:pointer;font-weight:900;transition:all .18s ease;user-select:none;position:relative;overflow:hidden;font-size:.90rem;letter-spacing:.35px;}
+.tab{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:999px;padding:9px 18px;cursor:pointer;font-weight:600;font-family:inherit;transition:all .18s cubic-bezier(.4,0,.2,1);user-select:none;position:relative;overflow:hidden;font-size:.85rem;letter-spacing:.2px;}
 .tab:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(56,189,248,.28)}
-.tab.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 4px 14px rgba(56,189,248,.36)}
+.tab.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 3px 12px rgba(56,189,248,.32);font-weight:700}
 .tab.dis{opacity:.40;cursor:not-allowed;filter:grayscale(.35)}
 .tab.dis:hover{transform:none;box-shadow:none}
-.b{background:var(--gradient-3);color:#001018;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;font-weight:950;transition:all .18s ease;box-shadow:0 4px 15px rgba(56,189,248,.28);font-size:.95rem;letter-spacing:.3px;position:relative;overflow:hidden}
+.b{background:var(--gradient-3);color:#001018;border:0;border-radius:12px;padding:11px 20px;cursor:pointer;font-weight:700;font-family:inherit;transition:all .18s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(56,189,248,.28);font-size:.9rem;letter-spacing:.2px;position:relative;overflow:hidden}
 .b:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(56,189,248,.42)}
 .b.ok{background:var(--gradient-4);box-shadow:0 4px 15px rgba(67,233,123,.22)}
 .b.ok:hover{box-shadow:0 6px 20px rgba(67,233,123,.42)}
 .b.dis{opacity:.45;cursor:not-allowed;filter:grayscale(.25);transform:none;pointer-events:none}
 .g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 @media(max-width:900px){.g{grid-template-columns:1fr}}
-#hx input[type=text],#hx input[type=number],#hx select,#hx textarea{width:100%;padding:12px 14px;border:1px solid rgba(148,163,184,.30);border-radius:12px;background:rgba(2,6,23,.86);color:var(--t);outline:none;transition:all .18s ease;font-size:.95rem;font-family:inherit;}
-#hx input::placeholder,#hx textarea::placeholder{color:rgba(148,163,184,.92);opacity:1;}
+#hx input[type=text],#hx input[type=number],#hx select,#hx textarea{width:100%;padding:11px 14px;border:1px solid rgba(148,163,184,.22);border-radius:10px;background:rgba(2,6,23,.82);color:var(--t);outline:none;transition:border-color .18s,box-shadow .18s,background .18s;font-size:.93rem;font-family:inherit;}
 #hx textarea{min-height:100px;resize:vertical;}
 #hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus,#hx textarea:focus{border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.14);background:rgba(2,6,23,.96)}
 #hx input[type=checkbox]{accent-color:#38bdf8;width:18px;height:18px;cursor:pointer}
-#hx label{color:#cbd5e1;font-weight:750;margin-bottom:6px;display:block;font-size:.9rem;letter-spacing:.25px}
-.gu{margin-top:12px;padding:14px 16px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);border-radius:14px;color:#dbeafe;display:flex;gap:12px;align-items:flex-start;border-left:4px solid #38bdf8}
+#hx label{color:#e2e8f0;font-weight:600;margin-bottom:6px;display:block;font-size:.85rem;letter-spacing:.3px;text-transform:uppercase}
+.gu{margin-top:12px;padding:14px 18px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);border-radius:12px;color:#bfdbfe;display:flex;gap:12px;align-items:flex-start;border-left:3px solid rgba(56,189,248,.6)}
 .gu .a{font-weight:950;line-height:1.2;margin-top:1px;font-size:1.15rem}
 .tst{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(2,6,23,.94);border:1px solid rgba(148,163,184,.35);color:var(--t);padding:10px 14px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;z-index:99999}
 .tst.s{opacity:1}
@@ -70,7 +95,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .cardx .top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid rgba(148,163,184,.14)}
 .cardx .title{font-weight:1000;color:#f1f5f9;font-size:1.15rem}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1px solid rgba(148,163,184,.30);background:rgba(11,18,32,.82);color:#cbd5e1;border-radius:999px;padding:8px 14px;font-weight:850;font-size:.85rem;transition:.15s;text-shadow:0 1px 8px rgba(0,0,0,.25);}
+.chip{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.75);color:#cbd5e1;border-radius:8px;padding:7px 13px;font-weight:600;font-size:.83rem;transition:.15s;}
 .chip:hover{transform:translateY(-1px)}
 .chip.good{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.12);color:#86efac}
 .chip.bad{border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12);color:#fca5a5}
@@ -80,14 +105,14 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .body b{color:#f8fafc;font-weight:800}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
 @media(max-width:980px){.grid3{grid-template-columns:1fr}}
-.mini{background:linear-gradient(135deg,rgba(14,165,233,.10),rgba(6,182,212,.06));border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:14px;transition:.15s}
+.mini{background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(6,182,212,.04));border:1px solid rgba(148,163,184,.18);border-radius:12px;padding:14px 16px;transition:border-color .15s,transform .15s}
 .mini:hover{border-color:rgba(56,189,248,.40);transform:translateY(-1px)}
 .mini .h{color:#94a3b8;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 .mini .v{font-weight:1000;color:#f8fafc;margin-top:6px;font-size:1.15rem;text-shadow:0 2px 12px rgba(0,0,0,.35);}
-.note{margin-top:16px;color:#cbd5e1;white-space:pre-wrap;background:rgba(2,6,23,.62);padding:16px;border-radius:12px;border:1px solid rgba(148,163,184,.20);line-height:1.7;font-size:.92rem}
-.k{background:linear-gradient(145deg,rgba(14,165,233,.10),rgba(6,182,212,.06));border:1px solid rgba(56,189,248,.30);border-radius:18px;padding:18px 14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.25);min-height:86px;}
+.note{margin-top:16px;color:#cbd5e1;white-space:pre-wrap;background:rgba(2,6,23,.55);padding:18px 20px;border-radius:12px;border:1px solid rgba(148,163,184,.15);line-height:1.8;font-size:.9rem}
+.k{background:linear-gradient(145deg,rgba(14,165,233,.10),rgba(6,182,212,.05));border:1px solid rgba(56,189,248,.22);border-radius:16px;padding:20px 18px;text-align:left;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.2);min-height:90px;transition:border-color .2s,transform .2s}
 .k::before{content:"";position:absolute;inset:-40%;background:radial-gradient(circle,rgba(56,189,248,.10),transparent 70%);pointer-events:none;transition:transform .6s ease;}
-.k:hover::before{transform:scale(1.12)}
+.k:hover{border-color:rgba(56,189,248,.4);transform:translateY(-2px)}.k:hover::before{transform:scale(1.12)}
 .k span{color:#a6b3c6;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.9px;display:block}
 .k b{font-size:30px;display:block;color:#f1f5f9;margin-top:10px;font-weight:1000;text-shadow:0 2px 14px rgba(0,0,0,.45);line-height:1.05;}
 .k .sub{margin-top:8px;font-size:.82rem;color:#9fb0c6;line-height:1.25;}
@@ -103,7 +128,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .tip:hover .tip-box,.tip:focus-within .tip-box{opacity:1}
 .steps{display:flex;align-items:center;margin-bottom:16px;animation:fadeIn .45s ease-out}
 .step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative}
-.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:1000;font-size:.85rem;transition:all .25s ease;border:2px solid rgba(148,163,184,.22);background:rgba(11,18,32,.82);color:#94a3b8;z-index:1}
+.step-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;transition:all .25s ease;border:2px solid rgba(148,163,184,.18);background:rgba(11,18,32,.82);color:#64748b;z-index:1}
 .step.done .step-dot{background:var(--gradient-4);color:#001018;border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.35)}
 .step.active .step-dot{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,.42)}
 .step-label{font-size:.72rem;color:#475569;font-weight:850;text-align:center;white-space:nowrap}
@@ -111,7 +136,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .step-line{position:absolute;top:15px;left:calc(50% + 17px);width:calc(100% - 34px);height:2px;background:rgba(148,163,184,.14);transition:background .3s;z-index:0}
 .step.done .step-line{background:rgba(34,197,94,.28)}
 .share-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,.12)}
-.share-btn{border:1px solid rgba(148,163,184,.25);background:rgba(11,18,32,.82);color:#cbd5e1;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:850;font-size:.82rem;transition:all .18s ease;display:flex;align-items:center;gap:6px}
+.share-btn{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-family:inherit;font-size:.82rem;transition:all .18s ease;display:flex;align-items:center;gap:6px}
 .share-btn:hover{transform:translateY(-2px)}
 .share-btn.wa{border-color:rgba(37,211,102,.40);color:#4ade80}
 .share-btn.wa:hover{background:rgba(37,211,102,.10)}
@@ -126,12 +151,24 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .range-tag{font-size:.75rem;border-radius:8px;padding:2px 7px;font-weight:850}
 .range-tag.lo{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25)}
 .range-tag.hi{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.cta-contact{
+  background:linear-gradient(135deg,rgba(56,189,248,.06),rgba(14,165,233,.04));
+  border:1px solid rgba(56,189,248,.22);
+  animation:fadeIn .4s ease-out;
+}
+.cta-contact a.b{background:var(--gradient-3);color:#001018;font-weight:700}
+.cta-contact a.b.ok{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
 .countdown{margin-top:10px;padding:12px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;border-left:4px solid #f59e0b;color:#fde68a;font-size:.88rem;line-height:1.6}
 #zoneWrap{margin-top:12px}
 #zmap,#cmap{height:460px;border-radius:12px;border:1px solid rgba(148,163,184,.22);overflow:hidden;max-width:100%;position:relative}
 /* ── MAPA: etiquetas permanentes ── */
 .muni-label{background:transparent!important;border:0!important;box-shadow:none!important;pointer-events:none;}
 .muni-label span{font-size:10px;font-weight:900;color:#e2e8f0;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.7);white-space:nowrap;letter-spacing:.3px;pointer-events:none;}
+/* ── Pins estilo Google Maps ── */
+.muni-pin-wrap{background:transparent!important;border:0!important;box-shadow:none!important;}
+.muni-pin{transition:transform .15s ease;pointer-events:auto;}
+.muni-pin:hover{transform:scale(1.18) translateY(-2px);}
+.leaflet-marker-icon.muni-pin-wrap{overflow:visible!important;}
 .muni-tooltip{background:#0f172a!important;border:1px solid rgba(56,189,248,.5)!important;border-radius:8px!important;color:#e2e8f0!important;font-size:13px!important;font-weight:800!important;padding:5px 10px!important;box-shadow:0 4px 14px rgba(0,0,0,.5)!important;}
 .muni-tooltip::before{display:none!important}
 .leaflet-container{font-family:system-ui,sans-serif}
@@ -154,7 +191,7 @@ canvas{display:block;width:100%;height:240px}
 .chat-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;}
 .chat-avatar.ai{background:var(--gradient-3);color:#001018;}
 .chat-avatar.user{background:var(--gradient-4);color:#001018;}
-.chat-bubble{max-width:75%;padding:12px 16px;border-radius:16px;line-height:1.6;font-size:.92rem;}
+.chat-bubble{max-width:78%;padding:12px 16px;border-radius:14px;line-height:1.65;font-size:.91rem;}
 .chat-message.user .chat-bubble{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.25);color:#e5e7eb;}
 .chat-message.ai .chat-bubble{background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.18);color:#cbd5e1;}
 .chat-bubble.thinking{font-style:italic;opacity:.7;animation:typing 1s ease-in-out infinite;}
@@ -184,17 +221,41 @@ canvas{display:block;width:100%;height:240px}
 /* ── spinner para AI loading ── */
 .chat-bubble .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(148,163,184,.3);border-top-color:#38bdf8;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
 ::selection{background:rgba(56,189,248,.25)}
+
+/* ── Enhanced step indicator ── */
+.steps{padding:4px 0}
+.step.active .step-dot{animation:glow 3s ease-in-out infinite}
+
+/* ── Input focus enhancement ── */
+#hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus,#hx textarea:focus{
+  border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.14);background:rgba(2,6,23,.96);
+  transform:translateY(-1px);
+}
+
+/* ── Continue button pulse hint when fields are filled ── */
+.b.pulse-hint{animation:pulseBtn 2s ease-in-out infinite}
+@keyframes pulseBtn{0%,100%{box-shadow:0 4px 15px rgba(56,189,248,.28)}50%{box-shadow:0 4px 24px rgba(56,189,248,.55),0 0 0 4px rgba(56,189,248,.15)}}
+
+/* ── Form section label improvements ── */
+#hx label{color:#e2e8f0;font-weight:750;margin-bottom:6px;display:block;font-size:.9rem;letter-spacing:.25px}
+
+/* ── Disabled tab visual ── */
+.tab.dis{position:relative}
+.tab.dis:hover{opacity:.55}
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="w" id="hx">
 
   <div class="c hrow">
-    <div class="pill" data-i="hdrTitle">Assessoria d'Habitatge · Baix Penedès</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="pill" data-i="hdrTitle">🏠 Assessoria d'Habitatge · Baix Penedès</div>
+          <div style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#86efac;border-radius:6px;padding:4px 10px;font-size:.72rem;font-weight:700;letter-spacing:.3px;white-space:nowrap">✓ Eina gratuïta</div>
+        </div>
     <div class="r" style="justify-content:flex-end;flex:1">
-      <div class="n" data-i="hdrHint">Ejemplos reales: solo después de Analizar.</div>
+      <div class="n" data-i="hdrHint">Rellena los 3 pasos y pulsa Analizar para ver tu resultado.</div>
       <div class="lang" aria-label="Idioma">
         <button class="langbtn" id="L_CA" type="button">CA</button>
         <button class="langbtn a" id="L_ES" type="button">ES</button>
@@ -223,8 +284,8 @@ canvas{display:block;width:100%;height:240px}
   <!-- 1 Personal -->
   <div class="c" data-p="p">
     <div class="g">
-      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-ph="phName" placeholder="Hugo Ibáñez"></div>
-      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-ph="phAge" placeholder="25"></div>
+      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-i-ph="phName"></div>
+      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-i-ph="phAge"></div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintP">Rellena los datos básicos para continuar.</div></div>
     <div class="r" style="margin-top:10px"><button class="b" id="np" type="button" data-i="btnContinue">Continuar</button></div>
@@ -235,20 +296,28 @@ canvas{display:block;width:100%;height:240px}
     <div class="g">
       <div>
         <label data-i="lblInc">Ingresos mensuales (€)</label>
-        <div class="tip"><input id="inc" type="number" min="0" data-ph="phIncome" placeholder="2400"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
+        <div class="tip"><input id="inc" type="number" min="0" data-i-ph="phInc"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
         <div class="field-hint" id="hint-inc"></div>
       </div>
       <div>
         <label data-i="lblSav">Ahorros disponibles (€)</label>
-        <div class="tip"><input id="sav" type="number" min="0" data-ph="phSavings" placeholder="35000"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
+        <div class="tip"><input id="sav" type="number" min="0" data-i-ph="phSav"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
         <div class="field-hint" id="hint-sav"></div>
       </div>
-      <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25"></div>
+      <div style="grid-column:1/-1;margin-bottom:-4px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);border-radius:10px;flex-wrap:wrap;gap:8px">
+            <span style="font-size:.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.3px">📊 Referencia actual</span>
+            <span style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:#86efac;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700">Euribor 12m ≈ 2.45%</span>
+            <span style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700">Fijo medio ≈ 2.95–3.20%</span>
+            <span style="color:#64748b;font-size:.75rem;margin-left:auto">Datos orientativos · Feb 2026</span>
+          </div>
+        </div>
+        <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25" placeholder="25"></div>
       <div><label data-i="lblHor">¿Vivirás más de 5 años aquí?</label><select id="hor"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
       <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
       <div>
         <label data-i="lblMsv">Ahorro mensual (€)</label>
-        <div class="tip"><input id="msv" type="number" min="0" data-ph="phMonthlySave" placeholder="500"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
+        <div class="tip"><input id="msv" type="number" min="0" data-i-ph="phMsv"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
       </div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
@@ -270,11 +339,11 @@ canvas{display:block;width:100%;height:240px}
       </div>
       <div>
         <label data-i="lblM2">Metros cuadrados (≥50)</label>
-        <input id="m2" type="number" min="50" max="1000" data-ph="phM2" placeholder="85">
+        <input id="m2" type="number" min="50" max="1000" data-i-ph="phM2">
         <div class="field-hint" id="hint-m2"></div>
       </div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="1" max="10" value="2" data-ph="phBed" placeholder="3"><div class="field-hint" id="hint-bed"></div></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1" data-ph="phBath" placeholder="2"><div class="field-hint" id="hint-bat"></div></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="0" max="10" data-i-ph="phBed"></div>
+      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" data-i-ph="phBath"></div>
       <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -304,16 +373,26 @@ canvas{display:block;width:100%;height:240px}
         <div class="pchips" id="zoneChips"></div>
       </div>
       <div class="r" style="margin-top:10px;justify-content:flex-end">
-        <button class="b" id="zoneFitAll" type="button" data-i="btnFitAll">Ver todo</button>
         <button class="b" id="zoneClear" type="button" data-i="btnClear">Limpiar</button>
         <button class="b ok" id="zoneApply" type="button" data-i="btnUse">Usar en Ejemplos reales</button>
       </div>
-      <div id="zmap" style="margin-top:10px"></div>
+      <div id="zmap" style="margin-top:10px;position:relative;min-height:400px">
+        <!-- Loading state del mapa -->
+        <div id="zmapLoader" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:1000">
+          <div style="width:50px;height:50px;border:4px solid rgba(148,163,184,.2);border-top:4px solid #38bdf8;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px"></div>
+          <div style="color:#94a3b8;font-size:.9rem;font-weight:600">Cargando mapa...</div>
+        </div>
+      </div>
       <div class="legend">
-        <span><span class="legdot leg1"></span><span data-i="legSel">Seleccionado</span></span>
-        <span><span class="legdot leg2"></span><span data-i="legOk">Municipio disponible</span></span>
+        <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 18" width="10" height="13" style="margin-right:6px;vertical-align:middle"><path d="M7 0C3.134 0 0 3.134 0 7c0 4.667 7 11 7 11S14 11.667 14 7C14 3.134 10.866 0 7 0z" fill="#38bdf8"/><circle cx="7" cy="7" r="2.5" fill="#001830"/></svg><span data-i="legSel">Seleccionado</span></span>
+        <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 18" width="10" height="13" style="margin-right:6px;vertical-align:middle"><path d="M7 0C3.134 0 0 3.134 0 7c0 4.667 7 11 7 11S14 11.667 14 7C14 3.134 10.866 0 7 0z" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/><circle cx="7" cy="7" r="2.5" fill="#475569"/></svg><span data-i="legOk">Municipio disponible</span></span>
+        <span style="color:#94a3b8;font-size:.82rem" data-i="legHint">Haz clic en el pin o el área</span>
       </div>
       <div class="n" id="zoneApplied" style="margin-top:10px"></div>
+          <div style="margin-top:8px;font-size:.78rem;color:#475569;line-height:1.5;display:flex;gap:6px;align-items:flex-start">
+            <span>💡</span>
+            <span id="zoneContextHint">Cunit i Calafell ofereixen la millor relació platja-preu del Baix Penedès. El Vendrell té més serveis. L'interior és fins un 50% més barat.</span>
+          </div>
     </div>
   </div>
 
@@ -339,18 +418,89 @@ canvas{display:block;width:100%;height:240px}
           <div class="small" data-i="chartSensHint">Cómo cambia la cuota si sube el tipo.</div>
           <div class="canvasWrap" style="margin-top:10px"><canvas id="sensChart"></canvas></div>
         </div>
-        <div class="chartCard">
-          <div style="font-weight:950;color:#eaf2ff" data-i="chartTipsTitle">Lectura rápida</div>
-          <div class="small" id="chartTips"></div>
-          <div style="margin-top:10px;padding:12px;border-radius:12px;border:1px solid rgba(148,163,184,.18);background:rgba(2,6,23,.35);color:#cbd5e1;line-height:1.65" id="quickExplain"></div>
+        </div>
+      <div class="body" id="rBody"></div>
+      
+      <!-- Calculadora amortización anticipada -->
+      <div id="amortiCalc" style="display:none;margin-top:14px">
+        <div style="padding:20px;background:linear-gradient(135deg,rgba(99,102,241,.09),rgba(59,130,246,.06));border:1px solid rgba(99,102,241,.25);border-radius:16px;border-left:4px solid rgba(99,102,241,.7);box-shadow:0 4px 20px rgba(0,0,0,.15)">
+          
+          <!-- Título y explicación -->
+          <div style="margin-bottom:18px">
+            <div style="font-weight:800;color:#e0e7ff;font-size:1.05rem;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+              <span>💰</span>
+              <span id="amortiTitle">¿Tienes dinero extra para pagar tu hipoteca?</span>
+            </div>
+            <div style="color:#c7d2fe;font-size:.88rem;line-height:1.6;background:rgba(15,23,42,.4);padding:12px 14px;border-radius:10px;border-left:2px solid rgba(139,92,246,.5)">
+              <span id="amortiExplain">Simula cuánto puedes ahorrar haciendo una <strong style="color:#a78bfa">amortización anticipada</strong> (pagar parte de tu hipoteca antes de tiempo). Puedes elegir entre reducir <strong style="color:#60a5fa">el tiempo</strong> que pagas o <strong style="color:#34d399">la cuota mensual</strong>.</span>
+            </div>
+          </div>
+
+          <!-- Campos de entrada mejorados -->
+          <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px">
+            
+            <!-- Campo: Cantidad extra -->
+            <div style="background:rgba(2,6,23,.5);padding:14px;border-radius:12px;border:1px solid rgba(148,163,184,.15)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <label style="font-size:.82rem;color:#e2e8f0;font-weight:700;display:flex;align-items:center;gap:6px" id="amortiLblAmount">
+                  <span style="font-size:1.1rem">💵</span>
+                  <span>¿Cuánto dinero extra quieres pagar?</span>
+                </label>
+                <div class="tip-icon" title="Cantidad que vas a pagar de golpe para reducir tu hipoteca. Mínimo recomendado: 1.000€" style="cursor:help">?</div>
+              </div>
+              <input id="amortiAmount" type="number" min="1000" step="1000" value="10000" placeholder="Ej: 10.000€" style="width:100%;padding:12px 14px;border:2px solid rgba(99,102,241,.3);border-radius:10px;background:rgba(2,6,23,.9);color:#f1f5f9;font-family:inherit;font-size:1rem;font-weight:600;outline:none;transition:all .2s" onfocus="this.style.borderColor='rgba(99,102,241,.6)'" onblur="this.style.borderColor='rgba(99,102,241,.3)'">
+              <div style="font-size:.75rem;color:#94a3b8;margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+                <span style="cursor:pointer;padding:4px 8px;background:rgba(99,102,241,.12);border-radius:6px;transition:.2s" onclick="document.getElementById('amortiAmount').value=5000" onmouseover="this.style.background='rgba(99,102,241,.22)'" onmouseout="this.style.background='rgba(99,102,241,.12)'">5.000€</span>
+                <span style="cursor:pointer;padding:4px 8px;background:rgba(99,102,241,.12);border-radius:6px;transition:.2s" onclick="document.getElementById('amortiAmount').value=10000" onmouseover="this.style.background='rgba(99,102,241,.22)'" onmouseout="this.style.background='rgba(99,102,241,.12)'">10.000€</span>
+                <span style="cursor:pointer;padding:4px 8px;background:rgba(99,102,241,.12);border-radius:6px;transition:.2s" onclick="document.getElementById('amortiAmount').value=20000" onmouseover="this.style.background='rgba(99,102,241,.22)'" onmouseout="this.style.background='rgba(99,102,241,.12)'">20.000€</span>
+                <span style="cursor:pointer;padding:4px 8px;background:rgba(99,102,241,.12);border-radius:6px;transition:.2s" onclick="document.getElementById('amortiAmount').value=50000" onmouseover="this.style.background='rgba(99,102,241,.22)'" onmouseout="this.style.background='rgba(99,102,241,.12)'">50.000€</span>
+              </div>
+            </div>
+
+            <!-- Campo: Qué quieres reducir -->
+            <div style="background:rgba(2,6,23,.5);padding:14px;border-radius:12px;border:1px solid rgba(148,163,184,.15)">
+              <label style="font-size:.82rem;color:#e2e8f0;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:10px" id="amortiLblMode">
+                <span style="font-size:1.1rem">🎯</span>
+                <span>¿Qué prefieres reducir?</span>
+              </label>
+              
+              <!-- Opciones visuales como cards -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div id="optTerm" onclick="document.getElementById('amortiMode').value='term';document.getElementById('optTerm').style.borderColor='rgba(99,102,241,.7)';document.getElementById('optTerm').style.background='rgba(99,102,241,.15)';document.getElementById('optPay').style.borderColor='rgba(148,163,184,.22)';document.getElementById('optPay').style.background='rgba(2,6,23,.5)'" style="padding:12px;border:2px solid rgba(99,102,241,.7);background:rgba(99,102,241,.15);border-radius:10px;cursor:pointer;transition:all .2s">
+                  <div style="font-size:1.4rem;margin-bottom:6px">⏱️</div>
+                  <div style="font-weight:700;color:#c7d2fe;font-size:.88rem;margin-bottom:4px" id="amortiOptTermTitle">REDUCIR TIEMPO</div>
+                  <div style="font-size:.75rem;color:#94a3b8;line-height:1.4" id="amortiOptTermDesc">Acabas antes de pagar (recomendado)</div>
+                </div>
+                
+                <div id="optPay" onclick="document.getElementById('amortiMode').value='pay';document.getElementById('optPay').style.borderColor='rgba(99,102,241,.7)';document.getElementById('optPay').style.background='rgba(99,102,241,.15)';document.getElementById('optTerm').style.borderColor='rgba(148,163,184,.22)';document.getElementById('optTerm').style.background='rgba(2,6,23,.5)'" style="padding:12px;border:2px solid rgba(148,163,184,.22);background:rgba(2,6,23,.5);border-radius:10px;cursor:pointer;transition:all .2s">
+                  <div style="font-size:1.4rem;margin-bottom:6px">💸</div>
+                  <div style="font-weight:700;color:#c7d2fe;font-size:.88rem;margin-bottom:4px" id="amortiOptPayTitle">REDUCIR CUOTA</div>
+                  <div style="font-size:.75rem;color:#94a3b8;line-height:1.4" id="amortiOptPayDesc">Pagas menos cada mes</div>
+                </div>
+              </div>
+              
+              <!-- Select oculto para mantener compatibilidad -->
+              <select id="amortiMode" style="display:none">
+                <option value="term" id="amortiOptTerm">Plazo (recomendado)</option>
+                <option value="pay" id="amortiOptPay">Cuota mensual</option>
+              </select>
+            </div>
+
+          </div>
+
+          <button type="button" id="amortiCalcBtn" class="b ok" style="width:100%;margin-bottom:12px;font-size:.95rem;padding:13px 20px;font-weight:800">✨ Ver cuánto ahorrarías</button>
+          
+          <div id="amortiResult" style="color:#cbd5e1;font-size:.88rem;line-height:1.7;display:none;margin-top:14px"></div>
         </div>
       </div>
-      <div class="body" id="rBody"></div>
+
       <div class="note" id="rt"></div>
     </div>
     <div class="r" style="margin-top:10px">
       <button class="b" id="cp" type="button" data-i="btnCopy">Copiar resumen</button>
       <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
+      <button class="b" id="jumpM" type="button" data-i="btnGoCompare">📊 Comparador</button>
+      <button class="b" id="jumpAmort" type="button" data-i="btnAmort">🔢 Amortizar</button>
       <button class="b ok" id="jumpX" type="button" data-i="btnGoExamples">Ir a Ejemplos reales</button>
       <button class="b ok" id="jumpAI" type="button" data-i="btnAskAI">💬 Consultar con AI</button>
     </div>
@@ -364,9 +514,9 @@ canvas{display:block;width:100%;height:240px}
   <div class="c" data-p="m" style="display:none">
     <div class="g">
       <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
-      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50" max="1000" data-ph="phM2" placeholder="85"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="1" max="10" data-ph="phBed" placeholder="3"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10" data-ph="phBath" placeholder="2"></div>
+      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50"></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="0" max="10"></div>
+      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10"></div>
       <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -398,9 +548,9 @@ canvas{display:block;width:100%;height:240px}
 
   <!-- 6 Ejemplos reales -->
   <div class="c" data-p="x" style="display:none">
-    <div class="n" id="xinfo"></div>
-    <div class="r" style="margin-top:10px" id="xbtns"></div>
-    <div class="gu"><span class="a">📍</span><div class="n" data-i="hintX">Si elegiste varios municipios, salen botones por municipio.</div></div>
+    <div class="gu" style="margin-bottom:12px"><span class="a">🏠</span><div><div class="n" style="font-weight:900;margin-bottom:4px" data-i="xTitle">Buscar en Idealista</div><div class="small" data-i="hintX">Genera un link de búsqueda real con tus preferencias. Elige modo estricto (solo tus extras) o flexible (más resultados).</div></div></div>
+    <div class="n" id="xinfo" style="margin-bottom:10px"></div>
+    <div class="r" style="margin-top:10px;gap:8px;flex-wrap:wrap" id="xbtns"></div>
   </div>
 
   <!-- 7 AI Advisor -->
@@ -440,16 +590,34 @@ canvas{display:block;width:100%;height:240px}
 
 </div><!-- /.w -->
 
-<div class="sig">
-  <div class="br">Assessoria d'Habitatge</div>
-  <div>
-    <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener">assesoriahabitatge.com</a> ·
-    <a href="mailto:info@assessoriahabitatge.com">info@assessoriahabitatge.com</a>
+<div class="sig" style="padding:28px 24px;max-width:780px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;flex-wrap:wrap">
+    <div>
+      <div class="br" style="font-size:1.05rem;margin-bottom:6px">🏠 Assessoria d'Habitatge</div>
+      <div style="color:#64748b;font-size:.82rem;line-height:1.7">
+        <div>📍 Cunit · Baix Penedès · Tarragona</div>
+        <div style="margin-top:4px">
+          <a href="https://www.assesoriahabitatge.com/" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none">assesoriahabitatge.com</a>
+          <span style="color:#1e293b;margin:0 6px">·</span>
+          <a href="https://wa.me/34600000000" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:.75rem;color:#334155;line-height:1.7">
+        <div>Eina orientativa</div>
+        <div>Els preus són estimats</div>
+        <div>No substitueix assessorament professional</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(148,163,184,.08);font-size:.72rem;color:#1e293b;text-align:center">
+    © 2026 Assessoria d'Habitatge · Cunit · Tots els drets reservats
   </div>
 </div>
 <div id="ts" class="tst" role="status" aria-live="polite"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ─────────────────────────────────────────
 //  MAPA: Polígonos de alta fidelidad (30+ puntos por municipio)
 //  Coordenadas reales del Baix Penedès (ICGC / OpenStreetMap)
@@ -611,17 +779,16 @@ const STORE_KEY="hx_form_v10",ZONE_KEY="hx_zoneSel_v7",LANG_KEY="hx_lang",CHAT_K
    ===================== */
 const I18N={
 ES:{
-  hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Ejemplos reales: solo después de Analizar.",
+  hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Rellena los 3 pasos y pulsa Analizar para ver tu resultado.",
   tab1:"1 Personal",tab2:"2 Economía",tab3:"3 Preferencias",tab4:"4 Resultado",tab5:"5 Comparador",
   tab6:"6 Ejemplos reales",tab7:"🤖 AI Advisor",
   lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",
-  phName:"Hugo Ibáñez",phAge:"25",phIncome:"2400",phSavings:"35000",phMonthlySave:"500",phM2:"85",phBed:"3",phBath:"2",
   hintP:"Rellena los datos básicos para continuar.",
   lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",
   lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",
   tipInc:"Ingresos netos (lo que entra en tu cuenta). Si metes bruto, la recomendación se distorsiona.",
   tipSav:"Solo lo que puedes usar de verdad. Entrada + impuestos + notaría van aquí.",
-  tipMsv:"Sirve para estimar cuánto tardas en llegar al cash necesario.",
+  tipMsv:"Sirve para estimar cuánto tardas en llegar al efectivo necesario.",
   hintE:"Completa economía y sigue a preferencias.",
   lblMuni:"Municipio (Baix Penedès)",lblMuniHelp:"Usa el mapa para elegir varios municipios.",
   lblM2:"Metros cuadrados (≥50)",lblBed:"Habitaciones",lblBath:"Baños",lblType:"Tipo de vivienda",
@@ -631,25 +798,25 @@ ES:{
   hintF:"Si cambias preferencias, vuelve a Analizar.",
   zoneTitle:"Zona preferida (mapa real)",zoneHint:"Haz clic en un municipio para seleccionarlo. Clic de nuevo para deseleccionar.",
   btnClear:"Limpiar",btnUse:"Usar en Ejemplos reales",btnFitAll:"Ver todo",
-  legSel:"Seleccionado",legOk:"Municipio disponible",
+  legSel:"Seleccionado",legOk:"Disponible",legHint:"Haz clic en el pin o el área",
   kPrice:"Precio estimado",kRent:"Alquiler estimado",kPay:"Cuota hipoteca",kRec:"Recomendación",
-  btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",
+  btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",
   chartEffTitle:"Esfuerzo mensual",chartEffHint:"Línea: 35% ingresos. Barras: hipoteca vs alquiler.",
   chartSensTitle:"Sensibilidad tipo",chartSensHint:"Cómo cambia la cuota si sube el tipo.",chartTipsTitle:"Lectura rápida",
   lblProv:"Provincia (comparador)",lblM2s:"m²",lblType2:"Tipo",btnCompare:"Comparar",btnUseMine:"Usar mis datos",
   lblExtras2:"Extras (comparador)",lblExtrasHint2:"Mismas características, distinta zona.",
   cmpTitle:"Resultado del comparador",cmpChartTitle:"Comparación visual",cmpChartHint:"Tu zona vs provincia.",
-  hintX:"Si elegiste varios municipios, salen botones por municipio.",
+  hintX:"Genera un link de búsqueda real con tus preferencias. Elige estricto (solo tus extras) o flexible (más resultados).",xTitle:"Buscar en Idealista",
   yes:"Sí",no:"No",
   recBuy:"COMPRAR",recRent:"ALQUILAR",recNotFeasible:"NO FACTIBLE",
-  toastCheck:"Revisa nombre/edad y que m² (50–1000), habitaciones (1–10) y baños (1–10) sean válidos.",toastFirst:"Primero analiza.",
+  toastCheck:"Revisa nombre/edad y que m²/baños sean válidos.",toastFirst:"Primero analiza.",
   toastPrefs:"Preferencias cambiadas: vuelve a Analizar.",toastNoLink:"No se pudo generar el link",
   toastCopied:"Copiado",toastZoneCleared:"Zona limpiada",toastNoZone:"No hay municipios seleccionados",
   toastZoneApplied:"Zona aplicada",
   stateReady:"✅ Disponible",stateNeed:"⛔ Requiere Analizar",
   xInfo:"Municipio: {muni} · Estado: {state}",sumTitle:"Resumen · {rec}",
   chipMort:"Esfuerzo hipoteca: {pct}",chipRent:"Esfuerzo alquiler: {pct}",
-  chipCash:"Cash necesario: {eur}",chipRate:"Tipo: {rate}",
+  chipCash:"Efectivo necesario: {eur}",chipRate:"Tipo: {rate}",
   miniPrice:"Precio estimado",miniPay:"Cuota hipoteca",miniRent:"Alquiler estimado",
   savingsOk:"✅ Ahorros suficientes para entrada + costes.",
   yearsToSave:"Ahorrando {msv}/mes, llegarás al objetivo en ~{yrs} años ({mos} meses).",
@@ -657,7 +824,7 @@ ES:{
   avgZone:"Media de {n} municipios",
   stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",
   cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",cmpExplTitle:"Interpretación",
-  any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² (50–1000), habitaciones y baños (1–10).",
+  any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² y baños (mínimo 1).",
   // I18N completado: claves de resultado
   yrs:"años",beds:"hab.",baths:"baño(s)",noExtras:"Sin extras",
   safeCapacity:"Capacidad segura",buyLabel:"COMPRA",rentLabel:"ALQUILER",
@@ -673,25 +840,38 @@ ES:{
   aiConnected:"API Claude activa",aiLocalMode:"Motor local activo",aiError:"Error de conexión",
   aiAdvisorTitle:"Tu asesor financiero personal.",
   aiAdvisorDesc:"Usa IA real (Claude API) — responde cualquier pregunta, no solo de vivienda.",
-  aiWelcome:"👋 ¡Hola! Soy tu asesor financiero personal potenciado por Claude AI. Puedo ayudarte con cualquier pregunta — desde hipotecas hasta inversiones, negocios, tecnología, o cualquier otro tema. ¿En qué puedo ayudarte hoy?",
+  aiWelcome:"👋 ¡Hola! Soy el asistente de **Assessoria d'Habitatge · Cunit**. Puedo ayudarte con hipotecas, alquiler, precios del Baix Penedès, ITP, euríbor y cualquier duda del mercado inmobiliario. ¿En qué te puedo orientar?",
   aiThinking:"Pensando...",aiYou:"TÚ",aiPlaceholder:"Escribe cualquier pregunta...",aiSend:"Enviar",
   aiPlanBtnLbl:"🧭 Plan de acción",aiClearBtnLbl:"🗑️ Limpiar chat",aiCopyBtnLbl:"📋 Copiar chat",
-  aiSug1:"¿Cómo mejorar mi situación?",aiSug2:"¿Cuánto ahorrar para comprar?",
-  aiSug3:"¿Comprar o alquilar?",aiSug4:"¿Qué municipio me recomiendas?",
-  aiSug5:"¿Y si sube el tipo de interés?",aiSug6:"Estrategias de compra"
+  aiSug1:"¿Comprar o alquilar en Cunit?",aiSug2:"¿Cuánto necesito para la entrada?",
+  aiSug3:"¿Qué es el ITP en Catalunya?",aiSug4:"¿Cuáles son las ayudas para jóvenes?",
+  aiSug5:"¿Qué pasa si sube el euríbor?",aiSug6:"¿Cómo negociar el precio?",
+  phName:"Hugo Ibáñez",phAge:"25",phInc:"1.800",phSav:"20.000",phMsv:"300",phM2:"80",phBed:"2",phBath:"1",
+  btnAmort:"🔢 Amortizar",
+  ctaTitle:"¿Tienes dudas sobre tu caso?",ctaSub:"Consulta gratuita con el asesor de Assessoria d'Habitatge · Cunit.",
+  ctaCallLbl:"Llamar",
+  amortiTitle:"¿Tienes dinero extra para pagar tu hipoteca?",
+  amortiExplain:"Simula cuánto puedes ahorrar haciendo una <strong style=\"color:#a78bfa\">amortización anticipada</strong> (pagar parte de tu hipoteca antes de tiempo). Puedes elegir entre reducir <strong style=\"color:#60a5fa\">el tiempo</strong> que pagas o <strong style=\"color:#34d399\">la cuota mensual</strong>.",
+  amortiLblAmount:"¿Cuánto dinero extra quieres pagar?",
+  amortiLblMode:"¿Qué prefieres reducir?",
+  amortiOptTerm:"Plazo (recomendado)",amortiOptPay:"Cuota mensual",
+  amortiOptTermTitle:"REDUCIR TIEMPO",amortiOptTermDesc:"Acabas antes de pagar (recomendado)",
+  amortiOptPayTitle:"REDUCIR CUOTA",amortiOptPayDesc:"Pagas menos cada mes",
+  amortiCalcBtnLbl:"✨ Ver cuánto ahorrarías",
+  amortiSavingsTerm:"Ahorras {interest} en intereses · Plazo: {yrs} años → {newYrs} años ({savedMos} meses menos)",
+  amortiSavingsPay:"Nueva cuota: {newPay}/mes (−{diff}/mes) · Intereses totales ahorrados: {interest}"
 },
 CA:{
-  hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Exemples reals: només després d'Analitzar.",
+  hdrTitle:"Assessoria d'Habitatge · Baix Penedès",hdrHint:"Omple els 3 passos i prem Analitzar per veure el teu resultat.",
   tab1:"1 Personal",tab2:"2 Economia",tab3:"3 Preferències",tab4:"4 Resultat",tab5:"5 Comparador",
   tab6:"6 Exemples reals",tab7:"🤖 AI Advisor",
   lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",
-  phName:"Hugo Ibáñez",phAge:"25",phIncome:"2400",phSavings:"35000",phMonthlySave:"500",phM2:"85",phBed:"3",phBath:"2",
   hintP:"Omple les dades bàsiques per continuar.",
   lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",
   lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",
   tipInc:"Ingressos nets (el que entra al compte).",
   tipSav:"Només el que pots usar de veritat.",
-  tipMsv:"Per estimar quant tardes a arribar al cash necessari.",
+  tipMsv:"Per estimar quant tardes a arribar al efectiu necessari.",
   hintE:"Completa economia i passa a preferències.",
   lblMuni:"Municipi (Baix Penedès)",lblMuniHelp:"Usa el mapa per triar diversos municipis.",
   lblM2:"Metres quadrats (≥50)",lblBed:"Habitacions",lblBath:"Banys",lblType:"Tipus d'habitatge",
@@ -701,25 +881,25 @@ CA:{
   hintF:"Si canvies preferències, torna a Analitzar.",
   zoneTitle:"Zona preferida (mapa real)",zoneHint:"Clica un municipi per seleccionar-lo. Torna a clicar per deseleccionar.",
   btnClear:"Netejar",btnUse:"Usar a Exemples reals",btnFitAll:"Veure tot",
-  legSel:"Seleccionat",legOk:"Municipi disponible",
+  legSel:"Seleccionat",legOk:"Disponible",legHint:"Clica el pin o l'àrea",
   kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",
-  btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",
+  btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",
   chartEffTitle:"Esforç mensual",chartEffHint:"Línia: 35% ingressos. Barres: hipoteca vs lloguer.",
   chartSensTitle:"Sensibilitat tipus",chartSensHint:"Com canvia la quota si puja el tipus.",chartTipsTitle:"Lectura ràpida",
   lblProv:"Província (comparador)",lblM2s:"m²",lblType2:"Tipus",btnCompare:"Comparar",btnUseMine:"Usar les meves dades",
   lblExtras2:"Extres (comparador)",lblExtrasHint2:"Mateixes característiques, zona diferent.",
   cmpTitle:"Resultat del comparador",cmpChartTitle:"Comparació visual",cmpChartHint:"La teva zona vs província.",
-  hintX:"Si has triat diversos municipis, surten botons per municipi.",
+  hintX:"Genera un link de cerca real amb les teves preferències. Tria estricte (els teus extres) o flexible (més resultats).",xTitle:"Cercar a Idealista",
   yes:"Sí",no:"No",
   recBuy:"COMPRAR",recRent:"LLOGAR",recNotFeasible:"NO FACTIBLE",
-  toastCheck:"Revisa nom/edat i que m² (50–1000), habitacions (1–10) i banys (1–10) siguin vàlids.",toastFirst:"Primer analitza.",
+  toastCheck:"Revisa nom/edat i que m²/banys siguin vàlids.",toastFirst:"Primer analitza.",
   toastPrefs:"Preferències canviades: torna a Analitzar.",toastNoLink:"No s'ha pogut generar l'enllaç",
   toastCopied:"Copiat",toastZoneCleared:"Zona netejada",toastNoZone:"No hi ha municipis seleccionats",
   toastZoneApplied:"Zona aplicada",
   stateReady:"✅ Disponible",stateNeed:"⛔ Cal Analitzar",
   xInfo:"Municipi: {muni} · Estat: {state}",sumTitle:"Resum · {rec}",
   chipMort:"Esforç hipoteca: {pct}",chipRent:"Esforç lloguer: {pct}",
-  chipCash:"Cash necessari: {eur}",chipRate:"Tipus: {rate}",
+  chipCash:"Efectiu necessari: {eur}",chipRate:"Tipus: {rate}",
   miniPrice:"Preu estimat",miniPay:"Quota hipoteca",miniRent:"Lloguer estimat",
   savingsOk:"✅ Estalvis suficients per a entrada + despeses.",
   yearsToSave:"Estalviant {msv}/mes, arribaràs a l'objectiu en ~{yrs} anys ({mos} mesos).",
@@ -727,7 +907,7 @@ CA:{
   avgZone:"Mitjana de {n} municipis",
   stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",
   cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",cmpExplTitle:"Interpretació",
-  any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² (50–1000), habitacions i banys (1–10).",
+  any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² i banys (mínim 1).",
   yrs:"anys",beds:"hab.",baths:"bany(s)",noExtras:"Sense extres",
   safeCapacity:"Capacitat segura",buyLabel:"COMPRA",rentLabel:"LLOGUER",
   strictLabel:"estricte",flexLabel:"flex",
@@ -741,19 +921,32 @@ CA:{
   aiConnected:"API Claude activa",aiLocalMode:"Motor local actiu",aiError:"Error de connexió",
   aiAdvisorTitle:"El teu assessor financer personal.",
   aiAdvisorDesc:"Usa IA real (Claude API) — respon qualsevol pregunta, no només d'habitatge.",
-  aiWelcome:"👋 Hola! Soc el teu assessor financer personal potenciat per Claude AI. Et puc ajudar amb qualsevol pregunta — des d'hipoteques fins a inversions, negocis, tecnologia, o qualsevol altre tema. En què et puc ajudar avui?",
+  aiWelcome:"👋 Hola! Soc l'assistent d'**Assessoria d'Habitatge · Cunit**. Et puc ajudar amb hipoteques, lloguer, preus del Baix Penedès, ITP, euribor i qualsevol dubte del mercat immobiliari. En què et puc orientar?",
   aiThinking:"Pensant...",aiYou:"TU",aiPlaceholder:"Escriu qualsevol pregunta...",aiSend:"Enviar",
   aiPlanBtnLbl:"🧭 Pla d'acció",aiClearBtnLbl:"🗑️ Netejar xat",aiCopyBtnLbl:"📋 Copiar xat",
-  aiSug1:"Com millorar la meva situació?",aiSug2:"Quant estalviar per comprar?",
-  aiSug3:"Comprar o llogar?",aiSug4:"Quin municipi em recomanes?",
-  aiSug5:"I si puja el tipus d'interès?",aiSug6:"Estratègies de compra"
+  aiSug1:"Comprar o llogar a Cunit?",aiSug2:"Quant necessito per l'entrada?",
+  aiSug3:"Què és l'ITP a Catalunya?",aiSug4:"Quines ajudes hi ha per a joves?",
+  aiSug5:"Què passa si puja l'euribor?",aiSug6:"Com negociar el preu?",
+  phName:"Hugo Ibáñez",phAge:"25",phInc:"1.800",phSav:"20.000",phMsv:"300",phM2:"80",phBed:"2",phBath:"1",
+  btnAmort:"🔢 Amortitzar",
+  ctaTitle:"Tens dubtes sobre el teu cas?",ctaSub:"Consulta gratuïta amb l'assessor d'Assessoria d'Habitatge · Cunit.",
+  ctaCallLbl:"Trucar",
+  amortiTitle:"Tens diners extra per pagar la teva hipoteca?",
+  amortiExplain:"Simula quant pots estalviar fent una <strong style=\"color:#a78bfa\">amortització anticipada</strong> (pagar part de la teva hipoteca abans de temps). Pots triar entre reduir <strong style=\"color:#60a5fa\">el temps</strong> que pagues o <strong style=\"color:#34d399\">la quota mensual</strong>.",
+  amortiLblAmount:"Quant diners extra vols pagar?",
+  amortiLblMode:"Què prefereixes reduir?",
+  amortiOptTerm:"Termini (recomanat)",amortiOptPay:"Quota mensual",
+  amortiOptTermTitle:"REDUIR TEMPS",amortiOptTermDesc:"Acabes abans de pagar (recomanat)",
+  amortiOptPayTitle:"REDUIR QUOTA",amortiOptPayDesc:"Pagues menys cada mes",
+  amortiCalcBtnLbl:"✨ Veure quant estalviaries",
+  amortiSavingsTerm:"Estalvies {interest} en interessos · Termini: {yrs} anys → {newYrs} anys ({savedMos} mesos menys)",
+  amortiSavingsPay:"Nova quota: {newPay}/mes (−{diff}/mes) · Interessos totals estalviats: {interest}"
 },
 EN:{
-  hdrTitle:"Housing Advisor · Baix Penedès",hdrHint:"Real examples: only after Analyze.",
+  hdrTitle:"Housing Advisor · Baix Penedès",hdrHint:"Fill in the 3 steps and press Analyze to see your result.",
   tab1:"1 Personal",tab2:"2 Finance",tab3:"3 Preferences",tab4:"4 Result",tab5:"5 Comparator",
   tab6:"6 Real examples",tab7:"🤖 AI Advisor",
   lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",
-  phName:"Hugo Ibáñez",phAge:"25",phIncome:"2400",phSavings:"35000",phMonthlySave:"500",phM2:"85",phBed:"3",phBath:"2",
   hintP:"Fill in the basics to continue.",
   lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",
   lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",
@@ -769,18 +962,18 @@ EN:{
   hintF:"If you change preferences, analyze again.",
   zoneTitle:"Preferred area (real map)",zoneHint:"Click a municipality to select it. Click again to deselect.",
   btnClear:"Clear",btnUse:"Use in Real examples",btnFitAll:"Fit all",
-  legSel:"Selected",legOk:"Available municipality",
+  legSel:"Selected",legOk:"Available",legHint:"Click the pin or area",
   kPrice:"Estimated price",kRent:"Estimated rent",kPay:"Mortgage payment",kRec:"Recommendation",
-  btnCopy:"Copy summary",btnReset:"Reset",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",
+  btnCopy:"Copy summary",btnReset:"Reset",btnGoCompare:"📊 Comparator",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",
   chartEffTitle:"Monthly effort",chartEffHint:"Line: 35% income. Bars: mortgage vs rent.",
   chartSensTitle:"Rate sensitivity",chartSensHint:"How payment changes if rates rise.",chartTipsTitle:"Quick read",
   lblProv:"Province (comparator)",lblM2s:"m²",lblType2:"Type",btnCompare:"Compare",btnUseMine:"Use my data",
   lblExtras2:"Extras (comparator)",lblExtrasHint2:"Same features, different area.",
   cmpTitle:"Comparator result",cmpChartTitle:"Visual comparison",cmpChartHint:"Your area vs province.",
-  hintX:"If you chose multiple towns, you get buttons per town.",
+  hintX:"Generate a real search link with your preferences. Choose strict (your extras only) or flexible (more results).",xTitle:"Search on Idealista",
   yes:"Yes",no:"No",
   recBuy:"BUY",recRent:"RENT",recNotFeasible:"NOT FEASIBLE",
-  toastCheck:"Check name/age and ensure m² (50–1000), bedrooms (1–10), and bathrooms (1–10) are valid.",toastFirst:"Analyze first.",
+  toastCheck:"Check name/age and ensure m²/bathrooms are valid.",toastFirst:"Analyze first.",
   toastPrefs:"Preferences changed: analyze again.",toastNoLink:"Could not generate the link",
   toastCopied:"Copied",toastZoneCleared:"Area cleared",toastNoZone:"No towns selected",
   toastZoneApplied:"Area applied",
@@ -795,7 +988,7 @@ EN:{
   avgZone:"Average of {n} towns",
   stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",
   cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",cmpExplTitle:"Interpretation",
-  any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² (50–1000), bedrooms and bathrooms (1–10).",
+  any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² and bathrooms (min 1).",
   yrs:"years",beds:"bed(s)",baths:"bath(s)",noExtras:"No extras",
   safeCapacity:"Safe capacity",buyLabel:"BUY",rentLabel:"RENT",
   strictLabel:"strict",flexLabel:"flex",
@@ -809,12 +1002,26 @@ EN:{
   aiConnected:"AI connected",aiLocalMode:"Local engine active",aiError:"Connection error",
   aiAdvisorTitle:"Your personal financial advisor.",
   aiAdvisorDesc:"Uses real AI (Groq via Cloudflare Worker) — answers any question, not just housing.",
-  aiWelcome:"👋 Hello! I'm your personal financial advisor powered by real AI. I can help you with any question — from mortgages to investments, business, technology, or anything else. What would you like to know today?",
+  aiWelcome:"👋 Hello! I'm the assistant of **Assessoria d'Habitatge · Cunit**. I can help with mortgages, rent, Baix Penedès prices, taxes, Euribor and any property market question. How can I help you today?",
   aiThinking:"Thinking...",aiYou:"YOU",aiPlaceholder:"Ask anything...",aiSend:"Send",
   aiPlanBtnLbl:"🧭 Action plan",aiClearBtnLbl:"🗑️ Clear chat",aiCopyBtnLbl:"📋 Copy chat",
-  aiSug1:"How to improve my situation?",aiSug2:"How much to save for buying?",
-  aiSug3:"Buy or rent?",aiSug4:"Which municipality do you recommend?",
-  aiSug5:"What if rates rise?",aiSug6:"Buying strategies"
+  aiSug1:"Buy or rent in Cunit?",aiSug2:"How much do I need for the deposit?",
+  aiSug3:"What is ITP tax in Catalunya?",aiSug4:"What subsidies exist for young buyers?",
+  aiSug5:"What if Euribor rises?",aiSug6:"How to negotiate the price?",
+  phName:"Hugo Ibáñez",phAge:"25",phInc:"1,800",phSav:"20,000",phMsv:"300",phM2:"80",phBed:"2",phBath:"1",
+  btnAmort:"🔢 Amortize",
+  ctaTitle:"Questions about your case?",ctaSub:"Free consultation with the Assessoria d'Habitatge advisor · Cunit.",
+  ctaCallLbl:"Call",
+  amortiTitle:"Got extra money to pay off your mortgage?",
+  amortiExplain:"Simulate how much you can save by making an <strong style=\"color:#a78bfa\">early repayment</strong> (paying part of your mortgage early). You can choose between reducing <strong style=\"color:#60a5fa\">the time</strong> you pay or <strong style=\"color:#34d399\">the monthly payment</strong>.",
+  amortiLblAmount:"How much extra do you want to pay?",
+  amortiLblMode:"What do you prefer to reduce?",
+  amortiOptTerm:"Term (recommended)",amortiOptPay:"Monthly payment",
+  amortiOptTermTitle:"REDUCE TIME",amortiOptTermDesc:"Finish paying sooner (recommended)",
+  amortiOptPayTitle:"REDUCE PAYMENT",amortiOptPayDesc:"Pay less each month",
+  amortiCalcBtnLbl:"✨ See how much you'd save",
+  amortiSavingsTerm:"You save {interest} in interest · Term: {yrs} yr → {newYrs} yr ({savedMos} months less)",
+  amortiSavingsPay:"New payment: {newPay}/mo (−{diff}/mo) · Total interest saved: {interest}"
 }
 };
 
@@ -906,15 +1113,36 @@ const toast=m=>{const e=Q("#ts");e.textContent=m;e.classList.add("s");setTimeout
 
 const applyI18n=()=>{
   QA("[data-i]").forEach(el=>{const v=t(el.getAttribute("data-i"));if(v)el.textContent=v;});
+  // Placeholders
+  QA("[data-i-ph]").forEach(el=>{const v=t(el.getAttribute("data-i-ph"));if(v)el.placeholder=v;});
   // Tooltips — se regeneran al cambiar idioma
   const tipMap={tipIncBox:"tipInc",tipSavBox:"tipSav",tipMsvBox:"tipMsv"};
   Object.entries(tipMap).forEach(([id,key])=>{const el=Q("#"+id);if(el)el.textContent=t(key);});
-  QA("[data-ph]").forEach(el=>{const key=el.getAttribute("data-ph");const val=t(key);if(val)el.placeholder=val;});
   // Chat
   const wb=Q("#welcome-bubble");if(wb&&!wb.dataset.set)wb.textContent=t("aiWelcome");
   const ci=Q("#chatInput");if(ci)ci.placeholder=t("aiPlaceholder");
   renderAISuggestions();
   renderAIContext();
+  // Amortización i18n
+  const atit=Q("#amortiTitle");if(atit)atit.textContent=t("amortiTitle");
+  const aexp=Q("#amortiExplain");if(aexp)aexp.innerHTML=t("amortiExplain");
+  const abl=Q("#amortiLblAmount span:last-child");if(abl)abl.textContent=t("amortiLblAmount");
+  const alm=Q("#amortiLblMode span:last-child");if(alm)alm.textContent=t("amortiLblMode");
+  const aot=Q("#amortiOptTerm");if(aot)aot.textContent=t("amortiOptTerm");
+  const aop=Q("#amortiOptPay");if(aop)aop.textContent=t("amortiOptPay");
+  const aott=Q("#amortiOptTermTitle");if(aott)aott.textContent=t("amortiOptTermTitle");
+  const aotd=Q("#amortiOptTermDesc");if(aotd)aotd.textContent=t("amortiOptTermDesc");
+  const aopt=Q("#amortiOptPayTitle");if(aopt)aopt.textContent=t("amortiOptPayTitle");
+  const aopd=Q("#amortiOptPayDesc");if(aopd)aopd.textContent=t("amortiOptPayDesc");
+  const acb=Q("#amortiCalcBtn");if(acb)acb.textContent=t("amortiCalcBtnLbl");
+  const jumpA=Q("#jumpAmort");if(jumpA)jumpA.textContent=t("btnAmort");
+  const zch=Q("#zoneContextHint");
+  if(zch)zch.textContent=LANG==="EN"
+    ?"Cunit and Calafell offer the best beach-to-price ratio in Baix Penedès. El Vendrell has more services. Inland areas are up to 50% cheaper."
+    :LANG==="CA"
+    ?"Cunit i Calafell ofereixen la millor relació platja-preu del Baix Penedès. El Vendrell té més serveis. L'interior és fins un 50% més barat."
+    :"Cunit y Calafell tienen la mejor relación playa-precio del Baix Penedès. El Vendrell ofrece más servicios. El interior es hasta un 50% más barato.";
+  updateCTA();
 };
 
 const setLang=l=>{
@@ -946,7 +1174,7 @@ const updateSteps=p=>{
   [t("stepPersonal"),t("stepEco"),t("stepPref"),t("stepRes")].forEach((l,i)=>{const el=Q("#slbl"+(i+1));if(el)el.textContent=l;});
 };
 const show=p=>{
-  QA("[data-p]").forEach(x=>x.style.display=x.getAttribute("data-p")===p?"block":"none");
+  QA("[data-p]").forEach(x=>{const xp=x.getAttribute("data-p");if(xp==="r_cta")x.style.display=(p==="r"&&lastReq)?"block":"none";else x.style.display=xp===p?"block":"none";});
   ["p","e","f","r","m","x","ai"].forEach(k=>Q("#t_"+k)?.classList.toggle("a",p===k));
   updateSteps(p);
   if(p==="m")setTimeout(upMap,100);
@@ -1029,7 +1257,7 @@ const analyze=()=>{
   const nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0,inc=+Q("#inc").value||0,sav=+Q("#sav").value||0;
   const yrs=+Q("#yrs").value||25,hor=Q("#hor").value==="y",fst=Q("#fst").value==="y";
   const ar=Q("#ar").value,m2=+Q("#m2").value||0,bd=Q("#bed").value===""?0:+Q("#bed").value||0,ba=+Q("#bat").value||0,type=Q("#ty").value;
-  if(!nm||ag<18||ag>100||m2<50||m2>1000||bd<1||bd>10||ba<1||ba>10){toast(t("toastCheck"));return;}
+  if(!nm||ag<18||ag>100||m2<50||ba<1){toast(t("toastCheck"));return;}
   const e={t:Q("#et").checked,p:Q("#ep").checked,l:Q("#el").checked,k:Q("#ek").checked};
 
   let pb,pr,pbRange=null,prRange=null,muniList=[];
@@ -1063,9 +1291,9 @@ const analyze=()=>{
   Q("#k1sub").textContent=pm2?(pm2.toLocaleString(LANG==="EN"?"en-US":"es-ES")+" €/m²"):"";
   Q("#k2sub").textContent=LANG==="EN"?"Monthly estimate":(LANG==="CA"?"Estimació mensual":"Estimación mensual");
   Q("#k3sub").textContent=`${yrs} ${t("yrs")} · ${(rate*100).toFixed(2)}%`;
-  Q("#k4sub").textContent=recCode==="BUY"?(LANG==="EN"?"Cash + effort OK":(LANG==="CA"?"Cash + esforç OK":"Encajas cash + esfuerzo")):recCode==="RENT"?(LANG==="EN"?"Buying is tight":(LANG==="CA"?"Comprar apura":"Comprar aprieta")):(LANG==="EN"?"Neither option fits safely":(LANG==="CA"?"Cap opció encaixa de forma segura":"No encaja con seguridad"));
+  Q("#k4sub").textContent=recCode==="BUY"?(LANG==="EN"?"Ready to buy":(LANG==="CA"?"Efectiu + esforç OK":"Encajas en efectivo + esfuerzo")):recCode==="RENT"?(LANG==="EN"?"Buying is tight":(LANG==="CA"?"Comprar apura":"Comprar aprieta")):(LANG==="EN"?"Neither option fits safely":(LANG==="CA"?"Cap opció encaixa de forma segura":"No encaja con seguridad"));
 
-  renderResult();renderAIContext();renderAISuggestions();setTabsEnabled();saveForm();show("r");
+  renderResult();renderAIContext();renderAISuggestions();setTabsEnabled();saveForm();show("r");updateCTA();
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
 };
 
@@ -1106,19 +1334,19 @@ const renderResult=()=>{
     why.push(LANG==="EN"?"Mortgage effort within recommended band":(LANG==="CA"?"Esforç hipoteca dins la banda recomanada":"Esfuerzo hipoteca en banda recomendada"));
     if(last.hor)why.push(LANG==="EN"?"Staying >5 years amortizes costs":(LANG==="CA"?"Horitzó >5 anys amortitza costos":"Horizonte >5 años amortiza costes"));
   }else if(last.recCode==="RENT"){
-    if(last.need)why.push((LANG==="EN"?"Short on cash":(LANG==="CA"?"Falta cash":"Falta cash"))+": "+fmtMoney(last.needCash-last.sav));
+    if(last.need)why.push((LANG==="EN"?"Not enough savings":(LANG==="CA"?"Falta efectivo":"Falta efectivo"))+": "+fmtMoney(last.needCash-last.sav));
     if(dti>35)why.push((LANG==="EN"?"High mortgage effort":(LANG==="CA"?"Esforç hipoteca alt":"Esfuerzo hipoteca alto"))+": "+fmtPct(dti));
     if(!last.hor)why.push(LANG==="EN"?"Short horizon: buying less efficient":(LANG==="CA"?"Horitzó curt: comprar menys eficient":"Horizonte corto: comprar menos eficiente"));
     why.push(LANG==="EN"?"Renting is a safer monthly load":(LANG==="CA"?"Llogar és una càrrega mensual més segura":"Alquiler es carga mensual más segura"));
   }else{
-    if(last.need)why.push(LANG==="EN"?"Not enough cash":(LANG==="CA"?"No hi ha prou cash":"No hay cash suficiente"));
+    if(last.need)why.push(LANG==="EN"?"Not enough savings":(LANG==="CA"?"No hi ha prou efectiu":"No hay efectivo suficiente"));
     if(dti>35)why.push((LANG==="EN"?"Mortgage effort exceeds limit":(LANG==="CA"?"Esforç hipoteca supera límit":"Esfuerzo hipoteca supera límite"))+": "+fmtPct(dti));
     if(rti>40)why.push((LANG==="EN"?"Rent effort also exceeds limit":(LANG==="CA"?"Esforç lloguer supera límit":"Esfuerzo alquiler supera límite"))+": "+fmtPct(rti));
   }
 
-  Q("#chartTips").textContent=t("safeCapacity")+" "+fmtMoney(safe)+" · "+t("mortgageEffortLabel")+" "+fmtMoney(last.pay)+" · "+t("rentEffortLabel")+" "+fmtMoney(last.pr);
+  const _ct=Q("#chartTips");if(_ct)_ct.textContent=t("safeCapacity")+" "+fmtMoney(safe)+" · "+t("mortgageEffortLabel")+" "+fmtMoney(last.pay)+" · "+t("rentEffortLabel")+" "+fmtMoney(last.pr);
   const blockClr=last.recCode==="BUY"?"#22c55e":last.recCode==="RENT"?"#f59e0b":"#ef4444";
-  Q("#quickExplain").innerHTML=`<div style="font-weight:950;color:#e5e7eb;margin-bottom:8px">${t("cmpExplTitle")}</div><div style="display:grid;gap:6px">${why.map(x=>`<div>• ${x}</div>`).join("")}</div>`;
+  const _qe=Q("#quickExplain");if(_qe)_qe.innerHTML=`<div style="font-weight:950;color:#e5e7eb;margin-bottom:8px">${t("cmpExplTitle")}</div><div style="display:grid;gap:6px">${why.map(x=>`<div>• ${x}</div>`).join("")}</div>`;
 
   const muniTxt=muniLabel(last.muni),typeTxt=typeLabel(last.type),dpPct=Math.round(last.dp*100);
   const extrasOn=[];
@@ -1171,7 +1399,7 @@ const renderResult=()=>{
   if(last.need){
     const missing=Math.max(0,last.needCash-last.sav);
     if(last.msv>0&&missing>0){const mos=Math.ceil(missing/last.msv);body+=`<div class="countdown">⏳ ${tpl(t("yearsToSave"),{msv:fmtMoney(last.msv),yrs:(mos/12).toFixed(1),mos})}</div>`;}
-    else body+=`<div class="countdown">⚠️ ${LANG==="EN"?"Short on cash for buying":(LANG==="CA"?"Falta cash per comprar":"Falta cash para comprar")} (${fmtMoney(missing)})</div>`;
+    else body+=`<div class="countdown">⚠️ ${LANG==="EN"?"Not enough savings for buying":(LANG==="CA"?"Falta efectiu per comprar":"Falta efectivo para comprar")} (${fmtMoney(missing)})</div>`;
   }else{body+=`<div class="countdown" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);border-left-color:#22c55e;color:#86efac">${t("savingsOk")}</div>`;}
   body+="</div>";
   Q("#rBody").innerHTML=body;
@@ -1196,8 +1424,24 @@ let cmap=null;
 const PROV_COORDS={"Barcelona":[41.3874,2.1686],"Girona":[41.9794,2.8214],"Lleida":[41.6176,0.6200],"Tarragona":[41.1189,1.2445]};
 const upMap=()=>{
   const m=Q("#cm").value||"Barcelona",coords=PROV_COORDS[m]||[41.3874,2.1686];
-  if(!cmap){cmap=L.map("cmap").setView(coords,11);L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap · © CARTO",subdomains:"abcd"}).addTo(cmap);L.marker(coords).addTo(cmap).bindPopup(m);setTimeout(()=>cmap.invalidateSize(),200);}
-  else{cmap.setView(coords,11);cmap.eachLayer(l=>{if(l instanceof L.Marker)cmap.removeLayer(l);});L.marker(coords).addTo(cmap).bindPopup(m);setTimeout(()=>cmap.invalidateSize(),120);}
+  const pinIcon=L.divIcon({
+    className:"",
+    html:`<div style="position:relative;width:32px;height:42px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 42" width="32" height="42"><defs><filter id="ds" x="-30%" y="-20%" width="160%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.4)"/></filter></defs><path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 26 16 26S32 26 32 16C32 7.163 24.837 0 16 0z" fill="#4facfe" filter="url(#ds)"/><circle cx="16" cy="16" r="7" fill="white"/><circle cx="16" cy="16" r="4" fill="#4facfe"/></svg></div>`,
+    iconSize:[32,42],
+    iconAnchor:[16,42],
+    popupAnchor:[0,-42]
+  });
+  if(!cmap){
+    cmap=L.map("cmap",{scrollWheelZoom:false}).setView(coords,11);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap · © CARTO",subdomains:"abcd"}).addTo(cmap);
+    L.marker(coords,{icon:pinIcon}).addTo(cmap).bindPopup(`<b>${m}</b>`);
+    setTimeout(()=>cmap.invalidateSize(),200);
+  } else {
+    cmap.setView(coords,11);
+    cmap.eachLayer(l=>{if(l instanceof L.Marker)cmap.removeLayer(l);});
+    L.marker(coords,{icon:pinIcon}).addTo(cmap).bindPopup(`<b>${m}</b>`);
+    setTimeout(()=>cmap.invalidateSize(),120);
+  }
 };
 
 /* =====================
@@ -1207,7 +1451,7 @@ const compare=()=>{
   if(!last){Q("#cmg").textContent=t("toastFirst");return;}
   const m=Q("#cm").value,m2=+Q("#cm2").value||0,bd=+Q("#cbd").value||0,ba=+Q("#cba").value||0;
   const e={t:Q("#ct").checked,p:Q("#cp0").checked,l:Q("#cl0").checked,k:Q("#ck0").checked};
-  if(!M[m]||m2<50||m2>1000||bd<1||bd>10||ba<1||ba>10){Q("#cmg").textContent=t("missingDataCmp");Q("#cmpChips").innerHTML="";return;}
+  if(!M[m]||!(m2>0&&ba>0)){Q("#cmg").textContent=t("missingDataCmp");Q("#cmpChips").innerHTML="";return;}
   const p2=buyM(m,m2,Math.max(0,bd),ba,e),r2=rentM(m,m2,Math.max(0,bd),ba,e);
   const d=p2-last.pb,pct=last.pb>0?(d/last.pb)*100:0;
   const cls=d>0?"bad":d<0?"good":"neu",arrow=d>0?"↑":d<0?"↓":"→",sign=d>0?"+":"";
@@ -1222,6 +1466,28 @@ const compare=()=>{
       <div>• ${t("rentInProv")}: <b>${fmtMoney(r2)}</b></div>
       <div>• ${t("rentInZone")}: <b>${fmtMoney(last.pr)}</b></div>
     </div>
+    <div style="margin-top:4px;padding:14px 16px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.22);border-radius:12px;border-left:4px solid #38bdf8;color:#dbeafe;line-height:1.7;font-size:.9rem">
+      <div style="font-weight:900;margin-bottom:6px;color:#f1f5f9">${LANG==="EN"?"💡 What this means":LANG==="CA"?"💡 Què significa":"💡 Qué significa esto"}</div>
+      ${d>0?
+        (LANG==="EN"?
+          `Buying in <b>${m}</b> costs <b>${sign}${fmtMoney(d)}</b> (${sign}${pct.toFixed(1)}%) more than in Baix Penedès. For the same budget you get significantly more space in your area. Renting is also ${fmtMoney(r2-last.pr)}/mo more expensive in ${m}.`
+          :LANG==="CA"?
+          `Comprar a <b>${m}</b> costa <b>${sign}${fmtMoney(d)}</b> (${sign}${pct.toFixed(1)}%) més que al Baix Penedès. Amb el mateix pressupost obtens molt més espai a la teva zona. El lloguer també és ${fmtMoney(r2-last.pr)}/mes més car a ${m}.`
+          :`Comprar en <b>${m}</b> cuesta <b>${sign}${fmtMoney(d)}</b> (${sign}${pct.toFixed(1)}%) más que en el Baix Penedès. Con el mismo presupuesto obtienes mucho más espacio en tu zona. El alquiler también es ${fmtMoney(r2-last.pr)}/mes más caro en ${m}.`
+        )
+        :d<0?
+        (LANG==="EN"?
+          `Buying in <b>${m}</b> costs <b>${fmtMoney(Math.abs(d))}</b> (${Math.abs(pct).toFixed(1)}%) less than in Baix Penedès. Your area is more expensive — you may get more for your money elsewhere.`
+          :LANG==="CA"?
+          `Comprar a <b>${m}</b> costa <b>${fmtMoney(Math.abs(d))}</b> (${Math.abs(pct).toFixed(1)}%) menys que al Baix Penedès. La teva zona és més cara.`
+          :`Comprar en <b>${m}</b> cuesta <b>${fmtMoney(Math.abs(d))}</b> (${Math.abs(pct).toFixed(1)}%) menos que en el Baix Penedès. Tu zona es más cara.`
+        )
+        :
+        (LANG==="EN"?"Prices are similar in both areas."
+          :LANG==="CA"?"Els preus són similars en ambdues zones."
+          :"Los precios son similares en ambas zonas.")
+      }
+    </div>
   </div>`;
   drawCmpChart(last.pb,p2);upMap();saveForm();
 };
@@ -1234,10 +1500,9 @@ const fillFromLast=()=>{
 };
 
 /* =====================
-   MAPA MUNICIPAL — límites reales + fallback
+   MAPA MUNICIPAL — Versión mejorada
    ===================== */
 let zmap=null,zReady=false,zoneSel=new Set(),polygonsByName=new Map(),labelsByName=new Map();
-const MUNI_REAL_KEY="hx_real_muni_v1";
 const loadZoneSel=()=>{try{const s=localStorage.getItem(ZONE_KEY);if(s)zoneSel=new Set(JSON.parse(s)||[]);}catch(e){}};
 const saveZoneSel=()=>localStorage.setItem(ZONE_KEY,JSON.stringify([...zoneSel]));
 
@@ -1251,17 +1516,20 @@ const renderZoneUI=()=>{
 };
 
 const applyPolygonState=name=>{
-  const poly=polygonsByName.get(name);
-  if(!poly)return;
   const on=zoneSel.has(name);
-  poly.setStyle({
-    fillColor:on?"#38bdf8":"#22c55e",
-    fillOpacity:on?0.64:0.26,
-    color:on?"#0ea5e9":"#4ade80",
-    weight:on?2.8:1.8,
-    opacity:1
-  });
-  if(on&&poly.bringToFront)poly.bringToFront();
+  const pinColor=on?"#38bdf8":"#ffffff";
+  const pinStroke=on?"#0ea5e9":"#94a3b8";
+  const dotFill=on?"#001830":"#475569";
+  const safeId=name.replace(/[^a-zA-Z0-9]/g,"");
+  const lbl=labelsByName.get(name);
+  if(lbl){
+    lbl.setIcon(L.divIcon({
+      className:"muni-pin-wrap",
+      html:`<div class="muni-pin" data-n="${name}" style="display:flex;flex-direction:column;align-items:center;cursor:pointer"><span style="margin-bottom:3px;font-size:9.5px;font-weight:900;color:#fff;background:rgba(2,8,20,0.75);padding:1px 5px;border-radius:4px;text-shadow:none;white-space:nowrap;letter-spacing:0.2px;pointer-events:none;border:1px solid rgba(148,163,184,0.25)">${name}</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 36" width="22" height="28"><defs><filter id="dp${safeId}" x="-40%" y="-20%" width="180%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,0.6)"/></filter></defs><path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z" fill="${pinColor}" stroke="${pinStroke}" stroke-width="1.5" filter="url(#dp${safeId})"/><circle cx="14" cy="14" r="5.5" fill="${dotFill}"/></svg></div>`,
+      iconSize:[130,50],
+      iconAnchor:[65,50]
+    }));
+  }
 };
 
 const toggleZone=(name,fromChip)=>{
@@ -1270,119 +1538,67 @@ const toggleZone=(name,fromChip)=>{
   if(!fromChip)saveZoneSel();
 };
 
-const normalizeMuniName=name=>{
-  const map={"Arbós":"L'Arboç","L Arboc":"L'Arboç","Arboç":"L'Arboç","El Vendrell":"El Vendrell","Sant Jaume dels Domenys":"Sant Jaume dels Domenys"};
-  return map[name]||name;
-};
-
-const loadRealMunicipalPolygons=async()=>{
-  try{
-    const raw=localStorage.getItem(MUNI_REAL_KEY);
-    if(raw){
-      const cached=JSON.parse(raw);
-      if(cached&&cached.ts&&Date.now()-cached.ts<1000*60*60*24*15&&cached.data)return cached.data;
-    }
-  }catch(e){}
-
-  const names=[...MUNI_NAMES];
-  const out={};
-  const fetchOne=async(name)=>{
-    const q=`${name}, Baix Penedès, Tarragona, Catalunya, España`;
-    const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&polygon_geojson=1&q=${encodeURIComponent(q)}`;
-    const r=await fetch(url,{headers:{"Accept":"application/json"}});
-    if(!r.ok)return;
-    const arr=await r.json();
-    if(!Array.isArray(arr)||!arr.length)return;
-    const hit=arr.find(x=>x.geojson&&(x.geojson.type==="Polygon"||x.geojson.type==="MultiPolygon"))||arr[0];
-    const key=normalizeMuniName(hit.name||name);
-    if(hit.geojson)out[key]=hit.geojson;
-  };
-
-  await Promise.all(names.map(n=>fetchOne(n).catch(()=>{})));
-
-  if(Object.keys(out).length>=10){
-    try{localStorage.setItem(MUNI_REAL_KEY,JSON.stringify({ts:Date.now(),data:out}));}catch(e){}
-    return out;
-  }
-  return null;
-};
-
-const addZoneLayer=(name,geojsonOrPts)=>{
-  const on=zoneSel.has(name);
-  const style={
-    fillColor:on?"#38bdf8":"#22c55e",
-    fillOpacity:on?0.64:0.26,
-    color:on?"#0ea5e9":"#4ade80",
-    weight:on?2.8:1.8,
-    opacity:1,
-    smoothFactor:0.25
-  };
-
-  const layer=Array.isArray(geojsonOrPts)
-    ? L.polygon(geojsonOrPts,style).addTo(zmap)
-    : L.geoJSON(geojsonOrPts,{style:()=>style}).addTo(zmap);
-
-  layer.bindTooltip(name,{permanent:false,direction:"top",offset:[0,-10],opacity:1,className:"muni-tooltip"});
-  layer.on("mouseover",function(){if(!zoneSel.has(name)){this.setStyle({fillOpacity:0.45,weight:2.6});}this.openTooltip();});
-  layer.on("mouseout",function(){if(!zoneSel.has(name)){this.setStyle({fillOpacity:0.26,weight:1.8});}this.closeTooltip();});
-  layer.on("click",()=>toggleZone(name,false));
-  polygonsByName.set(name,layer);
-
-  const center=layer.getBounds?layer.getBounds().getCenter():null;
-  if(center){
-    const fs=name.length>18?"7px":name.length>14?"8px":"9px";
-    const lbl=L.marker(center,{icon:L.divIcon({className:"muni-label",html:`<span style="font-size:${fs};font-weight:900;text-shadow:0 2px 6px rgba(0,0,0,1),0 0 15px rgba(0,0,0,0.9);color:#fff;">${name}</span>`,iconSize:[150,26],iconAnchor:[75,13]}),interactive:false,zIndexOffset:1000}).addTo(zmap);
-    labelsByName.set(name,lbl);
-  }
-};
-
-const initMap=async()=>{
+const initMap=()=>{
   if(zReady)return;zReady=true;
+  
+  // Mostrar el mapa y ocultar loader
+  const loader=Q("#zmapLoader");
+  
   zmap=L.map("zmap",{scrollWheelZoom:false,tap:true,zoomControl:true}).setView([41.235,1.52],10);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',subdomains:"abcd"}).addTo(zmap);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{
+    maxZoom:19,
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',
+    subdomains:"abcd"
+  }).addTo(zmap);
 
   renderZoneUI();
-  Q("#zoneApplied").textContent=LANG==="EN"?"Loading real municipal boundaries…":(LANG==="CA"?"Carregant límits municipals reals…":"Cargando límites municipales reales…");
-
-  const real=await loadRealMunicipalPolygons();
 
   MUNI_NAMES.forEach(name=>{
-    const realGeo=real&&real[name];
-    const fallbackPts=FALLBACK_POLYGONS[name];
-    if(realGeo)addZoneLayer(name,realGeo);
-    else if(fallbackPts)addZoneLayer(name,fallbackPts);
+    const ctr=MUNI_CENTROIDS[name];
+    if(!ctr)return;
+    const on=zoneSel.has(name);
+    const pinColor=on?"#38bdf8":"#ffffff";
+    const pinStroke=on?"#0ea5e9":"#94a3b8";
+    const dotFill=on?"#001830":"#475569";
+    const safeId=name.replace(/[^a-zA-Z0-9]/g,"");
+    const lbl=L.marker(ctr,{
+      icon:L.divIcon({
+        className:"muni-pin-wrap",
+        html:`<div class="muni-pin" data-n="${name}" style="display:flex;flex-direction:column;align-items:center;cursor:pointer"><span style="margin-bottom:3px;font-size:9.5px;font-weight:900;color:#fff;background:rgba(2,8,20,0.75);padding:1px 5px;border-radius:4px;text-shadow:none;white-space:nowrap;letter-spacing:0.2px;pointer-events:none;border:1px solid rgba(148,163,184,0.25)">${name}</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 36" width="22" height="28"><defs><filter id="dp${safeId}" x="-40%" y="-20%" width="180%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,0.6)"/></filter></defs><path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z" fill="${pinColor}" stroke="${pinStroke}" stroke-width="1.5" filter="url(#dp${safeId})"/><circle cx="14" cy="14" r="5.5" fill="${dotFill}"/></svg></div>`,
+        iconSize:[130,50],
+        iconAnchor:[65,50]
+      }),
+      interactive:true,
+      zIndexOffset:1000
+    }).addTo(zmap);
+    lbl.on("click",()=>toggleZone(name,false));
+    labelsByName.set(name,lbl);
   });
-
-  if(real&&Object.keys(real).length>=10){
-    Q("#zoneApplied").textContent=LANG==="EN"?"Real municipal boundaries loaded.":(LANG==="CA"?"Límits municipals reals carregats.":"Límites municipales reales cargados.");
-  }else{
-    Q("#zoneApplied").textContent=LANG==="EN"?"Using approximate boundaries for some municipalities.":(LANG==="CA"?"S'estan usant límits aproximats en alguns municipis.":"Se están usando límites aproximados en algunos municipios.");
-  }
 
   setTimeout(()=>{
     try{
-      const allLayers=[...polygonsByName.values()];
-      if(allLayers.length){
-        const group=L.featureGroup(allLayers);
+      const allMarkers=[...labelsByName.values()];
+      if(allMarkers.length){
+        const group=L.featureGroup(allMarkers);
         zmap.fitBounds(group.getBounds(),{padding:[40,40],maxZoom:11});
       }
     }catch(e){}
     zmap.invalidateSize();
-  },250);
+    // Ocultar loader cuando el mapa esté completamente cargado
+    if(loader)loader.style.display="none";
+  },300);
 
   const mapEl=Q("#zmap");
   if(mapEl&&window.ResizeObserver){
     new ResizeObserver(()=>zmap?.invalidateSize()).observe(mapEl);
   }
 };
-
-// Botón "Ver todo"
 const fitAllZone=()=>{
   if(!zmap)return;
   try{
-    const allLayers=[...polygonsByName.values()];
-    if(allLayers.length){
-      const group=L.featureGroup(allLayers);
+    const allMarkers=[...labelsByName.values()];
+    if(allMarkers.length){
+      const group=L.featureGroup(allMarkers);
       zmap.fitBounds(group.getBounds(),{padding:[24,24]});
     }
   }catch(e){}
@@ -1418,11 +1634,33 @@ const refreshExamplesUI=()=>{
   const ok=!!lastReq&&!prefsChanged();
   Q("#xinfo").textContent=tpl(t("xInfo"),{muni:muniTxt,state:ok?t("stateReady"):t("stateNeed")});
   const wrap=Q("#xbtns");wrap.innerHTML="";
-  const mkBtn=(label,fn)=>{const b=document.createElement("button");b.type="button";b.className="b ok";b.textContent=label;b.onclick=fn;if(!ok)b.classList.add("dis");wrap.appendChild(b);};
+  wrap.style.flexDirection="column";wrap.style.alignItems="flex-start";
+  const mkRow=(muniName)=>{
+    const row=document.createElement("div");
+    row.style.cssText="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(148,163,184,.12);width:100%";
+    if(muniName){const lbl=document.createElement("span");lbl.style.cssText="font-size:.78rem;font-weight:900;color:#94a3b8;min-width:120px;text-transform:uppercase;letter-spacing:.4px";lbl.textContent=muniName;row.appendChild(lbl);}
+    return row;
+  };
+  const mkBtn=(label,fn,icon="",row)=>{const b=document.createElement("button");b.type="button";b.className="b ok";b.style.fontSize=".82rem";b.style.padding="9px 14px";b.innerHTML=`${icon?icon+" ":""}${label}`;b.onclick=fn;if(!ok)b.classList.add("dis");row.appendChild(b);};
   const z=[...zoneSel].filter(x=>MUNI_SLUG[x]);
   const BL=t("buyLabel"),RL=t("rentLabel"),SL=t("strictLabel"),FL=t("flexLabel");
-  if(z.length){z.forEach(m=>{mkBtn(`${BL} (${SL}) · ${m}`,()=>openIdealista("buy",true,m));mkBtn(`${BL} (${FL}) · ${m}`,()=>openIdealista("buy",false,m));mkBtn(`${RL} (${SL}) · ${m}`,()=>openIdealista("rent",true,m));mkBtn(`${RL} (${FL}) · ${m}`,()=>openIdealista("rent",false,m));});}
-  else{mkBtn(`${BL} (${SL})`,()=>openIdealista("buy",true,null));mkBtn(`${BL} (${FL})`,()=>openIdealista("buy",false,null));mkBtn(`${RL} (${SL})`,()=>openIdealista("rent",true,null));mkBtn(`${RL} (${FL})`,()=>openIdealista("rent",false,null));}
+  if(z.length){
+    z.forEach(m=>{
+      const row=mkRow(m);
+      mkBtn(`${BL} · ${SL}`,()=>openIdealista("buy",true,m),"🏠",row);
+      mkBtn(`${BL} · ${FL}`,()=>openIdealista("buy",false,m),"🔍",row);
+      mkBtn(`${RL} · ${SL}`,()=>openIdealista("rent",true,m),"🏠",row);
+      mkBtn(`${RL} · ${FL}`,()=>openIdealista("rent",false,m),"🔍",row);
+      wrap.appendChild(row);
+    });
+  } else {
+    const row=mkRow("");
+    mkBtn(`${BL} · ${SL}`,()=>openIdealista("buy",true,null),"🏠",row);
+    mkBtn(`${BL} · ${FL}`,()=>openIdealista("buy",false,null),"🔍",row);
+    mkBtn(`${RL} · ${SL}`,()=>openIdealista("rent",true,null),"🏠",row);
+    mkBtn(`${RL} · ${FL}`,()=>openIdealista("rent",false,null),"🔍",row);
+    wrap.appendChild(row);
+  }
   setTabsEnabled();
 };
 
@@ -1471,7 +1709,7 @@ const renderAIContext=()=>{
   box.innerHTML=[
     `<span class="ai-context-chip">🎯 ${c.rec}</span>`,
     `<span class="ai-context-chip ${c.ratio>35?"warn":""}">🏦 ${t("mortgageEffortLabel")}: ${fmtPct(c.ratio)}</span>`,
-    gap>0?`<span class="ai-context-chip warn">💸 ${LANG==="EN"?"Gap":(LANG==="CA"?"Falta":"Falta")}: ${fmtMoney(gap)}</span>`:`<span class="ai-context-chip">✅ ${LANG==="EN"?"Cash OK":(LANG==="CA"?"Cash cobert":"Cash cubierto")}</span>`
+    gap>0?`<span class="ai-context-chip warn">💸 ${LANG==="EN"?"Gap":(LANG==="CA"?"Falta":"Falta")}: ${fmtMoney(gap)}</span>`:`<span class="ai-context-chip">✅ ${LANG==="EN"?"Efectivo OK":(LANG==="CA"?"Efectiu cobert":"Efectivo cubierto")}</span>`
   ].join("");
 };
 
@@ -1659,7 +1897,7 @@ const buildReply=msg=>{
   // Si menciona un número sin contexto claro
   if(amount&&amount>1000&&!c){
     return es(
-      `💰 **${fm(amount)}**\n\nVeo que mencionas ${fm(amount)}. ¿Es el precio de una vivienda?\n\nSi es así, puedo calcular:\n• Cuota de hipoteca estimada\n• Entrada necesaria (20%): ${fm(amount*0.2)}\n• Gastos (ITP+notaría ~11%): ${fm(amount*0.11)}\n• **Total cash necesario: ${fm(amount*0.31)}**\n\nPara un cálculo personalizado, completa los pasos 1-3 y pulsa Analizar.`,
+      `💰 **${fm(amount)}**\n\nVeo que mencionas ${fm(amount)}. ¿Es el precio de una vivienda?\n\nSi es así, puedo calcular:\n• Cuota de hipoteca estimada\n• Entrada necesaria (20%): ${fm(amount*0.2)}\n• Gastos (ITP+notaría ~11%): ${fm(amount*0.11)}\n• **Total efectivo necesario: ${fm(amount*0.31)}**\n\nPara un cálculo personalizado, completa los pasos 1-3 y pulsa Analizar.`,
       `💰 **${fm(amount)}**\n\nÉs el preu d'un habitatge?\n\nEntraда (20%): ${fm(amount*0.2)}\nDespeses (~11%): ${fm(amount*0.11)}\n**Total cash: ${fm(amount*0.31)}**`,
       `💰 **${fm(amount)}**\n\nIs that a property price?\n\nDown (20%): ${fm(amount*0.2)}\nCosts (~11%): ${fm(amount*0.11)}\n**Total cash: ${fm(amount*0.31)}**`
     );
@@ -1679,11 +1917,11 @@ const buildReply=msg=>{
         if(!c)return es("💡 Completa pasos 1-3 para explicarte por qué.","💡 Completa passos 1-3.","💡 Complete steps 1-3.");
         return es(
           c.rec==="COMPRAR"?
-          `🤔 **¿Por qué COMPRAR?**\n\n✅ **Razones específicas de tu caso:**\n• Tu esfuerzo hipoteca: ${fp(c.ratio)} ${c.ratio<=35?"(saludable, <35%)":"(alto pero asumible)"}\n• Tu cuota: ${fm(c.pay)}/mes ${c.pay<c.pr?"→ MENOR que alquiler ("+fm(c.pr)+")":"→ similar al alquiler"}\n• Entrada: ${c.need?"Necesitas ahorrar "+fm(c.missing)+" ("+c.mosToGoal+" meses)":"YA tienes los "+fm(c.needCash)}\n• Construyes patrimonio propio\n• La vivienda se revaloriza (~3%/año histórico)\n\n⚠️ **Importante:**\n• Quédate mínimo 5 años (sino pierdes en gastos)\n• Ten fondo emergencia ${fm(c.inc*6)} (6 meses)\n${c.ratio>40?"• Tu esfuerzo es MUY alto — asegura ingresos estables":""}`
+          `🤔 **¿Por qué COMPRAR?**\n\n✅ **Razones específicas de tu caso:**\n• Tu esfuerzo hipoteca: ${fp(c.ratio)} ${c.ratio<=35?"(saludable, <35%)":"(alto pero asumible)"}\n• Tu cuota: ${fm(c.pay)}/mes ${c.pay<c.pr?"→ MENOR que alquiler ("+fm(c.pr)+")":"→ similar al alquiler"}\n• Entrada: ${c.need?"Necesitas ahorrar "+fm(c.missing)+" ("+c.mosToGoal+" meses)":"YA tienes el efectivo: "+fm(c.needCash)}\n• Construyes patrimonio propio\n• La vivienda se revaloriza (~3%/año histórico)\n\n⚠️ **Importante:**\n• Quédate mínimo 5 años (sino pierdes en gastos)\n• Ten fondo emergencia ${fm(c.inc*6)} (6 meses)\n${c.ratio>40?"• Tu esfuerzo es MUY alto — asegura ingresos estables":""}`
           :
           `🤔 **¿Por qué ALQUILAR en tu caso?**\n\n✅ **Razones:**\n• Tu esfuerzo hipoteca sería ${fp(c.ratio)} ${c.ratio>40?"(MUY alto, >40%)":"(alto, >35%)"}\n• Supera el límite recomendado → riesgo financiero\n• ${c.need?"Te falta "+fm(c.missing)+" para la entrada"+(c.mosToGoal?" ("+c.mosToGoal+" meses)":""):""}\n• Alquilar = flexibilidad sin compromiso 25 años\n• Puedes seguir ahorrando sin presión\n\n🎯 **Cuándo replantear compra:**\n• Ahorres ${c.need?fm(c.missing)+" más":"15-20% más"}\n• Ingresos suban +20%\n• Encuentres vivienda 15-20% más barata`,
-          c.rec==="COMPRAR"?`🤔 **Per què COMPRAR?**\n\nEsforç ${fp(c.ratio)} ${c.ratio<=35?"OK":"alt"}\nQuota ${fm(c.pay)} ${c.pay<c.pr?"< lloguer":""}\n${c.need?"Necessites "+fm(c.missing):"Cash OK"}\nPatrimoni propi`:`🤔 **Per què LLOGAR?**\n\nEsforç ${fp(c.ratio)} massa alt\n${c.need?"Falta "+fm(c.missing):""}\nFlexibilitat`,
-          c.rec==="BUY"?`🤔 **Why BUY?**\n\nEffort ${fp(c.ratio)} ${c.ratio<=35?"OK":"high"}\nPayment ${fm(c.pay)} ${c.pay<c.pr?"< rent":""}\n${c.need?"Need "+fm(c.missing):"Cash OK"}\nBuild equity`:`🤔 **Why RENT?**\n\nEffort ${fp(c.ratio)} too high\n${c.need?"Gap "+fm(c.missing):""}\nFlexibility`
+          c.rec==="COMPRAR"?`🤔 **Per què COMPRAR?**\n\nEsforç ${fp(c.ratio)} ${c.ratio<=35?"OK":"alt"}\nQuota ${fm(c.pay)} ${c.pay<c.pr?"< lloguer":""}\n${c.need?"Necessites "+fm(c.missing):"Efectivo OK"}\nPatrimoni propi`:`🤔 **Per què LLOGAR?**\n\nEsforç ${fp(c.ratio)} massa alt\n${c.need?"Falta "+fm(c.missing):""}\nFlexibilitat`,
+          c.rec==="BUY"?`🤔 **Why BUY?**\n\nEffort ${fp(c.ratio)} ${c.ratio<=35?"OK":"high"}\nPayment ${fm(c.pay)} ${c.pay<c.pr?"< rent":""}\n${c.need?"Need "+fm(c.missing):"Efectivo OK"}\nBuild equity`:`🤔 **Why RENT?**\n\nEffort ${fp(c.ratio)} too high\n${c.need?"Gap "+fm(c.missing):""}\nFlexibility`
         );
       }
       
@@ -1745,8 +1983,8 @@ const buildReply=msg=>{
       );
       
       return es(
-        `📊 **Todas las cantidades de tu caso:**\n\n💰 **VIVIENDA:**\n• Precio total: ${fm(c.pb)}\n• Precio por m²: ${Math.round(c.pb/c.m2)} €/m²\n• Alquiler estimado: ${fm(c.pr)}/mes\n\n🏦 **HIPOTECA:**\n• Capital prestado: ${fm(c.cap)}\n• Tipo interés: ${(c.rate*100).toFixed(2)}%\n• Plazo: ${c.yrs} años\n• **Cuota mensual: ${fm(c.pay)}/mes**\n• Total a pagar: ${fm(c.pay*c.yrs*12)}\n• Solo en intereses: ${fm(c.pay*c.yrs*12-c.cap)}\n\n💵 **ENTRADA Y GASTOS:**\n• Entrada (${c.dp}%): ${fm(Math.round(c.pb*c.dp/100))}\n• ITP (~10%): ${fm(Math.round(c.pb*0.10))}\n• Notaría (~0.5%): ${fm(Math.round(c.pb*0.005))}\n• Registro (~0.3%): ${fm(Math.round(c.pb*0.003))}\n• Gestoría (~0.2%): ${fm(Math.round(c.pb*0.002))}\n• **TOTAL CASH NECESARIO: ${fm(c.needCash)}**\n\n💰 **AHORRO:**\n• Tienes actualmente: ${fm(c.sav)}\n${c.need?"• **Te falta: "+fm(c.missing)+"**\n• Ahorrando "+fm(c.msv)+"/mes → "+c.mosToGoal+" meses":"• ✅ **Ya tienes el cash cubierto**"}\n\n📊 **ESFUERZO:**\n• Hipoteca: ${fp(c.ratio)} de tus ingresos ${c.ratio<=35?"✅":"⚠️"}\n• Alquiler: ${fp(c.rri)} de tus ingresos\n• Límite recomendado: 35%`,
-        `📊 **Quantitats:**\n\n💰 Preu: ${fm(c.pb)} (${Math.round(c.pb/c.m2)} €/m²)\n💸 Lloguer: ${fm(c.pr)}/mes\n\n🏦 **Hipoteca:**\n• Capital: ${fm(c.cap)}\n• Quota: ${fm(c.pay)}/mes\n• Total: ${fm(c.pay*c.yrs*12)}\n• Interessos: ${fm(c.pay*c.yrs*12-c.cap)}\n\n💵 **Entrada:**\n• ${c.dp}%: ${fm(Math.round(c.pb*c.dp/100))}\n• Despeses: ${fm(Math.round(c.pb*0.11))}\n• **TOTAL: ${fm(c.needCash)}**\n\n${c.need?"❌ Falta: "+fm(c.missing)+(c.mosToGoal?" ("+c.mosToGoal+" mesos)":""):"✅ Cash cobert"}`,
+        `📊 **Todas las cantidades de tu caso:**\n\n💰 **VIVIENDA:**\n• Precio total: ${fm(c.pb)}\n• Precio por m²: ${Math.round(c.pb/c.m2)} €/m²\n• Alquiler estimado: ${fm(c.pr)}/mes\n\n🏦 **HIPOTECA:**\n• Capital prestado: ${fm(c.cap)}\n• Tipo interés: ${(c.rate*100).toFixed(2)}%\n• Plazo: ${c.yrs} años\n• **Cuota mensual: ${fm(c.pay)}/mes**\n• Total a pagar: ${fm(c.pay*c.yrs*12)}\n• Solo en intereses: ${fm(c.pay*c.yrs*12-c.cap)}\n\n💵 **ENTRADA Y GASTOS:**\n• Entrada (${c.dp}%): ${fm(Math.round(c.pb*c.dp/100))}\n• ITP (~10%): ${fm(Math.round(c.pb*0.10))}\n• Notaría (~0.5%): ${fm(Math.round(c.pb*0.005))}\n• Registro (~0.3%): ${fm(Math.round(c.pb*0.003))}\n• Gestoría (~0.2%): ${fm(Math.round(c.pb*0.002))}\n• **TOTAL CASH NECESARIO: ${fm(c.needCash)}**\n\n💰 **AHORRO:**\n• Tienes actualmente: ${fm(c.sav)}\n${c.need?"• **Te falta: "+fm(c.missing)+"**\n• Ahorrando "+fm(c.msv)+"/mes → "+c.mosToGoal+" meses":"• ✅ **Ya tienes el efectivo cubierto**"}\n\n📊 **ESFUERZO:**\n• Hipoteca: ${fp(c.ratio)} de tus ingresos ${c.ratio<=35?"✅":"⚠️"}\n• Alquiler: ${fp(c.rri)} de tus ingresos\n• Límite recomendado: 35%`,
+        `📊 **Quantitats:**\n\n💰 Preu: ${fm(c.pb)} (${Math.round(c.pb/c.m2)} €/m²)\n💸 Lloguer: ${fm(c.pr)}/mes\n\n🏦 **Hipoteca:**\n• Capital: ${fm(c.cap)}\n• Quota: ${fm(c.pay)}/mes\n• Total: ${fm(c.pay*c.yrs*12)}\n• Interessos: ${fm(c.pay*c.yrs*12-c.cap)}\n\n💵 **Entrada:**\n• ${c.dp}%: ${fm(Math.round(c.pb*c.dp/100))}\n• Despeses: ${fm(Math.round(c.pb*0.11))}\n• **TOTAL: ${fm(c.needCash)}**\n\n${c.need?"❌ Falta: "+fm(c.missing)+(c.mosToGoal?" ("+c.mosToGoal+" mesos)":""):"✅ Efectiu cobert"}`,
         `📊 **Amounts:**\n\n💰 Price: ${fm(c.pb)} (${Math.round(c.pb/c.m2)} €/m²)\n💸 Rent: ${fm(c.pr)}/mo\n\n🏦 **Mortgage:**\n• Principal: ${fm(c.cap)}\n• Payment: ${fm(c.pay)}/mo\n• Total: ${fm(c.pay*c.yrs*12)}\n• Interest: ${fm(c.pay*c.yrs*12-c.cap)}\n\n💵 **Down payment:**\n• ${c.dp}%: ${fm(Math.round(c.pb*c.dp/100))}\n• Costs: ${fm(Math.round(c.pb*0.11))}\n• **TOTAL: ${fm(c.needCash)}**\n\n${c.need?"❌ Gap: "+fm(c.missing)+(c.mosToGoal?" ("+c.mosToGoal+" months)":""):"✅ Cash OK"}`
       );
     }
@@ -1805,7 +2043,7 @@ const buildReply=msg=>{
 
   /* ── VIVIENDA — análisis ── */
   case"summary":return es(
-    `📊 **Resumen completo**\n\n🏠 ${c.muni} · ${c.m2}m² · ${c.bd} hab · ${c.ba} baños · ${c.type}\n💰 Precio: **${fm(c.pb)}** (${Math.round(c.pb/c.m2)} €/m²)\n📅 Cuota: **${fm(c.pay)}**/mes · ${c.yrs} años · ${(c.rate*100).toFixed(2)}%\n🏠 Alquiler: **${fm(c.pr)}**/mes\n📈 Esfuerzo compra: ${fp(c.ratio)} ${c.ratio<=35?"✅":"❌"} | Alquiler: ${fp(c.rri)} ${c.rri<=40?"✅":"❌"}\n💶 Cash necesario: ${fm(c.needCash)} ${c.need?"❌ faltan "+fm(c.missing):"✅ cubierto"}\n\n🎯 **Recomendación: ${c.rec}**`,
+    `📊 **Resumen completo**\n\n🏠 ${c.muni} · ${c.m2}m² · ${c.bd} hab · ${c.ba} baños · ${c.type}\n💰 Precio: **${fm(c.pb)}** (${Math.round(c.pb/c.m2)} €/m²)\n📅 Cuota: **${fm(c.pay)}**/mes · ${c.yrs} años · ${(c.rate*100).toFixed(2)}%\n🏠 Alquiler: **${fm(c.pr)}**/mes\n📈 Esfuerzo compra: ${fp(c.ratio)} ${c.ratio<=35?"✅":"❌"} | Alquiler: ${fp(c.rri)} ${c.rri<=40?"✅":"❌"}\n💶 Efectivo necesario: ${fm(c.needCash)} ${c.need?"❌ faltan "+fm(c.missing):"✅ cubierto"}\n\n🎯 **Recomendación: ${c.rec}**`,
     `📊 **Resum complet**\n\n🏠 ${c.muni} · ${c.m2}m² · ${c.bd} hab · ${c.ba} banys · ${c.type}\n💰 Preu: **${fm(c.pb)}** (${Math.round(c.pb/c.m2)} €/m²)\n📅 Quota: **${fm(c.pay)}**/mes · ${c.yrs} anys · ${(c.rate*100).toFixed(2)}%\n🏠 Lloguer: **${fm(c.pr)}**/mes\n📈 Esforç compra: ${fp(c.ratio)} ${c.ratio<=35?"✅":"❌"} | Lloguer: ${fp(c.rri)}\n💶 Cash: ${fm(c.needCash)} ${c.need?"❌ falten "+fm(c.missing):"✅ cobert"}\n\n🎯 **Recomanació: ${c.rec}**`,
     `📊 **Full summary**\n\n🏠 ${c.muni} · ${c.m2}m² · ${c.bd} bed · ${c.ba} bath · ${c.type}\n💰 Price: **${fm(c.pb)}** (${Math.round(c.pb/c.m2)} €/m²)\n📅 Payment: **${fm(c.pay)}**/mo · ${c.yrs} yrs · ${(c.rate*100).toFixed(2)}%\n🏠 Rent: **${fm(c.pr)}**/mo\n📈 Buy effort: ${fp(c.ratio)} ${c.ratio<=35?"✅":"❌"} | Rent: ${fp(c.rri)}\n💶 Cash needed: ${fm(c.needCash)} ${c.need?"❌ short "+fm(c.missing):"✅ covered"}\n\n🎯 **Recommendation: ${c.rec}**`
   );
@@ -1891,8 +2129,8 @@ const buildReply=msg=>{
   );
 
   case"actionplan":return es(
-    `🧭 **Plan de acción en 90 días para ${c.nm}**\n\n**📌 Semanas 1–2: Auditoría financiera**\n• Lista todos los gastos fijos y variables\n• Objetivo de ahorro mensual: ${fm(Math.max(c.msv||0,Math.round(c.inc*.15)))}/mes\n\n**📌 Semanas 3–4: Libera cashflow**\n• Cancela 2–3 suscripciones no esenciales\n• Negocia seguro del coche y hogar\n\n**📌 Semanas 5–8: Ahorro automático**\n• Transferencia automática el día de cobro: ${fm(c.msv||Math.round(c.inc*.15))}/mes\n\n**📌 Semanas 9–10: Documentación**\n• Últimas 3 nóminas · Declaración IRPF · Vida laboral\n\n**📌 Semanas 11–12: Bancos**\n• Preaprobación en 3 bancos · Comparar TAE real\n\n${c.need?"🎯 **Objetivo:** llegar a "+fm(c.needCash)+(c.mosToGoal?" (~"+c.mosToGoal+" meses)":""):"🎯 **Ya tienes el cash cubierto** — prioriza negociación"}`,
-    `🧭 **Pla d'acció 90 dies per a ${c.nm}**\n\n📌 **S1–2:** Auditoria financera · objectiu estalvi: ${fm(Math.max(c.msv||0,Math.round(c.inc*.15)))}/mes\n📌 **S3–4:** Allibera cashflow — cancel·la subscripcions\n📌 **S5–8:** Transferència automàtica ${fm(c.msv||Math.round(c.inc*.15))}/mes el dia de cobrament\n📌 **S9–10:** Documentació bancària (nòmines, IRPF, vida laboral)\n📌 **S11–12:** Preaprovació en 3 bancs, comparar TAE\n\n${c.need?"🎯 Objectiu: arribar a "+fm(c.needCash)+(c.mosToGoal?" (~"+c.mosToGoal+" mesos)":""):"🎯 Ja tens el cash — prioritza negociació"}`,
+    `🧭 **Plan de acción en 90 días para ${c.nm}**\n\n**📌 Semanas 1–2: Auditoría financiera**\n• Lista todos los gastos fijos y variables\n• Objetivo de ahorro mensual: ${fm(Math.max(c.msv||0,Math.round(c.inc*.15)))}/mes\n\n**📌 Semanas 3–4: Libera cashflow**\n• Cancela 2–3 suscripciones no esenciales\n• Negocia seguro del coche y hogar\n\n**📌 Semanas 5–8: Ahorro automático**\n• Transferencia automática el día de cobro: ${fm(c.msv||Math.round(c.inc*.15))}/mes\n\n**📌 Semanas 9–10: Documentación**\n• Últimas 3 nóminas · Declaración IRPF · Vida laboral\n\n**📌 Semanas 11–12: Bancos**\n• Preaprobación en 3 bancos · Comparar TAE real\n\n${c.need?"🎯 **Objetivo:** llegar a "+fm(c.needCash)+(c.mosToGoal?" (~"+c.mosToGoal+" meses)":""):"🎯 **Ya tienes el efectivo cubierto** — prioriza negociación"}`,
+    `🧭 **Pla d'acció 90 dies per a ${c.nm}**\n\n📌 **S1–2:** Auditoria financera · objectiu estalvi: ${fm(Math.max(c.msv||0,Math.round(c.inc*.15)))}/mes\n📌 **S3–4:** Allibera cashflow — cancel·la subscripcions\n📌 **S5–8:** Transferència automàtica ${fm(c.msv||Math.round(c.inc*.15))}/mes el dia de cobrament\n📌 **S9–10:** Documentació bancària (nòmines, IRPF, vida laboral)\n📌 **S11–12:** Preaprovació en 3 bancs, comparar TAE\n\n${c.need?"🎯 Objectiu: arribar a "+fm(c.needCash)+(c.mosToGoal?" (~"+c.mosToGoal+" mesos)":""):"🎯 Ja tens el efectivo — prioritza negociació"}`,
     `🧭 **90-day action plan for ${c.nm}**\n\n📌 **Weeks 1–2:** Financial audit · savings target: ${fm(Math.max(c.msv||0,Math.round(c.inc*.15)))}/mo\n📌 **Weeks 3–4:** Free up cashflow — cancel non-essential subscriptions\n📌 **Weeks 5–8:** Auto-transfer ${fm(c.msv||Math.round(c.inc*.15))}/mo on payday\n📌 **Weeks 9–10:** Bank documents: payslips, tax return, work history\n📌 **Weeks 11–12:** Pre-approval from 3 banks, compare real APR\n\n${c.need?"🎯 **Goal:** reach "+fm(c.needCash)+(c.mosToGoal?" (~"+c.mosToGoal+" months)":""):"🎯 **Cash covered** — focus on negotiation and pre-approval"}`
   );
 
@@ -1936,8 +2174,8 @@ const buildReply=msg=>{
   );
 
   case"risk":return es(
-    `⚠️ **Análisis de riesgos**\n\n${c.ratio>35?"❌ Esfuerzo hipoteca **alto** ("+fp(c.ratio)+") — si bajan ingresos o suben tipos, puede apurar":"✅ Esfuerzo hipoteca OK ("+fp(c.ratio)+")"}\n${c.rate<.045?"⚠️ Tipo variable — expuesto al euríbor (puede subir)":""}\n${c.need?"❌ Sin margen de cash — cualquier imprevisto compromete la operación":"✅ Cash cubierto — tienes margen"}\n\n🛡️ **Cómo protegerte:**\n• Fondo emergencia 6 meses: ${fm(c.inc*6)}\n• Hipoteca fija o mixta (5-10 años fijos)\n• No comprometer más del 90% del ahorro en la compra\n• Seguro de vida + seguro hogar vinculado a la hipoteca`,
-    `⚠️ **Anàlisi de riscos**\n\n${c.ratio>35?"❌ Esforç alt ("+fp(c.ratio)+")":"✅ Esforç OK ("+fp(c.ratio)+")"} · ${c.need?"❌ Cash just":"✅ Cash cobert"}\n\n🛡️ Proteccions: fons d'emergència ${fm(c.inc*6)} · hipoteca fixa o mixta · assegurança llar+vida`,
+    `⚠️ **Análisis de riesgos**\n\n${c.ratio>35?"❌ Esfuerzo hipoteca **alto** ("+fp(c.ratio)+") — si bajan ingresos o suben tipos, puede apurar":"✅ Esfuerzo hipoteca OK ("+fp(c.ratio)+")"}\n${c.rate<.045?"⚠️ Tipo variable — expuesto al euríbor (puede subir)":""}\n${c.need?"❌ Sin margen de cash — cualquier imprevisto compromete la operación":"✅ Efectivo cubierto — tienes margen"}\n\n🛡️ **Cómo protegerte:**\n• Fondo emergencia 6 meses: ${fm(c.inc*6)}\n• Hipoteca fija o mixta (5-10 años fijos)\n• No comprometer más del 90% del ahorro en la compra\n• Seguro de vida + seguro hogar vinculado a la hipoteca`,
+    `⚠️ **Anàlisi de riscos**\n\n${c.ratio>35?"❌ Esforç alt ("+fp(c.ratio)+")":"✅ Esforç OK ("+fp(c.ratio)+")"} · ${c.need?"❌ Cash just":"✅ Efectiu cobert"}\n\n🛡️ Proteccions: fons d'emergència ${fm(c.inc*6)} · hipoteca fixa o mixta · assegurança llar+vida`,
     `⚠️ **Risk analysis**\n\n${c.ratio>35?"❌ High effort ("+fp(c.ratio)+") — vulnerable to income drops or rate rises":"✅ Effort OK ("+fp(c.ratio)+")"}\n${c.need?"❌ Tight on cash":"✅ Cash covered"}\n\n🛡️ **Protect yourself:** Emergency fund ${fm(c.inc*6)} · Fixed/hybrid mortgage · Home+life insurance`
   );
 
@@ -2035,8 +2273,8 @@ const buildReply=msg=>{
   );
 
   case"gen_business":return es(
-    `💼 **Negocios y emprendimiento — claves**\n\n🎯 **Antes de lanzar:**\n• Valida el problema (habla con 10 clientes potenciales)\n• Calcula el CAC (coste adquisición cliente) y el LTV (valor de vida del cliente)\n• LTV debe ser >3× el CAC para tener un modelo sano\n\n💰 **Finanzas del negocio:**\n• Controla el cashflow mensual — muchos negocios rentables quiebran por falta de liquidez\n• Margen bruto objetivo: >40% (servicio), >60% (software/SaaS)\n\n📈 **Crecer con sentido:**\n• Retención > adquisición: cuesta 5× más conseguir un cliente nuevo que mantener uno actual\n• Focalízate en los canales que mejor convierten antes de diversificar`,
-    `💼 **Negocis — claus**\n\n🎯 Valida el problema (parla amb 10 clients) · LTV >3× CAC\n💰 Controla el cashflow — molts negocis rendibles queden per falta de liquiditat\n📈 Retenció > adquisició`,
+    `💼 **Negocios y emprendimiento — claves**\n\n🎯 **Antes de lanzar:**\n• Valida el problema (habla con 10 clientes potenciales)\n• Calcula el CAC (coste adquisición cliente) y el LTV (valor de vida del cliente)\n• LTV debe ser >3× el CAC para tener un modelo sano\n\n💰 **Finanzas del negocio:**\n• Controla el efectivoflow mensual — muchos negocios rentables quiebran por falta de liquidez\n• Margen bruto objetivo: >40% (servicio), >60% (software/SaaS)\n\n📈 **Crecer con sentido:**\n• Retención > adquisición: cuesta 5× más conseguir un cliente nuevo que mantener uno actual\n• Focalízate en los canales que mejor convierten antes de diversificar`,
+    `💼 **Negocis — claus**\n\n🎯 Valida el problema (parla amb 10 clients) · LTV >3× CAC\n💰 Controla el efectivoflow — molts negocis rendibles queden per falta de liquiditat\n📈 Retenció > adquisició`,
     `💼 **Business — key principles**\n\n🎯 Validate the problem (talk to 10 potential customers) · LTV must be >3× CAC\n💰 Control cashflow — profitable businesses fail due to liquidity issues\n📈 Retention > acquisition: keeping a customer costs 5× less than acquiring one`
   );
 
@@ -2294,21 +2532,112 @@ const liveValidate=()=>{
   const setHint=(id,msg,ok)=>{const el=Q("#hint-"+id);if(!el)return;el.textContent=msg||"";el.className="field-hint "+(msg?(ok?"ok":"err"):"");Q("#"+id)?.classList.toggle("field-ok",!!ok&&!!msg);Q("#"+id)?.classList.toggle("field-err",!ok&&!!msg);};
   const inc=+Q("#inc")?.value||0;if(inc>0&&inc<500)setHint("inc",LANG==="EN"?"Very low income":(LANG==="CA"?"Ingressos molt baixos":"Ingresos muy bajos, ¿es neto?"),false);else if(inc>0)setHint("inc","✓",true);else setHint("inc","","");
   const sav=+Q("#sav")?.value||0;if(sav>0&&sav<5000)setHint("sav",LANG==="EN"?"Very low savings":(LANG==="CA"?"Estalvis molt baixos":"Ahorros muy bajos"),false);else if(sav>0)setHint("sav","✓",true);else setHint("sav","","");
-  const m2=+Q("#m2")?.value||0;if(m2>0&&(m2<50||m2>1000))setHint("m2",LANG==="EN"?"Allowed range: 50–1000 m²":(LANG==="CA"?"Rang permès: 50–1000 m²":"Rango permitido: 50–1000 m²"),false);else if(m2>=50&&m2<=1000)setHint("m2","✓",true);else setHint("m2","","");
-  const bed=Q("#bed")?.value===""?0:+Q("#bed")?.value||0;if(bed>0&&(bed<1||bed>10))setHint("bed",LANG==="EN"?"Bedrooms: 1 to 10":(LANG==="CA"?"Habitacions: 1 a 10":"Habitaciones: 1 a 10"),false);else if(bed>=1&&bed<=10)setHint("bed","✓",true);else setHint("bed","","");
-  const bat=+Q("#bat")?.value||0;if(bat>0&&(bat<1||bat>10))setHint("bat",LANG==="EN"?"Bathrooms: 1 to 10":(LANG==="CA"?"Banys: 1 a 10":"Baños: 1 a 10"),false);else if(bat>=1&&bat<=10)setHint("bat","✓",true);else setHint("bat","","");
+  const m2=+Q("#m2")?.value||0;if(m2>0&&m2<50)setHint("m2",LANG==="EN"?"Minimum 50 m²":(LANG==="CA"?"Mínim 50 m²":"Mínimo 50 m²"),false);else if(m2>=50)setHint("m2","✓",true);else setHint("m2","","");
+  // Pulse hint on continue/analyze
+  const nm=(Q("#nm")?.value||"").trim(),ag=+Q("#ag")?.value||0;
+  const npBtn=Q("#np");if(npBtn){const ok=nm&&ag>=18&&ag<=100;npBtn.classList.toggle("pulse-hint",ok);}
+  const neBtn=Q("#ne");if(neBtn){const ok=inc>0&&sav>=0;neBtn.classList.toggle("pulse-hint",ok);}
+  const goBtn=Q("#go");if(goBtn){const ok=m2>=50;goBtn.classList.toggle("pulse-hint",ok);}
 };
 
 /* =====================
    EVENTOS
    ===================== */
+/* =====================
+   CALCULADORA AMORTIZACIÓN ANTICIPADA
+   ===================== */
+const calcAmort=()=>{
+  if(!last)return;
+  const extra=+Q("#amortiAmount").value||0;
+  if(extra<1000){toast(LANG==="EN"?"Enter at least 1,000 €":(LANG==="CA"?"Introdueix almenys 1.000 €":"Introduce al menos 1.000 €"));return;}
+  const mode=Q("#amortiMode").value;
+  const cap=last.cap,r=last.rate,yrs=last.yrs;
+  const payOrig=mort(cap,r,yrs);
+  const newCap=Math.max(0,cap-extra);
+  let html="";
+  if(mode==="term"){
+    // Misma cuota, menos plazo
+    // Nuevo plazo: resolver n en formula de anualidad
+    const m=r/12;
+    let newN=0;
+    if(r===0){newN=Math.ceil(newCap/payOrig);}
+    else{newN=Math.ceil(-Math.log(1-(newCap*m/payOrig))/Math.log(1+m));}
+    const newYrs=Math.round(newN/12*10)/10;
+    const savedMos=Math.max(0,Math.round(yrs*12-newN));
+    const totalOrig=payOrig*yrs*12;
+    const totalNew=payOrig*newN;
+    const savedInterest=Math.max(0,totalOrig-totalNew-extra);
+    html=`<div style="padding:12px 14px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.20);border-radius:10px;margin-bottom:8px">
+      <div style="font-weight:700;color:#86efac;font-size:.92rem;margin-bottom:8px">✅ ${LANG==="EN"?"Results":(LANG==="CA"?"Resultats":"Resultados")}</div>
+      <div style="display:grid;gap:6px;font-size:.87rem;color:#cbd5e1">
+        <div>📅 ${LANG==="EN"?"Term":(LANG==="CA"?"Termini":"Plazo")}: <b style="color:#f1f5f9">${yrs} ${t("yrs")}</b> → <b style="color:#86efac">${Math.floor(newYrs)} ${t("yrs")} ${Math.round((newYrs%1)*12)} ${LANG==="EN"?"mo":(LANG==="CA"?"m":"m")}</b></div>
+        <div>⏱️ ${LANG==="EN"?"Months saved":(LANG==="CA"?"Mesos estalviats":"Meses menos")}: <b style="color:#86efac">${savedMos} ${LANG==="EN"?"months":(LANG==="CA"?"mesos":"meses")}</b></div>
+        <div>💶 ${LANG==="EN"?"Interest saved":(LANG==="CA"?"Interessos estalviats":"Intereses ahorrados")}: <b style="color:#86efac">${fmtMoney(savedInterest)}</b></div>
+        <div style="font-size:.78rem;color:#64748b;margin-top:4px">${LANG==="EN"?"Same monthly payment":(LANG==="CA"?"Mateixa quota mensual":"Misma cuota mensual")}: ${fmtMoney(payOrig)}/mes</div>
+      </div>
+    </div>`;
+  } else {
+    // Mismo plazo, menor cuota
+    const newPay=mort(newCap,r,yrs);
+    const diff=payOrig-newPay;
+    const totalOrig=payOrig*yrs*12;
+    const totalNew=newPay*yrs*12;
+    const savedInterest=Math.max(0,totalOrig-totalNew-extra);
+    html=`<div style="padding:12px 14px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.20);border-radius:10px;margin-bottom:8px">
+      <div style="font-weight:700;color:#86efac;font-size:.92rem;margin-bottom:8px">✅ ${LANG==="EN"?"Results":(LANG==="CA"?"Resultats":"Resultados")}</div>
+      <div style="display:grid;gap:6px;font-size:.87rem;color:#cbd5e1">
+        <div>📅 ${LANG==="EN"?"New monthly payment":(LANG==="CA"?"Nova quota":"Nueva cuota")}: <b style="color:#86efac">${fmtMoney(newPay)}/mes</b> <span style="color:#64748b">(−${fmtMoney(diff)}/mes)</span></div>
+        <div>💶 ${LANG==="EN"?"Interest saved":(LANG==="CA"?"Interessos estalviats":"Intereses ahorrados")}: <b style="color:#86efac">${fmtMoney(savedInterest)}</b></div>
+        <div style="font-size:.78rem;color:#64748b;margin-top:4px">${LANG==="EN"?"Same term":(LANG==="CA"?"Mateix termini":"Mismo plazo")}: ${yrs} ${t("yrs")}</div>
+      </div>
+    </div>`;
+  }
+  html+=`<div style="font-size:.78rem;color:#64748b;line-height:1.5">💡 ${LANG==="EN"?"Law caps early repayment fee at 0–2% depending on year and mortgage type.":(LANG==="CA"?"La llei limita la comissió d'amortització anticipada al 0–2% segons any i tipus d'hipoteca.":"La ley limita la comisión de amortización anticipada al 0–2% según el año y tipo de hipoteca.")}</div>`;
+  const res=Q("#amortiResult");
+  if(res){res.innerHTML=html;res.style.display="block";}
+};
+
+/* =====================
+   CTA CONTACTO — i18n y lógica
+   ===================== */
+const updateCTA=()=>{
+  const ttl=Q("#ctaTitle"),sub=Q("#ctaSub"),cll=Q("#ctaCallLbl");
+  if(ttl)ttl.textContent=t("ctaTitle");
+  if(sub)sub.textContent=t("ctaSub");
+  if(cll)cll.textContent=t("ctaCallLbl");
+  // Personalizar el CTA según la recomendación del usuario
+  if(last&&Q("#ctaTitle")){
+    if(last.recCode==="BUY"){
+      Q("#ctaTitle").textContent=LANG==="EN"?"Ready to take the next step?":(LANG==="CA"?"Llest per fer el següent pas?":"¿Listo para dar el siguiente paso?");
+      Q("#ctaSub").textContent=LANG==="EN"?"Your numbers look good. The advisor can help you find the right property and bank.":(LANG==="CA"?"Els teus números s'ho permeten. L'assessor t'ajuda a trobar la propietat i el banc adequats.":"Tus números lo permiten. El asesor puede acompañarte a encontrar la propiedad y el banco adecuados.");
+    }else if(last.recCode==="RENT"){
+      Q("#ctaTitle").textContent=LANG==="EN"?"Want a personalized plan to get there?":(LANG==="CA"?"Vols un pla personalitzat per arribar-hi?":"¿Quieres un plan personalizado para llegar a tu objetivo?");
+      Q("#ctaSub").textContent=LANG==="EN"?"The advisor can help you build a savings roadmap and monitor the market.":(LANG==="CA"?"L'assessor pot ajudar-te a construir el full de ruta d'estalvi i monitoritzar el mercat.":"El asesor puede ayudarte a construir el camino de ahorro y monitorizar el mercado.");
+    }else{
+      Q("#ctaTitle").textContent=LANG==="EN"?"This situation needs expert guidance.":(LANG==="CA"?"Aquesta situació necessita orientació experta.":"Esta situación necesita orientación experta.");
+      Q("#ctaSub").textContent=LANG==="EN"?"The advisor can explore all options with you.":(LANG==="CA"?"L'assessor pot explorar totes les opcions amb tu.":"El asesor puede explorar todas las opciones contigo.");
+    }
+  }
+};
+
 Q("#np").onclick=()=>{const nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0;if(!nm||ag<18||ag>100){toast(t("toastCheck"));return;}saveForm();show("e");};
 Q("#ne").onclick=()=>{saveForm();show("f");};
 Q("#go").onclick=analyze;
 Q("#cp").onclick=()=>{if(!last){toast(t("toastFirst"));return;}navigator.clipboard?.writeText(Q("#rt").textContent||"").then(()=>toast(t("toastCopied"))).catch(()=>{});};
 Q("#rs").onclick=()=>{if(confirm(LANG==="EN"?"Reset everything?":(LANG==="CA"?"Reiniciar tot?":"¿Reiniciar todo?"))){localStorage.clear();location.reload();}};
 Q("#jumpX").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("x");};
+Q("#jumpM").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("m");};
 Q("#jumpAI").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("ai");};
+Q("#jumpAmort").onclick=()=>{
+  if(!last){toast(t("toastFirst"));return;}
+  const ac=Q("#amortiCalc");
+  if(ac){
+    const open=ac.style.display!=="none";
+    ac.style.display=open?"none":"block";
+    if(!open)ac.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+};
+Q("#amortiCalcBtn").onclick=calcAmort;
 Q("#shareWa").onclick=()=>{if(!last){toast(t("toastFirst"));return;}window.open("https://wa.me/?text="+encodeURIComponent(Q("#rt").textContent||""),"_blank","noopener");};
 Q("#shareCl").onclick=()=>Q("#cp").click();
 
@@ -2325,8 +2654,7 @@ Q("#toggleMap").onclick=()=>{
   box.style.display=open?"none":"block";
   if(!open){initMap();setTimeout(()=>{zmap?.invalidateSize();box.scrollIntoView({behavior:"smooth",block:"nearest"});},300);}
 };
-Q("#zoneFitAll").onclick=fitAllZone;
-Q("#zoneClear").onclick=()=>{zoneSel.clear();polygonsByName.forEach((_,n)=>applyPolygonState(n));renderZoneUI();saveZoneSel();toast(t("toastZoneCleared"));};
+Q("#zoneClear").onclick=()=>{zoneSel.clear();MUNI_NAMES.forEach(n=>applyPolygonState(n));renderZoneUI();saveZoneSel();toast(t("toastZoneCleared"));};
 Q("#zoneApply").onclick=()=>{
   if(!zoneSel.size){toast(t("toastNoZone"));return;}
   const pm=Q("#ar").querySelector('[value="__multi__"]');if(pm)pm.remove();
@@ -2340,22 +2668,24 @@ Q("#cm").onchange=upMap;
 Q("#L_CA").onclick=()=>setLang("CA");
 Q("#L_ES").onclick=()=>setLang("ES");
 Q("#L_EN").onclick=()=>setLang("EN");
-["inc","sav","m2","bed","bat"].forEach(id=>Q("#"+id)?.addEventListener("input",liveValidate));
-["nm","ag","inc","sav","yrs","msv","m2","bed","bat","cm2","cbd","cba","ar","em","tel","notes"].forEach(id=>Q("#"+id)?.addEventListener("blur",saveForm));
+["inc","sav","m2"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
+["nm","ag"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
 
 /* =====================
-   INIT
+   ARRANQUE
    ===================== */
 loadForm();
 loadZoneSel();
-setLang(LANG);
-setTabsEnabled();
-upMap();
+applyI18n();
 liveValidate();
+updateSteps("p");
+setTabsEnabled();
+
+// Restore saved lang
+(()=>{const l=localStorage.getItem("hx_lang");if(l==="CA"||l==="EN")setLang(l);})();
 
 })();}
-
-window.addEventListener("load",initApp);
+waitForLeaflet();
 </script>
 </body>
 </html>

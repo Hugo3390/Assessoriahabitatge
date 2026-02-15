@@ -53,6 +53,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 @media(max-width:900px){.g{grid-template-columns:1fr}}
 #hx input[type=text],#hx input[type=number],#hx select,#hx textarea{width:100%;padding:12px 14px;border:1px solid rgba(148,163,184,.30);border-radius:12px;background:rgba(2,6,23,.86);color:var(--t);outline:none;transition:all .18s ease;font-size:.95rem;font-family:inherit;}
+#hx input::placeholder,#hx textarea::placeholder{color:rgba(148,163,184,.92);opacity:1;}
 #hx textarea{min-height:100px;resize:vertical;}
 #hx input[type=text]:focus,#hx input[type=number]:focus,#hx select:focus,#hx textarea:focus{border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.14);background:rgba(2,6,23,.96)}
 #hx input[type=checkbox]{accent-color:#38bdf8;width:18px;height:18px;cursor:pointer}
@@ -222,8 +223,8 @@ canvas{display:block;width:100%;height:240px}
   <!-- 1 Personal -->
   <div class="c" data-p="p">
     <div class="g">
-      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-ph="phName"></div>
-      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-ph="phAge"></div>
+      <div><label data-i="lblName">Nombre y apellidos</label><input id="nm" type="text" autocomplete="name" data-ph="phName" placeholder="Ej: Hugo Ibáñez"></div>
+      <div><label data-i="lblAge">Edad (18–100)</label><input id="ag" type="number" min="18" max="100" data-ph="phAge" placeholder="Ej: 25"></div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintP">Rellena los datos básicos para continuar.</div></div>
     <div class="r" style="margin-top:10px"><button class="b" id="np" type="button" data-i="btnContinue">Continuar</button></div>
@@ -234,12 +235,12 @@ canvas{display:block;width:100%;height:240px}
     <div class="g">
       <div>
         <label data-i="lblInc">Ingresos mensuales (€)</label>
-        <div class="tip"><input id="inc" type="number" min="0" data-ph="phIncome"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
+        <div class="tip"><input id="inc" type="number" min="0" data-ph="phIncome" placeholder="Ej: 2400"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipIncBox" data-i="tipInc"></span></div>
         <div class="field-hint" id="hint-inc"></div>
       </div>
       <div>
         <label data-i="lblSav">Ahorros disponibles (€)</label>
-        <div class="tip"><input id="sav" type="number" min="0" data-ph="phSavings"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
+        <div class="tip"><input id="sav" type="number" min="0" data-ph="phSavings" placeholder="Ej: 35000"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipSavBox" data-i="tipSav"></span></div>
         <div class="field-hint" id="hint-sav"></div>
       </div>
       <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25"></div>
@@ -247,7 +248,7 @@ canvas{display:block;width:100%;height:240px}
       <div><label data-i="lblFst">¿Primera vivienda o familia con menores?</label><select id="fst"><option value="y" data-i="yes">Sí</option><option value="n" data-i="no">No</option></select></div>
       <div>
         <label data-i="lblMsv">Ahorro mensual (€)</label>
-        <div class="tip"><input id="msv" type="number" min="0" data-ph="phMonthlySave"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
+        <div class="tip"><input id="msv" type="number" min="0" data-ph="phMonthlySave" placeholder="Ej: 500"><span class="tip-icon" tabindex="0">i</span><span class="tip-box" id="tipMsvBox" data-i="tipMsv"></span></div>
       </div>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintE">Completa economía y sigue a preferencias.</div></div>
@@ -269,11 +270,11 @@ canvas{display:block;width:100%;height:240px}
       </div>
       <div>
         <label data-i="lblM2">Metros cuadrados (≥50)</label>
-        <input id="m2" type="number" min="50" max="1000" data-ph="phM2">
+        <input id="m2" type="number" min="50" max="1000" data-ph="phM2" placeholder="Ej: 85">
         <div class="field-hint" id="hint-m2"></div>
       </div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="1" max="10" value="2" data-ph="phBed"><div class="field-hint" id="hint-bed"></div></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1" data-ph="phBath"><div class="field-hint" id="hint-bat"></div></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="1" max="10" value="2" data-ph="phBed" placeholder="Ej: 3"><div class="field-hint" id="hint-bed"></div></div>
+      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" value="1" data-ph="phBath" placeholder="Ej: 2"><div class="field-hint" id="hint-bat"></div></div>
       <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -363,9 +364,9 @@ canvas{display:block;width:100%;height:240px}
   <div class="c" data-p="m" style="display:none">
     <div class="g">
       <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
-      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50" max="1000" data-ph="phM2"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="1" max="10" data-ph="phBed"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10" data-ph="phBath"></div>
+      <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50" max="1000" data-ph="phM2" placeholder="Ej: 85"></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="1" max="10" data-ph="phBed" placeholder="Ej: 3"></div>
+      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10" data-ph="phBath" placeholder="Ej: 2"></div>
       <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -2318,6 +2319,16 @@ Q("#L_ES").onclick=()=>setLang("ES");
 Q("#L_EN").onclick=()=>setLang("EN");
 ["inc","sav","m2","bed","bat"].forEach(id=>Q("#"+id)?.addEventListener("input",liveValidate));
 ["nm","ag","inc","sav","yrs","msv","m2","bed","bat","cm2","cbd","cba","ar","em","tel","notes"].forEach(id=>Q("#"+id)?.addEventListener("blur",saveForm));
+
+/* =====================
+   INIT
+   ===================== */
+loadForm();
+loadZoneSel();
+setLang(LANG);
+setTabsEnabled();
+upMap();
+liveValidate();
 
 })();}
 

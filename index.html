@@ -240,6 +240,33 @@ canvas{display:block;width:100%;height:240px}
 /* ── Disabled tab visual ── */
 .tab.dis{position:relative}
 .tab.dis:hover{opacity:.55}
+
+/* ── Staff modal (cleaner than browser prompt) ── */
+.staff-modal{position:fixed;inset:0;display:none;z-index:9999}
+.staff-modal.open{display:block}
+.staff-modal__backdrop{position:absolute;inset:0;background:rgba(2,6,23,.66);backdrop-filter:blur(6px)}
+.staff-modal__card{position:relative;max-width:520px;margin:10vh auto 0;background:#f8fafc;border-radius:16px;padding:18px 18px 16px;box-shadow:0 25px 80px rgba(0,0,0,.45);border:1px solid rgba(15,23,42,.12)}
+.staff-modal__card input#staffPw{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(15,23,42,.18);font-size:1rem;outline:none}
+.staff-modal__card input#staffPw:focus{border-color:rgba(56,189,248,.9);box-shadow:0 0 0 4px rgba(56,189,248,.18)}
+.staff-x{border:none;background:transparent;color:#0b1220;font-weight:900;font-size:1.1rem;cursor:pointer;padding:6px 8px;border-radius:10px}
+.staff-x:hover{background:rgba(2,6,23,.06)}
+.staff-btn{border:none;border-radius:12px;padding:10px 14px;font-weight:900;background:#0ea5e9;color:white;cursor:pointer}
+.staff-btn:hover{filter:brightness(1.05)}
+.staff-btn--ghost{background:transparent;color:#0b1220;border:1px solid rgba(15,23,42,.18)}
+.staff-btn--ghost:hover{background:rgba(2,6,23,.06)}
+
+/* ── History cards (previous analyses) ── */
+.hx-hgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;padding:4px 2px}
+.hx-hitem{border:1px solid rgba(148,163,184,.18);border-radius:14px;background:rgba(2,6,23,.38);padding:12px 12px 10px}
+.hx-hrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hx-htitle{font-weight:900;color:#e2e8f0}
+.hx-hdate{color:#94a3b8;font-size:.78rem}
+.hx-hmeta{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;color:#cbd5e1;font-size:.86rem;line-height:1.35}
+.hx-hbtns{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+.hx-mini{border:none;border-radius:12px;padding:9px 12px;font-weight:900;background:#0ea5e9;color:#ffffff;cursor:pointer}
+.hx-mini:hover{filter:brightness(1.05)}
+.hx-mini.ghost{background:transparent;color:#e2e8f0;border:1px solid rgba(148,163,184,.24)}
+.hx-mini.ghost:hover{background:rgba(148,163,184,.08)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
@@ -258,6 +285,8 @@ canvas{display:block;width:100%;height:240px}
         <button class="langbtn" id="L_CA" type="button">CA</button>
         <button class="langbtn a" id="L_ES" type="button">ES</button>
         <button class="langbtn" id="L_EN" type="button">EN</button>
+        <button class="langbtn" id="staffLoginBtn" type="button" style="margin-left:8px">Staff</button>
+        <button class="langbtn" id="toggleStaff" type="button" style="display:none" data-i="btnStaffPanel">Panel</button>
       </div>
     </div>
   </div>
@@ -357,7 +386,8 @@ canvas{display:block;width:100%;height:240px}
       </div>
     </div>
     <div class="r" style="margin-top:10px">
-      <button class="b" id="go" type="button" data-i="btnAnalyze">Analizar</button>
+      <!-- Attach inline onclick as a fallback in case JS event binding fails -->
+      <button class="b" id="go" type="button" onclick="try{analyze()}catch(e){console&&console.error(e)}" data-i="btnAnalyze">Analizar</button>
       <button class="b ok" id="toggleMap" type="button" data-i="btnMap">Mapa (zona real)</button>
     </div>
     <div class="gu"><span class="a">➡️</span><div class="n" data-i="hintF">Si cambias preferencias, vuelve a Analizar para actualizar el resultado.</div></div>
@@ -493,12 +523,40 @@ canvas{display:block;width:100%;height:240px}
       </div>
 
       <div class="note" id="rt"></div>
+
+      <!-- Affordability explainer (personal data -> what you can afford) -->
+      <div class="c" id="affordCard" style="margin-top:14px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+          <div style="min-width:260px">
+            <div style="font-weight:900;color:#e2e8f0;font-size:1.02rem" data-i="affTitle">¿Y con mis datos personales, qué vivienda me puedo permitir?</div>
+            <div class="small" style="margin-top:6px;max-width:860px" data-i="affDesc">Calculamos (con explicación) cuánto podrías destinar a la entrada y a la cuota mensual, y qué precio de vivienda encaja según el plazo de hipoteca.</div>
+          </div>
+          <button class="b ok" id="btnAfford" type="button" style="padding:12px 18px;font-weight:900;font-size:.95rem;min-width:190px" data-i="affBtn">Calcular</button>
+        </div>
+        <div id="affOut" style="margin-top:12px;color:#cbd5e1;font-size:.92rem;line-height:1.7"></div>
+      </div>
+
+  <div class="row" style="gap:10px;flex-wrap:wrap;margin-top:10px">
+    <button id="toggleHist" class="btn sm">Ver últimos análisis</button>
+    <button id="clearHist" class="btn sm secondary">Borrar historial</button>
+  </div>
+  <div class="note" id="histBox" style="display:none;margin-top:12px"></div>
+
+  <!-- Staff panel: relocated to its own section below the main app.  We keep
+    a dedicated wrapper (#staffSection) outside of the results card so that
+    staff analyses feel like a separate area.  The panel uses the same card
+    styling as the rest of the site.  It is hidden by default and shown
+    only after a successful staff login and when toggled via the “Panel”
+    button next to the language selector.  -->
+  <!--  Placeholder removed from here; the actual staff panel is now defined near
+    the bottom of the document. -->
+
     </div>
     <div class="r" style="margin-top:10px">
       <button class="b" id="cp" type="button" data-i="btnCopy">Copiar resumen</button>
       <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
       <button class="b" id="jumpM" type="button" data-i="btnGoCompare">📊 Comparador</button>
-      <button class="b" id="jumpAmort" type="button" data-i="btnAmort">🔢 Amortizar</button>
+      <!-- (Eliminado) Amortizar -->
       <button class="b ok" id="jumpX" type="button" data-i="btnGoExamples">Ir a Ejemplos reales</button>
       <button class="b ok" id="jumpAI" type="button" data-i="btnAskAI">💬 Consultar con AI</button>
     </div>
@@ -587,6 +645,42 @@ canvas{display:block;width:100%;height:240px}
 
 </div><!-- /.w -->
 
+<!-- Staff section: appears as a standalone card below the main application.  It is hidden by default and becomes
+     visible once a staff user logs in and toggles the panel via the Panel button.  The content is rendered
+     dynamically by renderStaffPanel(). -->
+<div class="c cardx" id="staffSection" style="display:none;margin:32px auto;padding:24px;max-width:780px">
+  <!-- Content will be injected here by JavaScript -->
+</div>
+
+<!-- Staff login modal (replaces browser prompt) -->
+<div id="staffModal" class="staff-modal" aria-hidden="true">
+  <div class="staff-modal__backdrop" data-staff-close></div>
+  <div class="staff-modal__card" role="dialog" aria-modal="true" aria-labelledby="staffModalTitle">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div id="staffModalTitle" style="font-weight:900;color:#0b1220;font-size:1.05rem">Accés Staff</div>
+        <div id="staffModalSub" style="margin-top:4px;color:#334155;font-size:.86rem;line-height:1.5">
+          Introdueix la contrasenya per veure estadístiques i anàlisis globals.
+        </div>
+      </div>
+      <button type="button" class="staff-x" data-staff-close aria-label="Close">✕</button>
+    </div>
+    <div style="margin-top:14px">
+      <label style="display:block;font-size:.8rem;color:#0b1220;font-weight:800;margin-bottom:6px">Password</label>
+      <input id="staffPw" type="password" autocomplete="current-password" placeholder="••••••••" />
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
+      <button type="button" class="staff-btn staff-btn--ghost" data-staff-close>
+        <span data-i="cancel">Cancelar</span>
+      </button>
+      <button type="button" class="staff-btn" id="staffModalBtn">Entrar</button>
+    </div>
+    <div style="margin-top:10px;font-size:.72rem;color:#475569;line-height:1.5">
+      Nota: això només protegeix la vista “staff” en aquest navegador. No és seguretat real si publiques el fitxer.
+    </div>
+  </div>
+</div>
+
 <div class="sig" style="padding:28px 24px;max-width:780px;margin:0 auto">
   <div style="display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;flex-wrap:wrap">
     <div>
@@ -613,6 +707,9 @@ canvas{display:block;width:100%;height:240px}
 <div id="ts" class="tst" role="status" aria-live="polite"></div>
 
 <script>
+// Note: error overlay removed for production.  If debugging is needed,
+// a custom window.onerror handler can be added here to surface errors.
+
 // ─────────────────────────────────────────
 //  MAPA: Polígonos de alta fidelidad (30+ puntos por municipio)
 //  Coordenadas reales del Baix Penedès (ICGC / OpenStreetMap)
@@ -761,7 +858,7 @@ function waitForLeaflet(){
   else alert("Error: no se pudo cargar el mapa. Recarga la página.");
 }
 
-function initApp(){(()=>{
+function initApp(){
 const Q=s=>document.querySelector(s);
 const QA=s=>[...document.querySelectorAll(s)];
 const fmtES=n=>Math.round(n).toLocaleString("es-ES");
@@ -797,6 +894,7 @@ ES:{
   legSel:"Seleccionado",legOk:"Disponible",legHint:"Haz clic en el pin o el área",
   kPrice:"Precio estimado",kRent:"Alquiler estimado",kPay:"Cuota hipoteca",kRec:"Recomendación",
   btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",
+  affTitle:"¿Y con mis datos personales, qué vivienda me puedo permitir?",affDesc:"Calculamos (con explicación) cuánto podrías destinar a la entrada y a la cuota mensual, y qué precio de vivienda encaja según el plazo de hipoteca.",affBtn:"Calcular",
   chartEffTitle:"Esfuerzo mensual",chartEffHint:"Línea: 35% ingresos. Barras: hipoteca vs alquiler.",
   chartSensTitle:"Sensibilidad tipo",chartSensHint:"Cómo cambia la cuota si sube el tipo.",chartTipsTitle:"Lectura rápida",
   lblProv:"Provincia (comparador)",lblM2s:"m²",lblType2:"Tipo",btnCompare:"Comparar",btnUseMine:"Usar mis datos",
@@ -821,6 +919,8 @@ ES:{
   stepPersonal:"Personal",stepEco:"Economía",stepPref:"Preferencias",stepRes:"Resultado",
   cmpCheaper:"más barato",cmpExpensive:"más caro",cmpSame:"igual",cmpExplTitle:"Interpretación",
   any:"Cualquiera",btnCopy2:"Copiar",missingDataCmp:"Completa provincia, m² y baños (mínimo 1).",
+  // Label for the staff panel toggle (ES)
+  btnStaffPanel:"Panel del staff",
   // I18N completado: claves de resultado
   yrs:"años",beds:"hab.",baths:"baño(s)",noExtras:"Sin extras",
   safeCapacity:"Capacidad segura",buyLabel:"COMPRA",rentLabel:"ALQUILER",
@@ -834,8 +934,8 @@ ES:{
   downPaymentLabel:"Entrada",closingCostsLabel:"Gastos",toFinanceLabel:"A financiar",
   // AI
   aiConnected:"API Claude activa",aiLocalMode:"Motor local activo",aiError:"Error de conexión",
-  aiAdvisorTitle:"Tu asesor financiero personal.",
-  aiAdvisorDesc:"Usa IA real (Claude API) — responde cualquier pregunta, no solo de vivienda.",
+  aiAdvisorTitle:"Tu asesor inmobiliario y financiero personal.",
+  aiAdvisorDesc:"Puedes preguntarme sobre vivienda, hipotecas, alquileres e inversiones.",
   aiWelcome:"👋 ¡Hola! Soy el asistente de **Assessoria d'Habitatge · Cunit**. Puedo ayudarte con hipotecas, alquiler, precios del Baix Penedès, ITP, euríbor y cualquier duda del mercado inmobiliario. ¿En qué te puedo orientar?",
   aiThinking:"Pensando...",aiYou:"TÚ",aiPlaceholder:"Escribe cualquier pregunta...",aiSend:"Enviar",
   aiPlanBtnLbl:"🧭 Plan de acción",aiClearBtnLbl:"🗑️ Limpiar chat",aiCopyBtnLbl:"📋 Copiar chat",
@@ -881,6 +981,7 @@ CA:{
   legSel:"Seleccionat",legOk:"Disponible",legHint:"Clica el pin o l'àrea",
   kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",
   btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",
+  affTitle:"I amb les meves dades personals, quin habitatge em puc permetre?",affDesc:"Fem un càlcul ràpid i explicat: quanta entrada pots assumir i quina quota mensual et pots permetre, i quin preu d’habitatge encaixa segons el termini de la hipoteca.",affBtn:"Calcular",
   chartEffTitle:"Esforç mensual",chartEffHint:"Línia: 35% ingressos. Barres: hipoteca vs lloguer.",
   chartSensTitle:"Sensibilitat tipus",chartSensHint:"Com canvia la quota si puja el tipus.",chartTipsTitle:"Lectura ràpida",
   lblProv:"Província (comparador)",lblM2s:"m²",lblType2:"Tipus",btnCompare:"Comparar",btnUseMine:"Usar les meves dades",
@@ -905,6 +1006,8 @@ CA:{
   stepPersonal:"Personal",stepEco:"Economia",stepPref:"Preferències",stepRes:"Resultat",
   cmpCheaper:"més barat",cmpExpensive:"més car",cmpSame:"igual",cmpExplTitle:"Interpretació",
   any:"Qualsevol",btnCopy2:"Copiar",missingDataCmp:"Completa província, m² i banys (mínim 1).",
+  // Label for the staff panel toggle (CA)
+  btnStaffPanel:"Panell del staff",
   yrs:"anys",beds:"hab.",baths:"bany(s)",noExtras:"Sense extres",
   safeCapacity:"Capacitat segura",buyLabel:"COMPRA",rentLabel:"LLOGUER",
   strictLabel:"estricte",flexLabel:"flex",
@@ -916,8 +1019,8 @@ CA:{
   financingTitle:"Finançament",prefsTitle:"Preferències",monthlyEffortTitle:"Esforç mensual",
   downPaymentLabel:"Entrada",closingCostsLabel:"Despeses",toFinanceLabel:"A finançar",
   aiConnected:"API Claude activa",aiLocalMode:"Motor local actiu",aiError:"Error de connexió",
-  aiAdvisorTitle:"El teu assessor financer personal.",
-  aiAdvisorDesc:"Usa IA real (Claude API) — respon qualsevol pregunta, no només d'habitatge.",
+  aiAdvisorTitle:"El teu assessor immobiliari i financer personal.",
+  aiAdvisorDesc:"Pots preguntar-me sobre habitatge, hipoteques, lloguer i inversions.",
   aiWelcome:"👋 Hola! Soc l'assistent d'**Assessoria d'Habitatge · Cunit**. Et puc ajudar amb hipoteques, lloguer, preus del Baix Penedès, ITP, euribor i qualsevol dubte del mercat immobiliari. En què et puc orientar?",
   aiThinking:"Pensant...",aiYou:"TU",aiPlaceholder:"Escriu qualsevol pregunta...",aiSend:"Enviar",
   aiPlanBtnLbl:"🧭 Pla d'acció",aiClearBtnLbl:"🗑️ Netejar xat",aiCopyBtnLbl:"📋 Copiar xat",
@@ -963,6 +1066,7 @@ EN:{
   legSel:"Selected",legOk:"Available",legHint:"Click the pin or area",
   kPrice:"Estimated price",kRent:"Estimated rent",kPay:"Mortgage payment",kRec:"Recommendation",
   btnCopy:"Copy summary",btnReset:"Reset",btnGoCompare:"📊 Comparator",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",
+  affTitle:"With my personal data, what home can I afford?",affDesc:"We run a quick, explained estimate: how much you can put down, what monthly payment is reasonable, and what home price fits depending on mortgage term.",affBtn:"Calculate",
   chartEffTitle:"Monthly effort",chartEffHint:"Line: 35% income. Bars: mortgage vs rent.",
   chartSensTitle:"Rate sensitivity",chartSensHint:"How payment changes if rates rise.",chartTipsTitle:"Quick read",
   lblProv:"Province (comparator)",lblM2s:"m²",lblType2:"Type",btnCompare:"Compare",btnUseMine:"Use my data",
@@ -987,6 +1091,7 @@ EN:{
   stepPersonal:"Personal",stepEco:"Finance",stepPref:"Preferences",stepRes:"Result",
   cmpCheaper:"cheaper",cmpExpensive:"more expensive",cmpSame:"the same",cmpExplTitle:"Interpretation",
   any:"Any",btnCopy2:"Copy",missingDataCmp:"Complete province, m² and bathrooms (min 1).",
+  btnStaffPanel:"Staff panel",
   yrs:"years",beds:"bed(s)",baths:"bath(s)",noExtras:"No extras",
   safeCapacity:"Safe capacity",buyLabel:"BUY",rentLabel:"RENT",
   strictLabel:"strict",flexLabel:"flex",
@@ -998,8 +1103,8 @@ EN:{
   financingTitle:"Financing",prefsTitle:"Preferences",monthlyEffortTitle:"Monthly effort",
   downPaymentLabel:"Down payment",closingCostsLabel:"Closing costs",toFinanceLabel:"To finance",
   aiConnected:"AI connected",aiLocalMode:"Local engine active",aiError:"Connection error",
-  aiAdvisorTitle:"Your personal financial advisor.",
-  aiAdvisorDesc:"Uses real AI (Groq via Cloudflare Worker) — answers any question, not just housing.",
+  aiAdvisorTitle:"Your personal real‑estate and financial advisor.",
+  aiAdvisorDesc:"Ask me about property, mortgages, rent and investments.",
   aiWelcome:"👋 Hello! I'm the assistant of **Assessoria d'Habitatge · Cunit**. I can help with mortgages, rent, Baix Penedès prices, taxes, Euribor and any property market question. How can I help you today?",
   aiThinking:"Thinking...",aiYou:"YOU",aiPlaceholder:"Ask anything...",aiSend:"Send",
   aiPlanBtnLbl:"🧭 Action plan",aiClearBtnLbl:"🗑️ Clear chat",aiCopyBtnLbl:"📋 Copy chat",
@@ -1027,6 +1132,72 @@ let LANG=localStorage.getItem(LANG_KEY)||"ES";
 const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.ES[k]||k;
 const tpl=(s,v)=>String(s||"").replace(/\{(\w+)\}/g,(_,k)=>(v&&v[k]!=null)?v[k]:"");
 const fmtMoney=n=>!isFinite(n)?"–":((LANG==="EN"?fmtEN(n):fmtES(n))+" €");
+
+const buildRecoText = (c)=>{
+  const L = LANG;
+  const isBuy = c && c.recCode === "BUY";
+  const isRent = c && c.recCode === "RENT";
+  const ratio = c && c.ratio!=null ? c.ratio : null;
+  const missing = c && c.need ? c.missing : 0;
+  const pr = c && c.pr!=null ? c.pr : 0;
+  const pay = c && c.pay!=null ? c.pay : 0;
+
+  if(L==="CA"){
+    if(isBuy){
+      return `En el teu cas, **comprar és viable**: la quota queda a ${fp(ratio)} dels teus ingressos i els estalvis cobreixen l’entrada i les despeses. Ara el més intel·ligent és negociar preu i tancar una preaprovació bancària abans de fer cap oferta.`;
+    }
+    if(isRent){
+      return `Ara mateix, **té més sentit llogar**: així evites apretar-te amb una hipoteca i et dónes temps per acumular entrada. Et falten ${fmtMoney(missing)} per tenir el “cash” complet, i mentrestant pots monitoritzar el mercat amb calma.`;
+    }
+    return `La situació queda **ajustada**: o bé abaixes preu, o aportes més entrada, o allargues termini. La idea és que la quota no passi del 35% dels ingressos i que no et quedis sense coixí.`;
+  }
+
+  if(L==="EN"){
+    if(isBuy){
+      return `In your case, **buying looks feasible**: the payment is ${fp(ratio)} of your income and your savings cover the down payment plus costs. Next step: negotiate the price and get bank pre-approval before making an offer.`;
+    }
+    if(isRent){
+      return `Right now, **renting makes more sense**: it keeps stress low while you build a stronger down payment. You’re short ${fmtMoney(missing)} of the total cash needed, and you can keep tracking the market meanwhile.`;
+    }
+    return `This is **tight**: either lower the target price, increase the down payment, or extend the term. The goal is keeping the payment under ~35% of income and keeping a safety buffer.`;
+  }
+
+  // ES
+  if(isBuy){
+    return `En tu caso, **comprar es viable**: la cuota queda en ${fp(ratio)} de tus ingresos y tus ahorros cubren la entrada y los gastos. Lo sensato ahora es negociar precio y conseguir preaprobación bancaria antes de hacer una oferta.`;
+  }
+  if(isRent){
+    return `Ahora mismo, **tiene más sentido alquilar**: evitas apretarte con una hipoteca y ganas tiempo para acumular entrada. Te faltan ${fmtMoney(missing)} para cubrir todo el efectivo necesario, y mientras puedes seguir el mercado con calma.`;
+  }
+  return `La situación queda **ajustada**: o bajas el precio objetivo, o aportas más entrada, o alargas plazo. El objetivo es no pasar del 35% de ingresos y no quedarte sin colchón.`;
+};
+
+const buildNextStepsText = (c)=>{
+  const L = LANG;
+  if(!c) return "";
+  const isBuy = c.recCode==="BUY";
+  const isRent = c.recCode==="RENT";
+  if(L==="CA"){
+    return isBuy
+      ? `Passos següents: (1) preaprovació a 2–3 bancs, (2) visita mínim 5 pisos, (3) oferta amb marge 5–10% si el comparable ho justifica, (4) deixa’t un fons d’emergència.`
+      : isRent
+        ? `Passos següents: (1) defineix estalvi mensual automàtic, (2) evita deutes/descoberts, (3) revisa números cada 3–6 mesos, (4) busca opcions una mica més barates o zones interiors si cal.`
+        : `Passos següents: (1) prova un preu -10/-15%, (2) ajusta termini, (3) reforça entrada, (4) revisa el lloguer com a opció temporal.`;
+  }
+  if(L==="EN"){
+    return isBuy
+      ? `Next steps: (1) pre-approval from 2–3 banks, (2) view at least 5 properties, (3) negotiate using real comparables, (4) keep an emergency buffer after buying.`
+      : isRent
+        ? `Next steps: (1) automate monthly saving, (2) avoid new debt/overdrafts, (3) re-check in 3–6 months, (4) widen search to slightly cheaper areas if needed.`
+        : `Next steps: (1) test a -10/-15% price, (2) adjust term, (3) increase down payment, (4) consider renting short-term.`;
+  }
+  return isBuy
+    ? `Siguientes pasos: (1) preaprobación en 2–3 bancos, (2) visita mínimo 5 pisos, (3) negocia con comparables reales, (4) deja un fondo de emergencia tras la compra.`
+    : isRent
+      ? `Siguientes pasos: (1) automatiza ahorro mensual, (2) evita nuevas deudas/descubiertos, (3) revisa números en 3–6 meses, (4) amplía búsqueda a zonas algo más baratas si hace falta.`
+      : `Siguientes pasos: (1) prueba un precio -10/-15%, (2) ajusta plazo, (3) refuerza entrada, (4) valora alquilar temporalmente.`;
+};
+
 
 /* =====================
    GROQ AI VIA WORKER
@@ -1092,10 +1263,10 @@ const buildLLMPrompt = (userMsg) => {
 
   // 4) Instrucciones DEFINITIVAS - máxima inteligencia conversacional
   const baseInstructions = LANG === "CA" 
-    ? "Ets un assessor financer expert i amigable. Llegeix SEMPRE els missatges anteriors per mantenir coherència. Si l'usuari parla de temes generals (inversions, estalvi, fons, ETFs, criptos), respon sobre AQUELL tema sense mencionar vivienda. NOMÉS usa dades de vivienda si et pregunten específicament sobre comprar/llogar/hipoteca. Respostes naturals, directes i útils. CATALÀ PERFECTE: estalvis (mai 'ahorros'), préstec (mai 'préstamo'), quota (mai 'cuota'). 2-3 frases concises."
+    ? "Ets un assessor immobiliari i financer expert i amigable. Llegeix SEMPRE els missatges anteriors per mantenir coherència. Si l'usuari parla de temes generals (inversions, estalvi, fons, ETFs, criptos), respon sobre AQUELL tema sense oblidar que també ets un expert en habitatge. Quan et preguntin sobre comprar, llogar, hipoteques o característiques d'un habitatge, dona respostes clares i concretes amb consells immobiliaris. Respostes naturals, directes i útils en català perfecte. 2-3 frases concises."
     : LANG === "EN"
-      ? "You are an expert and friendly financial advisor. ALWAYS read previous messages to maintain coherence. If user discusses general topics (investing, savings, funds, ETFs, crypto), respond about THAT topic without mentioning housing. ONLY use housing data if specifically asked about buying/renting/mortgage. Natural, direct, useful responses. 2-3 concise sentences."
-      : "Eres un asesor financiero experto y amigable. Lee SIEMPRE los mensajes anteriores para mantener coherencia. Si el usuario habla de temas generales (inversiones, ahorro, fondos, ETFs, cripto), responde sobre ESE tema sin mencionar vivienda. SOLO usa datos de vivienda si preguntan específicamente sobre comprar/alquilar/hipoteca. Respuestas naturales, directas y útiles. 2-3 frases concisas.";
+      ? "You are an expert and friendly real‑estate and financial advisor. ALWAYS read previous messages to maintain coherence. When the user discusses general topics (investing, savings, funds, ETFs, crypto), answer those questions while remembering you are also a property advisor. When the user asks about buying, renting, mortgages or property characteristics, provide clear, specific real‑estate advice. Use natural, direct and useful responses. 2–3 concise sentences."
+      : "Eres un asesor inmobiliario y financiero experto y amigable. Lee SIEMPRE los mensajes anteriores para mantener coherencia. Si el usuario habla de temas generales (inversiones, ahorro, fondos, ETFs, cripto), responde sobre ESE tema sin olvidar que también eres experto en vivienda. Cuando pregunte sobre comprar, alquilar, hipotecas o características de una propiedad, ofrece respuestas claras y concretas con consejos inmobiliarios. Respuestas naturales, directas y útiles. 2-3 frases concisas.";
   
   return [
     baseInstructions,
@@ -1105,6 +1276,8 @@ const buildLLMPrompt = (userMsg) => {
 };
 
 const fmtPct=n=>Number(n).toFixed(1)+"%";
+// Alias fp to fmtPct for backward compatibility. Some templates still call fp().
+const fp = fmtPct;
 const toast=m=>{const e=Q("#ts");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),1900)};
 
 const applyI18n=()=>{
@@ -1114,6 +1287,8 @@ const applyI18n=()=>{
   // Tooltips — se regeneran al cambiar idioma
   const tipMap={tipIncBox:"tipInc",tipSavBox:"tipSav",tipMsvBox:"tipMsv"};
   Object.entries(tipMap).forEach(([id,key])=>{const el=Q("#"+id);if(el)el.textContent=t(key);});
+  if(Q("#toggleHist"))Q("#toggleHist").textContent=(LANG==="CA"?"Veure últimes anàlisis":(LANG==="EN"?"View recent analyses":"Ver últimos análisis"));
+  if(Q("#clearHist"))Q("#clearHist").textContent=(LANG==="CA"?"Esborrar historial":(LANG==="EN"?"Clear history":"Borrar historial"));
   // Chat
   const wb=Q("#welcome-bubble");if(wb&&!wb.dataset.set)wb.textContent=t("aiWelcome");
   const ci=Q("#chatInput");if(ci)ci.placeholder=t("aiPlaceholder");
@@ -1139,6 +1314,11 @@ const applyI18n=()=>{
     ?"Cunit i Calafell ofereixen la millor relació platja-preu del Baix Penedès. El Vendrell té més serveis. L'interior és fins un 50% més barat."
     :"Cunit y Calafell tienen la mejor relación playa-precio del Baix Penedès. El Vendrell ofrece más servicios. El interior es hasta un 50% más barato.";
   updateCTA();
+  // Do not save another snapshot on language change to avoid duplicating history
+  renderAnalysisHistory();
+  renderStaffPanel();
+  // Re-render result summary in the new language
+  if(last) renderResult();
 };
 
 const setLang=l=>{
@@ -1183,11 +1363,75 @@ const show=p=>{
    CÁLCULOS
    ===================== */
 const mort=(c,r,y)=>{const m=r/12,n=y*12;return r===0?c/n:c*(m*Math.pow(1+m,n))/(Math.pow(1+m,n)-1);};
+
+// Inverse mortgage: given a monthly payment, return the maximum principal.
+const invMort=(p,r,y)=>{const m=r/12,n=y*12;return r===0?p*n:p*(1-Math.pow(1+m,-n))/m;};
+
+// Personal affordability explainer
+const renderAffordability=()=>{
+  const out=Q('#affOut');
+  if(!out) return;
+  const inc=+Q('#inc').value||0;
+  const sav=+Q('#sav').value||0;
+  const yrsSel=Math.max(5,Math.min(40,(+Q('#yrs').value||25)));
+  if(inc<=0){
+    out.textContent = LANG==='EN'?'Enter your monthly income first.':(LANG==='CA'?'Introdueix primer els teus ingressos mensuals.':'Introduce primero tus ingresos mensuales.');
+    return;
+  }
+  const effortLimit=0.35;
+  const maxMonthly=Math.max(0,inc*effortLimit);
+  const rate=BASE.rate;
+  const dp=0.10;
+  const cashNeedRate=(dp+BASE.close);
+  const priceByCash = sav>0 ? (sav/cashNeedRate) : 0; // máximo por ahorros (entrada+gastos)
+
+  const yLow=15;
+  const yHigh=30;
+  const capLow=invMort(maxMonthly,rate,yLow);
+  const capHigh=invMort(maxMonthly,rate,yHigh);
+  const pricePayLow = capLow/(1-dp);
+  const pricePayHigh = capHigh/(1-dp);
+
+  const capSel=invMort(maxMonthly,rate,yrsSel);
+  const pricePaySel=capSel/(1-dp);
+
+  const priceFinalLow = priceByCash>0 ? Math.min(priceByCash,pricePayLow) : pricePayLow;
+  const priceFinalHigh = priceByCash>0 ? Math.min(priceByCash,pricePayHigh) : pricePayHigh;
+  const priceFinalSel = priceByCash>0 ? Math.min(priceByCash,pricePaySel) : pricePaySel;
+
+  const cashIsBinding = priceByCash>0 && (priceByCash <= Math.min(pricePayLow, pricePayHigh));
+
+  const downSel = priceFinalSel*dp;
+  const closeSel = priceFinalSel*BASE.close;
+  const fmtPct=(x)=>(x*100).toFixed(0)+'%';
+
+  if(LANG==='CA'){
+    out.innerHTML = `Amb els teus números, un límit prudent és dedicar aproximadament <b>${fmtMoney(maxMonthly)}/mes</b> a hipoteca (≈ ${fmtPct(effortLimit)} dels teus ingressos). `+
+      `Amb <b>${fmtMoney(sav)}</b> d’estalvis, el màxim per <b>entrada (10%) + impostos/despeses (~${(cashNeedRate*100).toFixed(0)}%)</b> seria d’uns <b>${fmtMoney(priceByCash||0)}</b>. `+
+      `Pel costat de la quota, al tipus de referència (~${(rate*100).toFixed(2)}%), el teu límit per pagament mensual donaria una compra d’uns <b>${fmtMoney(pricePayLow)}</b> a <b>${yLow} anys</b> i d’uns <b>${fmtMoney(pricePayHigh)}</b> a <b>${yHigh} anys</b>. `+
+      `${cashIsBinding ? `En el teu cas, el coll d’ampolla són sobretot els <b>estalvis</b>, així que la xifra realista queda al voltant de <b>${fmtMoney(priceFinalSel)}</b>. ` : ''}`+
+      `Amb el teu termini actual (${yrsSel} anys), la xifra orientativa és <b>${fmtMoney(priceFinalSel)}</b> (aplicant el límit més restrictiu).`;
+  } else if(LANG==='EN'){
+    out.innerHTML = `With your inputs, a conservative rule is to spend about <b>${fmtMoney(maxMonthly)}/mo</b> on a mortgage (≈ ${fmtPct(effortLimit)} of income). `+
+      `With <b>${fmtMoney(sav)}</b> in savings, the maximum home price limited by <b>down payment (10%) + closing/taxes (~${(cashNeedRate*100).toFixed(0)}%)</b> is about <b>${fmtMoney(priceByCash||0)}</b>. `+
+      `On the monthly-payment side, at the reference rate (~${(rate*100).toFixed(2)}%), your payment-based limit is roughly <b>${fmtMoney(pricePayLow)}</b> at <b>${yLow} years</b> and <b>${fmtMoney(pricePayHigh)}</b> at <b>${yHigh} years</b>. `+
+      `${cashIsBinding ? `In your case, <b>savings</b> are the main bottleneck, so the realistic figure stays around <b>${fmtMoney(priceFinalSel)}</b>. ` : ''}`+
+      `With your current term (${yrsSel} years), a reasonable estimate is <b>${fmtMoney(priceFinalSel)}</b> (using the tighter limit).`;
+  } else {
+    out.innerHTML = `Con tus datos, una regla prudente es dedicar aprox. <b>${fmtMoney(maxMonthly)}/mes</b> a hipoteca (≈ ${fmtPct(effortLimit)} de tus ingresos). `+
+      `Con <b>${fmtMoney(sav)}</b> de ahorros, el máximo por <b>entrada (10%) + impuestos/gastos (~${(cashNeedRate*100).toFixed(0)}%)</b> sería de ~<b>${fmtMoney(priceByCash||0)}</b>. `+
+      `Por cuota mensual, al tipo de referencia (~${(rate*100).toFixed(2)}%), el límite por pago mensual te daría aprox. <b>${fmtMoney(pricePayLow)}</b> a <b>${yLow} años</b> y <b>${fmtMoney(pricePayHigh)}</b> a <b>${yHigh} años</b>. `+
+      `${cashIsBinding ? `En tu caso, el cuello de botella son sobre todo los <b>ahorros</b>, así que la cifra realista se queda cerca de <b>${fmtMoney(priceFinalSel)}</b>. ` : ''}`+
+      `Con tu plazo actual (${yrsSel} años), la cifra orientativa es <b>${fmtMoney(priceFinalSel)}</b> (aplicando el límite más restrictivo).`;
+  }
+};
 const COEF={"Cunit":{c:1.157,r:.975},"El Vendrell":{c:.912,r:.842},"Calafell":{c:.856,r:.983},"Santa Oliva":{c:.783,r:.825},"Bellvei":{c:.783,r:.925},"L'Arboç":{c:.735,r:.883},"Banyeres del Penedès":{c:.614,r:.783},"Albinyana":{c:.766,r:.825},"Bonastre":{c:.497,r:.683},"Masllorenç":{c:.549,r:.75},"La Bisbal del Penedès":{c:.623,r:.808},"Llorenç del Penedès":{c:.856,r:.65},"Sant Jaume dels Domenys":{c:.614,r:.65},"El Montmell":{c:.529,r:.675}};
 const BASE={m2:2000,rent:10,close:.11,rate:.0299};
 const M={"Barcelona":{v:2986,l:21.9},"Girona":{v:2608,l:14.99},"Lleida":{v:1486,l:9.5},"Tarragona":{v:2100,l:13.5}};
 const xBuy=(base,e)=>{let x=0;if(e.t)x+=base*.05;if(e.p)x+=base*.08;if(e.l)x+=base*.04;if(e.k)x+=base*.03;return x;};
 const xRent=(base,e)=>{let x=0;if(e.t)x+=base*.15;if(e.p)x+=base*.30;if(e.l)x+=base*.08;if(e.k)x+=base*.07;return x;};
+// Coefficients to adjust price/rent by dwelling type.  Flats use 1.0, houses are typically more expensive.  You can tweak these values if the market changes.
+const TYPE_COEF = {flat: 1.0, house: 1.15};
 const buy=(a,m2,b,ba,e)=>{const base=m2*BASE.m2*(COEF[a]?.c||1),adj=b*5e3+ba*3e3;return Math.round(base+adj+xBuy(base,e));};
 const rent=(a,m2,b,ba,e)=>{const base=m2*BASE.rent*(COEF[a]?.r||1),adj=b*50+ba*30;return Math.round(base+adj+xRent(base,e));};
 const buyM=(m,m2,b,ba,e)=>{const p=M[m];if(!p)return NaN;const base=m2*p.v,adj=b*5e3+ba*3e3;return Math.round(base+adj+xBuy(base,e));};
@@ -1251,6 +1495,9 @@ const drawCmpChart=(your,prov)=>{
    ===================== */
 const analyze=()=>{
   const nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0,inc=+Q("#inc").value||0,sav=+Q("#sav").value||0;
+
+  // DEBUG: show a toast to confirm the analyze function is invoked. Remove in production.
+  try { toast((LANG==="EN"?"Running analysis...":"Iniciant anàlisi...")); } catch (e) { }
   const yrs=+Q("#yrs").value||25,hor=Q("#hor").value==="y",fst=Q("#fst").value==="y";
   const ar=Q("#ar").value,m2=+Q("#m2").value||0,bd=Q("#bed").value===""?0:+Q("#bed").value||0,ba=+Q("#bat").value||0,type=Q("#ty").value;
   if(!nm||ag<18||ag>100||m2<50||ba<1){toast(t("toastCheck"));return;}
@@ -1270,7 +1517,20 @@ const analyze=()=>{
     muniList=[baseM];pb=buy(baseM,m2,Math.max(0,bd),ba,e);pr=rent(baseM,m2,Math.max(0,bd),ba,e);
   }
 
-  const dp=fst?.1:.2,down=pb*dp,cl=pb*BASE.close,cap=Math.max(0,pb-down);
+  // Apply a multiplier based on the type of dwelling.  Houses are more expensive than flats.
+  {
+    const coef = TYPE_COEF[type] || 1;
+    pb = Math.round(pb * coef);
+    pr = Math.round(pr * coef);
+    if(pbRange){pbRange = {lo: Math.round(pbRange.lo * coef), hi: Math.round(pbRange.hi * coef)};}
+    if(prRange){prRange = {lo: Math.round(prRange.lo * coef), hi: Math.round(prRange.hi * coef)};}
+  }
+
+  // Calculate down payment percentage: first‑time buyers (fst) put 10%, otherwise 20%
+  const dp = fst ? 0.1 : 0.2;
+  const down = pb * dp;
+  const cl = pb * BASE.close;
+  const cap = Math.max(0, pb - down);
   const needCash=Math.round(down+cl);
   let rate=BASE.rate;if(sav<needCash)rate+=.006;
   const pay=mort(cap,rate,yrs);
@@ -1309,8 +1569,15 @@ const analyze=()=>{
   Q("#k4sub").textContent=recCode==="BUY"?(LANG==="EN"?"Ready to buy":(LANG==="CA"?"Efectiu + esforç OK":"Encajas en efectivo + esfuerzo")):recCode==="RENT"?(LANG==="EN"?"Buying is tight":(LANG==="CA"?"Comprar apura":"Comprar aprieta")):(LANG==="EN"?"Neither option fits safely":(LANG==="CA"?"Cap opció encaixa de forma segura":"No encaja con seguridad"));
 
   renderResult();renderAIContext();renderAISuggestions();setTabsEnabled();saveForm();show("r");updateCTA();
+  // Save a snapshot of this analysis for personal and staff history
+  saveAnalysisSnapshot(last);
+  renderAnalysisHistory();
+  renderStaffPanel();
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
 };
+
+// Expose analyze in the global scope so inline HTML onclick handlers can invoke it
+window.analyze = analyze;
 
 /* =====================
    RENDER RESULTADO — i18n corregido
@@ -1427,15 +1694,25 @@ const renderResult=()=>{
   body+="</div>";
   Q("#rBody").innerHTML=body;
 
-  Q("#rt").textContent=[
-    `${last.nm},`,
-    `${t("miniPrice")}: ${fmtMoney(last.pb)}`,
-    `${muniTxt} · ${last.m2}m² · ${last.bd||0} ${t("beds")} · ${last.ba} ${t("baths")} · ${typeTxt}`,
-    `${t("downPaymentLabel")}: ${dpPct}% (${fmtMoney(last.down)}) + ${t("closingCostsLabel")}: ${fmtMoney(last.cl)}`,
-    `${t("toFinanceLabel")}: ${fmtMoney(last.cap)} · ${last.yrs} ${t("yrs")} · ${(last.rate*100).toFixed(2)}%`,
-    `${t("miniPay")}: ${fmtMoney(last.pay)} | ${t("miniRent")}: ${fmtMoney(last.pr)}`,
-    `${t("kRec")}: ${last.rec}`
-  ].join("\n");
+  // Build a human‑friendly summary paragraph tailored to the current language.  This replaces the old bullet list.
+  let humanSummary;
+  if(LANG === "EN"){
+    const typeTxtLC = typeTxt.toLowerCase();
+    humanSummary = `${last.nm}, for a ${last.m2} m² ${typeTxtLC} in ${muniTxt} with ${last.bd || 0} ${t("beds")} and ${last.ba} ${t("baths")}, the estimated purchase price is ${fmtMoney(last.pb)}. The estimated monthly mortgage payment would be ${fmtMoney(last.pay)}, while renting an equivalent home would cost around ${fmtMoney(last.pr)} per month. A down payment of ${dpPct}% (${fmtMoney(last.down)}) plus closing costs of ${fmtMoney(last.cl)} is required. Based on your income and savings, we think your best option is: ${last.rec}.`;
+  } else if(LANG === "CA"){
+    const typeTxtLC = typeTxt.toLowerCase();
+    humanSummary = `${last.nm}, per a un ${typeTxtLC} de ${last.m2} m² a ${muniTxt} amb ${last.bd || 0} ${t("beds")} i ${last.ba} ${t("baths")}, el preu estimat és ${fmtMoney(last.pb)}. La hipoteca mensual aproximada seria de ${fmtMoney(last.pay)}, mentre que llogar un habitatge similar costaria uns ${fmtMoney(last.pr)} al mes. Necessitaràs una entrada del ${dpPct}% (${fmtMoney(last.down)}) més despeses de tancament de ${fmtMoney(last.cl)}. Segons els teus ingressos i estalvis, la millor opció és: ${last.rec}.`;
+  } else {
+    // ES
+    const typeTxtLC = typeTxt.toLowerCase();
+    humanSummary = `${last.nm}, para un ${typeTxtLC} de ${last.m2} m² en ${muniTxt} con ${last.bd || 0} ${t("beds")} y ${last.ba} ${t("baths")}, el precio estimado es ${fmtMoney(last.pb)}. La cuota hipotecaria mensual sería de ${fmtMoney(last.pay)}, mientras que alquilar una vivienda similar costaría unos ${fmtMoney(last.pr)} al mes. Necesitarás una entrada del ${dpPct}% (${fmtMoney(last.down)}) más gastos de cierre de ${fmtMoney(last.cl)}. Según tus ingresos y ahorros, creemos que tu mejor opción es: ${last.rec}.`;
+  }
+  const rtElem = Q("#rt");
+  if(rtElem){
+    rtElem.textContent = humanSummary;
+    // Store the same string for copy operations
+    rtElem.dataset.copy = humanSummary;
+  }
 
   setTimeout(()=>{drawEffortChart();drawSensChart();},70);
 };
@@ -1467,6 +1744,150 @@ const upMap=()=>{
   }
 };
 
+
+/* =====================
+   HISTORIAL DE ANÁLISIS (LOCAL)
+   ===================== */
+// Nota: en una web estática no existe “solo yo” de verdad. Esto se guarda SOLO en el navegador/dispositivo.
+const HX_HIST_KEY="hx_analysis_history_v1";
+const getHistory=()=>{
+  try{ return JSON.parse(localStorage.getItem(HX_HIST_KEY)||"[]")||[]; }catch(e){ return []; }
+};
+const setHistory=(arr)=>{
+  try{ localStorage.setItem(HX_HIST_KEY, JSON.stringify(arr)); }catch(e){}
+};
+const saveAnalysisSnapshot=(c)=>{
+  try{
+    if(!c) return;
+    const arr=getHistory();
+    arr.unshift({
+      ts: Date.now(),
+      lang: LANG,
+      nm: c.nm||"",
+      muni: c.muni||"",
+      m2: c.m2||0,
+      pb: c.pb||0,
+      pay: c.pay||0,
+      pr: c.pr||0,
+      ratio: c.ratio||0,
+      rec: c.rec||"",
+      recCode: c.recCode||"",
+      // campos completos para poder “Cargar” un análisis de verdad
+      inc: c.inc||0,
+      sav: c.sav||0,
+      yrs: c.yrs||0,
+      hor: !!c.hor,
+      bd: (c.bd ?? null),
+      ba: (c.ba ?? null),
+      type: c.type||"flat",
+      ex: c.e||{t:0,p:0,l:0,k:0}
+    });
+    // Historial personal: solo últimos 5. En modo staff, permitimos más.
+    setHistory(arr.slice(0, staffLogged ? 30 : 5));
+    // Save also to global history for staff view
+    saveAllAnalysisSnapshot(c);
+  }catch(e){}
+};
+
+const renderAnalysisHistory = () => {
+  const box = Q("#histBox");
+  if (!box) return;
+  let arr = getHistory();
+  // En modo usuario normal, mostramos y guardamos solo los últimos 5
+  if(!staffLogged && arr.length>5){
+    arr = arr.slice(0,5);
+    setHistory(arr);
+  }
+  // If no analyses saved, show an empty message
+  if (!arr.length) {
+    box.innerHTML = `<div style="color:#94a3b8">${LANG === "CA" ? "Encara no hi ha cap anàlisi guardada." : (LANG === "EN" ? "No saved analyses yet." : "Aún no hay análisis guardados.")}</div>`;
+    return;
+  }
+  // Build header with count
+  const head = LANG === "CA"
+    ? `Anàlisis guardats: ${arr.length}`
+    : LANG === "EN"
+      ? `Saved analyses: ${arr.length}`
+      : `Análisis guardados: ${arr.length}`;
+  const fmtDate = (ts) => {
+    const d = new Date(ts);
+    return d.toLocaleString(
+      LANG === "EN" ? "en-GB" : LANG === "CA" ? "ca-ES" : "es-ES",
+      { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+    );
+  };
+  const items = arr.map((a, i) => {
+    const dtStr = fmtDate(a.ts);
+    // Determine recommendation color (green for BUY, amber for RENT, red otherwise)
+    const recColor = a.recCode === "BUY" ? "#22c55e" : a.recCode === "RENT" ? "#f59e0b" : "#ef4444";
+    // Labels based on language
+    const labPrice = LANG === "CA" ? "Preu" : LANG === "EN" ? "Price" : "Precio";
+    const labPay = LANG === "CA" ? "Quota" : LANG === "EN" ? "Payment" : "Cuota";
+    const labRent = LANG === "CA" ? "Lloguer" : LANG === "EN" ? "Rent" : "Alquiler";
+    const labEffort = LANG === "CA" ? "Esforç hipoteca" : LANG === "EN" ? "Mortgage effort" : "Esfuerzo hipoteca";
+    const labRec = LANG === "CA" ? "Recomanació" : LANG === "EN" ? "Recommendation" : "Recomendación";
+    const labLoad = LANG === "CA" ? "Carregar" : LANG === "EN" ? "Load" : "Cargar";
+    const labDel = LANG === "CA" ? "Esborrar" : LANG === "EN" ? "Delete" : "Borrar";
+    return `<div class="hx-hitem">
+      <div class="hx-hrow">
+        <div class="hx-htitle">${escapeHTML(a.nm || "—")} · ${escapeHTML(a.muni || "—")} · ${a.m2 || 0}m²</div>
+        <div class="hx-hdate">${dtStr}</div>
+      </div>
+      <div class="hx-hmeta">
+        <div>${labPrice}: <b>${fmtMoney(a.pb)}</b></div>
+        <div>${labPay}: <b>${fmtMoney(a.pay)}/mes</b></div>
+        <div>${labRent}: <b>${fmtMoney(a.pr)}/mes</b></div>
+        <div>${labEffort}: <b>${fmtPct(a.ratio)}</b></div>
+        <div>${labRec}: <b style="color:${recColor}">${escapeHTML(a.rec || "—")}</b></div>
+      </div>
+      <div class="hx-hbtns">
+        <button type="button" class="hx-mini" data-hx-load="${i}">${labLoad}</button>
+        <button type="button" class="hx-mini ghost" data-hx-del="${i}">${labDel}</button>
+      </div>
+    </div>`;
+  }).join("");
+  // Insert header and scrollable container
+  box.innerHTML = `<div style="font-size:.85rem;font-weight:800;color:#38bdf8;margin-bottom:10px">${head}</div>
+    <div class="hx-hgrid" style="max-height:520px;overflow:auto;">${items}</div>`;
+  // Bind load/delete button events
+  box.querySelectorAll("[data-hx-load]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = +btn.getAttribute("data-hx-load");
+      const a = getHistory()[idx];
+      if (!a) return;
+      // Fill minimal fields to allow quick re-analysis (do not modify extras/zones)
+      if (Q("#nm")) Q("#nm").value = a.nm || "";
+      if (Q("#m2")) Q("#m2").value = a.m2 || "";
+      if (Q("#ar")) Q("#ar").value = a.muni || "Any";
+      // Finance
+      if (Q('#inc') && a.inc) Q('#inc').value = a.inc;
+      if (Q('#sav') && (a.sav||a.sav===0)) Q('#sav').value = a.sav;
+      if (Q('#yrs') && a.yrs) Q('#yrs').value = a.yrs;
+      if (Q('#stay') && typeof a.hor === 'boolean') Q('#stay').value = a.hor ? 'yes' : 'no';
+      // Preferences
+      if (Q('#bed') && (a.bd||a.bd===0)) Q('#bed').value = a.bd;
+      if (Q('#bat') && (a.ba||a.ba===0)) Q('#bat').value = a.ba;
+      if (Q('#ty') && a.type) Q('#ty').value = a.type;
+      if (a.ex){
+        if (Q('#et')) Q('#et').checked = !!a.ex.t;
+        if (Q('#ep')) Q('#ep').checked = !!a.ex.p;
+        if (Q('#el')) Q('#el').checked = !!a.ex.l;
+        if (Q('#ek')) Q('#ek').checked = !!a.ex.k;
+      }
+      saveForm();
+      toast(LANG === "CA" ? "Càrregat. Torna a Analitzar per recalcular." : LANG === "EN" ? "Loaded. Press Analyze to recalculate." : "Cargado. Pulsa Analizar para recalcular.");
+    });
+  });
+  box.querySelectorAll("[data-hx-del]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = +btn.getAttribute("data-hx-del");
+      const data = getHistory();
+      data.splice(idx, 1);
+      setHistory(data);
+      renderAnalysisHistory();
+    });
+  });
+};
 /* =====================
    COMPARAR — i18n corregido
    ===================== */
@@ -2410,100 +2831,227 @@ if (typeof window.buildReply2 !== "function") {
   };
 }
 
-/* ── ENVIAR MENSAJE AL AI ── */
-const sendToAI=async (msg)=>{
-  if(isAIProcessing)return;
-  isAIProcessing=true;
-  const btnEl=Q("#chatSend"),inpEl=Q("#chatInput");
-  if(btnEl)btnEl.disabled=true;
-  if(inpEl){inpEl.disabled=true;inpEl.value="";inpEl.style.height="auto";}
-  addMsg("user",msg);
-  chatHistory.push({role:"user",content:msg});
-  addThinking();
-  
-// SOLO IA (sin motor local)
-const L = LANG;
-const t = (esStr, caStr, enStr) => L==="CA" ? caStr : (L==="EN" ? enStr : esStr);
-
-let reply = "";
-
-// Si no hay URL de IA configurada, lo decimos claro
-if (!(AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL))) {
-  reply = t(
-    "⚠️ IA no configurada. Falta AI_PROXY_URL (proxy/worker).",
-    "⚠️ IA no configurada. Falta AI_PROXY_URL (proxy/worker).",
-    "⚠️ AI not configured. Missing AI_PROXY_URL (proxy/worker)."
-  );
-} else {
+/* =====================
+   GLOBAL STAFF ANALYSIS HISTORY
+   ===================== */
+const HX_ALL_HIST_KEY = "hx_all_analysis_history_v1";
+const getAllHistory = () => {
   try {
-    const prompt = buildLLMPrompt(msg);
-
-    const systemMsg = {
-      role: "system",
-      content: LANG === "CA"
-        ? "Ets un assessor financer professional i proper. SEMPRE llegeix l'historial complet abans de respondre per mantenir coherència total. Si l'última conversa tracta de fons indexats, ETFs, criptomonedes, plans de pensions o inversions generals, CONTINUA amb aquell tema exact. NO introdueixis el tema de vivienda tret que et preguntin explícitament sobre comprar/llogar/hipoteques. Prioritza ser útil i mantenir el fil conversacional per sobre de tot. Respostes precises en CATALÀ CORRECTE (estalvis, préstec, quota). 2-3 frases clares i directes."
-        : LANG === "EN"
-          ? "You are a professional and approachable financial advisor. ALWAYS read full history before responding to maintain total coherence. If last conversation is about index funds, ETFs, cryptocurrencies, pension plans or general investing, CONTINUE with that exact topic. Do NOT introduce housing topic unless explicitly asked about buying/renting/mortgages. Prioritize being helpful and maintaining conversational flow above all. Precise responses. 2-3 clear direct sentences."
-          : "Eres un asesor financiero profesional y cercano. SIEMPRE lee el historial completo antes de responder para mantener coherencia total. Si la última conversación trata de fondos indexados, ETFs, criptomonedas, planes de pensiones o inversión general, CONTINÚA con ese tema exacto. NO introduzcas el tema de vivienda a menos que pregunten explícitamente sobre comprar/alquilar/hipotecas. Prioriza ser útil y mantener el hilo conversacional por encima de todo. Respuestas precisas. 2-3 frases claras y directas."
-    };
-
-    // Construir array de mensajes con historial de conversación reciente
-    // Formato: [system, historial_antiguo..., user_nuevo, assistant, user_nuevo...]
-    const recentHistory = chatHistory.slice(-10); // Últimos 5 intercambios completos
-    const messages = [
-      systemMsg,
-      ...recentHistory,
-      { role: "user", content: prompt }
-    ];
-
-    const aiReply = await callGroqViaWorker(messages, { temperature: 0.7, max_tokens: 350 });
-
-    if (aiReply && String(aiReply).trim()) {
-      reply = aiReply;
-    } else {
-      reply = t(
-        "⚠️ La IA no devolvió respuesta (vacía).",
-        "⚠️ La IA no ha retornat resposta (buida).",
-        "⚠️ The AI returned an empty response."
-      );
-    }
+    return JSON.parse(localStorage.getItem(HX_ALL_HIST_KEY) || "[]") || [];
   } catch (e) {
-    console.error("AI via worker failed:", e);
-    reply = t(
-      "⚠️ La IA no está disponible ahora mismo (falló el proxy/worker).",
-      "⚠️ La IA no està disponible ara mateix (ha fallat el proxy/worker).",
-      "⚠️ The AI is not available right now (proxy/worker failed)."
-    );
+    return [];
   }
-}
+};
+const setAllHistory = (arr) => {
+  try {
+    localStorage.setItem(HX_ALL_HIST_KEY, JSON.stringify(arr));
+  } catch (e) {}
+};
+const saveAllAnalysisSnapshot = (c) => {
+  try {
+    if (!c) return;
+    const arr = getAllHistory();
+    arr.unshift({
+      ts: Date.now(),
+      lang: LANG,
+      nm: c.nm || "",
+      muni: c.muni || "",
+      m2: c.m2 || 0,
+      pb: c.pb || 0,
+      pay: c.pay || 0,
+      pr: c.pr || 0,
+      ratio: c.ratio || 0,
+      rec: c.rec || "",
+      recCode: c.recCode || ""
+    });
+    // Limit to 200 entries to avoid unbounded growth
+    setAllHistory(arr.slice(0, 200));
+  } catch (e) {}
+};
 
-  // Pequeño delay para efecto visual
-  setTimeout(()=>{
+let staffLogged = false;
+const openStaffModal = () => {
+  const m = Q('#staffModal');
+  if(!m) return;
+  m.classList.add('open');
+  const inp = Q('#staffPw');
+  if(inp){ inp.value=''; setTimeout(()=>inp.focus(), 60); }
+  // i18n copy
+  const title = Q('#staffModalTitle');
+  const sub = Q('#staffModalSub');
+  const btn = Q('#staffModalBtn');
+  if(title) title.textContent = LANG==='CA'?'Accés Staff':(LANG==='EN'?'Staff Access':'Acceso Staff');
+  if(sub) sub.textContent = LANG==='CA'?'Introdueix la contrasenya per veure estadístiques i anàlisis globals.':(LANG==='EN'?'Enter the password to view global analyses and stats.':'Introduce la contraseña para ver análisis globales y estadísticas.');
+  if(btn) btn.textContent = LANG==='CA'?'Entrar':(LANG==='EN'?'Sign in':'Entrar');
+};
+
+const closeStaffModal = () => {
+  const m = Q('#staffModal');
+  if(m) m.classList.remove('open');
+};
+
+const staffLogin = () => {
+  openStaffModal();
+};
+
+const staffSubmit = () => {
+  const inp = Q('#staffPw');
+  const pw = (inp?.value||'').trim();
+  if(!pw) return;
+  if(pw === 'hibanezborreguero2008&'){
+    staffLogged = true;
+    closeStaffModal();
+    toast(LANG==='CA'?'Mode staff activat':(LANG==='EN'?'Staff mode enabled':'Modo staff activado'));
+    const btn = Q('#toggleStaff');
+    if(btn) btn.style.display = 'inline-block';
+    renderStaffPanel();
+  }else{
+    toast(LANG==='CA'?'Contrasenya incorrecta':(LANG==='EN'?'Incorrect password':'Contraseña incorrecta'));
+  }
+};
+
+const renderStaffPanel = () => {
+  // Render the staff analyses into the dedicated section.  The panel lives
+  // outside of the main app card (#staffSection) so that staff data is
+  // clearly separated from the user's personal history.  If no staff
+  // section exists, abort quietly.
+  const box = Q("#staffSection");
+  if (!box) return;
+  // If not logged in, show a message in the selected language
+  if (!staffLogged) {
+    box.innerHTML = `<div style="color:#94a3b8">${LANG === "CA" ? "Cal iniciar sessió com a staff." : (LANG === "EN" ? "Please log in as staff." : "Por favor inicia sesión como staff.")}</div>`;
+    return;
+  }
+  const arr = getAllHistory();
+  if (!arr.length) {
+    box.innerHTML = `<div style="color:#94a3b8">${LANG === "CA" ? "No hi ha anàlisis globals." : (LANG === "EN" ? "No global analyses yet." : "No hay análisis globales aún.")}</div>`;
+    return;
+  }
+  // Build panel title and total count
+  const title = LANG === "CA" ? "Panell del staff" : (LANG === "EN" ? "Staff panel" : "Panel del staff");
+  const head = `${LANG === "CA" ? "Total anàlisis" : (LANG === "EN" ? "Total analyses" : "Total de análisis")}: ${arr.length}`;
+  // Format each analysis entry with a refined card-like style
+  const items = arr.map(a => {
+    const date = new Date(a.ts);
+    const dtStr = date.toLocaleString(LANG === "EN" ? "en-GB" : (LANG === "CA" ? "ca-ES" : "es-ES"), { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    // Determine recommendation color
+    const recColor = a.recCode === 'BUY' ? '#22c55e' : a.recCode === 'RENT' ? '#f59e0b' : '#ef4444';
+    return `<div style="padding:10px 12px;border:1px solid rgba(148,163,184,.25);border-radius:10px;margin:8px 0;background:rgba(30,41,59,.45)">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="font-weight:700;color:#e2e8f0">${escapeHTML(a.nm || "—")} · ${escapeHTML(a.muni || "—")} · ${a.m2 || 0}m²</div>
+        <div style="color:#94a3b8;font-size:.8rem">${dtStr}</div>
+      </div>
+      <div style="margin-top:6px;color:#cbd5e1;font-size:.88rem;line-height:1.5">
+        ${LANG === "CA" ? "Preu" : (LANG === "EN" ? "Price" : "Precio")}: <b>${fmtMoney(a.pb)}</b> · ${LANG === "CA" ? "Quota" : (LANG === "EN" ? "Payment" : "Cuota")}: <b>${fmtMoney(a.pay)}/mes</b> · ${LANG === "CA" ? "Lloguer" : (LANG === "EN" ? "Rent" : "Alquiler")}: <b>${fmtMoney(a.pr)}/mes</b><br/>
+        ${LANG === "CA" ? "Esforç hipoteca" : (LANG === "EN" ? "Mortgage effort" : "Esfuerzo hipoteca")}: <b>${fmtPct(a.ratio)}</b> · ${LANG === "CA" ? "Recomanació" : (LANG === "EN" ? "Recommendation" : "Recomendación")}: <b style="color:${recColor}">${escapeHTML(a.rec || "—")}</b>
+      </div>
+    </div>`;
+  }).join("");
+  // Compose the panel with title, total count and scrollable list
+  box.innerHTML = `<div style="font-size:1rem;font-weight:700;color:#e2e8f0;margin-bottom:4px">${title}</div><div style="font-size:.85rem;font-weight:700;color:#38bdf8;margin-bottom:8px">${head}</div><div style="max-height:420px;overflow-y:auto;">${items}</div>`;
+};
+
+/* ── ENVIAR MENSAJE AL AI ── */
+const sendToAI = async (msg) => {
+  // If another AI call is in progress, ignore additional requests
+  if (isAIProcessing) return;
+  isAIProcessing = true;
+  const btnEl = Q("#chatSend"), inpEl = Q("#chatInput");
+  if (btnEl) btnEl.disabled = true;
+  if (inpEl) {
+    inpEl.disabled = true;
+    inpEl.value = "";
+    inpEl.style.height = "auto";
+  }
+  addMsg("user", msg);
+  chatHistory.push({ role: "user", content: msg });
+  addThinking();
+
+  // Compose the prompt with context using buildLLMPrompt().  This helper adds
+  // instructions appropriate for a real‑estate and financial advisor, and
+  // includes any relevant user context (income, savings, recommendation).
+  let reply = "";
+  if (!(AI_PROXY_URL && /^https?:\/\//.test(AI_PROXY_URL))) {
+    // Missing configuration: return a helpful warning message in the current language
+    reply = LANG === "CA"
+      ? "⚠️ IA no configurada. Falta AI_PROXY_URL (proxy/worker)."
+      : LANG === "EN"
+        ? "⚠️ AI not configured. Missing AI_PROXY_URL (proxy/worker)."
+        : "⚠️ IA no configurada. Falta AI_PROXY_URL (proxy/worker).";
+  } else {
+    try {
+      const prompt = buildLLMPrompt(msg);
+      // Send only the prompt as the user message.  The model will receive all
+      // instructions and context via the prompt itself.  To preserve some
+      // conversational continuity, include the last few exchanges from chatHistory.
+      const recentHistory = chatHistory.slice(-10);
+      const messages = [
+        ...recentHistory,
+        { role: "user", content: prompt }
+      ];
+      const aiReply = await callGroqViaWorker(messages, {
+        temperature: 0.7,
+        max_tokens: 350
+      });
+      if (aiReply && String(aiReply).trim()) {
+        reply = aiReply;
+      } else {
+        reply = LANG === "CA"
+          ? "⚠️ La IA no ha retornat resposta (buida)."
+          : LANG === "EN"
+            ? "⚠️ The AI returned an empty response."
+            : "⚠️ La IA no devolvió respuesta (vacía).";
+      }
+    } catch (e) {
+      console.error("AI via worker failed:", e);
+      reply = LANG === "CA"
+        ? "⚠️ La IA no està disponible ara mateix (ha fallat el proxy/worker)."
+        : LANG === "EN"
+          ? "⚠️ The AI is not available right now (proxy/worker failed)."
+          : "⚠️ La IA no está disponible ahora mismo (falló el proxy/worker).";
+    }
+  }
+
+  // Delay slightly before rendering the response for a typing effect
+  setTimeout(() => {
     removeThinking();
-    chatHistory.push({role:"assistant",content:reply});
+    chatHistory.push({ role: "assistant", content: reply });
     saveChatHistory();
-    // Efecto typing
-    const mc=Q("#chatMessages");
-    const d=document.createElement("div");d.className="chat-message ai";
-    const av=document.createElement("div");av.className="chat-avatar ai";av.textContent="AI";
-    const bub=document.createElement("div");bub.className="chat-bubble";
-    d.appendChild(av);d.appendChild(bub);
-    if(mc)mc.appendChild(d);
-    const clean=escapeHTML(reply).replace(/\n/g,"<br>").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
-    let pos=0;
-    const unlock=()=>{
-      isAIProcessing=false;
-      const b=Q("#chatSend"),i=Q("#chatInput");
-      if(b)b.disabled=false;
-      if(i){i.disabled=false;i.focus();}
+    // Append assistant message with typing animation
+    const mc = Q("#chatMessages");
+    const d = document.createElement("div");
+    d.className = "chat-message ai";
+    const av = document.createElement("div");
+    av.className = "chat-avatar ai";
+    av.textContent = "AI";
+    const bub = document.createElement("div");
+    bub.className = "chat-bubble";
+    d.appendChild(av);
+    d.appendChild(bub);
+    if (mc) mc.appendChild(d);
+    const clean = escapeHTML(reply)
+      .replace(/\n/g, "<br>")
+      .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+    let pos = 0;
+    const unlock = () => {
+      isAIProcessing = false;
+      const b = Q("#chatSend"), i = Q("#chatInput");
+      if (b) b.disabled = false;
+      if (i) {
+        i.disabled = false;
+        i.focus();
+      }
     };
-    const iv=setInterval(()=>{
-      pos=Math.min(pos+4,clean.length);
-      bub.innerHTML=clean.substring(0,pos);
-      if(mc)mc.scrollTop=mc.scrollHeight;
-      if(pos>=clean.length){clearInterval(iv);unlock();}
-    },8);
-  },350);
+    const iv = setInterval(() => {
+      pos = Math.min(pos + 4, clean.length);
+      bub.innerHTML = clean.substring(0, pos);
+      if (mc) mc.scrollTop = mc.scrollHeight;
+      if (pos >= clean.length) {
+        clearInterval(iv);
+        unlock();
+      }
+    }, 8);
+  }, 350);
 };
 
 const renderChatHistory=()=>{
@@ -2654,20 +3202,29 @@ const updateCTA=()=>{
 Q("#np").onclick=()=>{const nm=(Q("#nm").value||"").trim(),ag=+Q("#ag").value||0;if(!nm||ag<18||ag>100){toast(t("toastCheck"));return;}saveForm();show("e");};
 Q("#ne").onclick=()=>{saveForm();show("f");};
 Q("#go").onclick=analyze;
-Q("#cp").onclick=()=>{if(!last){toast(t("toastFirst"));return;}navigator.clipboard?.writeText(Q("#rt").textContent||"").then(()=>toast(t("toastCopied"))).catch(()=>{});};
+Q("#cp").onclick=()=>{
+  if(!last){toast(t("toastFirst"));return;}
+  const rt=Q("#rt");
+  const txt = rt?.dataset?.copy || rt?.textContent || "";
+  navigator.clipboard?.writeText(txt).then(()=>toast(t("toastCopied"))).catch(()=>{});
+};
 Q("#rs").onclick=()=>{if(confirm(LANG==="EN"?"Reset everything?":(LANG==="CA"?"Reiniciar tot?":"¿Reiniciar todo?"))){localStorage.clear();location.reload();}};
 Q("#jumpX").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("x");};
 Q("#jumpM").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("m");};
 Q("#jumpAI").onclick=()=>{if(!last){toast(t("toastFirst"));return;}show("ai");};
-Q("#jumpAmort").onclick=()=>{
-  if(!last){toast(t("toastFirst"));return;}
-  const ac=Q("#amortiCalc");
-  if(ac){
-    const open=ac.style.display!=="none";
-    ac.style.display=open?"none":"block";
-    if(!open)ac.scrollIntoView({behavior:"smooth",block:"nearest"});
-  }
-};
+// Amortización desactivada (botón eliminado)
+const _jumpAmort = Q("#jumpAmort");
+if(_jumpAmort){
+  _jumpAmort.onclick=()=>{
+    if(!last){toast(t("toastFirst"));return;}
+    const ac=Q("#amortiCalc");
+    if(ac){
+      const open=ac.style.display!=="none";
+      ac.style.display=open?"none":"block";
+      if(!open)ac.scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
+  };
+}
 Q("#amortiCalcBtn").onclick=calcAmort;
 Q("#shareCl").onclick=()=>Q("#cp").click();
 
@@ -2698,6 +3255,57 @@ Q("#cm").onchange=upMap;
 Q("#L_CA").onclick=()=>setLang("CA");
 Q("#L_ES").onclick=()=>setLang("ES");
 Q("#L_EN").onclick=()=>setLang("EN");
+
+  // Staff login and panel toggle
+  const _stLogin = Q("#staffLoginBtn");
+  if(_stLogin){
+    _stLogin.onclick = () => staffLogin();
+  }
+
+  // Staff modal events
+  const sm = Q('#staffModal');
+  if(sm){
+    sm.querySelectorAll('[data-staff-close]').forEach(el=>el.addEventListener('click', closeStaffModal));
+  }
+  const smBtn = Q('#staffModalBtn');
+  if(smBtn) smBtn.addEventListener('click', staffSubmit);
+  const smPw = Q('#staffPw');
+  if(smPw) smPw.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); staffSubmit(); }});
+  const _toggleSt = Q("#toggleStaff");
+  if(_toggleSt){
+    _toggleSt.onclick = () => {
+      if(!staffLogged){staffLogin(); return;}
+      const box = Q("#staffSection");
+      if(!box) return;
+      const open = box.style.display !== "none";
+      box.style.display = open ? "none" : "block";
+      if(!open) renderStaffPanel();
+    };
+  }
+
+// Historial
+if(Q("#toggleHist")){
+  Q("#toggleHist").onclick=()=>{
+    const box=Q("#histBox");
+    if(!box) return;
+    const isOpen = box.style.display!=="none";
+    box.style.display = isOpen ? "none" : "block";
+    if(!isOpen) renderAnalysisHistory();
+  };
+}
+if(Q("#clearHist")){
+  Q("#clearHist").onclick=()=>{
+    setHistory([]);
+    renderAnalysisHistory();
+    const box=Q("#histBox"); if(box) box.style.display="block";
+  };
+}
+
+// Affordability explainer
+if(Q('#btnAfford')){
+  Q('#btnAfford').onclick=()=>renderAffordability();
+}
+
 ["inc","sav","m2"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
 ["nm","ag"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
 
@@ -2711,11 +3319,16 @@ liveValidate();
 updateSteps("p");
 setTabsEnabled();
 
-// Restore saved lang
-(()=>{const l=localStorage.getItem("hx_lang");if(l==="CA"||l==="EN")setLang(l);})();
+    // Restore saved lang
+    (()=>{const l=localStorage.getItem("hx_lang");if(l==="CA"||l==="EN")setLang(l);})();
 
-})();}
-waitForLeaflet();
+    }
+// In offline environments, Leaflet may not load. Try to initialise immediately, falling back to waiting for Leaflet only if needed.
+try {
+  initApp();
+} catch (e) {
+  try { waitForLeaflet(); } catch (_) {}
+}
 </script>
 </body>
 </html>

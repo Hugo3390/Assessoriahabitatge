@@ -13,24 +13,27 @@
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website"/>
-<meta property="og:url" content="https://assessoriahabitatge.com/"/>
+<meta property="og:url" content="https://assesoriahabitatge.com/"/>
 <meta property="og:title" content="Assessoria d'Habitatge - Calculadora Hipoteca Baix Penedès"/>
 <meta property="og:description" content="Calcula tu hipoteca, compara precios y recibe asesoramiento gratuito para comprar o alquilar en el Baix Penedès. Con IA y simulador de amortización."/>
-<meta property="og:image" content="https://assessoriahabitatge.com/preview.png"/>
+<meta property="og:image" content="https://assesoriahabitatge.com/preview.png"/>
 <meta property="og:locale" content="es_ES"/>
 <meta property="og:locale:alternate" content="ca_ES"/>
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:url" content="https://assessoriahabitatge.com/"/>
+<meta name="twitter:url" content="https://assesoriahabitatge.com/"/>
 <meta name="twitter:title" content="Assessoria d'Habitatge - Calculadora Hipoteca Baix Penedès"/>
 <meta name="twitter:description" content="Calcula tu hipoteca, compara precios y recibe asesoramiento gratuito para comprar o alquilar en el Baix Penedès."/>
-<meta name="twitter:image" content="https://assessoriahabitatge.com/preview.png"/>
+<meta name="twitter:image" content="https://assesoriahabitatge.com/preview.png"/>
 
 <!-- Favicon - SVG moderno -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%234facfe'/%3E%3Cstop offset='100%25' style='stop-color:%2300f2fe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' fill='%23001830' rx='20'/%3E%3Cpath d='M50 25 L65 40 L65 70 L35 70 L35 40 Z' fill='url(%23grad)'/%3E%3Crect x='45' y='50' width='10' height='12' fill='%23001830'/%3E%3Crect x='40' y='35' width='8' height='8' fill='%23001830'/%3E%3Crect x='52' y='35' width='8' height='8' fill='%23001830'/%3E%3C/svg%3E"/>
 
 <style>
+#shareBtn{display:none!important;}
+
+
 :root{
   --bg:#020617;--card:rgba(15,23,42,.70);--card2:rgba(11,18,32,.88);
   --bd:rgba(148,163,184,.22);--bd2:rgba(148,163,184,.30);
@@ -43,7 +46,7 @@
 }
 html,body{height:100%}
 body{margin:0;background:var(--bg);position:relative;overflow-x:hidden;}
-body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px 700px at 20% -10%,rgba(56,189,248,.18),transparent 60%),radial-gradient(1000px 600px at 85% 0%,rgba(34,197,94,.14),transparent 60%),radial-gradient(900px 520px at 60% 110%,rgba(168,85,247,.12),transparent 62%),linear-gradient(180deg,#0f172a 0%,#020617 55%,#000 100%);z-index:-1;pointer-events:none;animation:pulse 18s ease-in-out infinite;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px 700px at 20% -10%,rgba(56,189,248,.18),transparent 60%),radial-gradient(1000px 600px at 85% 0%,rgba(34,197,94,.14),transparent 60%),radial-gradient(900px 520px at 60% 110%,rgba(168,85,247,.12),transparent 62%),linear-gradient(180deg,#0f172a 0%,#020617 55%,#000 100%);z-index:-1;pointer-events:none;animation:none !important;}
 @keyframes pulse{0%,100%{opacity:.80}50%{opacity:1}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
@@ -65,6 +68,18 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1400px
 .langbtn{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:8px;padding:7px 13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s ease;font-size:.82rem;letter-spacing:.3px;font-style:normal!important;}
 .langbtn:hover{border-color:rgba(56,189,248,.55);transform:translateY(-1px)}
 .langbtn.a{background:var(--gradient-3);color:#001018;border-color:#38bdf8;box-shadow:0 3px 10px rgba(56,189,248,.25);font-weight:700;font-style:normal!important;}
+.seg{display:inline-flex;border:1px solid rgba(148,163,184,.25);border-radius:999px;overflow:hidden;background:rgba(2,6,23,.6)}
+.segbtn{border:0;background:transparent;color:#94a3b8;padding:7px 12px;font-weight:800;font-size:.78rem;cursor:pointer;transition:all .15s;letter-spacing:.2px}
+.segbtn:hover{color:#e2e8f0;background:rgba(56,189,248,.08)}
+.segbtn.on{color:#001018;background:linear-gradient(135deg,#22c55e,#38bdf8)}
+
+/* Accessibility: clear focus rings */
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid rgba(56,189,248,.9);outline-offset:2px}
+
+/* Optional larger text mode */
+body.text-lg{font-size:18px}
+body.text-lg .small{font-size:.95rem}
+body.text-lg .langbtn{font-size:.9rem}
 .tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;animation:slideIn .6s ease-out}
 .tab{border:1px solid rgba(148,163,184,.22);background:rgba(11,18,32,.75);color:#94a3b8;border-radius:999px;padding:9px 18px;cursor:pointer;font-weight:600;font-family:inherit;transition:all .18s cubic-bezier(.4,0,.2,1);user-select:none;position:relative;overflow:hidden;font-size:.85rem;letter-spacing:.2px;}
 .tab:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(56,189,248,.28)}
@@ -248,6 +263,25 @@ canvas{display:block;width:100%;height:240px}
 .staff-modal__card{position:relative;max-width:520px;margin:10vh auto 0;background:#f8fafc;border-radius:16px;padding:18px 18px 16px;box-shadow:0 25px 80px rgba(0,0,0,.45);border:1px solid rgba(15,23,42,.12)}
 .staff-modal__card input#staffPw{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(15,23,42,.18);font-size:1rem;outline:none}
 .staff-modal__card input#staffPw:focus{border-color:rgba(56,189,248,.9);box-shadow:0 0 0 4px rgba(56,189,248,.18)}
+
+/* Staff dashboard */
+.staffGrid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.staffGrid{grid-template-columns:1fr 1fr}}
+.staffCard{border:1px solid rgba(148,163,184,.22);border-radius:16px;padding:14px 14px 12px;background:rgba(15,23,42,.42);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.staffCardTitle{font-weight:950;color:#e2e8f0;font-size:1.02rem}
+.staffCardSub{color:#94a3b8;font-size:.85rem;margin-top:4px}
+.staffStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.kpi{border:1px solid rgba(148,163,184,.18);border-radius:14px;padding:10px;background:rgba(2,6,23,.35)}
+.kpi .k{color:#94a3b8;font-size:.76rem;font-weight:800;letter-spacing:.2px}
+.kpi .v{color:#e2e8f0;font-size:1.05rem;font-weight:950;margin-top:4px}
+.staffActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.staffMini{margin-top:12px;border-top:1px dashed rgba(148,163,184,.25);padding-top:12px}
+.staffMiniTitle{color:#cbd5e1;font-weight:900;font-size:.86rem;margin-bottom:8px}
+.staffMiniList{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(148,163,184,.22);background:rgba(2,6,23,.25);color:#cbd5e1;font-size:.82rem}
+.pill b{color:#38bdf8}
+.staffList{max-height:520px;overflow:auto;padding-right:4px}
+.staffRow{padding:10px 12px;border:1px solid rgba(148,163,184,.18);border-radius:14px;margin:10px 0;background:rgba(2,6,23,.28)}
 .staff-x{border:none;background:transparent;color:#0b1220;font-weight:900;font-size:1.1rem;cursor:pointer;padding:6px 8px;border-radius:10px}
 .staff-x:hover{background:rgba(2,6,23,.06)}
 .staff-btn{border:none;border-radius:12px;padding:10px 14px;font-weight:900;background:#0ea5e9;color:white;cursor:pointer}
@@ -267,9 +301,964 @@ canvas{display:block;width:100%;height:240px}
 .hx-mini:hover{filter:brightness(1.05)}
 .hx-mini.ghost{background:transparent;color:#e2e8f0;border:1px solid rgba(148,163,184,.24)}
 .hx-mini.ghost:hover{background:rgba(148,163,184,.08)}
+
+/* Share modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:none;display:flex;align-items:center;justify-content:center;z-index:9999;padding:18px}
+.modal-card{width:min(720px,96vw);border-radius:18px;border:1px solid rgba(148,163,184,.20);background:rgba(2,6,23,.92);box-shadow:0 30px 80px rgba(0,0,0,.55);padding:14px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 10px}
+@media print{
+  body>*:not(#printArea){display:none !important;}
+  #printArea{display:block !important;}
+}
+
+
+/* Share modal layout fixes */
+#shareModal .share-grid{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start}
+#shareModal #shareQR{width:220px;height:220px}
+#shareModal .share-right .share-url-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#shareModal .share-right .share-base-row{margin-top:10px;display:none}
+#shareModal .share-right .share-base-row label{display:block;color:#94a3b8;font-size:.85rem;margin-bottom:6px}
+#shareModal .share-right .share-base-row input{width:100%;border-radius:12px;border:1px solid rgba(148,163,184,.25);background:rgba(2,6,23,.35);color:#e2e8f0;padding:10px 12px}
+#shareModal .share-right .share-err{display:none;margin-top:8px;color:#fca5a5;font-size:.9rem}
+
+
+
+/* =========================
+   FINAL POLISH v33
+   (visual-only overrides)
+   ========================= */
+:root{
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --ring: 0 0 0 3px rgba(56, 189, 248, .22);
+  --shadow-soft: 0 10px 30px rgba(0,0,0,.25);
+  --shadow-float: 0 18px 60px rgba(0,0,0,.35);
+}
+
+/* Better text rendering */
+html, body{
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle background vignette + noise (very light) */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-40px;
+  pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 15% 10%, rgba(56,189,248,.10), transparent 60%),
+    radial-gradient(900px 500px at 85% 20%, rgba(52,211,153,.09), transparent 60%),
+    radial-gradient(1000px 700px at 50% 90%, rgba(99,102,241,.07), transparent 60%);
+  filter:saturate(110%);
+  z-index:-1;
+  opacity:.9;
+}
+
+/* Cards: cleaner edge + consistent radius */
+.c, .card, .panel, .box, .glass, .modal, .modalContent{
+  border-radius: var(--radius-lg) !important;
+}
+
+/* Inputs: clearer focus & consistent height */
+input[type="text"], input[type="number"], input[type="email"], select, textarea{
+  min-height: 44px;
+  border-radius: var(--radius-md);
+}
+input:focus, select:focus, textarea:focus, button:focus{
+  outline:none;
+  box-shadow: var(--ring);
+}
+
+/* Buttons: consistent padding + disabled look */
+button, .btn, .pill, .chip{
+  border-radius: 999px;
+  transition: transform .12s ease, filter .12s ease, box-shadow .12s ease, background .12s ease;
+}
+button:hover, .btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+button:active, .btn:active{
+  transform: translateY(0px);
+  filter: brightness(.98);
+}
+button:disabled, .btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* Tabs/steps: higher contrast label */
+.steps .step, .step, .tabs button, .seg button{
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+/* Modal: better spacing + responsive layout */
+.modalContent, .modal-card, .modal{
+  box-shadow: var(--shadow-float);
+  backdrop-filter: blur(18px);
+}
+@media (max-width: 720px){
+  .modalContent, .modal-card, .modal{
+    border-radius: var(--radius-md) !important;
+  }
+}
+
+/* Share modal grid fix (QR + link aligned) */
+.shareGrid{
+  display:grid;
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+  align-items:center;
+}
+@media (max-width: 820px){
+  .shareGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* QR: crisp rendering */
+#shareQR canvas, #shareQR img{
+  image-rendering: pixelated;
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+  background:#fff;
+  padding: 10px;
+}
+
+/* Staff table: cleaner rows */
+table{
+  border-collapse: separate;
+  border-spacing: 0;
+}
+thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+tbody tr:hover{
+  filter: brightness(1.03);
+}
+
+/* Scrollbar subtle */
+*{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148,163,184,.35) rgba(15,23,42,.35);
+}
+*::-webkit-scrollbar{ width: 10px; height: 10px; }
+*::-webkit-scrollbar-track{ background: rgba(15,23,42,.35); border-radius: 999px; }
+*::-webkit-scrollbar-thumb{ background: rgba(148,163,184,.35); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover{ background: rgba(148,163,184,.55); }
+
+
+/* Lite motion: safe, no continuous animations */
+body.loaded .cardx,
+body.loaded .chartCard,
+body.loaded .kpi,
+body.loaded .chat-bubble,
+body.loaded .share-card,
+body.loaded .modal-card{
+  animation: fadeIn .28s ease both;
+}
+
+/* Cards hover micro */
+.cardx, .chartCard, .kpi{
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, filter .14s ease;
+}
+.cardx:hover, .chartCard:hover, .kpi:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(56,189,248,.28);
+}
+
+/* Modal open micro */
+.modal{opacity:0;pointer-events:none;transition:opacity .16s ease;}
+.modal[style*="display:flex"], .modal.show, .modal.is-open{opacity:1;pointer-events:auto;}
+.modal-card{transform:translateY(8px) scale(.99);transition:transform .16s ease;}
+.modal[style*="display:flex"] .modal-card, .modal.show .modal-card, .modal.is-open .modal-card{transform:translateY(0) scale(1);}
+
+/* Buttons: subtle glow on primary only */
+button.primary, .btn.primary, .pill.primary{
+  box-shadow: 0 10px 24px rgba(6,182,212,.18);
+}
+button.primary:hover, .btn.primary:hover, .pill.primary:hover{
+  box-shadow: 0 14px 34px rgba(6,182,212,.26);
+}
+
+/* Reduce motion support */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}
+
+/* Micro: links */
+a{ text-underline-offset: 3px; }
+a:hover{ text-decoration-thickness: 2px; }
+
+
+/* ===== Motion Plus (safe) ===== */
+.page-enter{ animation: fadeUp .45s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes fadeUp{ from{opacity:0; transform: translateY(10px);} to{opacity:1; transform: translateY(0);} }
+
+.motion-plus .card:hover{ transform: translateY(-2px); transition: transform .18s ease, box-shadow .18s ease; }
+.motion-plus .card{ transition: transform .18s ease, box-shadow .18s ease; }
+
+.motion-plus button, .motion-plus .btn, .motion-plus .pill{ position: relative; overflow: hidden; }
+.rp{
+  position:absolute; inset:auto;
+  width:12px; height:12px; border-radius:999px;
+  transform: translate(-50%,-50%) scale(0);
+  background: rgba(255,255,255,.22);
+  animation: ripple .55s ease-out forwards;
+  pointer-events:none;
+}
+@keyframes ripple{
+  to{ transform: translate(-50%,-50%) scale(18); opacity:0; }
+}
+
+
+/* Extra safe motion goodies */
+@keyframes popIn{0%{opacity:0;transform:translateY(10px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes shimmer{0%{transform:translateX(-120%)}100%{transform:translateX(140%)}}
+
+.motion-plus .kpi{transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
+.motion-plus .kpi:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,0,0,.32);border-color:rgba(56,189,248,.38);}
+.motion-plus .kpi .v{will-change:contents;}
+.motion-plus .page-enter .kpi{animation:popIn .45s ease-out both;}
+.motion-plus .btn-primary, .motion-plus button.primary, .motion-plus .primaryBtn{
+  position:relative;
+}
+.motion-plus .btn-primary::after, .motion-plus button.primary::after, .motion-plus .primaryBtn::after{
+  content:""; position:absolute; inset:-1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  transform:translateX(-140%);
+  opacity:.85; pointer-events:none;
+}
+.motion-plus .btn-primary:hover::after, .motion-plus button.primary:hover::after, .motion-plus .primaryBtn:hover::after{
+  animation:shimmer .9s ease-out 1;
+}
+
+/* Subtle focus ring */
+:focus-visible{ outline: 2px solid rgba(56,189,248,.75); outline-offset: 2px; }
+
+/* Slightly smoother modal enter (kept light) */
+.modal[open], .modal.show{ animation: modalIn .18s ease-out both; transform-origin: 50% 30%; }
+@keyframes modalIn{ from{opacity:0; transform: translateY(6px) scale(.99);} to{opacity:1; transform: translateY(0) scale(1);} }
+
+
+/* v40: safe interactive polish (reveal + stagger + toast) */
+:root{ --motion-ease:cubic-bezier(.2,.8,.2,1); }
+
+.reveal{
+  opacity:0;
+  transform:translateY(10px) scale(.992);
+  transition:opacity .45s var(--motion-ease), transform .45s var(--motion-ease);
+  will-change:opacity,transform;
+}
+.reveal.reveal-in{ opacity:1; transform:none; }
+
+.stagger > .reveal{ transition-delay:calc(var(--i,0) * 42ms); }
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{ transition:none !important; transform:none !important; opacity:1 !important; }
+}
+
+/* safer micro-interactions */
+button, .btn, [role="button"]{ transition: transform .18s var(--motion-ease), box-shadow .18s var(--motion-ease), filter .18s var(--motion-ease); }
+button:active, .btn:active, [role="button"]:active{ transform: translateY(1px) scale(.99); }
+input, select, textarea{ transition: box-shadow .18s var(--motion-ease), border-color .18s var(--motion-ease), transform .18s var(--motion-ease); }
+input:focus, select:focus, textarea:focus{ transform: translateY(-1px); }
+
+:focus-visible{ outline: 2px solid rgba(255,255,255,.55); outline-offset: 2px; border-radius: 10px; }
+
+/* toast animation (if your UI shows messages) */
+.toast, .toastMsg, .snackbar{
+  animation: toastIn .35s var(--motion-ease) both;
+}
+@keyframes toastIn{
+  from{ opacity:0; transform: translateY(10px) scale(.98); }
+  to{ opacity:1; transform:none; }
+}
+
+
+/* ===== Final Motion & Interactions (safe) ===== */
+.view-enter{ animation:viewEnter .28s cubic-bezier(.2,.8,.2,1) both; will-change:transform,opacity; }
+.stagger-item{ animation:itemEnter .34s cubic-bezier(.2,.9,.2,1) both; animation-delay:var(--d,0ms); will-change:transform,opacity; }
+@keyframes viewEnter{ from{opacity:.0; transform:translateY(10px) scale(.99);} to{opacity:1; transform:translateY(0) scale(1);} }
+@keyframes itemEnter{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+
+@keyframes shakeX{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+.shake{ animation:shakeX .22s ease-in-out both; }
+
+.btn, button{
+  transition: transform .12s ease, box-shadow .18s ease, filter .18s ease, background-color .18s ease, border-color .18s ease;
+}
+.btn:active, button:active{ transform: translateY(1px) scale(.99); }
+
+.btnPrimary, .btn.primary, button.primary{
+  position:relative;
+  overflow:hidden;
+}
+.btnPrimary::after, .btn.primary::after, button.primary::after{
+  content:"";
+  position:absolute; inset:-40% -60%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,0) 55%);
+  transform: translateX(-25%) translateY(-10%) rotate(10deg);
+  opacity:0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+.btnPrimary:hover::after, .btn.primary:hover::after, button.primary:hover::after{ opacity:1; }
+
+input,select,textarea{
+  transition: box-shadow .18s ease, border-color .18s ease, transform .12s ease, background-color .18s ease;
+}
+input:focus,select:focus,textarea:focus{
+  transform: translateY(-1px);
+}
+
+/* Tabs/pills feel snappier */
+.pill, .chip, .tab, [role="tab"]{
+  transition: transform .14s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.pill:hover, .chip:hover, .tab:hover, [role="tab"]:hover{ transform: translateY(-1px); }
+
+/* Modal entrance (kept light) */
+.modal, .dialog, .overlayContent{
+  animation: modalIn .22s cubic-bezier(.2,.9,.2,1) both;
+}
+@keyframes modalIn{ from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:translateY(0) scale(1);} }
+
+/* Reduced motion: disable animations */
+@media (prefers-reduced-motion: reduce){
+  .view-enter,.stagger-item,.shake,.modal,.dialog,.overlayContent{ animation:none !important; }
+  *{ scroll-behavior:auto !important; transition:none !important; }
+}
+
+
+
+/* ===== PRO VISUAL OVERHAUL v43 (safe motion) ===== */
+:root{
+  --glass: rgba(15,23,42,.72);
+  --glass2: rgba(2,6,23,.56);
+  --accent: #38bdf8;
+  --accent2:#06b6d4;
+  --accent3:#22c55e;
+  --ring: rgba(56,189,248,.45);
+  --ring2: rgba(34,197,94,.35);
+  --shadow-soft: 0 10px 30px rgba(0,0,0,.28);
+  --shadow-pop: 0 18px 60px rgba(0,0,0,.42);
+  --radius-xl: 18px;
+}
+
+body{
+  background:
+    radial-gradient(1200px 800px at 10% -10%, rgba(56,189,248,.24), transparent 55%),
+    radial-gradient(900px 600px at 95% 10%, rgba(34,197,94,.18), transparent 50%),
+    radial-gradient(900px 700px at 60% 120%, rgba(99,102,241,.16), transparent 55%),
+    linear-gradient(180deg, #020617 0%, #030a1a 45%, #020617 100%);
+}
+
+.w{max-width:1200px}
+.c{
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(148,163,184,.20);
+  background: linear-gradient(180deg, rgba(15,23,42,.78), rgba(2,6,23,.52));
+  position:relative;
+  overflow:hidden;
+}
+.c::before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(800px 260px at 20% 0%, rgba(56,189,248,.10), transparent 60%),
+    radial-gradient(700px 240px at 85% 10%, rgba(34,197,94,.08), transparent 60%);
+  pointer-events:none;
+}
+.c > *{position:relative}
+
+.pill{
+  background: rgba(56,189,248,.12);
+  border: 1px solid rgba(56,189,248,.26);
+  box-shadow: 0 8px 24px rgba(56,189,248,.10);
+}
+
+.hrow{
+  background: linear-gradient(180deg, rgba(2,6,23,.65), rgba(2,6,23,.25));
+  border: 1px solid rgba(148,163,184,.18);
+}
+
+/* Stepper: make it clearly modern */
+.steps{
+  padding: 14px 16px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(15,23,42,.55), rgba(2,6,23,.28));
+  border: 1px solid rgba(148,163,184,.18);
+  box-shadow: var(--shadow-soft);
+}
+.step-dot{
+  background: rgba(148,163,184,.10);
+  border: 1px solid rgba(148,163,184,.22);
+  box-shadow: 0 8px 18px rgba(0,0,0,.22);
+}
+.step.active .step-dot{
+  background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(6,182,212,.85));
+  border-color: rgba(56,189,248,.55);
+  box-shadow: 0 16px 34px rgba(56,189,248,.25);
+}
+.step.done .step-dot{
+  background: linear-gradient(135deg, rgba(34,197,94,.90), rgba(56,249,215,.65));
+  border-color: rgba(34,197,94,.50);
+  box-shadow: 0 16px 34px rgba(34,197,94,.18);
+}
+.step-line{
+  background: linear-gradient(90deg, rgba(148,163,184,.16), rgba(56,189,248,.22));
+  height: 3px;
+  border-radius: 999px;
+}
+
+/* Tabs become “app-like” */
+.tabs{gap:10px; padding: 10px 2px}
+.tab{
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.18);
+  background: rgba(15,23,42,.40);
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  position:relative;
+  overflow:hidden;
+}
+.tab::after{
+  content:"";
+  position:absolute; left:14px; right:14px; bottom:7px; height:2px;
+  background: linear-gradient(90deg, rgba(56,189,248,.0), rgba(56,189,248,.75), rgba(34,197,94,.0));
+  opacity:0; transform: translateY(4px);
+  transition: .25s ease;
+}
+.tab:hover{transform: translateY(-1px); box-shadow: 0 16px 34px rgba(0,0,0,.24)}
+.tab.a{
+  background: linear-gradient(135deg, rgba(56,189,248,.22), rgba(6,182,212,.10));
+  border-color: rgba(56,189,248,.28);
+}
+.tab.a::after{opacity:1; transform: translateY(0)}
+.tab.dis{opacity:.55}
+
+/* Inputs and selects: clearer, chunkier */
+input, select, textarea{
+  border-radius: 14px !important;
+  border: 1px solid rgba(148,163,184,.22) !important;
+  background: rgba(2,6,23,.35) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+}
+input:focus, select:focus, textarea:focus{
+  outline:none !important;
+  border-color: rgba(56,189,248,.55) !important;
+  box-shadow: 0 0 0 4px var(--ring), inset 0 1px 0 rgba(255,255,255,.06);
+  transform: translateY(-1px);
+}
+
+/* Buttons: visibly premium */
+.btn, button.btn, .langbtn, .segbtn, .ai-tool-btn, .chat-send-btn{
+  border-radius: 14px;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.btn:hover, .langbtn:hover, .segbtn:hover, .ai-tool-btn:hover, .chat-send-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.28);
+}
+.btn:active, .langbtn:active, .segbtn:active, .ai-tool-btn:active, .chat-send-btn:active{
+  transform: translateY(0px) scale(.98);
+  box-shadow: 0 8px 20px rgba(0,0,0,.22);
+}
+.btn.primary, .btn:not(.secondary):not(.ghost){
+  background: linear-gradient(135deg, rgba(56,189,248,.92), rgba(6,182,212,.82));
+  border-color: rgba(56,189,248,.50) !important;
+  color: #02121c !important;
+  font-weight: 800;
+  letter-spacing:.2px;
+}
+.btn.primary:hover{filter: saturate(1.08)}
+.btn.secondary{
+  background: linear-gradient(135deg, rgba(148,163,184,.16), rgba(15,23,42,.55));
+}
+
+/* KPI: make it pop */
+.kpi{
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(15,23,42,.72), rgba(2,6,23,.40));
+  border: 1px solid rgba(148,163,184,.18);
+  box-shadow: var(--shadow-soft);
+  position:relative; overflow:hidden;
+}
+.kpi::before{
+  content:"";
+  position:absolute; left:0; top:0; right:0; height:3px;
+  background: linear-gradient(90deg, rgba(56,189,248,.15), rgba(56,189,248,.85), rgba(34,197,94,.65));
+}
+.kpi:hover{transform: translateY(-2px); box-shadow: var(--shadow-pop)}
+.kpi .v{font-size: 1.45rem !important}
+
+/* Staff: more “dashboard” */
+.hx-hgrid .hx-hitem, .hx-hrow, .hx-mini, .hx-hmeta{
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(148,163,184,.18);
+  background: rgba(15,23,42,.55);
+  box-shadow: 0 10px 28px rgba(0,0,0,.22);
+}
+table{border-collapse:separate; border-spacing:0 10px}
+table tr{
+  background: rgba(2,6,23,.25);
+  border: 1px solid rgba(148,163,184,.14);
+}
+table td, table th{
+  padding: 12px 14px;
+}
+table tr:hover{background: rgba(56,189,248,.06)}
+
+/* Reveal motion: make it actually noticeable but safe */
+.reveal{opacity:0; transform: translateY(16px) scale(.985); filter: blur(0px)}
+.reveal.on{opacity:1; transform: translateY(0) scale(1); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.9,.2,1)}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1 !important; transform:none !important}
+  *{animation:none !important; transition:none !important; scroll-behavior:auto !important}
+}
+
+
+#btnShare{display:none !important;}
+#shareModal{display:none !important;}
+
+/* ===== Visual boost: municipality dropdown + section tabs ===== */
+select{
+  background: rgba(15,23,42,.92) !important;
+  color: var(--t) !important;
+  border: 1px solid rgba(148,163,184,.28) !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  outline: none !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+select:focus{
+  border-color: rgba(56,189,248,.75) !important;
+  box-shadow: 0 0 0 4px rgba(56,189,248,.16), 0 10px 30px rgba(0,0,0,.28);
+}
+select option, select optgroup{
+  background: rgba(2,6,23,.98) !important;
+  color: #e5e7eb !important;
+}
+select option:checked{
+  background: rgba(56,189,248,.22) !important;
+}
+
+/* Tabs (sections): more vivid + clearer active state */
+.tabs .tab{
+  background: rgba(15,23,42,.55);
+  border-color: rgba(148,163,184,.20);
+  color: rgba(229,231,235,.86);
+}
+.tabs .tab:hover{
+  border-color: rgba(56,189,248,.55);
+  box-shadow: 0 10px 28px rgba(0,0,0,.28), 0 0 0 4px rgba(56,189,248,.10);
+  transform: translateY(-1px);
+}
+.tabs .tab.a{
+  background: var(--gradient-4);
+  color: #061018;
+  border-color: transparent;
+  box-shadow: 0 14px 34px rgba(0,0,0,.30), 0 0 0 4px rgba(67,233,123,.12);
+}
+
+/* Stepper: a bit more pop */
+.steps .step-dot{
+  background: rgba(148,163,184,.14);
+  border-color: rgba(148,163,184,.28);
+}
+.steps .step.on .step-dot{
+  background: rgba(56,189,248,.95);
+  border-color: rgba(56,189,248,.95);
+  box-shadow: 0 0 0 6px rgba(56,189,248,.18), 0 12px 24px rgba(0,0,0,.28);
+}
+.steps .step.done .step-dot{
+  background: rgba(34,197,94,.95);
+  border-color: rgba(34,197,94,.95);
+  box-shadow: 0 0 0 6px rgba(34,197,94,.16), 0 12px 24px rgba(0,0,0,.28);
+}
+
+/* Small click animation (subtle, not circus-level) */
+@keyframes tapPop{
+  0%{transform:scale(1)}
+  45%{transform:scale(.97)}
+  100%{transform:scale(1)}
+}
+.tap-anim{
+  animation: tapPop 160ms ease;
+}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<style id="pro-ui">
+:root{
+  --bg0:#05070c;
+  --bg1:#080d18;
+  --card:#0b1426cc;
+  --card2:#0b1426f2;
+  --stroke:rgba(255,255,255,.10);
+  --stroke2:rgba(255,255,255,.16);
+  --text:#eaf1ff;
+  --muted:rgba(234,241,255,.72);
+  --muted2:rgba(234,241,255,.55);
+  --brand:#38bdf8;
+  --brand2:#34d399;
+  --warn:#fbbf24;
+  --bad:#fb7185;
+  --ok:#22c55e;
+  --shadow: 0 20px 60px rgba(0,0,0,.55);
+  --shadow2: 0 10px 30px rgba(0,0,0,.45);
+  --r12:12px; --r16:16px; --r20:20px;
+  --pad: 18px;
+  --pad2: 22px;
+  --focus: 0 0 0 4px rgba(56,189,248,.22);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+html,body{font-family:var(--sans); color:var(--text); background:radial-gradient(1200px 650px at 20% 0%, rgba(56,189,248,.16), transparent 55%), radial-gradient(900px 520px at 90% 10%, rgba(52,211,153,.14), transparent 55%), linear-gradient(180deg, var(--bg1), var(--bg0));}
+*{scrollbar-color: rgba(255,255,255,.18) rgba(0,0,0,.25);}
+*::-webkit-scrollbar{height:10px;width:10px}
+*::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px;border:2px solid rgba(0,0,0,.28)}
+*::-webkit-scrollbar-track{background:rgba(0,0,0,.20);border-radius:999px}
+a{color:var(--brand); text-decoration:none}
+a:hover{text-decoration:underline}
+button, .btn, input, select, textarea{font-family:inherit}
+small,.muted{color:var(--muted2)}
+/* Top bar polish */
+header, .topbar, .header, #top, #topbar{
+  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(7,15,28,.86), rgba(7,15,28,.60));
+  border:1px solid var(--stroke);
+  border-radius: 999px;
+  box-shadow: var(--shadow2);
+}
+header *,.topbar *{letter-spacing:.1px}
+/* Cards and sections */
+.card, .panel, .box, .section, .stepCard, .glass, .c, .blk, .blk2{
+  background: linear-gradient(180deg, rgba(11,20,38,.86), rgba(11,20,38,.62));
+  border:1px solid var(--stroke);
+  border-radius: var(--r20);
+  box-shadow: var(--shadow2);
+}
+.card:hover,.panel:hover{border-color: var(--stroke2)}
+/* Headings */
+h1,h2,h3{letter-spacing:.2px}
+h2{font-size:1.1rem}
+h3{font-size:1rem}
+/* Inputs */
+input[type="text"], input[type="number"], input[type="email"], input[type="tel"], input[type="url"], select, textarea{
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 11px 12px;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+input::placeholder, textarea::placeholder{color:rgba(234,241,255,.38)}
+input:focus, select:focus, textarea:focus{
+  outline:none;
+  border-color: rgba(56,189,248,.45);
+  box-shadow: var(--focus);
+  background: rgba(255,255,255,.08);
+}
+input:disabled, select:disabled{opacity:.6; cursor:not-allowed}
+label{color:var(--muted); font-size:.9rem}
+/* Buttons */
+button, .btn{
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  padding: 10px 14px;
+  box-shadow: 0 10px 20px rgba(0,0,0,.28);
+  transition: transform .12s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+button:hover, .btn:hover{background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.22); transform: translateY(-1px)}
+button:active, .btn:active{transform: translateY(0px); box-shadow: 0 6px 14px rgba(0,0,0,.25)}
+button:focus{outline:none; box-shadow: var(--focus)}
+.btnPrimary, .primary, .cta, .btn-main{
+  background: linear-gradient(90deg, rgba(56,189,248,.95), rgba(52,211,153,.95));
+  border-color: rgba(255,255,255,.12);
+  color:#06101e;
+  font-weight:700;
+}
+.btnPrimary:hover,.primary:hover,.cta:hover{filter:saturate(1.05) brightness(1.02)}
+.btnDanger{background: rgba(251,113,133,.18); border-color: rgba(251,113,133,.35)}
+.btnGhost{background: rgba(255,255,255,.04)}
+/* Pills / chips */
+.pill, .chip, .tag, .badge{
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: var(--muted);
+}
+.badge.ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12); color: rgba(220,255,232,.92)}
+.badge.warn{border-color: rgba(251,191,36,.40); background: rgba(251,191,36,.12); color: rgba(255,244,214,.95)}
+.badge.bad{border-color: rgba(251,113,133,.45); background: rgba(251,113,133,.14); color: rgba(255,224,230,.95)}
+/* Tabs */
+.tabs button, .seg button, .segmented button, .tab button, .navtabs button{
+  border-radius: 999px;
+  padding: 10px 14px;
+}
+.tabs .active, .seg .active, .segmented .active, .tab .active, .navtabs .active{
+  background: rgba(56,189,248,.22);
+  border-color: rgba(56,189,248,.35);
+  color: rgba(234,241,255,.95);
+}
+/* Steps */
+.step, .stepDot, .stepper .dot{
+  box-shadow: 0 0 0 6px rgba(56,189,248,.08);
+}
+/* Modal */
+.modal, .dialog, .overlay .modalCard, #shareModal, #staffModal{
+  border-radius: var(--r20);
+  border:1px solid rgba(255,255,255,.14);
+  background: linear-gradient(180deg, rgba(6,12,22,.86), rgba(6,12,22,.62));
+  box-shadow: var(--shadow);
+}
+.modal .x, .dialog .x, .modal .close, .dialog .close{
+  width:38px; height:38px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+}
+/* Share modal layout helper (works even if ids differ) */
+.shareGrid, .shareWrap{
+  display:grid;
+  grid-template-columns: 220px 1fr;
+  gap: 14px;
+  align-items:start;
+}
+.shareGrid .qrBox, .shareWrap .qrBox{
+  width: 220px; height: 220px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.shareGrid canvas, .shareGrid img, .shareWrap canvas, .shareWrap img{image-rendering:pixelated}
+/* Tables (Staff) */
+table{border-collapse:separate;border-spacing:0;width:100%}
+th,td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+th{
+  position:sticky; top:0;
+  background: rgba(10,18,34,.92);
+  backdrop-filter: blur(10px);
+  text-align:left;
+  color: rgba(234,241,255,.86);
+  font-weight:700;
+  z-index:1;
+}
+tr:hover td{background: rgba(255,255,255,.04)}
+/* Notices / toasts */
+.alert, .notice, .toast{
+  border-radius: 16px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  padding: 12px 14px;
+}
+.alert.warn{border-color: rgba(251,191,36,.32); background: rgba(251,191,36,.10)}
+.alert.bad{border-color: rgba(251,113,133,.34); background: rgba(251,113,133,.10)}
+.alert.ok{border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.10)}
+/* Footer links */
+footer, .footer{color:rgba(234,241,255,.60)}
+/* Responsive */
+@media (max-width: 900px){
+  .shareGrid, .shareWrap{grid-template-columns:1fr}
+  .shareGrid .qrBox, .shareWrap .qrBox{width: 240px; height:240px; margin:0 auto}
+  header, .topbar, .header, #top, #topbar{border-radius: 18px}
+}
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important}
+}
+</style>
+
+<style id="ultra-safe-ui">
+/* Ultra-safe performance guard (prevents UI lockups on some PCs/browsers) */
+html, body { scroll-behavior: smooth; }
+body::before, body::after { animation: none !important; filter: none !important; }
+* { animation: none !important; }
+header, .topbar, .header, #top, #topbar,
+.card, .panel, .box, .section, .stepCard, .glass, .c, .blk, .blk2 {
+  backdrop-filter: none !important;
+}
+</style>
+
+
+<style id="ui-motion-v42">
+/* V42 polish: more pro visuals + safe animations (no infinite GPU-melting effects) */
+:root{
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --ease-in: cubic-bezier(.4,0,1,1);
+  --shadow-soft: 0 10px 30px rgba(0,0,0,.10);
+  --shadow-lift: 0 16px 50px rgba(0,0,0,.14);
+  --ring: 0 0 0 4px rgba(59,130,246,.18);
+  --ring-strong: 0 0 0 6px rgba(59,130,246,.22);
+}
+
+/* Subtle premium page texture (static, cheap) */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-40px;
+  pointer-events:none;
+  background:
+    radial-gradient(900px 600px at 12% 8%, rgba(59,130,246,.08), transparent 60%),
+    radial-gradient(700px 520px at 88% 14%, rgba(16,185,129,.07), transparent 55%),
+    radial-gradient(900px 700px at 55% 92%, rgba(99,102,241,.06), transparent 60%);
+  filter:saturate(1.05);
+  z-index:0;
+}
+body > *{ position:relative; z-index:1; }
+
+/* Better scrollbars (non-blocking) */
+*{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148,163,184,.55) transparent;
+}
+*::-webkit-scrollbar{ height:10px; width:10px; }
+*::-webkit-scrollbar-thumb{
+  background: rgba(148,163,184,.55);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover{ background: rgba(148,163,184,.75); background-clip:content-box; }
+
+/* Safer reveal animation (runs once per element) */
+.reveal{
+  opacity: 0;
+  transform: translateY(10px) scale(.99);
+  filter: blur(.2px);
+  will-change: transform, opacity;
+}
+.reveal.is-visible{
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 520ms var(--ease-out),
+    filter 520ms var(--ease-out);
+}
+.reveal.is-fast.is-visible{
+  transition-duration: 260ms, 360ms, 360ms;
+}
+
+/* Stagger container helper */
+.reveal-stagger > .reveal{
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+
+/* Inputs: clearer focus, small “success flash” on change */
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible{
+  outline: none !important;
+  box-shadow: var(--ring);
+}
+.field-flash-ok{
+  animation: flashOk 650ms var(--ease-out) 1;
+}
+@keyframes flashOk{
+  0%{ box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  30%{ box-shadow: 0 0 0 5px rgba(16,185,129,.20); }
+  100%{ box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+/* Cards: tiny “tilt” feel on hover (cheap: translate + shadow only) */
+.card, .kpi, .panel, .box, .result-card, .staff-card{
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), border-color 220ms var(--ease-out);
+}
+.card:hover, .kpi:hover, .panel:hover, .box:hover, .result-card:hover, .staff-card:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Buttons: micro-interactions */
+button, .btn, a.btn{
+  transition: transform 120ms var(--ease-out), box-shadow 220ms var(--ease-out), filter 220ms var(--ease-out);
+}
+button:active, .btn:active, a.btn:active{
+  transform: translateY(1px) scale(.99);
+}
+.btn-primary:hover, button.primary:hover{
+  box-shadow: var(--shadow-lift);
+}
+
+/* Modal: smoother but safe */
+.modal, .dialog, .staff-modal{
+  transform-origin: 50% 30%;
+}
+.modal.is-open, .dialog.is-open, .staff-modal.is-open{
+  animation: popIn 220ms var(--ease-out) 1;
+}
+@keyframes popIn{
+  0%{ opacity: 0; transform: translateY(10px) scale(.98); }
+  100%{ opacity: 1; transform: none; }
+}
+
+/* KPI number “shine” (not infinite) */
+.kpi .value, .kpi-value, .kpi-number{
+  background-image: linear-gradient(90deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+  background-size: 220px 100%;
+  background-position: -240px 0;
+}
+.kpi.is-animated .value, .kpi.is-animated .kpi-value, .kpi.is-animated .kpi-number{
+  animation: shineOnce 900ms var(--ease-out) 1;
+}
+@keyframes shineOnce{
+  to{ background-position: 240px 0; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .reveal, .reveal.is-visible, .modal.is-open, .dialog.is-open, .staff-modal.is-open,
+  .card, .kpi, .panel, .box, .result-card, .staff-card,
+  button, .btn, a.btn{
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  body::before{ display:none; }
+}
+</style>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+
+<script>
+/* Global safety helpers so buttons never crash due to scope */
+(function(){
+  if(!window.fmtMoney){
+    window.fmtMoney = function(v){
+      const n = Number(v);
+      if(!isFinite(n)) return "€0";
+      try{
+        return new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n);
+      }catch(e){
+        return "€"+Math.round(n).toString();
+      }
+    };
+  }
+})();
+</script>
 </head>
 <body>
 <div class="w" id="hx">
@@ -285,6 +1274,7 @@ canvas{display:block;width:100%;height:240px}
         <button class="langbtn" id="L_CA" type="button">CA</button>
         <button class="langbtn a" id="L_ES" type="button">ES</button>
         <button class="langbtn" id="L_EN" type="button">EN</button>
+	        <button class="langbtn" id="textToggle" type="button" title="Text size" aria-label="Toggle text size" style="margin-left:8px">Aa</button>
         <button class="langbtn" id="staffLoginBtn" type="button" style="margin-left:8px">Staff</button>
         <button class="langbtn" id="toggleStaff" type="button" style="display:none" data-i="btnStaffPanel">Panel</button>
       </div>
@@ -333,10 +1323,10 @@ canvas{display:block;width:100%;height:240px}
       </div>
       <div style="grid-column:1/-1;margin-bottom:-4px">
           <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);border-radius:10px;flex-wrap:wrap;gap:8px">
-            <span style="font-size:.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.3px">📊 Referencia actual</span>
-            <span style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:#86efac;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700">Euribor 12m ≈ 2.45%</span>
-            <span style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700">Fijo medio ≈ 2.95–3.20%</span>
-            <span style="color:#64748b;font-size:.75rem;margin-left:auto">Datos orientativos · Feb 2026</span>
+            <span style="font-size:.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.3px" data-i="lblRefNow">📊 Referencia actual</span>
+            <span style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:#86efac;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700" data-i="refEur">Euribor 12m ≈ 2.45%</span>
+            <span style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700" data-i="refFix">Fijo medio ≈ 2.95–3.20%</span>
+            <span style="color:#64748b;font-size:.75rem;margin-left:auto" data-i="lblRefNote">Datos orientativos · Feb 2026</span>
           </div>
         </div>
         <div><label data-i="lblYrs">Años de hipoteca (5–40)</label><input id="yrs" type="number" min="5" max="40" value="25" placeholder="25"></div>
@@ -366,12 +1356,24 @@ canvas{display:block;width:100%;height:240px}
       </div>
       <div>
         <label data-i="lblM2">Metros cuadrados (≥50)</label>
-        <input id="m2" type="number" min="50" max="1000" data-i-ph="phM2">
+        <input id="m2" type="number" min="50" max="999" data-i-ph="phM2">
         <div class="field-hint" id="hint-m2"></div>
       </div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="bed" type="number" min="0" max="10" data-i-ph="phBed"></div>
-      <div><label data-i="lblBath">Baños</label><input id="bat" type="number" min="1" max="10" data-i-ph="phBath"></div>
-      <div><label data-i="lblType">Tipo de vivienda</label><select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
+      <div>
+        <label data-i="lblBed">Habitaciones</label>
+        <input id="bed" type="number" min="0" max="9" data-i-ph="phBed">
+        <div class="field-hint" id="hint-bed"></div>
+      </div>
+      <div>
+        <label data-i="lblBath">Baños</label>
+        <input id="bat" type="number" min="1" max="9" data-i-ph="phBath">
+        <div class="field-hint" id="hint-bat"></div>
+      </div>
+      <div>
+        <label data-i="lblType">Tipo de vivienda</label>
+        <select id="ty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select>
+        <div class="field-hint" id="hint-ty"></div>
+      </div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
           <label data-i="lblExtras">Extras (opcional)</label>
@@ -382,6 +1384,15 @@ canvas{display:block;width:100%;height:240px}
             <label><input type="checkbox" id="el"><span data-i="exAsc">Ascensor</span></label>
             <label><input type="checkbox" id="ek"><span data-i="exGar">Aparcamiento</span></label>
           </div>
+        </div>
+      </div>
+
+      <!-- Data quality (non-blocking) -->
+      <div style="grid-column:1/-1">
+        <div id="dqWrap" style="margin-top:2px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:.78rem;color:#94a3b8;font-weight:700" data-i="dqTitle">Calidad de datos</span>
+          <span id="dqBadge" style="display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 10px;font-size:.82rem;font-weight:800;border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.08);color:#e2e8f0">–</span>
+          <span id="dqHint" style="color:#94a3b8;font-size:.85rem"> </span>
         </div>
       </div>
     </div>
@@ -522,7 +1533,20 @@ canvas{display:block;width:100%;height:240px}
         </div>
       </div>
 
-      <div class="note" id="rt"></div>
+      <!-- Summary (short vs detailed) -->
+      <div class="note" id="rtWrap" style="padding:14px 14px 12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div style="font-weight:950;color:#e2e8f0" data-i="sumReadable">Resumen claro</div>
+          <div class="seg" role="tablist" aria-label="Summary detail selector">
+            <button id="sumModeShort" class="segbtn on" type="button" data-i="sumShort">Corto</button>
+            <button id="sumModeLong" class="segbtn" type="button" data-i="sumLong">Detallado</button>
+          </div>
+        </div>
+        <div id="rtShort" style="color:#cbd5e1;line-height:1.75;font-size:.93rem"></div>
+        <div id="rtLong" style="display:none;color:#cbd5e1;line-height:1.75;font-size:.93rem"></div>
+        <!-- Back-compat (older copy button expects #rt). Kept hidden. -->
+        <div id="rt" style="display:none"></div>
+      </div>
 
       <!-- Affordability explainer (personal data -> what you can afford) -->
       <div class="c" id="affordCard" style="margin-top:14px">
@@ -554,6 +1578,7 @@ canvas{display:block;width:100%;height:240px}
     </div>
     <div class="r" style="margin-top:10px">
       <button class="b" id="cp" type="button" data-i="btnCopy">Copiar resumen</button>
+<button class="b" id="pdfBtn" type="button" onclick="try{window.exportPDF&&window.exportPDF()}catch(e){}" data-i="btnPdf">📄 Exportar PDF</button>
       <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
       <button class="b" id="jumpM" type="button" data-i="btnGoCompare">📊 Comparador</button>
       <!-- (Eliminado) Amortizar -->
@@ -570,8 +1595,8 @@ canvas{display:block;width:100%;height:240px}
     <div class="g">
       <div><label data-i="lblProv">Provincia (comparador)</label><select id="cm"><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select></div>
       <div><label data-i="lblM2s">m²</label><input id="cm2" type="number" min="50"></div>
-      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="0" max="10"></div>
-      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="10"></div>
+      <div><label data-i="lblBed">Habitaciones</label><input id="cbd" type="number" min="0" max="9"></div>
+      <div><label data-i="lblBath">Baños</label><input id="cba" type="number" min="1" max="9"></div>
       <div><label data-i="lblType2">Tipo</label><select id="cty"><option value="flat" data-i="optFlat">Piso</option><option value="house" data-i="optHouse">Casa</option></select></div>
       <div class="r" style="align-items:flex-start">
         <div style="width:100%">
@@ -878,13 +1903,15 @@ ES:{
   lblName:"Nombre y apellidos",lblAge:"Edad (18–100)",btnContinue:"Continuar",
   hintP:"Rellena los datos básicos para continuar.",
   lblInc:"Ingresos mensuales (€)",lblSav:"Ahorros disponibles (€)",lblYrs:"Años de hipoteca (5–40)",
+  lblRefNow:"📊 Referencia actual",lblRefNote:"Datos orientativos · Feb 2026",refEur:"Euribor 12m ≈ 2.45%",refFix:"Fijo medio ≈ 2.95–3.20%",
   lblHor:"¿Vivirás más de 5 años aquí?",lblFst:"¿Primera vivienda o familia con menores?",lblMsv:"Ahorro mensual (€)",
-  tipInc:"Ingresos netos (lo que entra en tu cuenta). Si metes bruto, la recomendación se distorsiona.",
+  tipInc:"Ingresos netos / limpios (lo que entra en tu cuenta). Si metes bruto, la recomendación se distorsiona.",
   tipSav:"Solo lo que puedes usar de verdad. Entrada + impuestos + notaría van aquí.",
   tipMsv:"Sirve para estimar cuánto tardas en llegar al efectivo necesario.",
   hintE:"Completa economía y sigue a preferencias.",
   lblMuni:"Municipio (Baix Penedès)",lblMuniHelp:"Usa el mapa para elegir varios municipios.",
   lblM2:"Metros cuadrados (≥50)",lblBed:"Habitaciones",lblBath:"Baños",lblType:"Tipo de vivienda",
+  dqTitle:"Calidad de datos",dqHigh:"Alta",dqMed:"Media",dqLow:"Baja",
   optFlat:"Piso",optHouse:"Casa",lblExtras:"Extras (opcional)",lblExtrasHint:"Cambian el precio estimado.",
   exTer:"Terraza",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcamiento",
   btnAnalyze:"Analizar",btnMap:"Mapa (zona real)",
@@ -893,7 +1920,7 @@ ES:{
   btnClear:"Limpiar",btnUse:"Usar en Ejemplos reales",btnFitAll:"Ver todo",
   legSel:"Seleccionado",legOk:"Disponible",legHint:"Haz clic en el pin o el área",
   kPrice:"Precio estimado",kRent:"Alquiler estimado",kPay:"Cuota hipoteca",kRec:"Recomendación",
-  btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",
+  btnCopy:"Copiar resumen",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Ir a Ejemplos reales",btnAskAI:"💬 Consultar con AI",btnShare:"🔗 ",btnPdf:"📄 Exportar PDF",shareHint:"Copia el enlace o ábrelo para comprobar que a la otra persona le sale directamente el resultado.",btnCopyLink:"Copiar",btnOpenLink:"Abrir",shareTip:"Tip: cuando alguien abre el enlace, el programa autorrellena los datos y salta a Resultado.",sumReadable:"Resumen claro",sumShort:"Corto",sumLong:"Detallado",
   affTitle:"¿Y con mis datos personales, qué vivienda me puedo permitir?",affDesc:"Calculamos (con explicación) cuánto podrías destinar a la entrada y a la cuota mensual, y qué precio de vivienda encaja según el plazo de hipoteca.",affBtn:"Calcular",
   chartEffTitle:"Esfuerzo mensual",chartEffHint:"Línea: 35% ingresos. Barras: hipoteca vs alquiler.",
   chartSensTitle:"Sensibilidad tipo",chartSensHint:"Cómo cambia la cuota si sube el tipo.",chartTipsTitle:"Lectura rápida",
@@ -965,6 +1992,7 @@ CA:{
   lblName:"Nom i cognoms",lblAge:"Edat (18–100)",btnContinue:"Continuar",
   hintP:"Omple les dades bàsiques per continuar.",
   lblInc:"Ingressos mensuals (€)",lblSav:"Estalvis disponibles (€)",lblYrs:"Anys d'hipoteca (5–40)",
+  lblRefNow:"📊 Referència actual",lblRefNote:"Dades orientatives · Feb 2026",refEur:"Euribor 12m ≈ 2.45%",refFix:"Fix mitjà ≈ 2.95–3.20%",
   lblHor:"Viuràs més de 5 anys aquí?",lblFst:"Primera vivenda o família amb menors?",lblMsv:"Estalvi mensual (€)",
   tipInc:"Ingressos nets (el que entra al compte).",
   tipSav:"Només el que pots usar de veritat.",
@@ -972,6 +2000,7 @@ CA:{
   hintE:"Completa economia i passa a preferències.",
   lblMuni:"Municipi (Baix Penedès)",lblMuniHelp:"Usa el mapa per triar diversos municipis.",
   lblM2:"Metres quadrats (≥50)",lblBed:"Habitacions",lblBath:"Banys",lblType:"Tipus d'habitatge",
+  dqTitle:"Qualitat de dades",dqHigh:"Alta",dqMed:"Mitjana",dqLow:"Baixa",
   optFlat:"Pis",optHouse:"Casa",lblExtras:"Extres (opcional)",lblExtrasHint:"Canvien el preu estimat.",
   exTer:"Terrassa",exPis:"Piscina",exAsc:"Ascensor",exGar:"Aparcament",
   btnAnalyze:"Analitzar",btnMap:"Mapa (zona real)",
@@ -980,7 +2009,7 @@ CA:{
   btnClear:"Netejar",btnUse:"Usar a Exemples reals",btnFitAll:"Veure tot",
   legSel:"Seleccionat",legOk:"Disponible",legHint:"Clica el pin o l'àrea",
   kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",
-  btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",
+  btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",sumReadable:"Resum clar",sumShort:"Curt",sumLong:"Detallat",
   affTitle:"I amb les meves dades personals, quin habitatge em puc permetre?",affDesc:"Fem un càlcul ràpid i explicat: quanta entrada pots assumir i quina quota mensual et pots permetre, i quin preu d’habitatge encaixa segons el termini de la hipoteca.",affBtn:"Calcular",
   chartEffTitle:"Esforç mensual",chartEffHint:"Línia: 35% ingressos. Barres: hipoteca vs lloguer.",
   chartSensTitle:"Sensibilitat tipus",chartSensHint:"Com canvia la quota si puja el tipus.",chartTipsTitle:"Lectura ràpida",
@@ -1050,6 +2079,7 @@ EN:{
   lblName:"Full name",lblAge:"Age (18–100)",btnContinue:"Continue",
   hintP:"Fill in the basics to continue.",
   lblInc:"Monthly income (€)",lblSav:"Available savings (€)",lblYrs:"Mortgage years (5–40)",
+  lblRefNow:"📊 Current reference",lblRefNote:"Indicative data · Feb 2026",refEur:"Euribor 12m ≈ 2.45%",refFix:"Avg fixed ≈ 2.95–3.20%",
   lblHor:"Living here > 5 years?",lblFst:"First home or family with minors?",lblMsv:"Monthly savings (€)",
   tipInc:"Net income (what actually hits your bank account).",
   tipSav:"Only what you can truly use.",
@@ -1057,6 +2087,7 @@ EN:{
   hintE:"Complete finance and move to preferences.",
   lblMuni:"Town (Baix Penedès)",lblMuniHelp:"Use the map to pick multiple towns.",
   lblM2:"Square meters (≥50)",lblBed:"Bedrooms",lblBath:"Bathrooms",lblType:"Property type",
+  dqTitle:"Data quality",dqHigh:"High",dqMed:"Medium",dqLow:"Low",
   optFlat:"Flat",optHouse:"House",lblExtras:"Extras (optional)",lblExtrasHint:"They change the price estimate.",
   exTer:"Terrace",exPis:"Pool",exAsc:"Elevator",exGar:"Parking",
   btnAnalyze:"Analyze",btnMap:"Map (real area)",
@@ -1065,7 +2096,7 @@ EN:{
   btnClear:"Clear",btnUse:"Use in Real examples",btnFitAll:"Fit all",
   legSel:"Selected",legOk:"Available",legHint:"Click the pin or area",
   kPrice:"Estimated price",kRent:"Estimated rent",kPay:"Mortgage payment",kRec:"Recommendation",
-  btnCopy:"Copy summary",btnReset:"Reset",btnGoCompare:"📊 Comparator",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",
+  btnCopy:"Copy summary",btnReset:"Reset",btnGoCompare:"📊 Comparator",btnGoExamples:"Go to Real examples",btnAskAI:"💬 Ask AI",btnShare:"🔗 Share result",btnPdf:"📄 Export PDF",shareHint:"Copy the link or open it to verify the other person lands directly on the results.",btnCopyLink:"Copy",btnOpenLink:"Open",shareTip:"Tip: when someone opens the link, the app fills the data and jumps to Results.",sumReadable:"Readable summary",sumShort:"Short",sumLong:"Detailed",
   affTitle:"With my personal data, what home can I afford?",affDesc:"We run a quick, explained estimate: how much you can put down, what monthly payment is reasonable, and what home price fits depending on mortgage term.",affBtn:"Calculate",
   chartEffTitle:"Monthly effort",chartEffHint:"Line: 35% income. Bars: mortgage vs rent.",
   chartSensTitle:"Rate sensitivity",chartSensHint:"How payment changes if rates rise.",chartTipsTitle:"Quick read",
@@ -1356,8 +2387,33 @@ const show=p=>{
   if(p==="m")setTimeout(upMap,100);
   if(p==="x")refreshExamplesUI();
   if(p==="ai")setTimeout(initChatUI,100);
+  try{animateView(p);}catch(_e){}
   window.scrollTo({top:0,behavior:"smooth"});
 };
+
+// --- Motion: safe view transitions + stagger (no infinite animations) ---
+function animateView(p){
+  const panel = document.querySelector('[data-p="'+p+'"]');
+  if(!panel) return;
+  // Panel enter
+  panel.classList.remove('view-enter');
+  // force reflow
+  void panel.offsetWidth;
+  panel.classList.add('view-enter');
+
+  // Stagger key UI elements (cap to avoid heavy work)
+  const nodes = panel.querySelectorAll('.card,.kpi,.kpiCard,.box,.panel,.row,.grid > *,.btn,button,input,select,textarea,.chip,.pill,.tableWrap');
+  let i=0;
+  for(const el of nodes){
+    if(i>18) break; // cap
+    if(!(el instanceof HTMLElement)) continue;
+    el.classList.remove('stagger-item');
+    el.style.setProperty('--d', (i*40)+'ms');
+    void el.offsetWidth;
+    el.classList.add('stagger-item');
+    i++;
+  }
+}
 
 /* =====================
    CÁLCULOS
@@ -1431,7 +2487,8 @@ const M={"Barcelona":{v:2986,l:21.9},"Girona":{v:2608,l:14.99},"Lleida":{v:1486,
 const xBuy=(base,e)=>{let x=0;if(e.t)x+=base*.05;if(e.p)x+=base*.08;if(e.l)x+=base*.04;if(e.k)x+=base*.03;return x;};
 const xRent=(base,e)=>{let x=0;if(e.t)x+=base*.15;if(e.p)x+=base*.30;if(e.l)x+=base*.08;if(e.k)x+=base*.07;return x;};
 // Coefficients to adjust price/rent by dwelling type.  Flats use 1.0, houses are typically more expensive.  You can tweak these values if the market changes.
-const TYPE_COEF = {flat: 1.0, house: 1.15};
+const TYPE_COEF_BUY = {flat: 1.0, house: 1.18};
+const TYPE_COEF_RENT = {flat: 1.0, house: 1.12};;
 const buy=(a,m2,b,ba,e)=>{const base=m2*BASE.m2*(COEF[a]?.c||1),adj=b*5e3+ba*3e3;return Math.round(base+adj+xBuy(base,e));};
 const rent=(a,m2,b,ba,e)=>{const base=m2*BASE.rent*(COEF[a]?.r||1),adj=b*50+ba*30;return Math.round(base+adj+xRent(base,e));};
 const buyM=(m,m2,b,ba,e)=>{const p=M[m];if(!p)return NaN;const base=m2*p.v,adj=b*5e3+ba*3e3;return Math.round(base+adj+xBuy(base,e));};
@@ -1498,32 +2555,61 @@ const analyze=()=>{
 
   // DEBUG: show a toast to confirm the analyze function is invoked. Remove in production.
   try { toast((LANG==="EN"?"Running analysis...":"Iniciant anàlisi...")); } catch (e) { }
-  const yrs=+Q("#yrs").value||25,hor=Q("#hor").value==="y",fst=Q("#fst").value==="y";
+  let yrs = +Q("#yrs").value || 25;
+  // Clamp mortgage years between 5 and 40
+  yrs = Math.max(5, Math.min(40, yrs));
+  Q("#yrs").value = yrs;
+  const hor=Q("#hor").value==="y",fst=Q("#fst").value==="y";
   const ar=Q("#ar").value,m2=+Q("#m2").value||0,bd=Q("#bed").value===""?0:+Q("#bed").value||0,ba=+Q("#bat").value||0,type=Q("#ty").value;
   if(!nm||ag<18||ag>100||m2<50||ba<1){toast(t("toastCheck"));return;}
   const e={t:Q("#et").checked,p:Q("#ep").checked,l:Q("#el").checked,k:Q("#ek").checked};
 
   let pb,pr,pbRange=null,prRange=null,muniList=[];
-  if((ar==="*"||ar==="__multi__")&&zoneSel.size>1){
-    muniList=[...zoneSel];
+  // Municipality selection logic:
+  // - "Cualquiera" (ar==="*") must be the average of ALL municipalities.
+  // - If the user selects several municipalities on the map, we average only those.
+  // - If exactly one is selected on the map, we use that one.
+  // This fixes the bug where "Cualquiera" used Cunit (same €/m²).
+  if((ar==="*"||ar==="__multi__") && zoneSel && zoneSel.size){
+    if(zoneSel.size>1){
+      muniList=[...zoneSel];
+      const buys=muniList.map(m=>buy(m,m2,Math.max(0,bd),ba,e));
+      const rents=muniList.map(m=>rent(m,m2,Math.max(0,bd),ba,e));
+      pb=Math.round(buys.reduce((a,b)=>a+b,0)/buys.length);
+      pr=Math.round(rents.reduce((a,b)=>a+b,0)/rents.length);
+      pbRange={lo:Math.min(...buys),hi:Math.max(...buys)};
+      prRange={lo:Math.min(...rents),hi:Math.max(...rents)};
+    }else{
+      const baseM=[...zoneSel][0];
+      muniList=[baseM];
+      pb=buy(baseM,m2,Math.max(0,bd),ba,e);
+      pr=rent(baseM,m2,Math.max(0,bd),ba,e);
+    }
+  } else if(ar==="*"){
+    // Average of all municipalities
+    muniList=Object.keys(COEF||{});
     const buys=muniList.map(m=>buy(m,m2,Math.max(0,bd),ba,e));
     const rents=muniList.map(m=>rent(m,m2,Math.max(0,bd),ba,e));
     pb=Math.round(buys.reduce((a,b)=>a+b,0)/buys.length);
     pr=Math.round(rents.reduce((a,b)=>a+b,0)/rents.length);
     pbRange={lo:Math.min(...buys),hi:Math.max(...buys)};
     prRange={lo:Math.min(...rents),hi:Math.max(...rents)};
-  }else{
-    const baseM=(ar==="__multi__"&&zoneSel.size===1)?[...zoneSel][0]:(ar==="*"?"Cunit":ar);
-    muniList=[baseM];pb=buy(baseM,m2,Math.max(0,bd),ba,e);pr=rent(baseM,m2,Math.max(0,bd),ba,e);
+  } else {
+    const baseM=ar;
+    muniList=[baseM];
+    pb=buy(baseM,m2,Math.max(0,bd),ba,e);
+    pr=rent(baseM,m2,Math.max(0,bd),ba,e);
   }
 
-  // Apply a multiplier based on the type of dwelling.  Houses are more expensive than flats.
+  // Apply a multiplier based on the type of dwelling. Houses tend to be more expensive than flats.
+// We use different coefficients for buy vs rent so "Casa vs Pis" actually matters.
   {
-    const coef = TYPE_COEF[type] || 1;
-    pb = Math.round(pb * coef);
-    pr = Math.round(pr * coef);
-    if(pbRange){pbRange = {lo: Math.round(pbRange.lo * coef), hi: Math.round(pbRange.hi * coef)};}
-    if(prRange){prRange = {lo: Math.round(prRange.lo * coef), hi: Math.round(prRange.hi * coef)};}
+    const cb = TYPE_COEF_BUY[type] || 1;
+    const cr = TYPE_COEF_RENT[type] || 1;
+    pb = Math.round(pb * cb);
+    pr = Math.round(pr * cr);
+    if(pbRange){pbRange = {lo: Math.round(pbRange.lo * cb), hi: Math.round(pbRange.hi * cb)};}
+    if(prRange){prRange = {lo: Math.round(prRange.lo * cr), hi: Math.round(prRange.hi * cr)};}
   }
 
   // Calculate down payment percentage: first‑time buyers (fst) put 10%, otherwise 20%
@@ -1558,7 +2644,14 @@ const analyze=()=>{
   
   const rec=recCode==="BUY"?t("recBuy"):recCode==="RENT"?t("recRent"):t("recNotFeasible");
 
-  last={nm,muni:ar,m2,bd:Math.max(0,bd),ba,type,pb,pr,pbRange,prRange,muniList,cap,rate,yrs,dp,sav,down,cl,pay,ratio,rri,rec,recCode,e,need,hor,inc,msv:+Q("#msv").value||0,needCash,ag,canBuyCash};
+  // Store a human-readable municipality label (avoid internal markers like "*" / "__multi__").
+  const langL = (typeof LANG !== 'undefined' ? LANG.toLowerCase() : 'es');
+  const muniPretty = (muniList && muniList.length>1)
+    ? (langL==='ca'?'Diversos municipis':(langL==='en'?'Multiple towns':'Varios municipios'))
+    : ((muniList && muniList[0]) || ((ar==='*'||ar==='__multi__') ? '' : ar) || '');
+  last={nm,muni:muniPretty,m2,bd:Math.max(0,bd),ba,type,pb,pr,pbRange,prRange,muniList,cap,rate,yrs,dp,sav,down,cl,pay,ratio,rri,rec,recCode,e,need,hor,inc,msv:+Q("#msv").value||0,needCash,ag,canBuyCash};
+  try{ window.last = last; }catch(e){}
+
   lastReq=reqFromUI();lastReqSig=sigOfReq(lastReq);
 
   Q("#k1").textContent=fmtMoney(pb);Q("#k2").textContent=fmtMoney(pr);Q("#k3").textContent=fmtMoney(pay);Q("#k4").textContent=rec;
@@ -1694,24 +2787,37 @@ const renderResult=()=>{
   body+="</div>";
   Q("#rBody").innerHTML=body;
 
-  // Build a human‑friendly summary paragraph tailored to the current language.  This replaces the old bullet list.
-  let humanSummary;
+  // Build a human‑friendly summary (short + detailed) in the current language.
+  const typeTxtLC = String(typeTxt||"").toLowerCase();
+  const recLine = (LANG==='CA'?'La recomanació orientativa és':'La recomendación orientativa es');
+  const recLineEN = 'Our guideline recommendation is';
+  const cashOk = !last.need;
+  const missing=Math.max(0,(last.needCash||0)-(last.sav||0));
+  const saveHint = (!cashOk && last.msv>0 && missing>0) ? ` ${LANG==='EN'?'At your current savings pace, it would take about':'Al teu ritme d’estalvi, trigaries aproximadament'} ${(Math.ceil(missing/last.msv)/12).toFixed(1)} ${LANG==='EN'?'years':'anys'} ${LANG==='EN'?'to reach the required cash.':'per arribar a l’efectiu necessari.'}` : (!cashOk ? (LANG==='EN'?'You do not currently have enough savings for the full down payment + costs.':'Ara mateix no tens prou estalvis per cobrir entrada + despeses.') : '');
+
+  let shortTxt="", longTxt="";
   if(LANG === "EN"){
-    const typeTxtLC = typeTxt.toLowerCase();
-    humanSummary = `${last.nm}, for a ${last.m2} m² ${typeTxtLC} in ${muniTxt} with ${last.bd || 0} ${t("beds")} and ${last.ba} ${t("baths")}, the estimated purchase price is ${fmtMoney(last.pb)}. The estimated monthly mortgage payment would be ${fmtMoney(last.pay)}, while renting an equivalent home would cost around ${fmtMoney(last.pr)} per month. A down payment of ${dpPct}% (${fmtMoney(last.down)}) plus closing costs of ${fmtMoney(last.cl)} is required. Based on your income and savings, we think your best option is: ${last.rec}.`;
+    shortTxt = `${last.nm}: a ${last.m2} m² ${typeTxtLC} in ${muniTxt} is estimated at ${fmtMoney(last.pb)} (≈ ${fmtMoney(last.pb/Math.max(1,last.m2))}/m²). Mortgage ≈ ${fmtMoney(last.pay)}/mo vs rent ≈ ${fmtMoney(last.pr)}/mo. ${recLineEN}: ${last.rec}.`;
+    longTxt = `${last.nm}, based on your inputs, a ${last.m2} m² ${typeTxtLC} in ${muniTxt} with ${last.bd||0} ${t("beds")} and ${last.ba} ${t("baths")} would be around ${fmtMoney(last.pb)}. Buying usually means a ${dpPct}% down payment (${fmtMoney(last.down)}) plus closing costs of about ${fmtMoney(last.cl)} (taxes + notary/registry). With a ${last.yrs}-year mortgage at ~${(last.rate*100).toFixed(2)}%, the estimated payment is ${fmtMoney(last.pay)}/month. Renting a similar home would be around ${fmtMoney(last.pr)}/month. ${cashOk?'Your savings cover the upfront costs.':`You would be short by ${fmtMoney(missing)} for the upfront costs.`}${saveHint} ${recLineEN}: ${last.rec}.`;
   } else if(LANG === "CA"){
-    const typeTxtLC = typeTxt.toLowerCase();
-    humanSummary = `${last.nm}, per a un ${typeTxtLC} de ${last.m2} m² a ${muniTxt} amb ${last.bd || 0} ${t("beds")} i ${last.ba} ${t("baths")}, el preu estimat és ${fmtMoney(last.pb)}. La hipoteca mensual aproximada seria de ${fmtMoney(last.pay)}, mentre que llogar un habitatge similar costaria uns ${fmtMoney(last.pr)} al mes. Necessitaràs una entrada del ${dpPct}% (${fmtMoney(last.down)}) més despeses de tancament de ${fmtMoney(last.cl)}. Segons els teus ingressos i estalvis, la millor opció és: ${last.rec}.`;
+    shortTxt = `${last.nm}: un ${typeTxtLC} de ${last.m2} m² a ${muniTxt} surt aproximadament per ${fmtMoney(last.pb)} (≈ ${fmtMoney(last.pb/Math.max(1,last.m2))}/m²). Hipoteca ≈ ${fmtMoney(last.pay)}/mes vs lloguer ≈ ${fmtMoney(last.pr)}/mes. ${recLine}: ${last.rec}.`;
+    longTxt = `${last.nm}, amb les dades que has posat, un ${typeTxtLC} de ${last.m2} m² a ${muniTxt} amb ${last.bd||0} ${t("beds")} i ${last.ba} ${t("baths")} tindria un preu orientatiu de ${fmtMoney(last.pb)}. Per comprar, normalment cal una entrada del ${dpPct}% (${fmtMoney(last.down)}) i reservar unes despeses de ${fmtMoney(last.cl)} (impostos + notaria/registre). Amb una hipoteca de ${last.yrs} anys a ~${(last.rate*100).toFixed(2)}%, la quota estimada és ${fmtMoney(last.pay)}/mes. Llogar un habitatge similar seria d’uns ${fmtMoney(last.pr)}/mes. ${cashOk?'Els teus estalvis cobreixen l’entrada i les despeses.':`Et faltarien ${fmtMoney(missing)} per cobrir entrada + despeses.`}${saveHint} ${recLine}: ${last.rec}.`;
   } else {
-    // ES
-    const typeTxtLC = typeTxt.toLowerCase();
-    humanSummary = `${last.nm}, para un ${typeTxtLC} de ${last.m2} m² en ${muniTxt} con ${last.bd || 0} ${t("beds")} y ${last.ba} ${t("baths")}, el precio estimado es ${fmtMoney(last.pb)}. La cuota hipotecaria mensual sería de ${fmtMoney(last.pay)}, mientras que alquilar una vivienda similar costaría unos ${fmtMoney(last.pr)} al mes. Necesitarás una entrada del ${dpPct}% (${fmtMoney(last.down)}) más gastos de cierre de ${fmtMoney(last.cl)}. Según tus ingresos y ahorros, creemos que tu mejor opción es: ${last.rec}.`;
+    shortTxt = `${last.nm}: un ${typeTxtLC} de ${last.m2} m² en ${muniTxt} se estima en ${fmtMoney(last.pb)} (≈ ${fmtMoney(last.pb/Math.max(1,last.m2))}/m²). Hipoteca ≈ ${fmtMoney(last.pay)}/mes vs alquiler ≈ ${fmtMoney(last.pr)}/mes. ${recLine}: ${last.rec}.`;
+    longTxt = `${last.nm}, con los datos que has puesto, un ${typeTxtLC} de ${last.m2} m² en ${muniTxt} con ${last.bd||0} ${t("beds")} y ${last.ba} ${t("baths")} tendría un precio orientativo de ${fmtMoney(last.pb)}. Para comprar, normalmente hace falta una entrada del ${dpPct}% (${fmtMoney(last.down)}) y reservar unos gastos de ${fmtMoney(last.cl)} (impuestos + notaría/registro). Con una hipoteca de ${last.yrs} años a ~${(last.rate*100).toFixed(2)}%, la cuota estimada es ${fmtMoney(last.pay)}/mes. Alquilar una vivienda similar sería de unos ${fmtMoney(last.pr)}/mes. ${cashOk?'Tus ahorros cubren la entrada y los gastos.':`Te faltarían ${fmtMoney(missing)} para cubrir entrada + gastos.`}${saveHint} ${recLine}: ${last.rec}.`;
   }
-  const rtElem = Q("#rt");
+  const rtShortEl = Q('#rtShort');
+  const rtLongEl = Q('#rtLong');
+  const rtElem = Q('#rt');
+  if(rtShortEl) rtShortEl.textContent = shortTxt;
+  if(rtLongEl) rtLongEl.textContent = longTxt;
   if(rtElem){
-    rtElem.textContent = humanSummary;
-    // Store the same string for copy operations
-    rtElem.dataset.copy = humanSummary;
+    // Default: whichever mode is active
+    const mode = document.body.dataset.sumMode || 'short';
+    rtElem.textContent = (mode==='long') ? longTxt : shortTxt;
+    rtElem.dataset.copyShort = shortTxt;
+    rtElem.dataset.copyLong = longTxt;
+    rtElem.dataset.copy = (mode==='long') ? longTxt : shortTxt;
   }
 
   setTimeout(()=>{drawEffortChart();drawSensChart();},70);
@@ -1759,13 +2865,18 @@ const setHistory=(arr)=>{
 const saveAnalysisSnapshot=(c)=>{
   try{
     if(!c) return;
+    const mk=(o)=>[
+      (o.nm||'').toLowerCase().trim(),(o.muni||''),(+o.m2||0),(+o.bd||0),(+o.ba||0),(o.type||''),
+      (+o.pr||0),(+o.pay||0),(+o.pb||0),(o.recCode||o.rec||'')
+    ].join('|');
+
     const arr=getHistory();
-    arr.unshift({
+    const item={
       ts: Date.now(),
       lang: LANG,
       nm: c.nm||"",
       muni: c.muni||"",
-      m2: c.m2||0,
+      m2: Math.min(999, Math.max(50, +c.m2||0)),
       pb: c.pb||0,
       pay: c.pay||0,
       pr: c.pr||0,
@@ -1777,13 +2888,17 @@ const saveAnalysisSnapshot=(c)=>{
       sav: c.sav||0,
       yrs: c.yrs||0,
       hor: !!c.hor,
-      bd: (c.bd ?? null),
-      ba: (c.ba ?? null),
+      bd: (c.bd==null?null:Math.min(9,Math.max(0,+c.bd||0))),
+      ba: (c.ba==null?null:Math.min(9,Math.max(1,+c.ba||0))),
       type: c.type||"flat",
       ex: c.e||{t:0,p:0,l:0,k:0}
-    });
+    };
+
+    const key=mk(item);
+    const deduped=arr.filter(x=>mk(x)!==key);
+    deduped.unshift(item);
     // Historial personal: solo últimos 5. En modo staff, permitimos más.
-    setHistory(arr.slice(0, staffLogged ? 30 : 5));
+    setHistory(deduped.slice(0,5));
     // Save also to global history for staff view
     saveAllAnalysisSnapshot(c);
   }catch(e){}
@@ -2850,22 +3965,28 @@ const setAllHistory = (arr) => {
 const saveAllAnalysisSnapshot = (c) => {
   try {
     if (!c) return;
+    const mk=(o)=>[
+      (o.nm||'').toLowerCase().trim(),(o.muni||''),(+o.m2||0),(+o.pr||0),(+o.pay||0),(+o.pb||0),(o.recCode||o.rec||'')
+    ].join('|');
     const arr = getAllHistory();
-    arr.unshift({
+    const item={
       ts: Date.now(),
       lang: LANG,
       nm: c.nm || "",
       muni: c.muni || "",
-      m2: c.m2 || 0,
+      m2: Math.min(999, Math.max(50, +c.m2||0)),
       pb: c.pb || 0,
       pay: c.pay || 0,
       pr: c.pr || 0,
       ratio: c.ratio || 0,
       rec: c.rec || "",
       recCode: c.recCode || ""
-    });
+    };
+    const key=mk(item);
+    const deduped=arr.filter(x=>mk(x)!==key);
+    deduped.unshift(item);
     // Limit to 200 entries to avoid unbounded growth
-    setAllHistory(arr.slice(0, 200));
+    setAllHistory(deduped.slice(0, 200));
   } catch (e) {}
 };
 
@@ -2927,16 +4048,53 @@ const renderStaffPanel = () => {
     box.innerHTML = `<div style="color:#94a3b8">${LANG === "CA" ? "No hi ha anàlisis globals." : (LANG === "EN" ? "No global analyses yet." : "No hay análisis globales aún.")}</div>`;
     return;
   }
-  // Build panel title and total count
-  const title = LANG === "CA" ? "Panell del staff" : (LANG === "EN" ? "Staff panel" : "Panel del staff");
-  const head = `${LANG === "CA" ? "Total anàlisis" : (LANG === "EN" ? "Total analyses" : "Total de análisis")}: ${arr.length}`;
-  // Format each analysis entry with a refined card-like style
-  const items = arr.map(a => {
+  // Panel strings
+  const title = LANG === "CA" ? "Panell del staff" : (LANG === "EN" ? "Staff dashboard" : "Panel del staff");
+  const head = `${LANG === "CA" ? "Total d’anàlisis" : (LANG === "EN" ? "Total analyses" : "Total de análisis")}: ${arr.length}`;
+  const sAvg = (xs)=> xs.length ? (xs.reduce((p,c)=>p+c,0)/xs.length) : 0;
+  const sMed = (xs)=>{ if(!xs.length) return 0; const ys=[...xs].sort((a,b)=>a-b); const m=Math.floor(ys.length/2); return ys.length%2?ys[m]:(ys[m-1]+ys[m])/2; };
+  const prices = arr.map(a=>+a.pb||0).filter(Boolean);
+  const rents  = arr.map(a=>+a.pr||0).filter(Boolean);
+  const pays   = arr.map(a=>+a.pay||0).filter(Boolean);
+  const ratios = arr.map(a=>+a.ratio||0).filter(Boolean);
+  const townCount = {};
+  arr.forEach(a=>{ const k=(a.muni||'—').trim()||'—'; townCount[k]=(townCount[k]||0)+1; });
+  const topTowns = Object.entries(townCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  const statsHtml = `
+    <div class="staffGrid">
+      <div class="staffCard">
+        <div class="staffCardTitle">${title}</div>
+        <div class="staffCardSub">${head}</div>
+        <div class="staffStats">
+          <div class="kpi"><div class="k">${LANG==='EN'?'Median price':(LANG==='CA'?'Preu mediana':'Precio mediano')}</div><div class="v">${fmtMoney(sMed(prices))}</div></div>
+          <div class="kpi"><div class="k">${LANG==='EN'?'Avg rent':(LANG==='CA'?'Lloguer mitjà':'Alquiler medio')}</div><div class="v">${fmtMoney(sAvg(rents))}/m</div></div>
+          <div class="kpi"><div class="k">${LANG==='EN'?'Avg mortgage':(LANG==='CA'?'Quota mitjana':'Cuota media')}</div><div class="v">${fmtMoney(sAvg(pays))}/m</div></div>
+          <div class="kpi"><div class="k">${LANG==='EN'?'Median effort':(LANG==='CA'?'Esforç mediana':'Esfuerzo mediano')}</div><div class="v">${fmtPct(sMed(ratios))}</div></div>
+        </div>
+        <div class="staffActions">
+          <button class="langbtn" id="staffExportCSV" type="button">${LANG==='EN'?'Export CSV':(LANG==='CA'?'Exporta CSV':'Exportar CSV')}</button>
+          <button class="langbtn" id="staffExportJSON" type="button">${LANG==='EN'?'Export JSON':(LANG==='CA'?'Exporta JSON':'Exportar JSON')}</button>
+        </div>
+        <div class="staffMini">
+          <div class="staffMiniTitle">${LANG==='EN'?'Top towns':(LANG==='CA'?'Municipis principals':'Municipios principales')}</div>
+          <div class="staffMiniList">${topTowns.map(([k,v])=>`<span class="pill">${escapeHTML(k)} <b>${v}</b></span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="staffCard">
+        <div class="staffCardTitle">${LANG==='EN'?'All analyses':(LANG==='CA'?'Tots els anàlisis':'Todos los análisis')}</div>
+        <div class="staffCardSub" style="margin-bottom:10px">${LANG==='EN'?'Sorted by newest first.':(LANG==='CA'?'Ordenat per data (més recent primer).':'Ordenado por fecha (más reciente primero).')}</div>
+        <div class="staffList" id="staffList"></div>
+      </div>
+    </div>`;
+
+  // Format each analysis entry (newest first)
+  const items = [...arr].sort((a,b)=>(b.ts||0)-(a.ts||0)).map(a => {
     const date = new Date(a.ts);
     const dtStr = date.toLocaleString(LANG === "EN" ? "en-GB" : (LANG === "CA" ? "ca-ES" : "es-ES"), { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
     // Determine recommendation color
     const recColor = a.recCode === 'BUY' ? '#22c55e' : a.recCode === 'RENT' ? '#f59e0b' : '#ef4444';
-    return `<div style="padding:10px 12px;border:1px solid rgba(148,163,184,.25);border-radius:10px;margin:8px 0;background:rgba(30,41,59,.45)">
+    return `<div class="staffRow">
       <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
         <div style="font-weight:700;color:#e2e8f0">${escapeHTML(a.nm || "—")} · ${escapeHTML(a.muni || "—")} · ${a.m2 || 0}m²</div>
         <div style="color:#94a3b8;font-size:.8rem">${dtStr}</div>
@@ -2947,8 +4105,28 @@ const renderStaffPanel = () => {
       </div>
     </div>`;
   }).join("");
-  // Compose the panel with title, total count and scrollable list
-  box.innerHTML = `<div style="font-size:1rem;font-weight:700;color:#e2e8f0;margin-bottom:4px">${title}</div><div style="font-size:.85rem;font-weight:700;color:#38bdf8;margin-bottom:8px">${head}</div><div style="max-height:420px;overflow-y:auto;">${items}</div>`;
+
+  // Compose panel
+  box.innerHTML = statsHtml;
+  const listEl = Q('#staffList');
+  if(listEl) listEl.innerHTML = items;
+
+  // Export actions
+  const toCSV = (rows)=>{
+    const cols = ['ts','nm','muni','m2','bd','ba','type','pb','pay','pr','ratio','recCode'];
+    const esc = (v)=>(''+(v??'')).replaceAll('"','""');
+    const header = cols.join(',');
+    const lines = rows.map(r=>cols.map(c=>`"${esc(r[c])}"`).join(','));
+    return [header, ...lines].join('\n');
+  };
+  const dl = (name, content, mime)=>{
+    const blob = new Blob([content], {type:mime});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 800);
+  };
+  Q('#staffExportCSV')?.addEventListener('click', ()=>dl('assessoria_analisis.csv', toCSV(arr), 'text/csv;charset=utf-8'));
+  Q('#staffExportJSON')?.addEventListener('click', ()=>dl('assessoria_analisis.json', JSON.stringify(arr,null,2), 'application/json'));
 };
 
 /* ── ENVIAR MENSAJE AL AI ── */
@@ -3109,9 +4287,63 @@ const initChatUI=()=>{
    ===================== */
 const liveValidate=()=>{
   const setHint=(id,msg,ok)=>{const el=Q("#hint-"+id);if(!el)return;el.textContent=msg||"";el.className="field-hint "+(msg?(ok?"ok":"err"):"");Q("#"+id)?.classList.toggle("field-ok",!!ok&&!!msg);Q("#"+id)?.classList.toggle("field-err",!ok&&!!msg);};
+
+  // Hard limits (keep UI sane)
+  const clampMax=(id,max)=>{const el=Q('#'+id);if(!el)return;let v=+el.value||0;if(v>max){el.value=max;}};
+  clampMax('m2',999);clampMax('bed',9);clampMax('bat',9);
+  clampMax('cbd',9);clampMax('cba',9);
+
   const inc=+Q("#inc")?.value||0;if(inc>0&&inc<100)setHint("inc",LANG==="EN"?"Minimum 100€":(LANG==="CA"?"Mínim 100€":"Mínimo 100€"),false);else if(inc>10000000)setHint("inc",LANG==="EN"?"Max 10M€":(LANG==="CA"?"Màx 10M€":"Máx 10M€"),false);else if(inc>0)setHint("inc","✓",true);else setHint("inc","","");
   const sav=+Q("#sav")?.value||0;if(sav>0&&sav<1000)setHint("sav",LANG==="EN"?"Minimum 1,000€":(LANG==="CA"?"Mínim 1.000€":"Mínimo 1.000€"),false);else if(sav>10000000)setHint("sav",LANG==="EN"?"Max 10M€":(LANG==="CA"?"Màx 10M€":"Máx 10M€"),false);else if(sav>0)setHint("sav","✓",true);else setHint("sav","","");
   const m2=+Q("#m2")?.value||0;if(m2>0&&m2<50)setHint("m2",LANG==="EN"?"Minimum 50 m²":(LANG==="CA"?"Mínim 50 m²":"Mínimo 50 m²"),false);else if(m2>=50)setHint("m2","✓",true);else setHint("m2","","");
+
+  // Smart realism checks (do not block, just warn)
+  const bd=+Q('#bed')?.value||0;
+  const ba=+Q('#bat')?.value||0;
+  const ty=Q('#ty')?.value||'flat';
+  if(m2>=50 && bd>0){
+    const m2Per = m2 / bd;
+    if(m2Per < 11) setHint('bed', LANG==='EN'?`Very high density (${m2Per.toFixed(1)} m²/bed). Check rooms/m².`:(LANG==='CA'?`Massa habitacions per m² (${m2Per.toFixed(1)} m²/hab). Revisa-ho.`:`Demasiadas habitaciones para m² (${m2Per.toFixed(1)} m²/hab). Revisa.`), false);
+    else if(m2Per < 14) setHint('bed', LANG==='EN'?`Tight layout (${m2Per.toFixed(1)} m²/bed).`:(LANG==='CA'?`Distribució justa (${m2Per.toFixed(1)} m²/hab).`:`Distribución justa (${m2Per.toFixed(1)} m²/hab).`), true);
+    else setHint('bed', '✓', true);
+  } else setHint('bed','', '');
+
+  if(ba>0){
+    if(bd>0 && ba > bd+1) setHint('bat', LANG==='EN'?'Bathrooms unusually high vs bedrooms.':(LANG==='CA'?'Massa banys per les habitacions.':'Demasiados baños para las habitaciones.'), false);
+    else setHint('bat','✓', true);
+  } else setHint('bat','', '');
+
+  if(m2>=50){
+    if(ty==='flat' && m2>250) setHint('ty', LANG==='EN'?'A 250+ m² flat is rare; results may look off.':(LANG==='CA'?'Un pis de 250+ m² és poc habitual.':'Un piso de 250+ m² es poco habitual.'), false);
+    else if(ty==='house' && m2<60) setHint('ty', LANG==='EN'?'A <60 m² house is uncommon; double-check type.':(LANG==='CA'?'Una casa <60 m² és poc habitual.':'Una casa <60 m² es poco habitual.'), false);
+    else setHint('ty','✓', true);
+  } else setHint('ty','', '');
+
+  // Data quality badge (non-blocking)
+  const badge=Q('#dqBadge');
+  const hint=Q('#dqHint');
+  if(badge){
+    let level='high';
+    let why='';
+    if(m2>=50 && bd>0){
+      const m2Per=m2/bd;
+      if(m2Per<11){level='low';why=LANG==='EN'?'Too many rooms for the size.':(LANG==='CA'?'Massa habitacions per la superfície.':'Demasiadas habitaciones para la superficie.');}
+      else if(m2Per<14){level='med';why=LANG==='EN'?'Tight layout.':(LANG==='CA'?'Distribució justa.':'Distribución justa.');}
+    }
+    if(ba>0 && bd>0 && ba>bd+1){level='low';why=LANG==='EN'?'Bathrooms unusually high.':(LANG==='CA'?'Massa banys.':'Demasiados baños.');}
+    if(m2>=50 && ty==='flat' && m2>250){level='med';why=LANG==='EN'?'Very large flat is rare.':(LANG==='CA'?'Pis molt gran, poc habitual.':'Piso muy grande, poco habitual.');}
+    if(m2>=50 && ty==='house' && m2<60){level='med';why=LANG==='EN'?'Very small house is uncommon.':(LANG==='CA'?'Casa molt petita, poc habitual.':'Casa muy pequeña, poco habitual.');}
+
+    const label = level==='high'?t('dqHigh'):(level==='med'?t('dqMed'):t('dqLow'));
+    badge.textContent = label;
+    const styles = level==='high'
+      ? {bg:'rgba(34,197,94,.10)',bd:'rgba(34,197,94,.25)',fg:'#86efac'}
+      : level==='med'
+        ? {bg:'rgba(245,158,11,.10)',bd:'rgba(245,158,11,.22)',fg:'#fbbf24'}
+        : {bg:'rgba(239,68,68,.10)',bd:'rgba(239,68,68,.22)',fg:'#fca5a5'};
+    badge.style.background=styles.bg;badge.style.borderColor=styles.bd;badge.style.color=styles.fg;
+    if(hint) hint.textContent = why || (LANG==='EN'?'Looks consistent.':(LANG==='CA'?'Sembla coherent.':'Parece coherente.'));
+  }
   // Pulse hint on continue/analyze
   const nm=(Q("#nm")?.value||"").trim(),ag=+Q("#ag")?.value||0;
   const npBtn=Q("#np");if(npBtn){const ok=nm&&ag>=18&&ag<=100;npBtn.classList.toggle("pulse-hint",ok);}
@@ -3256,6 +4488,41 @@ Q("#L_CA").onclick=()=>setLang("CA");
 Q("#L_ES").onclick=()=>setLang("ES");
 Q("#L_EN").onclick=()=>setLang("EN");
 
+  // Text size toggle (accessibility)
+  const txtBtn = Q('#textToggle');
+  const applyTextMode = (mode)=>{document.body.classList.toggle('text-lg', mode==='lg'); try{localStorage.setItem('HX_TEXTMODE', mode);}catch(e){}}
+  if(txtBtn){
+    const saved = (()=>{try{return localStorage.getItem('HX_TEXTMODE')||'md'}catch(e){return 'md'}})();
+    applyTextMode(saved);
+    txtBtn.onclick = ()=>{
+      const now = document.body.classList.contains('text-lg') ? 'md' : 'lg';
+      applyTextMode(now);
+      toast(LANG==='CA'?(now==='lg'?'Text gran activat':'Text normal activat'):(LANG==='EN'?(now==='lg'?'Large text enabled':'Normal text enabled'):(now==='lg'?'Texto grande activado':'Texto normal activado')));
+    };
+  }
+
+  // Summary mode toggle (short vs detailed)
+  const setSummaryMode = (mode)=>{
+    document.body.dataset.sumMode = mode;
+    const bS = Q('#sumModeShort'), bL = Q('#sumModeLong');
+    if(bS) bS.classList.toggle('on', mode==='short');
+    if(bL) bL.classList.toggle('on', mode==='long');
+    const s = Q('#rtShort'), l = Q('#rtLong');
+    if(s) s.style.display = mode==='short' ? 'block' : 'none';
+    if(l) l.style.display = mode==='long' ? 'block' : 'none';
+    const rt = Q('#rt');
+    if(rt){
+      rt.textContent = (mode==='long') ? (rt.dataset.copyLong||'') : (rt.dataset.copyShort||'');
+      rt.dataset.copy = rt.textContent;
+    }
+    try{localStorage.setItem('HX_SUMMODE', mode);}catch(e){}
+  };
+  const savedSum = (()=>{try{return localStorage.getItem('HX_SUMMODE')||'short'}catch(e){return 'short'}})();
+  setSummaryMode(savedSum);
+  const bS = Q('#sumModeShort'), bL = Q('#sumModeLong');
+  if(bS) bS.onclick = ()=>setSummaryMode('short');
+  if(bL) bL.onclick = ()=>setSummaryMode('long');
+
   // Staff login and panel toggle
   const _stLogin = Q("#staffLoginBtn");
   if(_stLogin){
@@ -3306,7 +4573,8 @@ if(Q('#btnAfford')){
   Q('#btnAfford').onclick=()=>renderAffordability();
 }
 
-["inc","sav","m2"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
+["inc","sav","m2","bed","bat"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
+const _ty=Q('#ty'); if(_ty) _ty.addEventListener('change', liveValidate);
 ["nm","ag"].forEach(id=>{const el=Q("#"+id);if(el)el.addEventListener("input",liveValidate);});
 
 /* =====================
@@ -3330,5 +4598,632 @@ try {
   try { waitForLeaflet(); } catch (_) {}
 }
 </script>
+
+
+<script>
+/* =====================
+   SHARE + PDF (stable, no-scope drama)
+   ===================== */
+(function(){
+  const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+  const $  = (s, r=document)=>r.querySelector(s);
+
+  const safeText = (v)=> (v==null?"":String(v)).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+
+  function getVal(id, n=false){
+    const el = $("#"+id);
+    if(!el) return n?0:"";
+    const v = el.value;
+    return n ? (+v||0) : v;
+  }
+  function getChk(id){
+    const el=$("#"+id);
+    return !!(el && el.checked);
+  }
+  function setVal(id, v){
+    const el=$("#"+id); if(el==null) return;
+    el.value = v;
+    el.dispatchEvent(new Event("input",{bubbles:true}));
+    el.dispatchEvent(new Event("change",{bubbles:true}));
+  }
+  function setChk(id, v){
+    const el=$("#"+id); if(!el) return;
+    el.checked = !!v;
+    el.dispatchEvent(new Event("change",{bubbles:true}));
+  }
+
+  // Build a robust share URL.
+// - If you're running from http/https, we reuse the current page.
+// - If you're running from file://, we generate an https URL using your public domain so the QR works on phones.
+  const SHARE_BASE_KEY = "ah_share_base";
+  function getPublicBase(){
+    try{ return (localStorage.getItem(SHARE_BASE_KEY) || "").trim(); }catch(e){ return ""; }
+  }
+  function setPublicBase(v){
+    try{ localStorage.setItem(SHARE_BASE_KEY, (v||"").trim()); }catch(e){}
+  }
+  window.buildShareURL = function buildShareURL(){
+    const isWeb = (location.protocol === "http:" || location.protocol === "https:");
+    const fileName = (location.pathname.split("/").pop() || "index.html");
+
+    // Build params first (works even without a public base)
+    const sp = new URLSearchParams();
+    sp.set("share","1");
+    try{ if(typeof LANG!=="undefined" && LANG) sp.set("lang", LANG); }catch(e){}
+
+    sp.set("ag", String(getVal("ag", true)));
+    sp.set("inc", String(getVal("inc", true)));
+    sp.set("sav", String(getVal("sav", true)));
+    sp.set("yrs", String(getVal("yrs", true)));
+    sp.set("hor", getVal("hor"));
+    sp.set("fst", getVal("fst"));
+
+    sp.set("ar", getVal("ar"));
+    sp.set("m2", String(getVal("m2", true)));
+    sp.set("bed", String(getVal("bed", true)));
+    sp.set("bat", String(getVal("bat", true)));
+    sp.set("ty", getVal("ty"));
+
+    sp.set("et", getChk("et")?"1":"0");
+    sp.set("ep", getChk("ep")?"1":"0");
+    sp.set("el", getChk("el")?"1":"0");
+    sp.set("ek", getChk("ek")?"1":"0");
+
+    try{
+      if(typeof zoneSel!=="undefined" && zoneSel && zoneSel.size){
+        sp.set("zones", Array.from(zoneSel).join("|"));
+        if(zoneSel.size>1) sp.set("ar","__multi__");
+      }else{
+        sp.delete("zones");
+      }
+    }catch(e){}
+
+    // If we are on web, create a full URL.
+    if(isWeb){
+      const u = new URL(location.href);
+      u.hash = "";
+      // replace existing query entirely to keep it clean
+      u.search = sp.toString();
+      return u.toString();
+    }
+
+    // Local file: if user configured a public base, build a full URL using it.
+    const pub = getPublicBase();
+    if(pub){
+      let pubUrl = pub;
+      if(/\/$/.test(pubUrl)) pubUrl = pubUrl + fileName;
+      try{
+        const u = new URL(pubUrl);
+        u.hash = "";
+        u.search = sp.toString();
+        return u.toString();
+      }catch(e){}
+    }
+
+    // Fallback: return only the query string so the user can paste it after any base URL.
+    return "?" + sp.toString();
+  };
+
+
+  function openShareModal(link){
+    const m = $("#shareModal");
+    const inp = $("#shareUrl");
+    const qbox = $("#shareQR");
+    const baseRow = $("#shareBaseRow");
+    const baseInp = $("#shareBase");
+    const err = $("#shareErr");
+
+    const isWeb = (location.protocol === "http:" || location.protocol === "https:");
+    if(baseRow) baseRow.style.display = isWeb ? "none" : "block";
+    if(err) err.style.display = "none";
+    if(baseInp){
+      baseInp.value = isWeb ? "" : (getPublicBase() || "");
+      baseInp.onchange = ()=> setPublicBase(baseInp.value);
+      baseInp.oninput = ()=>{ if(err) err.style.display="none"; };
+    }
+
+    if(!link){
+      if(inp) inp.value = "";
+      if(qbox){
+        qbox.innerHTML = "";
+        qbox.textContent = "Configura URL pública";
+      }
+      if(err) err.style.display = isWeb ? "none" : "block";
+      if(m) m.style.display = "flex";
+      return;
+    }
+
+    if(inp) inp.value = link;
+
+    if(typeof link==="string" && link.trim().startsWith("?")){
+      if(err){ err.style.display="block"; err.textContent="Aquest enllaç és només els paràmetres (estàs obrint el fitxer en local). Perquè funcioni en un altre mòbil/PC, puja el projecte a una URL (GitHub Pages/Netlify) o posa una Base pública aquí i torna a generar l’enllaç."; }
+      if(qbox) qbox.innerHTML = "";
+      m && (m.style.display="flex");
+      return;
+    }
+    if(qbox){
+      qbox.innerHTML = "";
+      try{
+        if(window.QRCode){
+          new QRCode(qbox, {text: link, width: 220, height: 220, correctLevel: (QRCode.CorrectLevel ? QRCode.CorrectLevel.M : undefined)});
+        }else{
+          qbox.textContent = "QR no disponible";
+        }
+      }catch(e){
+        qbox.textContent = "QR no disponible";
+      }
+    }
+    if(m) m.style.display = "flex";
+  }
+  function closeShareModal(){
+    const m = $("#shareModal");
+    if(m) m.style.display = "none";
+  }
+
+  // expose share modal helpers (safety for inline handlers)
+  try{ window.openShareModal = openShareModal; window.closeShareModal = closeShareModal; }catch(e){}
+
+  async function copyToClipboard(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      return true;
+    }catch(e){}
+    // fallback
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position="fixed";
+      ta.style.left="-9999px";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return !!ok;
+    }catch(e){}
+    // last resort
+    try{ window.prompt("Copia el enlace:", text); }catch(e){}
+    return false;
+  }
+
+  
+  
+  
+  
+function getCurrentLang(){
+  // Prefer the active language toggle in the UI (CA/ES/EN)
+  const btn = document.querySelector('.langbtn.on,[data-lang].on,.langbtn.active,[data-lang].active');
+  const byData = btn && (btn.getAttribute('data-lang') || btn.dataset && btn.dataset.lang);
+  if(byData) return String(byData).toUpperCase();
+  // Fallback: selected pill text (CA/ES/EN)
+  const t = document.querySelector('.langbtn.on, .langbtn.active');
+  if(t) return (t.textContent||'').trim().toUpperCase();
+  // Fallbacks used in earlier builds
+  return (window.__lang || window.lang || localStorage.getItem('lang') || localStorage.getItem('LANG') || '').toUpperCase();
+}
+
+function exportPDF(){
+    // Professional offline-safe PDF export (no sharing).
+    const lang = (getCurrentLang() || (typeof LANG==="string"? LANG : "") || (localStorage.getItem("lang")||localStorage.getItem("LANG")||"ES")).toUpperCase();
+    const PDF_I18N = {
+      ES:{
+        title:"Assessoria d'Habitatge · Informe",
+        subtitle:"Baix Penedès",
+        need:"Genera un análisis antes de exportar.",
+        sectionData:"Datos y resultado",
+        sectionSummary:"Resumen",
+        zone:"Zona",
+        type:"Tipo",
+        m2:"m²",
+        rooms:"Habitaciones",
+        baths:"Baños",
+        buy:"Compra estimada",
+        rent:"Alquiler estimado",
+        mortgage:"Cuota hipoteca",
+        rec:"Recomendación",
+        note:"Nota: estimaciones orientativas. No sustituye asesoramiento profesional.",
+        perMonth:"€/mes",
+        eur:"€",
+      },
+      CA:{
+        title:"Assessoria d'Habitatge · Informe",
+        subtitle:"Baix Penedès",
+        need:"Genera una anàlisi abans d'exportar.",
+        sectionData:"Dades i resultat",
+        sectionSummary:"Resum",
+        zone:"Zona",
+        type:"Tipus",
+        m2:"m²",
+        rooms:"Habitacions",
+        baths:"Banys",
+        buy:"Compra estimada",
+        rent:"Lloguer estimat",
+        mortgage:"Quota hipoteca",
+        rec:"Recomanació",
+        note:"Nota: estimacions orientatives. No substitueix assessorament professional.",
+        perMonth:"€/mes",
+        eur:"€",
+      },
+      EN:{
+        title:"Assessoria d'Habitatge · Report",
+        subtitle:"Baix Penedès",
+        need:"Run an analysis before exporting.",
+        sectionData:"Data & result",
+        sectionSummary:"Summary",
+        zone:"Area",
+        type:"Type",
+        m2:"m²",
+        rooms:"Bedrooms",
+        baths:"Bathrooms",
+        buy:"Estimated purchase",
+        rent:"Estimated rent",
+        mortgage:"Mortgage payment",
+        rec:"Recommendation",
+        note:"Note: indicative estimates. Not professional advice.",
+        perMonth:"€/mo",
+        eur:"€",
+      }
+    };
+    const t = (k)=> (PDF_I18N[lang] && PDF_I18N[lang][k]) || (PDF_I18N.ES[k]||k);
+    const safe = (s)=> String(s==null?'':s).replace(/\u00A0/g,' ').replace(/\s+/g,' ').trim();
+    // Heuristic: sometimes the summary becomes "&H&u&g&o ..." (ampersand before
+    // almost every character). If detected (many '&' and no normal entities), strip.
+    const decodeHtml = (s)=>{ 
+      try{ 
+        const doc = new DOMParser().parseFromString(String(s==null?"":s), "text/html"); 
+        return (doc && doc.documentElement && doc.documentElement.textContent) ? doc.documentElement.textContent : String(s==null?"":s);
+      }catch(e){ 
+        return String(s==null?"":s); 
+      }
+    };
+    const decodeEntities = (s)=>{ 
+    const str = String(s ?? "");
+    if(!str.includes("&")) return str;
+    const ta = document.createElement("textarea");
+    ta.innerHTML = str;
+    const once = ta.value;
+    if(once.includes("&")) { ta.innerHTML = once; return ta.value; }
+    return once;
+  };
+
+  const cleanSummary = (text)=>{
+    let t = decodeEntities(text ?? "").trim();
+    // Caso típico de texto corrupto tipo "&H&u&g&o..."
+    if(/^(?:&[A-Za-zÀ-ÿ0-9]){8,}/.test(t)) t = t.replace(/&/g,"");
+    // Por si quedan ampersands sueltos entre letras
+    t = t.replace(/([A-Za-zÀ-ÿ0-9])&(?=[A-Za-zÀ-ÿ0-9])/g, "$1");
+    t = t.replace(/\s+/g," ").trim();
+    return t || "—";
+  };
+
+  const deAmp = (s)=>{ 
+      let t = decodeHtml(s);
+      t = t.replace(/\u00a0/g, " ");
+      t = t.replace(/\s+/g, " ").trim();
+      return t.replace(/&(?!amp;|lt;|gt;|quot;|#39;|nbsp;)/g, ""); 
+    };
+    const fmtEur = (n)=>{
+      const v = Number(n);
+      if(!isFinite(v)) return "—";
+      try{
+        const nf = new Intl.NumberFormat(lang==="EN"?"en-GB":(lang==="CA"?"ca-ES":"es-ES"), {maximumFractionDigits:0});
+        return nf.format(v) + " " + t("eur");
+      }catch(e){
+        return Math.round(v).toString() + " " + t("eur");
+      }
+    };
+    const fmtEurPerMonth = (n)=>{
+      const v = Number(n);
+      if(!isFinite(v)) return "—";
+      const base = fmtEur(v);
+      return base.replace(/\s*€$/," "+t("perMonth"));
+    };
+
+    // Pull latest computed result from global "last" snapshot (the app keeps updating it).
+    const X = (typeof last==="object" && last) ? last : null;
+    if(!X){
+      try{ alert(t("need")); }catch(e){}
+      return;
+    }
+
+    // Summary is intentionally excluded from PDF export (user request).
+    // Keep variable for backward compatibility with older fallbacks.
+    let summaryText = "";
+
+    // Translate kind if needed
+    const kindMap = {
+      flat:{ES:"Piso",CA:"Pis",EN:"Flat"},
+      piso:{ES:"Piso",CA:"Pis",EN:"Flat"},
+      pis:{ES:"Piso",CA:"Pis",EN:"Flat"},
+      house:{ES:"Casa",CA:"Casa",EN:"House"},
+      casa:{ES:"Casa",CA:"Casa",EN:"House"},
+      any:{ES:"Cualquiera",CA:"Qualsevol",EN:"Any"},
+      cualquiera:{ES:"Cualquiera",CA:"Qualsevol",EN:"Any"},
+      qualsevol:{ES:"Cualquiera",CA:"Qualsevol",EN:"Any"},
+    };
+    const kindRaw = safe(X.kind || X.tipo || X.type || "");
+    const kindKey = kindRaw.toLowerCase();
+    const kind = (kindMap[kindKey] && kindMap[kindKey][lang]) ? kindMap[kindKey][lang] : (kindRaw || "—");
+
+    // Recommendation normalize
+    const recMap = {
+      "NO FACTIBLE":{ES:"NO FACTIBLE",CA:"NO VIABLE",EN:"NOT FEASIBLE"},
+      "NO VIABLE":{ES:"NO FACTIBLE",CA:"NO VIABLE",EN:"NOT FEASIBLE"},
+      "NOT FEASIBLE":{ES:"NO FACTIBLE",CA:"NO VIABLE",EN:"NOT FEASIBLE"},
+      "COMPRAR":{ES:"COMPRAR",CA:"COMPRAR",EN:"BUY"},
+      "BUY":{ES:"COMPRAR",CA:"COMPRAR",EN:"BUY"},
+      "ALQUILAR":{ES:"ALQUILAR",CA:"LLOGAR",EN:"RENT"},
+      "RENT":{ES:"ALQUILAR",CA:"LLOGAR",EN:"RENT"},
+    };
+    const recRaw0 = safe(X.rec || X.reco || X.recommendation || "");
+    // fallback: intentar leer la recomendación visible en pantalla
+    const recRaw = (recRaw0 || safe((document.querySelector('#k4')||document.querySelector('[data-k="rec"]')||document.querySelector('.recoPill')||document.querySelector('.reco-pill'))?.textContent || "")).trim();
+    const recKey = recRaw.toUpperCase();
+    const rec = (recMap[recKey] && recMap[recKey][lang]) ? recMap[recKey][lang] : (recRaw || "—");
+
+    // DOM fallbacks (important when "last" uses different key names or when user exports after reload)
+    const domNum = (id)=>{
+      try{ const el=Q('#'+id); if(!el) return undefined; const v=String(el.value||'').replace(',','.'); const n=+v; return isFinite(n)?n:undefined; }catch{return undefined;}
+    };
+    // Lowercase language helper for internal strings (prevents ReferenceError: langL is not defined)
+    const langL = String(lang || (typeof LANG==="string"?LANG:"ES")).toLowerCase();
+
+    const domMuniLabel = ()=>{
+      const sel=Q('#muni');
+      if(!sel) return '';
+      const opts=[...sel.selectedOptions].map(o=>String(o.text||o.value||'').trim()).filter(Boolean);
+      const cleaned=opts.filter(t=>t!=='*' && t!=='__multi__' && t.toLowerCase()!=='any');
+      if(cleaned.length===0) return (opts[0]||'');
+      if(cleaned.length===1) return cleaned[0];
+      return (langL==='ca'?'Diversos municipis: ':(langL==='en'?'Multiple towns: ':'Varios municipios: ')) + cleaned.join(', ');
+    };
+
+    // Normalize keys from different "last" snapshots
+    const zoneVal = safe(X.muni || X.zone || X.zona || X.area || domMuniLabel() || '');
+    const m2Val = (X.m2 ?? X.metros); const m2Out = (m2Val!==undefined && m2Val!==null && m2Val!=='') ? m2Val : domNum('m2');
+    const roomsVal = (X.bd ?? X.rooms ?? X.hab); const roomsOut = (roomsVal!==undefined && roomsVal!==null && roomsVal!=='') ? roomsVal : domNum('bd');
+    const bathsVal = (X.ba ?? X.baths ?? X.banys ?? X.banos); const bathsOut = (bathsVal!==undefined && bathsVal!==null && bathsVal!=='') ? bathsVal : domNum('ba');
+    const buyVal = (X.pb ?? X.buy ?? X.compra ?? X.buyEst);
+    const rentVal = (X.pr ?? X.rent ?? X.lloguer ?? X.rentEst);
+    const mortVal = (X.pay ?? X.hipoteca ?? X.mortgage);
+
+    const dataRows = [
+      [t("zone"), zoneVal || "—"],
+      [t("type"), kind],
+      [t("m2"), safe(m2Out)],
+      [t("rooms"), safe(roomsOut)],
+      [t("baths"), safe(bathsOut)],
+      [t("buy"), fmtEur(buyVal)],
+      [t("rent"), fmtEurPerMonth(rentVal)],
+      [t("mortgage"), fmtEurPerMonth(mortVal)],
+      [t("rec"), rec],
+    ];
+
+    const fileName = "assessoria_habitatge_informe.pdf";
+
+    // Primary: jsPDF if available
+    try{
+      const jspdf = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf : (window.jspdf && window.jspdf.jsPdf ? window.jspdf : null);
+      const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF ? window.jsPDF : null);
+      const Ctor = jsPDFCtor || (jspdf && jspdf.jsPDF) || null;
+
+      if(Ctor){
+        const doc = new Ctor({unit:"pt", format:"a4"});
+        const pageW = 595.28, pageH = 841.89;
+        const margin = 56;
+        let y = 64;
+
+        // Brand bar
+        doc.setFillColor(10, 225, 140);
+        doc.rect(0, 0, pageW, 10, "F");
+
+        // Header
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(22);
+        doc.setTextColor(20);
+        doc.text(safe(t("title")), margin, y);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(11);
+        doc.setTextColor(90);
+        const stamp = new Date().toLocaleString(lang==="EN"?"en-GB":(lang==="CA"?"ca-ES":"es-ES"));
+        doc.text(stamp, margin, y+18);
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(30);
+        doc.text(safe(t("subtitle")), pageW - margin, y, {align:"right"});
+
+        y += 44;
+
+        // Card container
+        const cardX = margin, cardW = pageW - margin*2;
+        const cardY = y, cardH = 320;
+        doc.setDrawColor(200);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(cardX, cardY, cardW, cardH, 10, 10, "F");
+        doc.setDrawColor(220);
+        doc.roundedRect(cardX, cardY, cardW, cardH, 10, 10, "S");
+
+        // Section title
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(12);
+        doc.setTextColor(25);
+        doc.text(safe(t("sectionData")), cardX+18, cardY+28);
+
+        // Two columns layout
+        const colL = cardX+18, colR = cardX + cardW/2 + 6;
+        const colW = cardW/2 - 24;
+        let yL = cardY+52, yR = cardY+52;
+
+        const rowsL = dataRows.slice(0,5);
+        const rowsR = dataRows.slice(5);
+
+        const drawRows = (rows, x, y0)=>{
+          let yy = y0;
+          doc.setFontSize(10);
+          rows.forEach(([k,v])=>{
+            doc.setFont("helvetica","bold"); doc.setTextColor(60);
+            doc.text(safe(k)+":", x, yy);
+            doc.setFont("helvetica","normal"); doc.setTextColor(20);
+            doc.text(safe(v), x+140, yy);
+            yy += 18;
+          });
+          return yy;
+        };
+
+        yL = drawRows(rowsL, colL, yL);
+        yR = drawRows(rowsR, colR, yR);
+
+        // Highlight recommendation row visually
+        try{
+          const recY = yR - 18;
+          doc.setFillColor(10, 225, 140);
+          doc.roundedRect(colR-6, recY-12, colW+12, 22, 8, 8, "F");
+          doc.setFont("helvetica","bold");
+          doc.setTextColor(0);
+          doc.text(safe(t("rec"))+":", colR, recY);
+          doc.setTextColor(0);
+          doc.text(safe(rec), colR+140, recY);
+        }catch(e){}
+
+        // Summary removed intentionally (user request)
+
+        // Footer (with clickable links)
+        doc.setFontSize(8.5);
+        const footY = pageH - 32;
+        const noteTxt = safe(t("note"));
+        const webTxt  = "assesoriahabitatge.com";
+        const mailTxt = "info@assesoriahabitatge.com";
+
+        // Note (non-clickable)
+        doc.setTextColor(120);
+        let x = margin;
+        doc.text(noteTxt, x, footY);
+        x += doc.getTextWidth(noteTxt);
+
+        // Separator
+        const sep = "  |  ";
+        doc.text(sep, x, footY);
+        x += doc.getTextWidth(sep);
+
+        // Website link
+        const webUrl = "https://assesoriahabitatge.com";
+        doc.setTextColor(0, 102, 204);
+        doc.text(webTxt, x, footY);
+        try{
+          const w = doc.getTextWidth(webTxt);
+          doc.link(x, footY - 7, w, 10, { url: webUrl });
+        }catch(e){}
+        x += doc.getTextWidth(webTxt);
+
+        // Separator
+        doc.setTextColor(120);
+        doc.text(sep, x, footY);
+        x += doc.getTextWidth(sep);
+
+        // Email link
+        const mailUrl = "mailto:" + mailTxt;
+        doc.setTextColor(0, 102, 204);
+        doc.text(mailTxt, x, footY);
+        try{
+          const w = doc.getTextWidth(mailTxt);
+          doc.link(x, footY - 7, w, 10, { url: mailUrl });
+        }catch(e){}
+
+        doc.save(fileName);
+        return;
+      }
+    }catch(e){
+      // fall through to minimal PDF
+    }
+
+    // Fallback: minimal PDF (text-only)
+    try{
+      const pdfData = {
+        title: safe(t("title")),
+        stamp: safe(new Date().toLocaleString(lang==="EN"?"en-GB":(lang==="CA"?"ca-ES":"es-ES"))),
+        rows: dataRows.map(r=>[safe(r[0]), safe(r[1])]),
+        // summary intentionally omitted
+        footer: safe(t("note")) + " | assesoriahabitatge.com | info@assesoriahabitatge.com",
+      };
+      const pdfBytes = buildMinimalPDF(pdfData);
+      const blob = new Blob([pdfBytes], {type:"application/pdf"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1500);
+      return;
+    }catch(e){
+      try{ alert("No se ha podido exportar el PDF en este navegador."); }catch(e2){}
+    }
+  }
+
+try{ window.exportPDF = exportPDF; }catch(e){}
+
+  function wire(){
+    // Share
+    const shareBtn = $("#shareBtn");
+    if(shareBtn){
+      shareBtn.addEventListener("click", ()=>{
+        let link=null;
+        try{ link = window.buildShareURL(); }catch(e){ link = null; }
+        openShareModal(link);
+        // if running from file:// and base not set, focus base input
+        try{ if(!link && location.protocol==="file:"){ $("#shareBase")?.focus(); } }catch(e){}
+      });
+    }
+    const closeBtn = $("#shareClose");
+    if(closeBtn) closeBtn.addEventListener("click", closeShareModal);
+    const modal = $("#shareModal");
+    if(modal) modal.addEventListener("click", (e)=>{ if(e.target===modal) closeShareModal(); });
+
+    const copyBtn = $("#shareCopy");
+    if(copyBtn){
+      copyBtn.addEventListener("click", async ()=>{
+        const link = ($("#shareUrl")?.value)||window.buildShareURL();
+        if(!link){ openShareModal(null); return; }
+        const ok = await copyToClipboard(link);
+        try{ if(typeof toast==="function") toast(ok ? "Enlace copiado" : "No se pudo copiar"); }catch(e){}
+      });
+    }
+    const openBtn = $("#shareOpen");
+    if(openBtn){
+      openBtn.addEventListener("click", ()=>{
+        const link = ($("#shareUrl")?.value)||window.buildShareURL();
+        if(!link){ openShareModal(null); return; }
+        const w = window.open(link, "_blank");
+        if(!w) window.location.href = link;
+      });
+    }
+
+    // PDF
+    const pdfBtn = $("#pdfBtn");
+    if(pdfBtn){
+      pdfBtn.addEventListener("click", exportPDF);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    try{ applyShareParams(); }catch(e){}
+    try{ wire(); }catch(e){}
+
+    // Subtle click animation for buttons/links (purely cosmetic).
+    try{
+      document.addEventListener('click', (ev)=>{
+        const el = ev.target && ev.target.closest && ev.target.closest('button,.btn,.langbtn,.segbtn,.ai-tool-btn,.chat-send-btn,a');
+        if(!el) return;
+        el.classList.remove('tap-anim');
+        // Force reflow so the animation can retrigger on repeated clicks
+        void el.offsetWidth;
+        el.classList.add('tap-anim');
+        setTimeout(()=>{ try{ el.classList.remove('tap-anim'); }catch(_e){} }, 220);
+      }, true);
+    }catch(e){}
+  });
+})();
+</script>
+
+
 </body>
 </html>

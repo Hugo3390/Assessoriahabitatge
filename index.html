@@ -8894,15 +8894,26 @@ function exportPDF(){
   // Exec summary
   const rCol=_isBuy?C_G:_isRent?C_B:C_R;
   const rLabel=_isBuy?T.canBuy:_isRent?T.rentRec:T.notFeas;
-  fr(MX+28,396,W-MX*2-56,122,12,[14,26,56]);sr(MX+28,396,W-MX*2-56,122,12,C_BD,0.4);
-  tx(T.execTitle,MX+44,416,9,[180,200,230],"bold");hl(MX+44,422,W-MX-44,422,[60,80,120],0.5);
+  const EY=390, EH=185;
+  fr(MX+28,EY,W-MX*2-56,EH,12,[14,26,56]);sr(MX+28,EY,W-MX*2-56,EH,12,C_BD,0.4);
+  // Title + divider
+  tx(T.execTitle,MX+44,EY+20,9,[180,200,230],"bold");
+  hl(MX+44,EY+27,W-MX-44,EY+27,[60,80,120],0.5);
+  // 4 KPI columns
   const si=[{l:T.buyPrice,v:fmtE(_m2v),c:[220,235,255]},{l:T.mortMonth,v:fmtM(_mortv),c:[220,235,255]},{l:T.rentMonth,v:fmtM(_rentv),c:[220,235,255]},{l:T.recLabel,v:rLabel,c:rCol}];
   const siW=(W-MX*2-56-32)/4;
-  si.forEach((s,i)=>{const sx=MX+40+i*(siW+2);tx(s.l,sx,396+42,7.5,[120,140,170]);tx(s.v,sx,396+63,10.5,s.c,"bold");});
-  fr(MX+44,396+82,W-MX*2-88,30,8,rCol.map(v=>Math.min(255,v*0.10+234)));sr(MX+44,396+82,W-MX*2-88,30,8,rCol,0.5);
-  const shortRLines=doc.splitTextToSize(sf(_recTxGen),W-MX*2-96);
-  doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(C_TX[0],C_TX[1],C_TX[2]);
-  doc.text((shortRLines||[]).slice(0,2),W/2,396+97,{align:"center"});
+  si.forEach((s,i)=>{const sx=MX+40+i*(siW+2);tx(s.l,sx,EY+44,7.5,[120,140,170]);tx(s.v,sx,EY+62,10.5,s.c,"bold");});
+  // Separator before rec text
+  hl(MX+44,EY+76,W-MX-44,EY+76,[40,60,100],0.4);
+  // Rec text box
+  const rbgCol=rCol.map(v=>Math.min(255,v*0.09+234));
+  fr(MX+44,EY+84,W-MX*2-88,80,8,rbgCol);sr(MX+44,EY+84,W-MX*2-88,80,8,rCol,0.5);
+  // Verdict badge inside rec box
+  tx(sf(rLabel),W/2,EY+104,11.5,rCol,"bold","center");
+  // Description lines
+  const shortRLines=doc.splitTextToSize(sf(_recTxGen),W-MX*2-108);
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(C_TX[0],C_TX[1],C_TX[2]);
+  doc.text((shortRLines||[]).slice(0,3),W/2,EY+122,{align:"center"});
 
   tx(T.brand,W/2,608,9,C_B,"bold","center");triB();
 

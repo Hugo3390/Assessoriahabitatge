@@ -2617,17 +2617,11 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 
       <div id="registerView" style="display:none">
         <h2 class="auth-h1">Crea el teu compte</h2>
-        <p class="auth-sub">Registra't per guardar resultats, correu i historial de simulacions.</p>
+        <p class="auth-sub">Registra't per accedir i guardar els teus resultats.</p>
         <form id="registerForm" class="auth-form">
-          <div class="auth-grid2">
-            <div class="auth-field">
-              <label for="registerName">Nom d'usuari</label>
-              <input id="registerName" type="text" autocomplete="username" required placeholder="El teu nom">
-            </div>
-            <div class="auth-field">
-              <label for="registerEmail">Correu electrònic</label>
-              <input id="registerEmail" type="email" autocomplete="email" required placeholder="nom@exemple.com">
-            </div>
+          <div class="auth-field">
+            <label for="registerEmail">Correu electrònic</label>
+            <input id="registerEmail" type="email" autocomplete="email" required placeholder="nom@exemple.com">
           </div>
           <div class="auth-grid2">
             <div class="auth-field">
@@ -5064,6 +5058,7 @@ const analyze=()=>{
   setAnalyzeLoading(false);
   // Save a snapshot of this analysis for personal and staff history
   saveAnalysisSnapshot(last);
+  saveAnalysisToFirestore(last);
   renderAnalysisHistory();
   renderStaffPanel();
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
@@ -10400,8 +10395,8 @@ function updateInstallBanner() {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCujYxCvGNdKIDFdLgcnD6fICFaioLEK4c",
@@ -10476,13 +10471,47 @@ const lockApp = () => {
   authLoading.style.display = 'flex';
 };
 
+const saveAnalysisToFirestore = async (data) => {
+  try {
+    const user = auth.currentUser;
+    if (!user || !data) return;
+
+    const nombre = String(data.nm || '').trim();
+    const edad = Number(data.ag || 0);
+    const resultado = String(data.rec || '').trim();
+    const resultadoCodigo = String(data.recCode || '').trim();
+
+    if (!nombre || !edad || !resultadoCodigo) return;
+
+    await addDoc(collection(db, 'simulations'), {
+      uid: user.uid,
+      email: user.email || '',
+      nombre,
+      edad,
+      resultado,
+      resultadoCodigo,
+      municipio: data.muni || '',
+      createdAt: serverTimestamp()
+    });
+
+    await setDoc(doc(db, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email || '',
+      nombre,
+      edad,
+      lastAnalysisAt: serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.error('Error guardando análisis en Firestore:', err);
+  }
+};
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     try {
       await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         email: user.email || '',
-        displayName: user.displayName || '',
         lastLoginAt: serverTimestamp()
       }, { merge: true });
     } catch (e) {
@@ -10514,21 +10543,17 @@ $('loginForm')?.addEventListener('submit', async (e) => {
 $('registerForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   showMsg(registerMsg, '');
-  const name = $('registerName').value.trim();
   const email = $('registerEmail').value.trim();
   const p1 = $('registerPassword').value;
   const p2 = $('registerPassword2').value;
-  if (!name) { showMsg(registerMsg, "Escriu un nom d'usuari."); return; }
   if (p1 !== p2) { showMsg(registerMsg, "Les contrasenyes no coincideixen."); return; }
   registerSubmit.disabled = true;
   authLoading.style.display = 'flex';
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, p1);
-    if (name) await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), {
       uid: cred.user.uid,
       email,
-      displayName: name,
       createdAt: serverTimestamp(),
       lastLoginAt: serverTimestamp()
     }, { merge: true });

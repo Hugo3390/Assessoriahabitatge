@@ -3235,7 +3235,24 @@ body.auth-locked > *:not(#authGate){display:none!important;}
     </div>
     <div class="r" style="margin-top:10px">
       <button class="b" id="cp" type="button" data-i="btnCopy">Copiar resumen</button>
-<button class="b" id="pdfBtn" type="button" onclick="try{window.exportPDF&&window.exportPDF()}catch(e){}" data-i="btnPdf">📄 Exportar PDF</button>
+<button id="pdfBtn" type="button" onclick="try{window.exportPDF&&window.exportPDF()}catch(e){}" data-i="btnPdf" style="
+  background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+  color:#fff; border:0; border-radius:14px;
+  padding:12px 22px; cursor:pointer;
+  font-weight:900; font-family:inherit;
+  font-size:.95rem; letter-spacing:.2px;
+  box-shadow:0 6px 24px rgba(139,92,246,.38),0 2px 8px rgba(0,0,0,.25);
+  display:inline-flex; align-items:center; gap:8px;
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  position:relative; overflow:hidden;
+" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 32px rgba(139,92,246,.50)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 24px rgba(139,92,246,.38),0 2px 8px rgba(0,0,0,.25)'">
+  <span style="font-size:1.1rem">📊</span>
+  <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.1">
+    <span style="font-size:.72rem;opacity:.8;font-weight:700;letter-spacing:.4px;text-transform:uppercase">Premium</span>
+    <span>Exportar Informe PDF</span>
+  </span>
+  <span style="font-size:.75rem;background:rgba(255,255,255,.18);border-radius:6px;padding:2px 6px;font-weight:900">4 pàg.</span>
+</button>
       <button class="b" id="rs" type="button" data-i="btnReset">Reiniciar</button>
       <button class="b" id="jumpM" type="button" data-i="btnGoCompare">📊 Comparador</button>
       <!-- (Eliminado) Amortizar -->
@@ -8592,426 +8609,419 @@ function getCurrentLang(){
 }
 
 function exportPDF(){
-  const lang = (typeof getCurrentLang==="function"?getCurrentLang():"") || (typeof LANG==="string"?LANG:"") || (localStorage.getItem("lang")||"ES");
-  const L = lang.toUpperCase();
-
-  // Gather all state
-  const nm   = (typeof nameOut!=="undefined"?nameOut:null) || (document.getElementById("inName")||{}).value || "";
-  const ag   = (typeof ageOut!=="undefined"?ageOut:null)  || (document.getElementById("inAge")||{}).value  || "";
-  const inc  = (typeof incOut!=="undefined"?incOut:null)  || (document.getElementById("inIncome")||{}).value || 0;
-  const sav  = (typeof savOut!=="undefined"?savOut:null)  || (document.getElementById("inSavings")||{}).value || 0;
-  const muni = (typeof muniOut!=="undefined"?muniOut:null) || (document.getElementById("selMuni")||{}).value || "";
-  const m2v  = (typeof buyVal!=="undefined"?buyVal:null)  || 0;
-  const rentv= (typeof rentVal!=="undefined"?rentVal:null)|| 0;
-  const mortv= (typeof mortVal!=="undefined"?mortVal:null)|| 0;
-  const recTx= (typeof rec!=="undefined"?rec:null)        || (document.getElementById("recText")||{}).textContent || "";
-  const recCode= (typeof recCode!=="undefined"?recCode:null)||(typeof lastRecCode!=="undefined"?lastRecCode:null)||"";
-  const m2s  = (typeof m2Out!=="undefined"?m2Out:null)    || 0;
-  const rooms= (typeof roomsOut!=="undefined"?roomsOut:null)||0;
-  const baths= (typeof bathsOut!=="undefined"?bathsOut:null)||0;
-  const kind = (typeof kindOut!=="undefined"?kindOut:null) ||(document.getElementById("selType")||{}).value||"";
-  const comarca=(typeof curComarca!=="undefined"?curComarca:null)||"";
-
+  // Use the global `last` object populated after analysis
+  const _d = (typeof last !== "undefined" && last) ? last : null;
   const Ctor = (window.jspdf&&window.jspdf.jsPDF)?window.jspdf.jsPDF:(window.jsPDF||null);
-  if(!Ctor){ try{alert(L==="CA"?"Genera una anàlisi primer.":"Genera un análisis primero.");}catch(e){} return; }
-  if(!m2v && !rentv){ try{alert(L==="CA"?"Genera una anàlisi primer.":"Genera un análisis primero.");}catch(e){} return; }
 
+  const _lang = (typeof getCurrentLang==="function"?getCurrentLang():null)
+              ||(typeof LANG==="string"?LANG:null)
+              ||(localStorage.getItem("lang")||"ES");
+  const L = _lang.toUpperCase();
+
+  if(!Ctor){
+    try{alert(L==="CA"?"No s'ha pogut carregar la llibreria PDF. Recarrega la pàgina.":"No se pudo cargar la librería PDF. Recarga la página.");}catch(e){}
+    return;
+  }
+  if(!_d || (!_d.pb && !_d.pr)){
+    try{alert(L==="CA"?"Genera una anàlisi primer i després exporta.":"Genera un análisis primero y luego exporta.");}catch(e){}
+    return;
+  }
+
+  // ── Extract data from last ──────────────────────────────────────────────────
+  const _nm    = _d.nm   || "";
+  const _ag    = _d.ag   || "";
+  const _inc   = parseFloat(_d.inc)  || 0;
+  const _sav   = parseFloat(_d.sav)  || 0;
+  const _muni  = _d.muni || "";
+  const _comarca = (typeof curComarca!=="undefined"?curComarca:null)||"";
+  const _m2v   = parseFloat(_d.pb)   || 0;   // buy price
+  const _rentv = parseFloat(_d.pr)   || 0;   // monthly rent
+  const _mortv = parseFloat(_d.pay)  || 0;   // mortgage payment
+  const _recTx = _d.rec  || "";
+  const _rcCode= _d.recCode || "";
+  const _m2s   = parseFloat(_d.m2)   || 0;   // surface m2
+  const _rooms = _d.bd   || 0;
+  const _baths = _d.ba   || 0;
+  const _kind  = _d.type || "";
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  const now = new Date();
+  const _dateStr = now.toLocaleDateString(
+    L==="CA"?"ca-ES":L==="EN"?"en-GB":"es-ES",
+    {year:"numeric",month:"long",day:"numeric"}
+  );
+  const fmtE = v => v ? new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v) : "—";
+  const fmtM = v => v ? fmtE(v)+"/mes" : "—";
+  const sf   = v => {
+    if(v==null||v===undefined||v==="") return "—";
+    return String(v).replace(/[^\x00-\x7E\u00C0-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim()||"—";
+  };
+
+  // ── jsPDF setup ─────────────────────────────────────────────────────────────
   const doc = new Ctor({unit:"pt", format:"a4"});
   const W=595.28, H=841.89, MX=48;
-  const now = new Date();
-  const dateStr = now.toLocaleDateString(L==="CA"?"ca-ES":L==="EN"?"en-GB":"es-ES",{year:"numeric",month:"long",day:"numeric"});
 
-  const fmtE  = v=>v?new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v):"—";
-  const fmtM  = v=>v?fmtE(v)+"/mes":"—";
-  const sf    = v=>v!=null&&v!=""&&v!==undefined?String(v).replace(/[^\x00-\x7E\u00C0-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim():"—";
+  // Colors (RGB arrays)
+  const C_DARK  =[6,14,30];
+  const C_BRAND =[56,189,248];
+  const C_GREEN =[52,211,153];
+  const C_PURPLE=[139,92,246];
+  const C_AMBER =[245,158,11];
+  const C_TEXT  =[15,23,42];
+  const C_MUTED =[100,116,139];
+  const C_CARD  =[245,248,252];
+  const C_BORDER=[210,220,235];
+  const C_LIGHT =[240,245,252];
 
-  // Colors
-  const C_DARK=[6,14,30], C_BRAND=[56,189,248], C_GREEN=[52,211,153], C_PURPLE=[139,92,246];
-  const C_AMBER=[245,158,11], C_TEXT=[15,23,42], C_MUTED=[100,116,139], C_LIGHT=[241,245,249];
-  const C_CARD=[245,248,252], C_BORDER=[203,213,225];
-
-  // ─── helpers ────────────────────────────────────────────────────────────────
-  const fillRect=(x,y,w,h,r,col)=>{ doc.setFillColor(...col); if(r) doc.roundedRect(x,y,w,h,r,r,"F"); else doc.rect(x,y,w,h,"F"); };
-  const strokeRect=(x,y,w,h,r,col,lw=0.5)=>{ doc.setDrawColor(...col); doc.setLineWidth(lw); if(r) doc.roundedRect(x,y,w,h,r,r,"S"); else doc.rect(x,y,w,h,"S"); };
-  const txt=(t,x,y,sz,col,style="normal",align="left")=>{ doc.setFont("helvetica",style); doc.setFontSize(sz); doc.setTextColor(...col); doc.text(sf(t),x,y,{align}); };
-  const line=(x1,y1,x2,y2,col,lw=0.5)=>{ doc.setDrawColor(...col); doc.setLineWidth(lw); doc.line(x1,y1,x2,y2); };
-
-  const kpiCard=(x,y,w,h,label,value,sub,accentCol)=>{
-    fillRect(x,y,w,h,10,C_CARD);
-    strokeRect(x,y,w,h,10,C_BORDER);
-    doc.setFillColor(...accentCol);
+  // ── Drawing helpers ──────────────────────────────────────────────────────────
+  function fillR(x,y,w,h,r,col){
+    doc.setFillColor(col[0],col[1],col[2]);
+    r ? doc.roundedRect(x,y,w,h,r,r,"F") : doc.rect(x,y,w,h,"F");
+  }
+  function strokeR(x,y,w,h,r,col,lw){
+    doc.setDrawColor(col[0],col[1],col[2]);
+    doc.setLineWidth(lw||0.5);
+    r ? doc.roundedRect(x,y,w,h,r,r,"S") : doc.rect(x,y,w,h,"S");
+  }
+  function txt(t,x,y,sz,col,style,align){
+    doc.setFont("helvetica",style||"normal");
+    doc.setFontSize(sz);
+    doc.setTextColor(col[0],col[1],col[2]);
+    doc.text(sf(t),x,y,{align:align||"left"});
+  }
+  function hline(x1,y1,x2,y2,col,lw){
+    doc.setDrawColor(col[0],col[1],col[2]);
+    doc.setLineWidth(lw||0.5);
+    doc.line(x1,y1,x2,y2);
+  }
+  function kpiCard(x,y,w,h,label,value,sub,accentCol){
+    fillR(x,y,w,h,10,C_CARD);
+    strokeR(x,y,w,h,10,C_BORDER);
+    doc.setFillColor(accentCol[0],accentCol[1],accentCol[2]);
     doc.roundedRect(x,y,w,3,2,2,"F");
-    txt(sf(label),x+14,y+20,7.5,C_MUTED,"bold");
-    txt(sf(value),x+14,y+38,16,C_TEXT,"bold");
-    if(sub) txt(sf(sub),x+14,y+52,7.5,C_MUTED,"normal");
-  };
-
-  const sectionHeader=(title,y,col)=>{
-    doc.setFillColor(...col,0.12);
-    fillRect(MX,y-14,W-MX*2,24,6,col.map(c=>Math.min(255,c+200)));
-    fillRect(MX,y-14,4,24,2,col);
-    txt(sf(title),MX+14,y+3,11,C_TEXT,"bold");
-    return y+20;
-  };
+    txt(label,x+12,y+18,7,C_MUTED,"bold");
+    txt(value,x+12,y+35,14,C_TEXT,"bold");
+    if(sub) txt(sub,x+12,y+48,7,C_MUTED,"normal");
+  }
+  function secHeader(title,y,col){
+    fillR(MX,y-14,W-MX*2,26,6,C_LIGHT);
+    fillR(MX,y-14,4,26,2,col);
+    txt(title,MX+14,y+5,10,C_TEXT,"bold");
+    return y+22;
+  }
+  function footer(pg){
+    hline(0,H-38,W,H-38,C_BORDER);
+    fillR(0,H-37,W,37,0,C_DARK);
+    txt("Assessoria d'Habitatge  ·  assesoriahabitatge.com",MX,H-18,7.5,C_MUTED);
+    txt(sf(_dateStr),W-MX,H-18,7.5,C_MUTED,"normal","right");
+    doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.rect(0,H-4,W/3,4,"F");
+    doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.rect(W/3,H-4,W/3,4,"F");
+    doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]); doc.rect(2*W/3,H-4,W/3,4,"F");
+  }
+  function pageHeader(label,col,pg){
+    fillR(0,0,W,50,0,C_DARK);
+    doc.setFillColor(col[0],col[1],col[2]); doc.rect(0,0,W,4,"F");
+    txt("Assessoria d'Habitatge  ·  Informe Premium 2026",MX,32,9,C_MUTED,"bold");
+    txt("Pag. "+pg+"/4",W-MX,32,9,col,"bold","right");
+    hline(0,50,W,50,C_BORDER,0.5);
+  }
 
   // ══════════════════════════════════════════════════════════════════
   // PAGE 1 — COVER
   // ══════════════════════════════════════════════════════════════════
-  // Dark background
-  fillRect(0,0,W,H,0,C_DARK);
+  fillR(0,0,W,H,0,C_DARK);
+  // Tri-color top bar
+  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.rect(0,0,W/3,6,"F");
+  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.rect(W/3,0,W/3,6,"F");
+  doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]); doc.rect(2*W/3,0,W/3,6,"F");
 
-  // Top gradient strip
-  doc.setFillColor(56,189,248);
-  doc.rect(0,0,W,5,"F");
-  doc.setFillColor(52,211,153);
-  doc.rect(W/3,0,W/3,5,"F");
-  doc.setFillColor(139,92,246);
-  doc.rect(2*W/3,0,W/3,5,"F");
+  // Hero card
+  doc.setFillColor(12,22,50);
+  doc.roundedRect(MX,58,W-MX*2,530,18,18,"F");
+  doc.setDrawColor(56,189,248); doc.setLineWidth(0.5);
+  doc.roundedRect(MX,58,W-MX*2,530,18,18,"S");
 
-  // Hero area background card
-  doc.setFillColor(12,22,48);
-  doc.roundedRect(MX,60,W-MX*2,520,18,18,"F");
-  doc.setDrawColor(56,189,248,0.25);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(MX,60,W-MX*2,520,18,18,"S");
+  // Premium badge
+  const bW=150,bH=24,bX=(W-bW)/2,bY=80;
+  fillR(bX,bY,bW,bH,12,C_AMBER.map(c=>Math.min(255,Math.round(c*0.18+220))));
+  doc.setDrawColor(C_AMBER[0],C_AMBER[1],C_AMBER[2]); doc.setLineWidth(0.5);
+  doc.roundedRect(bX,bY,bW,bH,12,12,"S");
+  txt("INFORME PREMIUM 2026",W/2,bY+16,8,C_AMBER,"bold","center");
 
-  // Logo house icon (simple SVG-style lines)
-  const hx=W/2, hy=130, hs=38;
-  doc.setDrawColor(56,189,248); doc.setLineWidth(2.5);
-  doc.lines([[hs,0],[hs,hs*1.1],[-(hs*2),0],[0,-hs*1.1]],hx-hs,hy,undefined,"S");
-  doc.lines([[0,-hs]],hx,hy+hs*1.1,undefined,"S");
-  doc.setDrawColor(52,211,153); doc.setLineWidth(1.5);
-  doc.rect(hx-10,hy+hs*0.4,20,hs*0.7,"S");
-
-  // BADGE — Premium
-  const badgeW=130, badgeH=24, badgeX=(W-badgeW)/2, badgeY=180;
-  doc.setFillColor(245,158,11,0.18);
-  doc.roundedRect(badgeX,badgeY,badgeW,badgeH,12,12,"F");
-  doc.setDrawColor(245,158,11,0.5);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(badgeX,badgeY,badgeW,badgeH,12,12,"S");
-  doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(245,158,11);
-  doc.text("✦ INFORME PREMIUM 2026",W/2,badgeY+15.5,{align:"center"});
-
-  // Main title
-  doc.setFont("helvetica","bold"); doc.setFontSize(34); doc.setTextColor(248,250,252);
-  doc.text("Informe d'Habitatge",W/2,228,{align:"center"});
-  doc.setFont("helvetica","bold"); doc.setFontSize(34);
-  doc.setTextColor(56,189,248);
-  doc.text("Catalunya 2026",W/2,268,{align:"center"});
+  // Title
+  doc.setFont("helvetica","bold"); doc.setFontSize(30);
+  doc.setTextColor(248,250,252);
+  doc.text("Informe d'Habitatge",W/2,138,{align:"center"});
+  doc.setFontSize(30); doc.setTextColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]);
+  doc.text("Catalunya 2026",W/2,174,{align:"center"});
 
   // Divider
-  doc.setDrawColor(56,189,248,0.3); doc.setLineWidth(0.5);
-  doc.line(MX+60,290,W-MX-60,290);
+  hline(MX+70,192,W-MX-70,192,[56,189,248,0.3],0.5);
 
-  // Recipient info card
-  fillRect(MX+30,305,W-MX*2-60,115,12,[16,30,60]);
-  doc.setDrawColor(56,189,248,0.2); doc.setLineWidth(0.5);
-  doc.roundedRect(MX+30,305,W-MX*2-60,115,12,12,"S");
-
-  doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(56,189,248);
-  doc.text("PREPARAT PER A",MX+46,324);
-  doc.setFont("helvetica","bold"); doc.setFontSize(22); doc.setTextColor(248,250,252);
-  doc.text(sf(nm)||"—",MX+46,348);
-  doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(148,163,184);
-  doc.text(sf(ag)?(sf(ag)+" anys"):"—",MX+46,365);
-
-  if(muni||comarca){
-    doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(52,211,153);
-    doc.text("ZONA D'INTERÈS",W-MX-46,324,{align:"right"});
-    doc.setFont("helvetica","bold"); doc.setFontSize(16); doc.setTextColor(248,250,252);
-    doc.text(sf(muni)||sf(comarca)||"—",W-MX-46,348,{align:"right"});
-    if(comarca&&muni) { doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(148,163,184); doc.text(sf(comarca),W-MX-46,365,{align:"right"}); }
+  // Recipient card
+  fillR(MX+28,204,W-MX*2-56,118,12,[16,28,60]);
+  strokeR(MX+28,204,W-MX*2-56,118,12,C_BRAND,0.5);
+  txt("PREPARAT PER A",MX+44,224,8,C_BRAND,"bold");
+  txt(sf(_nm)||"—",MX+44,246,20,[248,250,252],"bold");
+  txt(_ag?(sf(_ag)+" anys"):"—",MX+44,263,9,C_MUTED,"normal");
+  if(_muni||_comarca){
+    txt("ZONA D'INTERES",W-MX-44,224,8,C_GREEN,"bold","right");
+    txt(sf(_muni)||sf(_comarca)||"—",W-MX-44,246,16,[248,250,252],"bold","right");
+    if(_comarca&&_muni) txt(sf(_comarca),W-MX-44,263,9,C_MUTED,"normal","right");
   }
+  txt(sf(_dateStr),MX+44,296,8,C_MUTED,"normal");
+  txt("DADES Q1 2026",W-MX-44,296,8,C_PURPLE,"bold","right");
 
-  // Date line
-  doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(100,116,139);
-  doc.text(sf(dateStr),MX+46,398);
-  doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(139,92,246);
-  doc.text("DADES ACTUALITZADES MARÇ 2026",W-MX-46,398,{align:"right"});
-
-  // 4 content previews
-  const previews=[
-    {icon:"01",title:"Perfil Financer",desc:"Capacitat d'estalvi i accés",col:C_BRAND},
-    {icon:"02",title:"Mercat Local",desc:"Preus m² i tendències",col:C_GREEN},
-    {icon:"03",title:"Comparativa",desc:"Compra vs. lloguer",col:C_PURPLE},
-    {icon:"04",title:"Pla d'Acció",desc:"Passos personalitzats",col:C_AMBER},
+  // 4 page previews
+  const pvItems=[
+    {n:"01",t:"Perfil Financer",d:"Capacitat estalvi",c:C_BRAND},
+    {n:"02",t:"Mercat Local",d:"Preus m2 2026",c:C_GREEN},
+    {n:"03",t:"Compra vs Lloguer",d:"Comparativa 20 anys",c:C_PURPLE},
+    {n:"04",t:"Pla d'Accio",d:"Passos personalitzats",c:C_AMBER},
   ];
-  const pvW=(W-MX*2-36)/4, pvY=450;
-  previews.forEach((p,i)=>{
-    const px=MX+i*(pvW+12);
-    fillRect(px,pvY,pvW,80,10,[16,30,60]);
-    doc.setDrawColor(...p.col); doc.setLineWidth(0.5);
-    doc.roundedRect(px,pvY,pvW,80,10,10,"S");
-    doc.setFillColor(...p.col); doc.roundedRect(px,pvY,pvW,3,2,2,"F");
-    doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...p.col);
-    doc.text(p.icon,px+pvW/2,pvY+28,{align:"center"});
-    doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(240,248,255);
-    doc.text(sf(p.title),px+pvW/2,pvY+44,{align:"center"});
-    doc.setFont("helvetica","normal"); doc.setFontSize(7); doc.setTextColor(148,163,184);
-    doc.text(sf(p.desc),px+pvW/2,pvY+57,{align:"center"});
+  const pvW2=(W-MX*2-36)/4, pvY2=352;
+  pvItems.forEach((p,i)=>{
+    const px=MX+i*(pvW2+12);
+    fillR(px,pvY2,pvW2,82,10,[16,28,60]);
+    strokeR(px,pvY2,pvW2,82,10,p.c,0.5);
+    doc.setFillColor(p.c[0],p.c[1],p.c[2]); doc.roundedRect(px,pvY2,pvW2,3,2,2,"F");
+    txt(p.n,px+pvW2/2,pvY2+26,16,p.c,"bold","center");
+    txt(p.t,px+pvW2/2,pvY2+44,7.5,[240,248,255],"bold","center");
+    txt(p.d,px+pvW2/2,pvY2+57,6.5,C_MUTED,"normal","center");
   });
 
-  // Bottom brand
-  doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(56,189,248);
-  doc.text("Assessoria d'Habitatge",W/2,620,{align:"center"});
-  doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(100,116,139);
-  doc.text("assesoriahabitatge.com  ·  info@assesoriahabitatge.com",W/2,638,{align:"center"});
+  // Summary KPIs on cover
+  const sumY=464;
+  fillR(MX+28,sumY,W-MX*2-56,100,12,[16,28,60]);
+  strokeR(MX+28,sumY,W-MX*2-56,100,12,C_BORDER,0.5);
+  txt("RESUM EXECUTIU",MX+44,sumY+18,8,C_MUTED,"bold");
+  const sumItems=[
+    {l:"Preu compra estimat",v:fmtE(_m2v)},
+    {l:"Quota hipoteca/mes",v:fmtM(_mortv)},
+    {l:"Lloguer estimat/mes",v:fmtM(_rentv)},
+    {l:"Recomanacio",v:_rcCode==="BUY"||_rcCode==="BUY_SHORT"?"COMPRA":_rcCode==="RENT"?"LLOGUER":"NO FACTIBLE"},
+  ];
+  const siW=(W-MX*2-56-32)/4;
+  sumItems.forEach((s,i)=>{
+    const sx=MX+40+i*siW;
+    txt(sf(s.l),sx,sumY+38,7,C_MUTED,"normal");
+    const sc=i===3?(_rcCode==="BUY"||_rcCode==="BUY_SHORT"?C_GREEN:_rcCode==="RENT"?C_BRAND:C_AMBER):C_TEXT;
+    txt(sf(s.v),sx,sumY+56,10,sc,"bold");
+  });
+  txt("Informe generat a assesoriahabitatge.com  -  "+sf(_dateStr),MX+44,sumY+80,7,C_MUTED,"normal");
+
+  // Brand footer cover
+  txt("Assessoria d'Habitatge",W/2,614,10,C_BRAND,"bold","center");
+  txt("assesoriahabitatge.com  -  info@assesoriahabitatge.com",W/2,630,8,C_MUTED,"normal","center");
+  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.rect(0,H-4,W/3,4,"F");
+  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.rect(W/3,H-4,W/3,4,"F");
+  doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]); doc.rect(2*W/3,H-4,W/3,4,"F");
 
   // ══════════════════════════════════════════════════════════════════
   // PAGE 2 — PERFIL FINANCER
   // ══════════════════════════════════════════════════════════════════
   doc.addPage();
+  pageHeader("Perfil Financer",C_BRAND,2);
+  let y2=72;
+  txt((_nm?"Perfil Financer de "+sf(_nm):"Perfil Financer"),MX,y2,17,C_TEXT,"bold"); y2+=6;
+  hline(MX,y2,W-MX,y2,C_BRAND,1); y2+=20;
 
-  // Header bar
-  fillRect(0,0,W,52,0,C_DARK);
-  doc.setFillColor(...C_BRAND); doc.rect(0,0,W,4,"F");
-  txt("Assessoria d'Habitatge · Informe 2026",MX,32,10,[148,163,184],"bold");
-  txt("Pàg. 2/4",W-MX,32,10,[56,189,248],"bold","right");
-  line(0,52,W,52,C_BORDER);
+  const _maxMort = _inc * 0.35;
+  const _savCap  = _inc * 0.20;
+  const _needed  = Math.max(0, _m2v * 0.32 - _sav);
+  const _yearsTo = _savCap > 0 ? (_needed / (_savCap * 12)) : null;
+  const _mortRatio = _inc > 0 ? Math.round((_mortv / _inc) * 100) : 0;
 
-  let y2=82;
-  txt(sf(nm)?"Perfil Financer de "+sf(nm):"Perfil Financer",MX,y2,18,C_TEXT,"bold"); y2+=8;
-  line(MX,y2,W-MX,y2,C_BRAND,1); y2+=20;
+  const kpiW=(W-MX*2-30)/4;
+  [
+    {l:"Ingressos mensuals",v:fmtE(_inc),s:"Net/mes",c:C_BRAND},
+    {l:"Estalvis actuals",v:fmtE(_sav),s:"Disponibles",c:C_GREEN},
+    {l:"Max. hipoteca rec.",v:fmtM(_maxMort),s:"35% ingressos",c:C_PURPLE},
+    {l:"Estalvi estim./mes",v:fmtE(_savCap)+"/mes",s:"20% ingressos",c:C_AMBER},
+  ].forEach((k,i)=>{ kpiCard(MX+i*(kpiW+10),y2,kpiW,66,k.l,k.v,k.s,k.c); });
+  y2+=84;
 
-  // 4 KPI cards
-  const incNum=parseFloat(inc)||0, savNum=parseFloat(sav)||0;
-  const maxMort=incNum*0.35;
-  const savCapacity=incNum*0.20;
-  const yearsTo=m2v&&savNum>0?(m2v*0.2-savNum)/Math.max(savCapacity*12,1):null;
-
-  const kpis=[
-    {label:L==="CA"?"Ingressos mensuals":"Ingresos mensuales",value:fmtE(incNum),sub:L==="CA"?"Net/mes":"Neto/mes",col:C_BRAND},
-    {label:L==="CA"?"Estalvis actuals":"Ahorros actuales",value:fmtE(savNum),sub:L==="CA"?"Disponibles":"Disponibles",col:C_GREEN},
-    {label:L==="CA"?"Màx. hipoteca recomanada":"Máx. hipoteca recomendada",value:fmtM(maxMort),sub:"35% ingressos",col:C_PURPLE},
-    {label:L==="CA"?"Capacitat d'estalvi est.":"Capacidad de ahorro est.",value:fmtE(savCapacity)+"/mes",sub:"20% ingressos",col:C_AMBER},
+  y2=secHeader("Viabilitat Hipotecaria",y2,C_BRAND); y2+=12;
+  const rowData=[
+    [L==="CA"?"Preu estimat compra":"Precio estimado compra",fmtE(_m2v)],
+    [L==="CA"?"Entrada necessaria (20%)":"Entrada necesaria (20%)",fmtE(_m2v*0.20)],
+    [L==="CA"?"Despeses estimades (12%)":"Gastos estimados (12%)",fmtE(_m2v*0.12)],
+    [L==="CA"?"Total necessari":"Total necesario",fmtE(_m2v*0.32)],
+    [L==="CA"?"Estalvis actuals":"Ahorros actuales",fmtE(_sav)],
+    [L==="CA"?"Diferencia fins accedir":"Diferencia hasta acceder",fmtE(_needed)],
+    [L==="CA"?"Anys estalviant (est.)":"Anos ahorrando (est.)",_yearsTo!=null?(_yearsTo<=0?"Ja pots comprar!":Math.ceil(_yearsTo)+" anys"):"—"],
+    [L==="CA"?"Quota hipoteca estim.":"Cuota hipoteca estim.",fmtM(_mortv)],
+    [L==="CA"?"Lloguer mercat estim.":"Alquiler mercado estim.",fmtM(_rentv)],
+    ["% hipoteca sobre ingressos",_mortRatio?_mortRatio+"%":"—"],
   ];
-  const kW=(W-MX*2-30)/4;
-  kpis.forEach((k,i)=>{ kpiCard(MX+i*(kW+10),y2,kW,70,k.label,k.value,k.sub,k.col); });
-  y2+=88;
-
-  // Mortgage viability section
-  y2=sectionHeader(L==="CA"?"Viabilitat Hipotecària":"Viabilidad Hipotecaria",y2,C_BRAND); y2+=14;
-
-  const rows2=[
-    [L==="CA"?"Preu estimat compra":"Precio estimado compra", fmtE(m2v)],
-    [L==="CA"?"Entrada necessària (20%)":"Entrada necesaria (20%)", fmtE(m2v*0.2)],
-    [L==="CA"?"Estalvis actuals":"Ahorros actuales", fmtE(savNum)],
-    [L==="CA"?"Diferència fins entrada":"Diferencia hasta entrada", fmtE(Math.max(0,m2v*0.2-savNum))],
-    [L==="CA"?"Anys estalviant (est.)":"Años ahorrando (est.)", yearsTo!=null?(yearsTo<0?"Ja pots comprar!":Math.ceil(yearsTo)+" anys"):"—"],
-    [L==="CA"?"Quota hipoteca estim.":"Cuota hipoteca estim.", fmtM(mortv)],
-    [L==="CA"?"Lloguer de mercat estim.":"Alquiler de mercado estim.", fmtM(rentv)],
-    [L==="CA"?"% hipoteca sobre ingressos":"% hipoteca sobre ingresos", incNum>0?Math.round((mortv/incNum)*100)+"%":"—"],
-  ];
-
-  const colLX=MX, colRX=W/2+10, colW2=(W/2-MX-10);
+  const cLX=MX, cRX=W/2+8, cHalfW=W/2-MX-12;
   let yL=y2, yR=y2;
-  rows2.forEach(([k,v],i)=>{
-    const isRight=i>=4;
-    const cx=isRight?colRX:colLX, cy=isRight?yR:yL;
-    const isHighlight=(k.includes("pots") || v.includes("pots") || (i===4&&yearsTo!=null&&yearsTo<0));
-    if(i%2===0&&!isRight) fillRect(cx-4,cy-12,colW2+8,20,4,C_LIGHT);
-    if(i%2===0&&isRight) fillRect(cx-4,cy-12,colW2+8,20,4,C_LIGHT);
-    doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(...C_MUTED);
+  rowData.forEach(([k,v],i)=>{
+    const isR=i>=5; const cx=isR?cRX:cLX; const cy=isR?yR:yL;
+    if(i%2===0) fillR(cx-4,cy-12,cHalfW+8,20,3,C_LIGHT);
+    doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
     doc.text(sf(k),cx,cy);
-    doc.setFont("helvetica","bold"); doc.setFontSize(10);
-    doc.setTextColor(isHighlight?52:C_TEXT[0],isHighlight?211:C_TEXT[1],isHighlight?153:C_TEXT[2]);
-    doc.text(sf(v),cx+colW2,cy,{align:"right"});
-    if(isRight) yR+=22; else yL+=22;
+    const isGood=(v.includes("pots comprar")||v.includes("puedes comprar"));
+    doc.setFont("helvetica","bold"); doc.setFontSize(9.5);
+    const vc=isGood?C_GREEN:C_TEXT;
+    doc.setTextColor(vc[0],vc[1],vc[2]);
+    doc.text(sf(v),cx+cHalfW,cy,{align:"right"});
+    if(isR) yR+=22; else yL+=22;
   });
-  y2=Math.max(yL,yR)+18;
+  y2=Math.max(yL,yR)+20;
 
   // Recommendation box
-  if(recTx){
-    const recColor = recCode==="buy"?C_GREEN:recCode==="rent"?C_BRAND:C_AMBER;
-    fillRect(MX,y2,W-MX*2,56,10,recColor.map(c=>Math.min(255,Math.round(c*0.12+240))));
-    doc.setFillColor(...recColor); doc.roundedRect(MX,y2,W-MX*2,4,2,2,"F");
-    strokeRect(MX,y2,W-MX*2,56,10,recColor,0.8);
-    txt(L==="CA"?"Recomanació IA":"Recomendación IA",MX+14,y2+18,8,[...recColor],"bold");
-    const recLines=doc.splitTextToSize(sf(recTx),W-MX*2-28);
-    doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(...C_TEXT);
-    doc.text(recLines.slice(0,2),MX+14,y2+32);
-    y2+=70;
+  if(_recTx){
+    const _recCol=_rcCode==="BUY"||_rcCode==="BUY_SHORT"?C_GREEN:_rcCode==="RENT"?C_BRAND:C_AMBER;
+    fillR(MX,y2,W-MX*2,60,10,_recCol.map(c=>Math.min(255,Math.round(c*0.10+235))));
+    strokeR(MX,y2,W-MX*2,60,10,_recCol,0.8);
+    doc.setFillColor(_recCol[0],_recCol[1],_recCol[2]); doc.roundedRect(MX,y2,W-MX*2,4,2,2,"F");
+    txt("Recomanacio IA:",MX+14,y2+20,9,_recCol,"bold");
+    const rLines=doc.splitTextToSize(sf(_recTx),W-MX*2-28);
+    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(C_TEXT[0],C_TEXT[1],C_TEXT[2]);
+    doc.text((rLines||[]).slice(0,2),MX+14,y2+34);
   }
-
-  // Footer pg2
-  line(0,H-36,W,H-36,C_BORDER);
-  txt("Assessoria d'Habitatge · assesoriahabitatge.com",MX,H-20,7.5,C_MUTED);
-  txt(sf(dateStr),W-MX,H-20,7.5,C_MUTED,"normal","right");
+  footer(2);
 
   // ══════════════════════════════════════════════════════════════════
-  // PAGE 3 — MERCAT LOCAL
+  // PAGE 3 — MERCAT LOCAL + COMPARATIVA
   // ══════════════════════════════════════════════════════════════════
   doc.addPage();
-  fillRect(0,0,W,52,0,C_DARK);
-  doc.setFillColor(...C_GREEN); doc.rect(0,0,W,4,"F");
-  txt("Assessoria d'Habitatge · Informe 2026",MX,32,10,[148,163,184],"bold");
-  txt("Pàg. 3/4",W-MX,32,10,[52,211,153],"bold","right");
-  line(0,52,W,52,C_BORDER);
+  pageHeader("Mercat Local i Comparativa",C_GREEN,3);
+  let y3=72;
+  txt("Analisi del Mercat Local 2026",MX,y3,17,C_TEXT,"bold"); y3+=6;
+  hline(MX,y3,W-MX,y3,C_GREEN,1); y3+=20;
 
-  let y3=80;
-  txt("Anàlisi del Mercat Local 2026",MX,y3,18,C_TEXT,"bold"); y3+=8;
-  line(MX,y3,W-MX,y3,C_GREEN,1); y3+=24;
+  const _buyM2 = _m2v&&_m2s ? Math.round(_m2v/_m2s) : 0;
+  const mkpiW=(W-MX*2-30)/4;
+  [
+    {l:"Preu total estimat",v:fmtE(_m2v),s:sf(_kind),c:C_BRAND},
+    {l:"Preu per m2 (est.)",v:_buyM2?fmtE(_buyM2)+"/m2":"—",s:sf(_muni)||sf(_comarca)||"Catalunya",c:C_GREEN},
+    {l:"Superficie estimada",v:_m2s?sf(_m2s)+" m2":"—",s:_rooms?sf(_rooms)+" hab. "+sf(_baths)+" b.":"—",c:C_PURPLE},
+    {l:"Lloguer anual est.",v:_rentv?fmtE(_rentv*12):"—",s:fmtM(_rentv),c:C_AMBER},
+  ].forEach((k,i)=>{ kpiCard(MX+i*(mkpiW+10),y3,mkpiW,66,k.l,k.v,k.s,k.c); });
+  y3+=84;
 
-  // Market KPIs
-  const buyM2 = m2v&&m2s?Math.round(m2v/m2s):0;
-  const rentM2 = rentv&&m2s?Math.round(rentv*12/m2s):0;
-  const mkpis=[
-    {label:"Preu total estimat",value:fmtE(m2v),sub:kind,col:C_BRAND},
-    {label:"Preu per m²",value:buyM2?fmtE(buyM2)+"/m²":"—",sub:sf(muni)||sf(comarca)||"Catalunya",col:C_GREEN},
-    {label:"Lloguer anual estim.",value:rentM2?fmtE(rentM2*m2s):"—",sub:rentv?fmtM(rentv):"—",col:C_PURPLE},
-    {label:"Superfície estimada",value:m2s?m2s+" m²":"—",sub:rooms?rooms+" hab. · "+baths+" banys":"—",col:C_AMBER},
-  ];
-  const mkW=(W-MX*2-30)/4;
-  mkpis.forEach((k,i)=>{ kpiCard(MX+i*(mkW+10),y3,mkW,70,k.label,k.value,k.sub,k.col); });
-  y3+=90;
+  // Compra vs Lloguer 20 years
+  y3=secHeader("Comparativa Compra vs. Lloguer a 20 anys",y3,C_GREEN); y3+=12;
+  const _totBuy  = _m2v + (_m2v*0.12);
+  const _totRent = _rentv*12*20;
+  const _mortTot = _mortv*12*20;
+  const _patriB  = _m2v*1.30;
+  const hfW=(W-MX*2)/2-10;
 
-  // Compra vs Lloguer comparison
-  y3=sectionHeader("Comparativa: Compra vs. Lloguer a 20 anys",y3,C_GREEN); y3+=14;
+  // Buy box
+  fillR(MX,y3,hfW,118,10,C_GREEN.map(c=>Math.min(255,Math.round(c*0.08+236))));
+  strokeR(MX,y3,hfW,118,10,C_GREEN,0.8);
+  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.roundedRect(MX,y3,hfW,5,3,3,"F");
+  txt("COMPRA",MX+14,y3+22,11,C_GREEN,"bold");
+  txt("Cost total (entrada+despeses)",MX+14,y3+40,8,C_MUTED,"normal");
+  txt(fmtE(_totBuy),MX+14,y3+55,13,C_TEXT,"bold");
+  txt("Quota mensual hipoteca",MX+14,y3+73,8,C_MUTED,"normal");
+  txt(fmtM(_mortv),MX+14,y3+88,11,C_TEXT,"bold");
+  txt("Patrimoni estim. a 20 anys: "+fmtE(_patriB),MX+14,y3+106,7.5,C_GREEN,"bold");
 
-  const totBuy = m2v + (m2v*0.12);
-  const totRent = rentv*12*20;
-  const mortTotal = mortv*12*20;
-  const patrimoniBuy = m2v*1.30;
+  // Rent box
+  const rx3=MX+hfW+20;
+  fillR(rx3,y3,hfW,118,10,C_BRAND.map(c=>Math.min(255,Math.round(c*0.08+236))));
+  strokeR(rx3,y3,hfW,118,10,C_BRAND,0.8);
+  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.roundedRect(rx3,y3,hfW,5,3,3,"F");
+  txt("LLOGUER",rx3+14,y3+22,11,C_BRAND,"bold");
+  txt("Cost total 20 anys",rx3+14,y3+40,8,C_MUTED,"normal");
+  txt(fmtE(_totRent),rx3+14,y3+55,13,C_TEXT,"bold");
+  txt("Mensualitat actual",rx3+14,y3+73,8,C_MUTED,"normal");
+  txt(fmtM(_rentv),rx3+14,y3+88,11,C_TEXT,"bold");
+  txt("Patrimoni estim. a 20 anys: —",rx3+14,y3+106,7.5,C_MUTED,"bold");
+  y3+=134;
 
-  fillRect(MX,y3,W-MX*2,130,12,C_CARD);
-  strokeRect(MX,y3,W-MX*2,130,12,C_BORDER);
-  const halfW=(W-MX*2)/2-20;
-
-  // Buy column
-  fillRect(MX+10,y3+10,halfW,110,10,[230,247,240]);
-  doc.setFillColor(...C_GREEN); doc.roundedRect(MX+10,y3+10,halfW,110,10,10,"S");
-  txt("🏠 COMPRA",MX+20,y3+30,10,C_GREEN,"bold");
-  txt("Entrada (20%) + despeses (12%)",MX+20,y3+50,8,C_MUTED);
-  txt(fmtE(totBuy),MX+20,y3+65,13,C_TEXT,"bold");
-  txt("Quota mensual hipoteca",MX+20,y3+82,8,C_MUTED);
-  txt(fmtM(mortv),MX+20,y3+96,11,C_TEXT,"bold");
-  txt("Patrimoni estimat a 20 anys: "+fmtE(patrimoniBuy),MX+20,y3+112,7.5,C_GREEN,"bold");
-
-  // Rent column
-  const rx=MX+(W-MX*2)/2+10;
-  fillRect(rx,y3+10,halfW,110,10,[235,242,255]);
-  doc.setFillColor(...C_BRAND); doc.roundedRect(rx,y3+10,halfW,110,10,10,"S");
-  txt("🔑 LLOGUER",rx+10,y3+30,10,C_BRAND,"bold");
-  txt("Cost total 20 anys",rx+10,y3+50,8,C_MUTED);
-  txt(fmtE(totRent),rx+10,y3+65,13,C_TEXT,"bold");
-  txt("Mensualitat actual",rx+10,y3+82,8,C_MUTED);
-  txt(fmtM(rentv),rx+10,y3+96,11,C_TEXT,"bold");
-  txt("Patrimoni estimat a 20 anys: —",rx+10,y3+112,7.5,C_MUTED,"bold");
-  y3+=148;
-
-  // Simple bar chart — Preu m² context
-  y3=sectionHeader("Context de Preus per Comarca 2026",y3,C_PURPLE); y3+=16;
-
-  const barData=[
-    {label:"Barcelona",val:6750,col:C_BRAND},
-    {label:"Sitges/Garraf",val:7700,col:C_PURPLE},
-    {label:"Girona",val:4250,col:C_GREEN},
-    {label:"Tarragona",val:3400,col:C_AMBER},
-    {label:sf(muni)||"El teu municipi",val:buyM2||2800,col:[239,68,68]},
-    {label:"Lleida",val:2200,col:[148,163,184]},
-  ].sort((a,b)=>b.val-a.val);
-
-  const maxVal=Math.max(...barData.map(d=>d.val));
-  const barH=14, barGap=6, barMaxW=W-MX*2-120;
-  barData.forEach((d,i)=>{
-    const by=y3+i*(barH+barGap);
-    const bw=Math.round((d.val/maxVal)*barMaxW);
-    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(...C_MUTED);
-    doc.text(sf(d.label),MX+114,by+10,{align:"right"});
-    fillRect(MX+120,by,bw,barH,4,d.col);
-    doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(...C_TEXT);
-    doc.text(fmtE(d.val)+"/m²",MX+122+bw,by+10);
+  // Bar chart — price context
+  y3=secHeader("Context de Preus per Comarca (Q1 2026)",y3,C_PURPLE); y3+=14;
+  const _barData=[
+    {l:"Sitges",v:7700,c:C_PURPLE},
+    {l:"Barcelona",v:6750,c:C_BRAND},
+    {l:"Girona",v:4250,c:C_GREEN},
+    {l:"Tarragona",v:3400,c:C_AMBER},
+    {l:sf(_muni)||"El teu municipi",v:_buyM2||2800,c:[239,68,68]},
+    {l:"Lleida",v:2200,c:C_MUTED},
+  ].sort((a,b)=>b.v-a.v);
+  const _maxV=Math.max(..._barData.map(d=>d.v));
+  const _bH=13,_bGap=7,_bMaxW=W-MX*2-130;
+  _barData.forEach((d,i)=>{
+    const _by=y3+i*(_bH+_bGap);
+    const _bw=Math.max(4,Math.round((d.v/_maxV)*_bMaxW));
+    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
+    doc.text(sf(d.l),MX+124,_by+10,{align:"right"});
+    fillR(MX+130,_by,_bw,_bH,4,d.c);
+    doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(C_TEXT[0],C_TEXT[1],C_TEXT[2]);
+    doc.text(fmtE(d.v)+"/m2",MX+134+_bw,_by+10);
   });
-  y3+=barData.length*(barH+barGap)+10;
-
-  line(0,H-36,W,H-36,C_BORDER);
-  txt("Assessoria d'Habitatge · assesoriahabitatge.com",MX,H-20,7.5,C_MUTED);
-  txt(sf(dateStr),W-MX,H-20,7.5,C_MUTED,"normal","right");
+  footer(3);
 
   // ══════════════════════════════════════════════════════════════════
   // PAGE 4 — PLA D'ACCIÓ
   // ══════════════════════════════════════════════════════════════════
   doc.addPage();
-  fillRect(0,0,W,52,0,C_DARK);
-  doc.setFillColor(...C_PURPLE); doc.rect(0,0,W,4,"F");
-  txt("Assessoria d'Habitatge · Informe 2026",MX,32,10,[148,163,184],"bold");
-  txt("Pàg. 4/4",W-MX,32,10,[139,92,246],"bold","right");
-  line(0,52,W,52,C_BORDER);
+  pageHeader("Pla d'Accio Personalitzat",C_PURPLE,4);
+  let y4=72;
+  txt("Pla d'Accio Personalitzat",MX,y4,17,C_TEXT,"bold"); y4+=6;
+  hline(MX,y4,W-MX,y4,C_PURPLE,1); y4+=20;
 
-  let y4=80;
-  txt("Pla d'Acció Personalitzat",MX,y4,18,C_TEXT,"bold"); y4+=8;
-  line(MX,y4,W-MX,y4,C_PURPLE,1); y4+=26;
+  // Big rec hero
+  const _rcol=_rcCode==="BUY"||_rcCode==="BUY_SHORT"?C_GREEN:_rcCode==="RENT"?C_BRAND:C_AMBER;
+  const _recLabel=_rcCode==="BUY"?"RECOMANACIO: COMPRA":_rcCode==="BUY_SHORT"?"RECOMANACIO: COMPRA (CURT TERMINI)":_rcCode==="RENT"?"RECOMANACIO: LLOGUER":"RECOMANACIO: NO FACTIBLE ARA";
+  fillR(MX,y4,W-MX*2,58,12,_rcol.map(c=>Math.min(255,Math.round(c*0.12+230))));
+  doc.setFillColor(_rcol[0],_rcol[1],_rcol[2]); doc.roundedRect(MX,y4,W-MX*2,5,3,3,"F");
+  strokeR(MX,y4,W-MX*2,58,12,_rcol,0.8);
+  txt(sf(_recLabel),W/2,y4+28,13,_rcol,"bold","center");
+  const _shortRec=sf(_recTx).substring(0,120)+(sf(_recTx).length>120?"...":"");
+  txt(sf(_shortRec),W/2,y4+46,8,C_TEXT,"normal","center");
+  y4+=72;
 
-  // Recommendation hero
-  const recBig = recCode==="buy"?"✓ RECOMANACIÓ: COMPRA":recCode==="rent"?"✓ RECOMANACIÓ: LLOGUER":"⟳ RECOMANACIÓ: ESPERA";
-  const rcol = recCode==="buy"?C_GREEN:recCode==="rent"?C_BRAND:C_AMBER;
-  fillRect(MX,y4,W-MX*2,60,12,rcol.map(c=>Math.min(255,Math.round(c*0.15+228))));
-  doc.setFillColor(...rcol); doc.roundedRect(MX,y4,W-MX*2,6,3,3,"F");
-  strokeRect(MX,y4,W-MX*2,60,12,rcol,1);
-  txt(recBig,W/2,y4+30,15,rcol,"bold","center");
-  const shortRec=sf(recTx).substring(0,110)+(sf(recTx).length>110?"…":"");
-  txt(shortRec,W/2,y4+48,8.5,C_TEXT,"normal","center");
-  y4+=76;
-
-  // 5-step action plan
-  y4=sectionHeader("Passos a Seguir",y4,C_PURPLE); y4+=14;
-
-  const isBuy=recCode==="buy"||(!recCode&&m2v>0);
-  const steps=isBuy?[
-    {num:"1",title:"Revisa la teva puntuació creditícia",desc:"Sol·licita l'informe CIRBE al Banc d'Espanya i assegura't de tenir un perfil net.",col:C_BRAND},
-    {num:"2",title:"Acumula el 20% d'entrada + 12% despeses",desc:"Necessites aprox. "+fmtE(m2v*0.32)+" en total. Objectiu d'estalvi mensual: "+fmtE(savCapacity)+".",col:C_GREEN},
-    {num:"3",title:"Compara hipoteques (mínim 3 bancs)",desc:"Busca euríbor +0.8% o menys. La quota no ha de superar el 35% dels teus ingressos.",col:C_PURPLE},
-    {num:"4",title:"Visita 5-10 immobles a "+sf(muni||comarca),desc:"Usa els filtres d'Idealista i Habitaclia. Negocia entre un 5-10% a la baixa del preu publicat.",col:C_AMBER},
-    {num:"5",title:"Contracta assessor/notari independent",desc:"El cost és aprox. 500-1.500 €. Revisa càrregues, IBI, deutes de comunitat i certificat energètic.",col:[239,68,68]},
+  // 5 action steps
+  y4=secHeader("Passos a Seguir",y4,C_PURPLE); y4+=12;
+  const _isBuy=_rcCode==="BUY"||_rcCode==="BUY_SHORT";
+  const _steps=_isBuy?[
+    {n:"1",t:"Revisa la puntuacio crediticia (CIRBE)",d:"Sol·licita l'informe al Banc d'Espanya. Un perfil net millora les condicions hipotecaries fins un 0.5%.",c:C_BRAND},
+    {n:"2",t:"Acumula "+fmtE(_m2v*0.32)+" (entrada + despeses)",d:"Objectiu d'estalvi mensual recomanat: "+fmtE(_savCap)+". Anys necessaris: "+(_yearsTo!=null&&_yearsTo>0?Math.ceil(_yearsTo)+" anys":"Ja pots!"),c:C_GREEN},
+    {n:"3",t:"Compara hipoteques en 3+ bancs",d:"Busca euribor +0.6% o menys. Quota ideal: sota el 30% ingressos. Actual recomanat max: "+fmtM(_maxMort),c:C_PURPLE},
+    {n:"4",t:"Visita 8-12 immobles a "+sf(_muni||_comarca),d:"Negocia un 5-10% a la baixa del preu publicat. Comprova IBI, deutes comunitat i certificat energetic.",c:C_AMBER},
+    {n:"5",t:"Contracta assessor/notari independent",d:"Cost: 500-1.500 Eur. Revisa carregues, certificat energetic (minim D) i estat estructural de l'immoble.",c:[180,80,220]},
   ]:[
-    {num:"1",title:"Defineix el teu pressupost màxim de lloguer",desc:"El lloguer no hauria de superar el 30% dels teus ingressos nets. Màxim recomanat: "+fmtE(incNum*0.30)+"/mes.",col:C_BRAND},
-    {num:"2",title:"Compara pisos a "+sf(muni||comarca)+" i voltants",desc:"Busca a Idealista, Fotocasa i Habitaclia. Considera municipis veïns amb millor preu.",col:C_GREEN},
-    {num:"3",title:"Continua estalviant per a la futura compra",desc:"Objectiu mensual d'estalvi: "+fmtE(savCapacity)+". D'aquí "+(yearsTo!=null?Math.max(0,Math.ceil(yearsTo))+" anys":"uns anys")+" podràs plantejar-te la compra.",col:C_PURPLE},
-    {num:"4",title:"Negocia el preu del lloguer",desc:"El mercat actual permet negociar fins a un 8-12%. Demana sempre contracte de 5 anys (llei vigent).",col:C_AMBER},
-    {num:"5",title:"Consulta ajuts i subvencions",desc:"Revisa el portal habitatge.gencat.cat per a ajuts al lloguer per a joves i bonificacions IRPF.",col:[139,92,246]},
+    {n:"1",t:"Fixa un pressupost maxim de lloguer",d:"El lloguer no ha de superar el 30% ingressos nets. Maxim recomanat: "+fmtM(_inc*0.30),c:C_BRAND},
+    {n:"2",t:"Cerca a "+sf(_muni||_comarca)+" i municipis veins",d:"Usa Idealista, Fotocasa i Habitaclia. Compara sempre preus per m2. Municipis veins poden estalviar un 15-20%.",c:C_GREEN},
+    {n:"3",t:"Continua estalviant per a la futura compra",d:"Objectiu: "+fmtE(_savCap)+"/mes. "+(_yearsTo!=null&&_yearsTo>0?"D'aqui "+Math.ceil(_yearsTo)+" anys podras plantejar-te la compra.":"Aviat podras comprar!"),c:C_PURPLE},
+    {n:"4",t:"Negocia el preu del lloguer",d:"El mercat permet negociar fins un 8-12%. Exigeix contracte de 5 anys (Llei d'Habitatge 2023) i inventari signat.",c:C_AMBER},
+    {n:"5",t:"Consulta ajuts al lloguer",d:"Portal habitatge.gencat.cat: ajuts per a joves, bonificacio IRPF fins 60%, i deduccions autonomiques a Catalunya.",c:[180,80,220]},
   ];
-
-  steps.forEach((s,i)=>{
-    const sy=y4+i*52;
-    fillRect(MX,sy,W-MX*2,44,8,C_CARD);
-    strokeRect(MX,sy,W-MX*2,44,8,C_BORDER);
-    // Step number circle
-    doc.setFillColor(...s.col); doc.circle(MX+20,sy+22,11,"F");
-    doc.setFont("helvetica","bold"); doc.setFontSize(11); doc.setTextColor(255,255,255);
-    doc.text(s.num,MX+20,sy+26,{align:"center"});
-    // Text
-    txt(s.title,MX+38,sy+18,9.5,C_TEXT,"bold");
-    const descLines=doc.splitTextToSize(sf(s.desc),W-MX*2-52);
-    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(...C_MUTED);
-    doc.text(descLines[0]||"",MX+38,sy+32);
+  _steps.forEach((s,i)=>{
+    const _sy=y4+i*50;
+    fillR(MX,_sy,W-MX*2,42,8,C_CARD);
+    strokeR(MX,_sy,W-MX*2,42,8,C_BORDER);
+    doc.setFillColor(s.c[0],s.c[1],s.c[2]); doc.circle(MX+20,_sy+21,10,"F");
+    doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(255,255,255);
+    doc.text(s.n,MX+20,_sy+25,{align:"center"});
+    txt(s.t,MX+38,_sy+17,9,C_TEXT,"bold");
+    const _dLines=doc.splitTextToSize(sf(s.d),W-MX*2-52);
+    doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
+    doc.text((_dLines||[]).slice(0,1),MX+38,_sy+30);
   });
-  y4+=steps.length*52+14;
+  y4+=_steps.length*50+16;
 
   // Legal disclaimer
-  fillRect(MX,y4,W-MX*2,48,8,[255,251,235]);
-  strokeRect(MX,y4,W-MX*2,48,8,[245,158,11,0.4]);
-  doc.setFillColor(245,158,11); doc.roundedRect(MX,y4,W-MX*2,3,2,2,"F");
-  txt("⚠ Avís Legal",MX+14,y4+16,8.5,[180,120,0],"bold");
-  const disc=L==="CA"?"Aquest informe té caràcter orientatiu i no substitueix assessorament professional. Les estimacions es basen en dades de mercat de Catalunya (Q1 2026).":"Este informe tiene carácter orientativo y no sustituye asesoramiento profesional. Las estimaciones se basan en datos de mercado de Catalunya (Q1 2026).";
-  const dLines=doc.splitTextToSize(sf(disc),W-MX*2-28);
+  const _discH=52;
+  fillR(MX,y4,W-MX*2,_discH,8,[255,251,235]);
+  doc.setFillColor(C_AMBER[0],C_AMBER[1],C_AMBER[2]); doc.roundedRect(MX,y4,W-MX*2,4,3,3,"F");
+  strokeR(MX,y4,W-MX*2,_discH,8,C_AMBER,0.4);
+  txt("Avis Legal",MX+14,y4+18,8,[150,100,0],"bold");
+  const _disc=L==="CA"?"Aquest informe te caracter orientatiu i no substitueix assessorament professional. Estimacions basades en dades de mercat de Catalunya Q1 2026.":"Este informe tiene caracter orientativo y no sustituye asesoramiento profesional. Estimaciones basadas en datos de mercado de Catalunya Q1 2026.";
+  const _dL=doc.splitTextToSize(sf(_disc),W-MX*2-28);
   doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(120,80,0);
-  doc.text(dLines,MX+14,y4+30);
+  doc.text(_dL,MX+14,y4+32);
 
-  // Final footer
-  line(0,H-52,W,H-52,C_BORDER);
-  fillRect(0,H-51,W,51,0,C_DARK);
-  doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(56,189,248);
-  doc.text("Assessoria d'Habitatge",MX,H-28);
-  doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(100,116,139);
-  doc.text("assesoriahabitatge.com  ·  info@assesoriahabitatge.com",MX,H-14);
-  doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(139,92,246);
-  doc.text("✦ Informe Premium · "+sf(dateStr),W-MX,H-14,{align:"right"});
-  doc.setFillColor(...C_BRAND); doc.rect(0,H-4,W/3,4,"F");
-  doc.setFillColor(...C_GREEN); doc.rect(W/3,H-4,W/3,4,"F");
-  doc.setFillColor(...C_PURPLE); doc.rect(2*W/3,H-4,W/3,4,"F");
+  footer(4);
 
-  doc.save("Informe_Habitatge_Premium_2026.pdf");
+  // Save
+  doc.save("Informe_Habitatge_Premium_2026_"+sf(_nm).replace(/\s+/g,"_")+".pdf");
 }
 
 

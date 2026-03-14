@@ -2619,14 +2619,54 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 <div id="authGate" class="show" aria-live="polite">
   <div class="auth-shell">
     <section class="auth-brand" aria-hidden="true">
-      <div class="auth-kicker">🔐 Espai privat</div>
-      <h1 class="auth-title">Inicia sessió per guardar els teus resultats</h1>
-      <p class="auth-copy">Registra't o entra amb el teu correu per conservar simulacions, continuar més tard i crear un historial real d'ús de la plataforma.</p>
-      <div class="auth-points">
-        <div class="auth-point"><i>✓</i><div><b>Historial personal</b><span>Guarda simulacions i torna a consultar-les sense començar de zero.</span></div></div>
-        <div class="auth-point"><i>✉</i><div><b>Contacte i seguiment</b><span>Podràs rebre recomanacions i futures millores del projecte.</span></div></div>
-        <div class="auth-point"><i>🏠</i><div><b>Experiència completa</b><span>La calculadora i la resta de funcionalitats s'obren després del login.</span></div></div>
+      <div class="auth-kicker">✦ Registra't i rep l'Informe Premium</div>
+      <h1 class="auth-title">El teu Informe<br>d'Habitatge <span style="background:linear-gradient(90deg,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">2026</span></h1>
+      <p class="auth-copy">Crea el teu compte de forma gratuïta i genera automàticament un informe PDF complet i personalitzat amb les teves dades.</p>
+
+      <!-- PDF Preview mockup -->
+      <div style="position:relative;margin:20px 0 16px;">
+        <div style="background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(52,211,153,.08));border:1px solid rgba(56,189,248,.25);border-radius:18px;padding:16px 18px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#38bdf8,#34d399,#8b5cf6);"></div>
+          <!-- PDF doc icon + title -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:38px;height:48px;background:linear-gradient(160deg,#1e3a5f,#0f172a);border-radius:6px;border:1px solid rgba(56,189,248,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.4);">
+              <span style="font-size:18px;">📄</span>
+            </div>
+            <div>
+              <div style="font-weight:900;font-size:.9rem;color:#f8fafc;line-height:1.2;">Informe_Habitatge_2026.pdf</div>
+              <div style="font-size:.76rem;color:#38bdf8;font-weight:700;margin-top:2px;">✦ Premium · Personalitzat · Exclusiu</div>
+            </div>
+            <div style="margin-left:auto;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:.7rem;font-weight:900;padding:4px 9px;border-radius:999px;white-space:nowrap;">GRATIS</div>
+          </div>
+          <!-- Mini page previews -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 6px;text-align:center;">
+              <div style="font-size:15px;margin-bottom:3px;">🏠</div>
+              <div style="font-size:.65rem;color:#94a3b8;font-weight:700;line-height:1.2;">Portada</div>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 6px;text-align:center;">
+              <div style="font-size:15px;margin-bottom:3px;">💰</div>
+              <div style="font-size:.65rem;color:#94a3b8;font-weight:700;line-height:1.2;">Perfil Financer</div>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 6px;text-align:center;">
+              <div style="font-size:15px;margin-bottom:3px;">📊</div>
+              <div style="font-size:.65rem;color:#94a3b8;font-weight:700;line-height:1.2;">Mercat Local</div>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 6px;text-align:center;">
+              <div style="font-size:15px;margin-bottom:3px;">🎯</div>
+              <div style="font-size:.65rem;color:#94a3b8;font-weight:700;line-height:1.2;">Pla d'Acció</div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Feature list -->
+      <div class="auth-points">
+        <div class="auth-point"><i style="background:linear-gradient(135deg,#f59e0b,#d97706)">💰</i><div><b>Perfil financer complet</b><span>Capacitat d'estalvi, marge hipotecari i anys per accedir a la compra.</span></div></div>
+        <div class="auth-point"><i style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">📊</i><div><b>Anàlisi del mercat 2026</b><span>Preu m² actualitzat, comparativa de municipis i tendències per comarca.</span></div></div>
+        <div class="auth-point"><i style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">🎯</i><div><b>Pla d'acció personalitzat</b><span>Recomanació concreta: compra, lloguer o espera amb els teus passos a seguir.</span></div></div>
+      </div>
+      <p style="margin-top:14px;font-size:.78rem;color:rgba(234,241,255,.42);line-height:1.5;">✓ Genera'l en 1 clic després del login · ✓ 4 pàgines · ✓ Descarrega en PDF</p>
     </section>
     <section class="auth-panel">
       <div class="auth-tabs">
@@ -2716,7 +2756,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
     </div>
     <div id="hx-splash-title">Assessoria d'Habitatge</div>
     <div id="hx-splash-sub">
-      <span>Catalunya</span><span class="hx-splash-dot"> · </span><span>550+ municipis</span><span class="hx-splash-dot"> · </span><span>AI Advisor</span>
+      <span>Catalunya</span><span class="hx-splash-dot"> · </span><span>900+ municipis</span><span class="hx-splash-dot"> · </span><span>AI Advisor</span>
     </div>
     <div id="hx-splash-bar-wrap"><div id="hx-splash-bar"></div></div>
     <div id="hx-splash-hint">Carregant dades de mercat...</div>
@@ -3526,49 +3566,50 @@ const FALLBACK_POLYGONS={
 
 // Centroides para etiquetas permanentes
 const CATALUNYA_DB = {
-  "Barcelonès": {"Barcelona":{"v":6100,"l":24.5},"L'Hospitalet de Llobregat":{"v":4200,"l":20.5},"Badalona":{"v":3600,"l":18.5},"Santa Coloma de Gramenet":{"v":3000,"l":17.0},"Sant Adrià de Besòs":{"v":3550,"l":18.0}},
-  "Baix Llobregat": {"Castelldefels":{"v":5800,"l":22.0},"Gavà":{"v":5200,"l":21.0},"Viladecans":{"v":4100,"l":19.5},"Sant Boi de Llobregat":{"v":3700,"l":18.0},"Cornellà de Llobregat":{"v":4600,"l":20.5},"Esplugues de Llobregat":{"v":5500,"l":21.5},"Sant Joan Despí":{"v":4800,"l":20.0},"El Prat de Llobregat":{"v":3850,"l":18.5},"Molins de Rei":{"v":4050,"l":18.5},"Sant Feliu de Llobregat":{"v":3950,"l":18.5},"Sant Vicenç dels Horts":{"v":2900,"l":15.0},"Martorell":{"v":2600,"l":13.5},"Abrera":{"v":2500,"l":13.0},"Olesa de Montserrat":{"v":2400,"l":12.5},"Cervelló":{"v":2800,"l":14.0},"Corbera de Llobregat":{"v":3200,"l":14.5},"Begues":{"v":3400,"l":15.0},"Pallejà":{"v":3100,"l":14.5},"Sant Andreu de la Barca":{"v":2550,"l":13.5},"Torrelles de Llobregat":{"v":3200,"l":14.5},"Vallirana":{"v":2850,"l":14.0}},
-  "Vallès Occidental": {"Sabadell":{"v":3300,"l":15.5},"Terrassa":{"v":3100,"l":15.0},"Sant Cugat del Vallès":{"v":6200,"l":24.0},"Rubí":{"v":2550,"l":14.0},"Cerdanyola del Vallès":{"v":3750,"l":18.0},"Barberà del Vallès":{"v":2950,"l":14.5},"Montcada i Reixac":{"v":2750,"l":14.5},"Ripollet":{"v":3050,"l":15.0},"Castellbisbal":{"v":2650,"l":13.5},"Badia del Vallès":{"v":2200,"l":12.5},"Sant Quirze del Vallès":{"v":4200,"l":18.0},"Matadepera":{"v":4600,"l":19.0},"Vacarisses":{"v":2400,"l":12.5},"Ullastrell":{"v":2750,"l":13.5},"Viladecavalls":{"v":2600,"l":13.5},"Polinyà":{"v":2550,"l":13.5},"Sentmenat":{"v":2650,"l":13.5},"Palau-solità i Plegamans":{"v":2850,"l":14.0}},
-  "Vallès Oriental": {"Granollers":{"v":2650,"l":14.0},"Mollet del Vallès":{"v":3050,"l":15.0},"La Roca del Vallès":{"v":3500,"l":16.5},"Cardedeu":{"v":3400,"l":15.0},"Caldes de Montbui":{"v":2800,"l":13.5},"Parets del Vallès":{"v":2650,"l":14.0},"Montmeló":{"v":2400,"l":13.0},"Lliçà d'Amunt":{"v":2550,"l":13.0},"Santa Perpètua de Mogoda":{"v":2900,"l":14.5},"Les Franqueses del Vallès":{"v":2650,"l":13.5},"Canovelles":{"v":2300,"l":12.5},"Lliçà de Vall":{"v":2400,"l":12.5},"Bigues i Riells":{"v":2600,"l":13.0},"Sant Celoni":{"v":2350,"l":12.5},"L'Ametlla del Vallès":{"v":2750,"l":13.5},"Martorelles":{"v":2550,"l":13.0}},
-  "Maresme": {"Mataró":{"v":2800,"l":15.0},"Vilassar de Mar":{"v":4350,"l":18.5},"Premià de Mar":{"v":4600,"l":19.0},"Masnou":{"v":5500,"l":21.0},"Montgat":{"v":4750,"l":19.5},"Calella":{"v":2800,"l":14.0},"Pineda de Mar":{"v":2400,"l":12.5},"Sant Pol de Mar":{"v":3950,"l":17.0},"Arenys de Mar":{"v":3750,"l":16.5},"Canet de Mar":{"v":3300,"l":15.0},"Santa Susanna":{"v":2300,"l":12.5},"Argentona":{"v":3750,"l":16.5},"Vilassar de Dalt":{"v":3950,"l":17.0},"Premià de Dalt":{"v":3500,"l":16.0},"Teià":{"v":4900,"l":19.5},"Alella":{"v":5800,"l":22.0},"Tiana":{"v":5200,"l":21.0},"Sant Vicenç de Montalt":{"v":4200,"l":18.0},"Caldes d'Estrac":{"v":3850,"l":17.5},"Arenys de Munt":{"v":3100,"l":14.5},"Sant Iscle de Vallalta":{"v":2400,"l":12.5}},
-  "Garraf": {"Vilanova i la Geltrú":{"v":3350,"l":16.0},"Sitges":{"v":7000,"l":24.5},"Sant Pere de Ribes":{"v":3750,"l":16.5},"Cubelles":{"v":2800,"l":14.0},"Canyelles":{"v":2500,"l":12.5},"Olivella":{"v":2550,"l":13.0}},
-  "Alt Penedès": {"Vilafranca del Penedès":{"v":2700,"l":12.5},"Sant Sadurní d'Anoia":{"v":2400,"l":11.5},"Gelida":{"v":3100,"l":13.5},"Castellví de la Marca":{"v":1850,"l":9.0},"Subirats":{"v":2050,"l":10.0},"Santa Fe del Penedès":{"v":1750,"l":9.0},"Sant Quintí de Mediona":{"v":1700,"l":8.5},"Mediona":{"v":1650,"l":8.0},"Font-rubí":{"v":1550,"l":8.0},"Pacs del Penedès":{"v":1950,"l":9.5},"Sant Martí Sarroca":{"v":1800,"l":9.0},"Avinyonet del Penedès":{"v":1750,"l":9.0},"Olèrdola":{"v":1900,"l":9.5},"Santa Margarida i els Monjos":{"v":2000,"l":10.0},"Torrelavit":{"v":1700,"l":8.5}},
-  "Baix Penedès": {"El Vendrell":{"v":2500,"l":11.5},"Calafell":{"v":3000,"l":13.0},"Cunit":{"v":3150,"l":13.5},"Santa Oliva":{"v":2000,"l":9.5},"Bellvei":{"v":2000,"l":10.5},"L'Arboç":{"v":1850,"l":10.0},"Banyeres del Penedès":{"v":1550,"l":9.0},"Albinyana":{"v":1950,"l":9.5},"Bonastre":{"v":1250,"l":8.0},"Masllorenç":{"v":1400,"l":8.5},"La Bisbal del Penedès":{"v":1600,"l":9.0},"Llorenç del Penedès":{"v":2150,"l":7.5},"Sant Jaume dels Domenys":{"v":1550,"l":7.5},"El Montmell":{"v":1350,"l":8.0}},
-  "Anoia": {"Igualada":{"v":2550,"l":12.0},"Vilanova del Camí":{"v":1900,"l":10.0},"Santa Margarida de Montbui":{"v":1700,"l":9.0},"Capellades":{"v":1650,"l":9.0},"Piera":{"v":2750,"l":13.0},"Òdena":{"v":1750,"l":9.5},"Sant Pere Sallavinera":{"v":1300,"l":7.0},"La Llacuna":{"v":1450,"l":7.5},"Jorba":{"v":1400,"l":7.5},"Argençola":{"v":1250,"l":7.0},"Copons":{"v":1300,"l":7.0},"Calaf":{"v":1500,"l":8.0},"Veciana":{"v":1200,"l":6.5}},
-  "Bages": {"Manresa":{"v":2150,"l":11.0},"Sant Joan de Vilatorrada":{"v":1850,"l":10.0},"Santpedor":{"v":1950,"l":10.0},"Artés":{"v":1600,"l":9.0},"Navarcles":{"v":1700,"l":9.0},"Sallent":{"v":1150,"l":7.0},"Avinyó":{"v":1300,"l":7.5},"Sant Fruitós de Bages":{"v":1850,"l":10.0},"Súria":{"v":1250,"l":7.0},"Balsareny":{"v":1200,"l":7.0},"Callús":{"v":1300,"l":7.5},"Castellbell i el Vilar":{"v":1500,"l":8.0},"El Pont de Vilomara i Rocafort":{"v":1450,"l":8.0},"Monistrol de Montserrat":{"v":1650,"l":9.0},"Rajadell":{"v":1250,"l":7.0},"Cardona":{"v":1300,"l":7.0},"Fonollosa":{"v":1200,"l":6.5},"Sant Salvador de Guardiola":{"v":1300,"l":7.0},"Mura":{"v":1450,"l":8.0},"Gaià":{"v":1150,"l":6.0}},
-  "Berguedà": {"Berga":{"v":1400,"l":7.5},"Gironella":{"v":1200,"l":6.5},"Puig-reig":{"v":1000,"l":6.0},"Olvan":{"v":950,"l":5.0},"Bagà":{"v":1150,"l":6.5},"Guardiola de Berguedà":{"v":1000,"l":6.0},"Cercs":{"v":950,"l":5.0},"Avià":{"v":1100,"l":6.0},"Casserres":{"v":950,"l":5.0},"L'Espunyola":{"v":900,"l":4.5},"Borredà":{"v":950,"l":5.0},"Montmajor":{"v":900,"l":5.0},"Sagàs":{"v":900,"l":5.0},"Saldes":{"v":1000,"l":5.5},"Santa Maria de Merlès":{"v":900,"l":5.0},"Viver i Serrateix":{"v":900,"l":5.0},"Vilada":{"v":900,"l":5.0},"Capolat":{"v":850,"l":4.5},"La Nou de Berguedà":{"v":900,"l":5.0}},
-  "Osona": {"Vic":{"v":2500,"l":12.0},"Manlleu":{"v":1650,"l":9.0},"Torelló":{"v":1500,"l":8.5},"Roda de Ter":{"v":1450,"l":8.0},"Sant Julià de Vilatorta":{"v":1750,"l":9.0},"Centelles":{"v":1700,"l":9.0},"Tona":{"v":1800,"l":9.5},"Gurb":{"v":1650,"l":9.0},"Santa Eugènia de Berga":{"v":1650,"l":9.0},"Malla":{"v":1500,"l":8.0},"Seva":{"v":1650,"l":9.0},"Balenyà":{"v":1650,"l":8.5},"Calldetenes":{"v":1600,"l":8.5},"L'Esquirol":{"v":1300,"l":7.5},"Taradell":{"v":2000,"l":10.0},"Sant Hipòlit de Voltregà":{"v":1500,"l":8.0},"Prats de Lluçanès":{"v":1600,"l":8.5},"Les Masies de Roda":{"v":1500,"l":8.0},"Perafita":{"v":1400,"l":7.5},"Sant Boi de Lluçanès":{"v":1350,"l":7.5},"Espinelves":{"v":1750,"l":9.5},"Tavèrnoles":{"v":1700,"l":9.0}},
-  "Ripollès": {"Ripoll":{"v":1250,"l":7.0},"Ribes de Freser":{"v":1400,"l":7.5},"Campdevànol":{"v":1150,"l":6.5},"Sant Joan de les Abadesses":{"v":1150,"l":6.5},"Camprodon":{"v":1650,"l":8.5},"Vallfogona de Ripollès":{"v":1050,"l":6.0},"Gombrèn":{"v":1250,"l":6.5},"Ogassa":{"v":950,"l":5.0},"Planoles":{"v":1600,"l":8.0},"Queralbs":{"v":1550,"l":8.0},"Setcases":{"v":2100,"l":9.5},"Les Llosses":{"v":950,"l":5.0},"Vilallonga de Ter":{"v":1150,"l":6.0},"Toses":{"v":1500,"l":7.5},"Pardines":{"v":1150,"l":6.0}},
-  "Gironès": {"Girona":{"v":3750,"l":18.0},"Salt":{"v":2400,"l":12.5},"Sarrià de Ter":{"v":2400,"l":12.5},"Sant Gregori":{"v":2350,"l":12.0},"Fornells de la Selva":{"v":2300,"l":11.5},"Cassà de la Selva":{"v":2150,"l":11.0},"Celrà":{"v":2100,"l":11.0},"Bordils":{"v":2000,"l":10.5},"Quart":{"v":2150,"l":11.5},"Llambilles":{"v":2200,"l":11.5},"Juià":{"v":1950,"l":10.0},"Sant Andreu Salou":{"v":2050,"l":10.5}},
-  "Selva": {"Lloret de Mar":{"v":3200,"l":13.5},"Tossa de Mar":{"v":4300,"l":17.5},"Santa Coloma de Farners":{"v":1750,"l":10.0},"Sils":{"v":1900,"l":10.0},"Hostalric":{"v":1650,"l":9.0},"Vidreres":{"v":1750,"l":9.5},"Maçanet de la Selva":{"v":1950,"l":10.5},"Tordera":{"v":2100,"l":11.0},"Caldes de Malavella":{"v":2750,"l":13.5},"Riudarenes":{"v":1700,"l":9.0},"Anglès":{"v":1700,"l":9.0},"Amer":{"v":1550,"l":8.5},"Sant Hilari Sacalm":{"v":1600,"l":9.0},"Blanes":{"v":2700,"l":13.5},"Malgrat de Mar":{"v":2250,"l":12.0},"Arbúcies":{"v":1700,"l":9.0},"Sant Feliu de Buixalleu":{"v":1550,"l":8.5}},
-  "Alt Empordà": {"Figueres":{"v":2300,"l":11.5},"Roses":{"v":4250,"l":17.5},"Empuriabrava":{"v":4800,"l":19.5},"Cadaqués":{"v":7500,"l":22.0},"El Port de la Selva":{"v":5700,"l":18.5},"Castelló d'Empúries":{"v":2800,"l":13.5},"L'Escala":{"v":3950,"l":17.0},"Llançà":{"v":3050,"l":14.0},"Portbou":{"v":1900,"l":10.0},"Peralada":{"v":2000,"l":10.5},"Pau":{"v":2200,"l":11.5},"Vilafant":{"v":2100,"l":11.0},"Pont de Molins":{"v":1850,"l":10.0},"Garriguella":{"v":1750,"l":9.5},"Colera":{"v":2400,"l":12.5},"El Far d'Empordà":{"v":1950,"l":10.0},"Mollet de Peralada":{"v":1800,"l":9.5},"Sant Pere Pescador":{"v":3100,"l":14.0},"Torroella de Fluvià":{"v":1850,"l":10.0}},
-  "Baix Empordà": {"Palafrugell":{"v":4350,"l":18.0},"Platja d'Aro":{"v":6100,"l":22.0},"Sant Feliu de Guíxols":{"v":4850,"l":19.0},"Palamós":{"v":3750,"l":17.0},"La Bisbal d'Empordà":{"v":2250,"l":11.5},"Torroella de Montgrí":{"v":2650,"l":13.0},"Calonge":{"v":3500,"l":16.0},"Begur":{"v":6500,"l":21.5},"Pals":{"v":4750,"l":17.5},"Llagostera":{"v":2000,"l":10.5},"Castell-Platja d'Aro":{"v":6100,"l":22.0},"Mont-ras":{"v":3100,"l":14.5},"Vall-llobrega":{"v":2750,"l":13.5},"Fonteta":{"v":2100,"l":10.5},"Forallac":{"v":2150,"l":11.0},"Cruïlles, Monells i Sant Sadurní de l'Heura":{"v":2000,"l":10.5},"Vulpellac":{"v":2100,"l":11.0},"Gualta":{"v":2050,"l":10.5},"Ultramort":{"v":1950,"l":10.0}},
-  "Pla de l'Estany": {"Banyoles":{"v":2150,"l":11.5},"Porqueres":{"v":2000,"l":11.0},"Mieres":{"v":1400,"l":8.0},"Cornellà del Terri":{"v":1750,"l":9.5},"Esponellà":{"v":1650,"l":9.0},"Fontcoberta":{"v":1700,"l":9.0},"Crespià":{"v":1600,"l":8.5},"Palol de Revardit":{"v":1650,"l":9.0}},
-  "La Garrotxa": {"Olot":{"v":2000,"l":11.0},"Sant Joan les Fonts":{"v":1250,"l":7.0},"La Vall d'en Bas":{"v":1400,"l":7.5},"Les Planes d'Hostoles":{"v":1200,"l":6.5},"Santa Pau":{"v":1300,"l":7.0},"Castellfollit de la Roca":{"v":1150,"l":6.5},"Sant Jaume de Llierca":{"v":1100,"l":6.0},"Besalú":{"v":1650,"l":8.5},"Maià de Montcal":{"v":1150,"l":6.5},"Sant Feliu de Pallerols":{"v":1350,"l":7.5},"La Vall de Bianya":{"v":1250,"l":7.0},"Argelaguer":{"v":1200,"l":6.5},"Montagut i Oix":{"v":1200,"l":6.5}},
-  "Cerdanya": {"Puigcerdà":{"v":3800,"l":16.0},"Alp":{"v":2800,"l":13.0},"Bellver de Cerdanya":{"v":2000,"l":10.5},"Llívia":{"v":3100,"l":13.5},"Prullans":{"v":1750,"l":9.5},"Isòvol":{"v":1650,"l":9.0},"Das":{"v":1850,"l":9.5},"Ger":{"v":1700,"l":9.0},"Guils de Cerdanya":{"v":1850,"l":9.5},"Prats i Sansor":{"v":1650,"l":9.0},"Bolvir":{"v":2700,"l":12.0},"Fontanals de Cerdanya":{"v":2350,"l":11.5},"Lles de Cerdanya":{"v":1950,"l":10.0},"Montellà i Martinet":{"v":2050,"l":10.5},"Urús":{"v":2150,"l":11.0},"Músser":{"v":2000,"l":10.0}},
-  "Alt Urgell": {"La Seu d'Urgell":{"v":1500,"l":9.0},"Organyà":{"v":1150,"l":6.5},"Oliana":{"v":1100,"l":6.0},"Coll de Nargó":{"v":1000,"l":6.0},"Ribera d'Urgellet":{"v":1050,"l":6.0},"Montferrer i Castellbò":{"v":1000,"l":5.0},"Valls de Valira":{"v":950,"l":5.0},"Alàs i Cerc":{"v":1100,"l":6.0},"Arsèguel":{"v":1050,"l":5.5}},
-  "Pallars Jussà": {"Tremp":{"v":1150,"l":6.5},"La Pobla de Segur":{"v":1100,"l":6.0},"Salàs de Pallars":{"v":950,"l":5.0},"Gavet de la Conca":{"v":900,"l":4.5},"Conca de Dalt":{"v":900,"l":4.5},"Isona i Conca Dellà":{"v":1000,"l":5.5},"Talarn":{"v":950,"l":5.0},"Senterada":{"v":950,"l":5.0}},
-  "Pallars Sobirà": {"Sort":{"v":1400,"l":7.0},"Llavorsí":{"v":1150,"l":6.0},"Esterri d'Àneu":{"v":1500,"l":7.5},"Rialp":{"v":1200,"l":6.5},"Alins":{"v":1050,"l":6.0},"Farrera":{"v":950,"l":4.5},"La Guingueta d'Àneu":{"v":1300,"l":7.0},"Soriguera":{"v":1100,"l":6.0},"Baix Pallars":{"v":1150,"l":6.0},"Tírvia":{"v":1000,"l":5.5}},
-  "Alta Ribagorça": {"El Pont de Suert":{"v":1100,"l":6.0},"Boi":{"v":1250,"l":6.5},"Vilaller":{"v":950,"l":5.0},"Barruera":{"v":1000,"l":5.0}},
-  "Val d'Aran": {"Vielha e Mijaran":{"v":4400,"l":16.0},"Bossòst":{"v":2550,"l":11.5},"Les":{"v":1900,"l":9.5},"Naut Aran":{"v":5300,"l":18.0},"Bausen":{"v":1650,"l":9.0},"Es Bòrdes":{"v":1750,"l":9.5},"Arres":{"v":1550,"l":8.5},"Canejan":{"v":1500,"l":8.0}},
-  "Solsonès": {"Solsona":{"v":1400,"l":7.5},"Llobera":{"v":1150,"l":6.5},"Clariana de Cardener":{"v":1100,"l":6.0},"Navès":{"v":1000,"l":5.0},"Riner":{"v":1000,"l":5.0},"Olius":{"v":1100,"l":6.0},"Sant Llorenç de Morunys":{"v":1200,"l":6.5},"Guixers":{"v":1050,"l":5.5},"Pinell de Solsonès":{"v":1000,"l":5.0},"La Molsosa":{"v":950,"l":4.5}},
-  "Segarra": {"Cervera":{"v":1200,"l":6.5},"Guissona":{"v":1150,"l":6.0},"Els Prats de Rei":{"v":1100,"l":6.0},"Torà":{"v":1050,"l":6.0},"Biosca":{"v":1000,"l":5.0},"Sanaüja":{"v":950,"l":5.0},"Sant Guim de Freixenet":{"v":1050,"l":5.5},"Estaràs":{"v":1050,"l":5.5},"Torrefeta i Florejacs":{"v":1000,"l":5.0}},
-  "Urgell": {"Tàrrega":{"v":1350,"l":7.0},"Agramunt":{"v":1200,"l":6.5},"Verdú":{"v":1150,"l":6.5},"Bellpuig":{"v":1150,"l":6.5},"Preixana":{"v":1050,"l":6.0},"Vilagrassa":{"v":1100,"l":6.0},"L'Ametlla de Segarra":{"v":1000,"l":5.0},"Guimerà":{"v":1000,"l":5.5},"Els Omells de na Gaia":{"v":1000,"l":5.5}},
-  "Noguera": {"Balaguer":{"v":1250,"l":7.0},"Artesa de Segre":{"v":1000,"l":5.0},"Àger":{"v":950,"l":4.5},"Camarasa":{"v":1000,"l":5.0},"Ponts":{"v":1050,"l":6.0},"Os de Balaguer":{"v":950,"l":4.5},"Montgai":{"v":950,"l":5.0},"Cubells":{"v":1000,"l":5.5},"Vilanova de Meià":{"v":1000,"l":5.5}},
-  "Segrià": {"Lleida":{"v":2100,"l":11.0},"Almacelles":{"v":1250,"l":7.0},"Alguaire":{"v":1150,"l":6.5},"Torres de Segre":{"v":1100,"l":6.0},"Alpicat":{"v":1300,"l":7.0},"Rosselló":{"v":1150,"l":6.5},"Torrefarrera":{"v":1200,"l":6.5},"Corbins":{"v":1100,"l":6.0},"Sudanell":{"v":1100,"l":6.0},"Granyena de Segarra":{"v":1000,"l":5.0},"Soses":{"v":1050,"l":6.0},"Aitona":{"v":1100,"l":6.0}},
-  "Les Garrigues": {"Les Borges Blanques":{"v":1000,"l":5.0},"Juneda":{"v":1100,"l":6.0},"Arbeca":{"v":950,"l":5.0},"Vinaixa":{"v":900,"l":4.5},"Cervià de les Garrigues":{"v":900,"l":4.5},"L'Albagés":{"v":850,"l":4.5},"El Soleràs":{"v":850,"l":4.0},"L'Albi":{"v":950,"l":5.0},"Puiggròs":{"v":950,"l":5.0},"Castelldans":{"v":950,"l":5.0},"Fulleda":{"v":900,"l":4.5}},
-  "Pla d'Urgell": {"Mollerussa":{"v":1350,"l":7.0},"Bell-lloc d'Urgell":{"v":1150,"l":6.0},"Golmés":{"v":1100,"l":6.0},"Miralcamp":{"v":1100,"l":6.0},"Sidamon":{"v":1050,"l":6.0},"Fondarella":{"v":1000,"l":5.0},"Linyola":{"v":1100,"l":6.0},"Barbens":{"v":1100,"l":6.0},"Castellnou de Seana":{"v":1100,"l":6.0},"Ivars d'Urgell":{"v":1100,"l":6.0},"El Palau d'Anglesola":{"v":1100,"l":6.0},"Vila-sana":{"v":1050,"l":5.5}},
-  "Conca de Barberà": {"Montblanc":{"v":1250,"l":7.0},"L'Espluga de Francolí":{"v":1150,"l":6.5},"Sarral":{"v":950,"l":5.0},"Santa Coloma de Queralt":{"v":1050,"l":6.0},"Rocafort de Queralt":{"v":900,"l":4.5},"Solivella":{"v":900,"l":4.5},"Pira":{"v":900,"l":4.5},"Barberà de la Conca":{"v":1000,"l":5.5},"Blancafort":{"v":950,"l":5.0},"Vimbodí i Poblet":{"v":1000,"l":5.5},"Les Piles":{"v":900,"l":4.5},"Forès":{"v":900,"l":4.5}},
-  "Alt Camp": {"Valls":{"v":1600,"l":9.0},"Alcover":{"v":1400,"l":8.0},"Vila-rodona":{"v":1200,"l":6.5},"La Riba":{"v":1150,"l":6.5},"Nulles":{"v":1100,"l":6.0},"El Pont d'Armentera":{"v":1100,"l":6.0},"Puigpelat":{"v":1150,"l":6.5},"Bràfim":{"v":1100,"l":6.0},"Vilardida":{"v":1000,"l":5.0},"Cabra del Camp":{"v":1100,"l":6.0},"La Masó":{"v":1050,"l":5.5},"Vallmoll":{"v":1100,"l":6.0},"Aiguamúrcia":{"v":1150,"l":6.5},"Querol":{"v":1150,"l":6.5}},
-  "Tarragonès": {"Tarragona":{"v":2950,"l":15.5},"Salou":{"v":3500,"l":17.0},"Cambrils":{"v":3550,"l":17.0},"Vila-seca":{"v":2550,"l":13.0},"Altafulla":{"v":3950,"l":17.5},"Torredembarra":{"v":3250,"l":14.5},"El Catllar":{"v":1900,"l":10.0},"La Canonja":{"v":2300,"l":12.0},"Constantí":{"v":2050,"l":11.0},"Perafort":{"v":1950,"l":10.5},"Renau":{"v":1800,"l":9.5},"La Secuita":{"v":1850,"l":10.0},"Vilallonga del Camp":{"v":1850,"l":10.0},"Creixell":{"v":2750,"l":13.5},"Roda de Barà":{"v":2550,"l":13.0}},
-  "Baix Camp": {"Reus":{"v":2300,"l":12.0},"Mont-roig del Camp":{"v":2550,"l":12.5},"Vandellòs i l'Hospitalet de l'Infant":{"v":3800,"l":17.0},"Miami Platja":{"v":2400,"l":12.5},"Riudoms":{"v":1700,"l":9.5},"La Selva del Camp":{"v":1750,"l":10.0},"L'Aleixar":{"v":1550,"l":8.5},"Almoster":{"v":1500,"l":8.0},"Botarell":{"v":1450,"l":7.5},"Castellvell del Camp":{"v":1550,"l":8.5},"Duesaigües":{"v":1400,"l":7.5},"Colldejou":{"v":1250,"l":7.0},"Les Borges del Camp":{"v":1850,"l":10.0},"Riudecanyes":{"v":1500,"l":8.0},"Pratdip":{"v":1400,"l":7.5}},
-  "Baix Ebre": {"Tortosa":{"v":1450,"l":8.5},"Deltebre":{"v":1150,"l":6.5},"Roquetes":{"v":1200,"l":6.5},"Sant Carles de la Ràpita":{"v":1650,"l":9.0},"L'Aldea":{"v":1150,"l":6.5},"Benifallet":{"v":1000,"l":5.0},"Paüls":{"v":950,"l":5.0},"Tivenys":{"v":1000,"l":5.0},"Xerta":{"v":1050,"l":6.0},"El Perelló":{"v":1600,"l":9.0},"Aldover":{"v":1050,"l":5.5},"Alfara de Carles":{"v":950,"l":5.0}},
-  "Montsià": {"Amposta":{"v":1350,"l":8.0},"Alcanar":{"v":1200,"l":6.5},"Ulldecona":{"v":1000,"l":5.0},"Mas de Barberans":{"v":900,"l":4.5},"La Sénia":{"v":950,"l":5.0},"Sant Jaume d'Enveja":{"v":1150,"l":6.5},"Godall":{"v":900,"l":4.5},"Freginals":{"v":850,"l":4.5},"La Galera":{"v":900,"l":4.5}},
-  "Priorat": {"Falset":{"v":1400,"l":8.0},"Cornudella de Montsant":{"v":1250,"l":7.0},"Gratallops":{"v":1500,"l":8.0},"El Masroig":{"v":1150,"l":6.5},"Porrera":{"v":1200,"l":6.5},"Torroja del Priorat":{"v":1150,"l":6.5},"Bellmunt del Priorat":{"v":1100,"l":6.0},"La Vilella Baixa":{"v":1150,"l":6.5},"Poboleda":{"v":1300,"l":7.0},"La Vilella Alta":{"v":1250,"l":7.0},"Pradell de la Teixeta":{"v":1200,"l":6.5},"El Lloar":{"v":1150,"l":6.5},"La Morera de Montsant":{"v":1300,"l":7.0},"Cabacés":{"v":1250,"l":7.0}},
-  "Ribera d'Ebre": {"Móra d'Ebre":{"v":1100,"l":6.0},"Ascó":{"v":950,"l":5.0},"Flix":{"v":900,"l":4.5},"Móra la Nova":{"v":1050,"l":6.0},"Garcia":{"v":950,"l":5.0},"La Torre de l'Espanyol":{"v":900,"l":4.5},"Tivissa":{"v":950,"l":5.0},"Benissanet":{"v":900,"l":4.5},"La Palma d'Ebre":{"v":1000,"l":5.5},"Ginestar":{"v":950,"l":5.0},"Rasquera":{"v":950,"l":5.0},"Darmós":{"v":950,"l":5.0}},
-  "Terra Alta": {"Gandesa":{"v":1000,"l":6.0},"Bot":{"v":750,"l":4.5},"Batea":{"v":850,"l":4.5},"Corbera d'Ebre":{"v":750,"l":4.5},"El Pinell de Brai":{"v":800,"l":4.5},"La Fatarella":{"v":750,"l":4.5},"Prat de Comte":{"v":700,"l":4.0},"Vilalba dels Arcs":{"v":750,"l":4.0},"Arnes":{"v":800,"l":4.5},"Caseres":{"v":800,"l":4.5},"La Pobla de Massaluca":{"v":750,"l":4.0},"Horta de Sant Joan":{"v":850,"l":5.0}},
-  "Moianès": {"Moià":{"v":1900,"l":10.0},"Calders":{"v":1500,"l":8.0},"Castellcir":{"v":1650,"l":9.0},"El Brull":{"v":1500,"l":8.0},"Monistrol de Calders":{"v":1550,"l":8.5},"L'Estany":{"v":1500,"l":8.0},"Santa Maria d'Oló":{"v":1450,"l":7.5}},
+  "Barcelonès": {"Barcelona":{"v":6750,"l":26.5},"L'Hospitalet de Llobregat":{"v":4650,"l":22.5},"Badalona":{"v":3950,"l":20.0},"Santa Coloma de Gramenet":{"v":3300,"l":18.5},"Sant Adrià de Besòs":{"v":3900,"l":19.5}},
+  "Baix Llobregat": {"Castelldefels":{"v":6400,"l":24.0},"Gavà":{"v":5750,"l":23.0},"Viladecans":{"v":4500,"l":21.5},"Sant Boi de Llobregat":{"v":4100,"l":19.5},"Cornellà de Llobregat":{"v":5050,"l":22.5},"Esplugues de Llobregat":{"v":6050,"l":23.5},"Sant Joan Despí":{"v":5300,"l":22.0},"El Prat de Llobregat":{"v":4250,"l":20.0},"Molins de Rei":{"v":4450,"l":20.0},"Sant Feliu de Llobregat":{"v":4350,"l":20.0},"Sant Vicenç dels Horts":{"v":3200,"l":16.5},"Martorell":{"v":2850,"l":14.5},"Abrera":{"v":2750,"l":14.0},"Olesa de Montserrat":{"v":2650,"l":13.5},"Cervelló":{"v":3100,"l":15.5},"Corbera de Llobregat":{"v":3550,"l":16.0},"Begues":{"v":3750,"l":16.5},"Pallejà":{"v":3400,"l":16.0},"Sant Andreu de la Barca":{"v":2800,"l":14.5},"Torrelles de Llobregat":{"v":3550,"l":16.0},"Vallirana":{"v":3150,"l":15.5},"Collbató":{"v":2850,"l":14.0},"El Papiol":{"v":4200,"l":18.5},"La Palma de Cervelló":{"v":3000,"l":14.5},"Sant Climent de Llobregat":{"v":3300,"l":15.5},"Sant Esteve Sesrovires":{"v":2700,"l":13.5},"Sant Just Desvern":{"v":6750,"l":25.0},"Santa Coloma de Cervelló":{"v":3400,"l":16.0}},
+  "Vallès Occidental": {"Sabadell":{"v":3650,"l":17.0},"Terrassa":{"v":3400,"l":16.5},"Sant Cugat del Vallès":{"v":6850,"l":26.0},"Rubí":{"v":2800,"l":15.5},"Cerdanyola del Vallès":{"v":4150,"l":19.5},"Barberà del Vallès":{"v":3250,"l":16.0},"Montcada i Reixac":{"v":3050,"l":16.0},"Ripollet":{"v":3350,"l":16.5},"Castellbisbal":{"v":2900,"l":14.5},"Badia del Vallès":{"v":2450,"l":13.5},"Sant Quirze del Vallès":{"v":4650,"l":19.5},"Matadepera":{"v":5050,"l":20.5},"Vacarisses":{"v":2650,"l":13.5},"Ullastrell":{"v":3050,"l":14.5},"Viladecavalls":{"v":2850,"l":14.5},"Polinyà":{"v":2800,"l":14.5},"Sentmenat":{"v":2900,"l":14.5},"Palau-solità i Plegamans":{"v":3150,"l":15.5},"Gallifa":{"v":2450,"l":12.5},"Rellinars":{"v":2550,"l":13.0},"Sant Llorenç Savall":{"v":2750,"l":14.0}},
+  "Vallès Oriental": {"Granollers":{"v":2900,"l":15.5},"Mollet del Vallès":{"v":3350,"l":16.5},"La Roca del Vallès":{"v":3850,"l":18.0},"Cardedeu":{"v":3750,"l":16.5},"Caldes de Montbui":{"v":3100,"l":14.5},"Parets del Vallès":{"v":2900,"l":15.5},"Montmeló":{"v":2650,"l":14.0},"Lliçà d'Amunt":{"v":2800,"l":14.0},"Santa Perpètua de Mogoda":{"v":3200,"l":16.0},"Les Franqueses del Vallès":{"v":2900,"l":14.5},"Canovelles":{"v":2550,"l":13.5},"Lliçà de Vall":{"v":2650,"l":13.5},"Bigues i Riells":{"v":2850,"l":14.0},"Sant Celoni":{"v":2600,"l":13.5},"L'Ametlla del Vallès":{"v":3050,"l":14.5},"Martorelles":{"v":2800,"l":14.0},"Aiguafreda":{"v":2550,"l":13.0},"Campins":{"v":2300,"l":12.0},"Cànoves i Samalús":{"v":3050,"l":14.5},"La Garriga":{"v":3550,"l":16.5},"Fogars de Montclús":{"v":2100,"l":11.0},"Gualba":{"v":2200,"l":11.5},"La Llagosta":{"v":3000,"l":15.5},"Llinars del Vallès":{"v":3300,"l":16.0},"Montornès del Vallès":{"v":2850,"l":14.5},"Sant Antoni de Vilamajor":{"v":3000,"l":14.5},"Sant Esteve de Palautordera":{"v":2450,"l":12.5},"Sant Feliu de Codines":{"v":2650,"l":13.5},"Sant Pere de Vilamajor":{"v":2850,"l":14.0},"Santa Maria de Palautordera":{"v":2550,"l":13.0},"Tagamanent":{"v":2200,"l":11.5},"Vallgorguina":{"v":2350,"l":12.0},"Vallromanes":{"v":3300,"l":16.0},"Vilanova del Vallès":{"v":3050,"l":14.5}},
+  "Maresme": {"Mataró":{"v":3100,"l":16.5},"Vilassar de Mar":{"v":4800,"l":20.0},"Premià de Mar":{"v":5050,"l":20.5},"El Masnou":{"v":6050,"l":23.0},"Montgat":{"v":5250,"l":21.5},"Calella":{"v":3100,"l":15.5},"Pineda de Mar":{"v":2650,"l":13.5},"Sant Pol de Mar":{"v":4350,"l":18.5},"Arenys de Mar":{"v":4150,"l":18.0},"Canet de Mar":{"v":3650,"l":16.5},"Santa Susanna":{"v":2550,"l":13.5},"Argentona":{"v":4150,"l":18.0},"Vilassar de Dalt":{"v":4350,"l":18.5},"Premià de Dalt":{"v":3850,"l":17.5},"Teià":{"v":5400,"l":21.5},"Alella":{"v":6400,"l":24.0},"Tiana":{"v":5750,"l":23.0},"Sant Vicenç de Montalt":{"v":4650,"l":19.5},"Caldes d'Estrac":{"v":4250,"l":19.0},"Arenys de Munt":{"v":3400,"l":16.0},"Sant Iscle de Vallalta":{"v":2650,"l":13.5},"Cabrera de Mar":{"v":4650,"l":19.5},"Cabrils":{"v":5300,"l":21.5},"Dosrius":{"v":3100,"l":15.5},"Òrrius":{"v":2450,"l":12.5},"Palafolls":{"v":2300,"l":12.0},"Sant Andreu de Llavaneres":{"v":4950,"l":20.0},"Sant Cebrià de Vallalta":{"v":2650,"l":13.5}},
+  "Garraf": {"Vilanova i la Geltrú":{"v":3700,"l":17.5},"Sitges":{"v":7700,"l":26.5},"Sant Pere de Ribes":{"v":4150,"l":18.0},"Cubelles":{"v":3100,"l":15.5},"Canyelles":{"v":2750,"l":13.5},"Olivella":{"v":2800,"l":14.0}},
+  "Alt Penedès": {"Vilafranca del Penedès":{"v":3000,"l":13.5},"Sant Sadurní d'Anoia":{"v":2650,"l":12.5},"Gelida":{"v":3400,"l":14.5},"Castellví de la Marca":{"v":2050,"l":10.0},"Subirats":{"v":2250,"l":11.0},"Santa Fe del Penedès":{"v":1950,"l":10.0},"Sant Quintí de Mediona":{"v":1900,"l":9.5},"Mediona":{"v":1800,"l":8.5},"Font-rubí":{"v":1700,"l":8.5},"Pacs del Penedès":{"v":2150,"l":10.5},"Sant Martí Sarroca":{"v":2000,"l":10.0},"Avinyonet del Penedès":{"v":1950,"l":10.0},"Olèrdola":{"v":2100,"l":10.5},"Santa Margarida i els Monjos":{"v":2200,"l":11.0},"Torrelavit":{"v":1900,"l":9.5},"La Granada":{"v":2000,"l":10.0},"Les Cabanyes":{"v":1950,"l":10.0},"Pontons":{"v":1650,"l":8.5},"Puigdàlber":{"v":1950,"l":10.0},"Sant Cugat Sesgarrigues":{"v":1900,"l":9.5},"Sant Llorenç d'Hortons":{"v":2100,"l":10.5},"Sant Pere de Riudebitlles":{"v":1950,"l":10.0},"Vilobí del Penedès":{"v":1900,"l":9.5}},
+  "Baix Penedès": {"El Vendrell":{"v":2750,"l":12.5},"Calafell":{"v":3300,"l":14.0},"Cunit":{"v":3450,"l":14.5},"Santa Oliva":{"v":2200,"l":10.5},"Bellvei":{"v":2200,"l":11.5},"L'Arboç":{"v":2050,"l":11.0},"Banyeres del Penedès":{"v":1700,"l":10.0},"Albinyana":{"v":2150,"l":10.5},"Bonastre":{"v":1400,"l":8.5},"Masllorenç":{"v":1550,"l":9.5},"La Bisbal del Penedès":{"v":1750,"l":10.0},"Llorenç del Penedès":{"v":2350,"l":8.0},"Sant Jaume dels Domenys":{"v":1700,"l":8.0},"El Montmell":{"v":1500,"l":8.5}},
+  "Anoia": {"Igualada":{"v":2800,"l":13.0},"Vilanova del Camí":{"v":2100,"l":11.0},"Santa Margarida de Montbui":{"v":1900,"l":10.0},"Capellades":{"v":1800,"l":10.0},"Piera":{"v":3050,"l":14.0},"Òdena":{"v":1950,"l":10.5},"La Llacuna":{"v":1600,"l":8.0},"Jorba":{"v":1550,"l":8.0},"Argençola":{"v":1400,"l":7.5},"Copons":{"v":1450,"l":7.5},"Calaf":{"v":1650,"l":8.5},"Veciana":{"v":1300,"l":7.0},"El Bruc":{"v":2200,"l":11.0},"Cabrera d'Anoia":{"v":1900,"l":10.0},"Carme":{"v":1600,"l":8.0},"Castellolí":{"v":1800,"l":9.5},"La Pobla de Claramunt":{"v":1900,"l":9.5},"Masquefa":{"v":2450,"l":12.0},"Sant Martí de Tous":{"v":1550,"l":8.0},"Torre de Claramunt":{"v":1750,"l":9.5},"Vallbona d'Anoia":{"v":1650,"l":8.5}},
+  "Bages": {"Manresa":{"v":2350,"l":12.0},"Sant Joan de Vilatorrada":{"v":2050,"l":11.0},"Santpedor":{"v":2150,"l":11.0},"Artés":{"v":1750,"l":10.0},"Navarcles":{"v":1900,"l":10.0},"Sallent":{"v":1250,"l":7.5},"Avinyó":{"v":1450,"l":8.0},"Sant Fruitós de Bages":{"v":2050,"l":11.0},"Súria":{"v":1400,"l":7.5},"Balsareny":{"v":1300,"l":7.5},"Callús":{"v":1450,"l":8.0},"Castellbell i el Vilar":{"v":1650,"l":8.5},"El Pont de Vilomara i Rocafort":{"v":1600,"l":8.5},"Monistrol de Montserrat":{"v":1800,"l":10.0},"Rajadell":{"v":1400,"l":7.5},"Cardona":{"v":1450,"l":7.5},"Fonollosa":{"v":1300,"l":7.0},"Sant Salvador de Guardiola":{"v":1450,"l":7.5},"Mura":{"v":1600,"l":8.5},"Gaià":{"v":1250,"l":6.5},"Castellgalí":{"v":1750,"l":9.5},"Navas":{"v":1250,"l":7.0},"Sant Vicenç de Castellet":{"v":1750,"l":9.5},"Talamanca":{"v":1300,"l":7.0}},
+  "Berguedà": {"Berga":{"v":1550,"l":8.0},"Gironella":{"v":1300,"l":7.0},"Puig-reig":{"v":1100,"l":6.5},"Olvan":{"v":1050,"l":5.5},"Bagà":{"v":1250,"l":7.0},"Guardiola de Berguedà":{"v":1100,"l":6.5},"Cercs":{"v":1050,"l":5.5},"Avià":{"v":1200,"l":6.5},"Casserres":{"v":1050,"l":5.5},"L'Espunyola":{"v":1000,"l":5.0},"Borredà":{"v":1050,"l":5.5},"Montmajor":{"v":1000,"l":5.5},"Sagàs":{"v":1000,"l":5.5},"Saldes":{"v":1100,"l":6.0},"Santa Maria de Merlès":{"v":1000,"l":5.5},"Viver i Serrateix":{"v":1000,"l":5.5},"Vilada":{"v":1000,"l":5.5},"Capolat":{"v":950,"l":5.0},"La Nou de Berguedà":{"v":1000,"l":5.5},"La Pobla de Lillet":{"v":1150,"l":6.5}},
+  "Osona": {"Vic":{"v":2750,"l":13.0},"Manlleu":{"v":1800,"l":10.0},"Torelló":{"v":1650,"l":9.5},"Roda de Ter":{"v":1600,"l":8.5},"Sant Julià de Vilatorta":{"v":1950,"l":10.0},"Centelles":{"v":1900,"l":10.0},"Tona":{"v":2000,"l":10.5},"Gurb":{"v":1800,"l":10.0},"Santa Eugènia de Berga":{"v":1800,"l":10.0},"Malla":{"v":1650,"l":8.5},"Seva":{"v":1800,"l":10.0},"Balenyà":{"v":1800,"l":9.5},"Calldetenes":{"v":1750,"l":9.5},"L'Esquirol":{"v":1450,"l":8.0},"Taradell":{"v":2200,"l":11.0},"Sant Hipòlit de Voltregà":{"v":1650,"l":8.5},"Prats de Lluçanès":{"v":1750,"l":9.5},"Les Masies de Roda":{"v":1650,"l":8.5},"Perafita":{"v":1550,"l":8.0},"Sant Boi de Lluçanès":{"v":1500,"l":8.0},"Espinelves":{"v":1950,"l":10.5},"Tavèrnoles":{"v":1900,"l":10.0},"Lluçà":{"v":1450,"l":7.5},"Muntanyola":{"v":1650,"l":8.5},"Orís":{"v":1450,"l":7.5},"Oristà":{"v":1500,"l":8.0},"Rupit i Pruit":{"v":1550,"l":8.0},"Sant Pere de Torelló":{"v":1550,"l":8.0},"Sant Quirze de Besora":{"v":1500,"l":8.0},"Viladrau":{"v":2450,"l":12.0}},
+  "Ripollès": {"Ripoll":{"v":1400,"l":8.0},"Ribes de Freser":{"v":1600,"l":8.5},"Campdevànol":{"v":1300,"l":7.0},"Sant Joan de les Abadesses":{"v":1300,"l":7.0},"Camprodon":{"v":1850,"l":9.5},"Vallfogona de Ripollès":{"v":1200,"l":6.5},"Planoles":{"v":1800,"l":9.0},"Queralbs":{"v":1750,"l":9.0},"Setcases":{"v":2350,"l":10.5},"Les Llosses":{"v":1050,"l":5.5},"Vilallonga de Ter":{"v":1300,"l":6.5},"Toses":{"v":1700,"l":8.5},"Pardines":{"v":1300,"l":6.5},"Llanars":{"v":1800,"l":9.5},"Molló":{"v":1450,"l":8.0}},
+  "Gironès": {"Girona":{"v":4250,"l":20.0},"Salt":{"v":2700,"l":14.0},"Sarrià de Ter":{"v":2700,"l":14.0},"Sant Gregori":{"v":2650,"l":13.5},"Fornells de la Selva":{"v":2600,"l":13.0},"Cassà de la Selva":{"v":2450,"l":12.0},"Celrà":{"v":2350,"l":12.0},"Bordils":{"v":2250,"l":11.5},"Quart":{"v":2450,"l":13.0},"Llambilles":{"v":2500,"l":13.0},"Juià":{"v":2200,"l":11.0},"Sant Andreu Salou":{"v":2300,"l":11.5},"Aiguaviva":{"v":2500,"l":12.0},"Bescanó":{"v":2550,"l":13.0},"Campllong":{"v":2250,"l":11.5},"Cervià de Ter":{"v":2350,"l":12.0},"Flassà":{"v":2150,"l":11.0},"Madremanya":{"v":2250,"l":11.5},"Sant Joan de Mollet":{"v":2150,"l":11.0},"Sant Jordi Desvalls":{"v":2150,"l":11.0},"Sant Julià de Ramis":{"v":2500,"l":13.0},"Sant Martí Vell":{"v":2250,"l":11.5},"Vilablareix":{"v":3050,"l":15.0},"Viladasens":{"v":2150,"l":11.0}},
+  "Selva": {"Lloret de Mar":{"v":3600,"l":15.0},"Tossa de Mar":{"v":4850,"l":19.5},"Santa Coloma de Farners":{"v":2000,"l":11.0},"Sils":{"v":2150,"l":11.0},"Hostalric":{"v":1850,"l":10.0},"Vidreres":{"v":2000,"l":10.5},"Maçanet de la Selva":{"v":2200,"l":11.5},"Tordera":{"v":2350,"l":12.0},"Caldes de Malavella":{"v":3100,"l":15.0},"Riudarenes":{"v":1900,"l":10.0},"Anglès":{"v":1900,"l":10.0},"Amer":{"v":1750,"l":9.5},"Sant Hilari Sacalm":{"v":1800,"l":10.0},"Blanes":{"v":3050,"l":15.0},"Malgrat de Mar":{"v":2550,"l":13.5},"Arbúcies":{"v":1900,"l":10.0},"Sant Feliu de Buixalleu":{"v":1750,"l":9.5},"Breda":{"v":1850,"l":10.0},"Fogars de la Selva":{"v":1800,"l":9.5},"Massanes":{"v":1800,"l":9.5},"Osor":{"v":1650,"l":8.5},"Riells i Viabrea":{"v":1900,"l":10.0},"Sant Julià del Llor i Bonmatí":{"v":1900,"l":10.0},"Vilobí d'Onyar":{"v":2250,"l":11.5}},
+  "Alt Empordà": {"Figueres":{"v":2600,"l":13.0},"Roses":{"v":4800,"l":19.5},"Empuriabrava":{"v":5400,"l":21.5},"Cadaqués":{"v":8450,"l":24.5},"El Port de la Selva":{"v":6450,"l":20.5},"Castelló d'Empúries":{"v":3150,"l":15.0},"L'Escala":{"v":4450,"l":19.0},"Llançà":{"v":3450,"l":15.5},"Portbou":{"v":2150,"l":11.0},"Peralada":{"v":2250,"l":11.5},"Pau":{"v":2500,"l":13.0},"Vilafant":{"v":2350,"l":12.0},"Pont de Molins":{"v":2100,"l":11.0},"Garriguella":{"v":2000,"l":10.5},"Colera":{"v":2700,"l":14.0},"El Far d'Empordà":{"v":2200,"l":11.0},"Mollet de Peralada":{"v":2050,"l":10.5},"Sant Pere Pescador":{"v":3500,"l":15.5},"Torroella de Fluvià":{"v":2100,"l":11.0},"Agullana":{"v":1900,"l":10.0},"Avinyonet de Puigventós":{"v":2150,"l":11.0},"Bàscara":{"v":2100,"l":11.0},"Borrassà":{"v":1900,"l":10.0},"Cabanelles":{"v":1800,"l":9.5},"Cabanes":{"v":2150,"l":11.0},"Cantallops":{"v":1850,"l":10.0},"Capmany":{"v":1900,"l":10.0},"Darnius":{"v":1750,"l":9.5},"Espolla":{"v":1800,"l":9.5},"La Jonquera":{"v":2050,"l":10.5},"Lladó":{"v":1800,"l":9.5},"Llers":{"v":2000,"l":10.5},"Navata":{"v":2100,"l":11.0},"Ordis":{"v":1900,"l":10.0},"Sant Climent Sescebes":{"v":1800,"l":9.5},"Sant Llorenç de la Muga":{"v":1700,"l":9.0},"Siurana":{"v":1800,"l":9.5},"Terrades":{"v":1700,"l":9.0},"Viladamat":{"v":2050,"l":10.5},"Vilanant":{"v":1900,"l":10.0}},
+  "Baix Empordà": {"Palafrugell":{"v":4900,"l":20.0},"Platja d'Aro":{"v":6900,"l":24.5},"Sant Feliu de Guíxols":{"v":5500,"l":21.0},"Palamós":{"v":4250,"l":19.0},"La Bisbal d'Empordà":{"v":2550,"l":13.0},"Torroella de Montgrí":{"v":3000,"l":14.5},"Calonge":{"v":3950,"l":18.0},"Begur":{"v":7350,"l":24.0},"Pals":{"v":5350,"l":19.5},"Castell-Platja d'Aro":{"v":6900,"l":24.5},"Mont-ras":{"v":3500,"l":16.0},"Vall-llobrega":{"v":3100,"l":15.0},"Fonteta":{"v":2350,"l":11.5},"Forallac":{"v":2450,"l":12.0},"Cruïlles, Monells i Sant Sadurní de l'Heura":{"v":2250,"l":11.5},"Gualta":{"v":2300,"l":11.5},"Ultramort":{"v":2200,"l":11.0},"Bellcaire d'Empordà":{"v":2250,"l":11.5},"Corçà":{"v":2250,"l":11.5},"Foixà":{"v":2150,"l":11.0},"La Pera":{"v":2200,"l":11.0},"Palau-sator":{"v":2500,"l":13.0},"Parlavà":{"v":2250,"l":11.5},"Peratallada":{"v":2800,"l":14.0},"Regencós":{"v":3400,"l":15.5},"Rupià":{"v":2200,"l":11.0},"Santa Cristina d'Aro":{"v":4750,"l":19.5},"Ullà":{"v":2300,"l":11.5},"Ullastret":{"v":2500,"l":13.0},"Verges":{"v":2150,"l":11.0}},
+  "Pla de l'Estany": {"Banyoles":{"v":2450,"l":13.0},"Porqueres":{"v":2250,"l":12.0},"Cornellà del Terri":{"v":2000,"l":10.5},"Esponellà":{"v":1850,"l":10.0},"Fontcoberta":{"v":1900,"l":10.0},"Crespià":{"v":1800,"l":9.5},"Palol de Revardit":{"v":1850,"l":10.0},"Sant Miquel de Campmajor":{"v":1750,"l":9.5},"Serinyà":{"v":1900,"l":10.0}},
+  "La Garrotxa": {"Olot":{"v":2250,"l":12.0},"Sant Joan les Fonts":{"v":1400,"l":8.0},"La Vall d'en Bas":{"v":1600,"l":8.5},"Les Planes d'Hostoles":{"v":1350,"l":7.0},"Santa Pau":{"v":1450,"l":8.0},"Castellfollit de la Roca":{"v":1300,"l":7.0},"Sant Jaume de Llierca":{"v":1250,"l":6.5},"Besalú":{"v":1850,"l":9.5},"Maià de Montcal":{"v":1300,"l":7.0},"Sant Feliu de Pallerols":{"v":1500,"l":8.5},"La Vall de Bianya":{"v":1400,"l":8.0},"Argelaguer":{"v":1350,"l":7.0},"Montagut i Oix":{"v":1350,"l":7.0},"Beuda":{"v":1300,"l":7.0},"Riudaura":{"v":1350,"l":7.0},"Sales de Llierca":{"v":1250,"l":6.5}},
+  "Cerdanya": {"Puigcerdà":{"v":4300,"l":18.0},"Alp":{"v":3150,"l":14.5},"Bellver de Cerdanya":{"v":2250,"l":11.5},"Llívia":{"v":3500,"l":15.0},"Prullans":{"v":2000,"l":10.5},"Isòvol":{"v":1850,"l":10.0},"Das":{"v":2100,"l":10.5},"Ger":{"v":1900,"l":10.0},"Guils de Cerdanya":{"v":2100,"l":10.5},"Prats i Sansor":{"v":1850,"l":10.0},"Bolvir":{"v":3050,"l":13.5},"Fontanals de Cerdanya":{"v":2650,"l":13.0},"Lles de Cerdanya":{"v":2200,"l":11.0},"Montellà i Martinet":{"v":2300,"l":11.5},"Urús":{"v":2450,"l":12.0},"Meranges":{"v":1900,"l":10.0}},
+  "Alt Urgell": {"La Seu d'Urgell":{"v":1550,"l":9.5},"Organyà":{"v":1200,"l":7.0},"Oliana":{"v":1150,"l":6.0},"Coll de Nargó":{"v":1050,"l":6.0},"Ribera d'Urgellet":{"v":1100,"l":6.0},"Montferrer i Castellbò":{"v":1050,"l":5.0},"Valls de Valira":{"v":1000,"l":5.0},"Alàs i Cerc":{"v":1150,"l":6.0},"Arsèguel":{"v":1100,"l":5.5},"Bassella":{"v":1000,"l":5.0},"El Pont de Bar":{"v":1050,"l":5.5},"Estamariu":{"v":1000,"l":5.0},"Fígols i Alinyà":{"v":1000,"l":5.0},"Josa i Tuixén":{"v":1000,"l":5.0},"Noves de Segre":{"v":1050,"l":5.5},"Peramola":{"v":1000,"l":5.0}},
+  "Pallars Jussà": {"Tremp":{"v":1200,"l":7.0},"La Pobla de Segur":{"v":1150,"l":6.0},"Salàs de Pallars":{"v":1000,"l":5.0},"Gavet de la Conca":{"v":950,"l":4.5},"Conca de Dalt":{"v":950,"l":4.5},"Isona i Conca Dellà":{"v":1050,"l":5.5},"Talarn":{"v":1000,"l":5.0},"Senterada":{"v":1000,"l":5.0},"Castell de Mur":{"v":1000,"l":5.0},"Llimiana":{"v":950,"l":4.5}},
+  "Pallars Sobirà": {"Sort":{"v":1450,"l":7.5},"Llavorsí":{"v":1200,"l":6.0},"Esterri d'Àneu":{"v":1550,"l":8.0},"Rialp":{"v":1250,"l":7.0},"Alins":{"v":1100,"l":6.0},"Farrera":{"v":1000,"l":4.5},"La Guingueta d'Àneu":{"v":1350,"l":7.5},"Soriguera":{"v":1150,"l":6.0},"Baix Pallars":{"v":1200,"l":6.0},"Tírvia":{"v":1050,"l":5.5},"Espot":{"v":1750,"l":9.5},"Esterri de Cardós":{"v":1050,"l":5.5},"Lladorre":{"v":1050,"l":5.5},"Vall de Cardós":{"v":1050,"l":5.5}},
+  "Alta Ribagorça": {"El Pont de Suert":{"v":1150,"l":6.0},"Boi":{"v":1300,"l":7.0},"Vilaller":{"v":1000,"l":5.0},"Barruera":{"v":1050,"l":5.0}},
+  "Val d'Aran": {"Vielha e Mijaran":{"v":4550,"l":16.5},"Bossòst":{"v":2650,"l":12.0},"Les":{"v":1950,"l":10.0},"Naut Aran":{"v":5500,"l":18.5},"Bausen":{"v":1700,"l":9.5},"Es Bòrdes":{"v":1800,"l":10.0},"Arres":{"v":1600,"l":9.0},"Canejan":{"v":1550,"l":8.5}},
+  "Solsonès": {"Solsona":{"v":1450,"l":8.0},"Llobera":{"v":1200,"l":7.0},"Clariana de Cardener":{"v":1150,"l":6.0},"Navès":{"v":1050,"l":5.0},"Riner":{"v":1050,"l":5.0},"Olius":{"v":1150,"l":6.0},"Sant Llorenç de Morunys":{"v":1250,"l":7.0},"Guixers":{"v":1100,"l":5.5},"Pinell de Solsonès":{"v":1050,"l":5.0},"La Molsosa":{"v":1000,"l":4.5}},
+  "Segarra": {"Cervera":{"v":1250,"l":7.0},"Guissona":{"v":1200,"l":6.0},"Els Prats de Rei":{"v":1150,"l":6.0},"Torà":{"v":1100,"l":6.0},"Biosca":{"v":1050,"l":5.0},"Sanaüja":{"v":1000,"l":5.0},"Sant Guim de Freixenet":{"v":1100,"l":5.5},"Estaràs":{"v":1100,"l":5.5},"Torrefeta i Florejacs":{"v":1050,"l":5.0},"Granyena de Segarra":{"v":1000,"l":5.0},"Sant Ramon":{"v":1050,"l":5.5}},
+  "Urgell": {"Tàrrega":{"v":1400,"l":7.5},"Agramunt":{"v":1250,"l":7.0},"Verdú":{"v":1200,"l":7.0},"Bellpuig":{"v":1200,"l":7.0},"Preixana":{"v":1100,"l":6.0},"Vilagrassa":{"v":1150,"l":6.0},"Guimerà":{"v":1050,"l":5.5},"Els Omells de na Gaia":{"v":1050,"l":5.5},"Anglesola":{"v":1150,"l":6.0},"Ossó de Sió":{"v":1050,"l":5.5},"Sant Martí de Riucorb":{"v":1050,"l":5.5}},
+  "Noguera": {"Balaguer":{"v":1300,"l":7.5},"Artesa de Segre":{"v":1050,"l":5.0},"Àger":{"v":1000,"l":4.5},"Camarasa":{"v":1050,"l":5.0},"Ponts":{"v":1100,"l":6.0},"Os de Balaguer":{"v":1000,"l":4.5},"Montgai":{"v":1000,"l":5.0},"Cubells":{"v":1050,"l":5.5},"Vilanova de Meià":{"v":1050,"l":5.5},"Albesa":{"v":1050,"l":5.5},"Algerri":{"v":1000,"l":5.0},"Castelló de Farfanya":{"v":1000,"l":5.0},"Foradada":{"v":1000,"l":5.0},"Menàrguens":{"v":1050,"l":5.5},"Térmens":{"v":1050,"l":5.5},"Vallfogona de Balaguer":{"v":1050,"l":5.5}},
+  "Segrià": {"Lleida":{"v":2200,"l":11.5},"Almacelles":{"v":1300,"l":7.5},"Alguaire":{"v":1200,"l":7.0},"Torres de Segre":{"v":1150,"l":6.0},"Alpicat":{"v":1350,"l":7.5},"Rosselló":{"v":1200,"l":7.0},"Torrefarrera":{"v":1250,"l":7.0},"Corbins":{"v":1150,"l":6.0},"Sudanell":{"v":1150,"l":6.0},"Soses":{"v":1100,"l":6.0},"Aitona":{"v":1150,"l":6.0},"Albatàrrec":{"v":1250,"l":7.0},"Alcarràs":{"v":1250,"l":7.0},"Alfés":{"v":1100,"l":5.5},"Artesa de Lleida":{"v":1100,"l":5.5},"Benavent de Segrià":{"v":1100,"l":5.5},"Gimenells i el Pla de la Font":{"v":1100,"l":5.5},"La Granja d'Escarp":{"v":1100,"l":5.5},"Llardecans":{"v":1050,"l":5.0},"Maials":{"v":1050,"l":5.0},"Massalcoreig":{"v":1050,"l":5.0},"Montoliu de Lleida":{"v":1100,"l":5.5},"Sarroca de Lleida":{"v":1100,"l":5.5},"Serós":{"v":1100,"l":5.5},"Sunyer":{"v":1100,"l":5.5},"Vilanova de la Barca":{"v":1150,"l":6.0}},
+  "Les Garrigues": {"Les Borges Blanques":{"v":1050,"l":5.0},"Juneda":{"v":1150,"l":6.0},"Arbeca":{"v":1000,"l":5.0},"Vinaixa":{"v":950,"l":4.5},"Cervià de les Garrigues":{"v":950,"l":4.5},"L'Albagés":{"v":900,"l":4.5},"El Soleràs":{"v":900,"l":4.0},"L'Albi":{"v":1000,"l":5.0},"Puiggròs":{"v":1000,"l":5.0},"Castelldans":{"v":1000,"l":5.0},"Fulleda":{"v":950,"l":4.5},"Bovera":{"v":950,"l":4.5},"Granyena de les Garrigues":{"v":950,"l":4.5},"L'Espluga Calba":{"v":950,"l":4.5},"Maldà":{"v":1000,"l":5.0},"Tarrés":{"v":950,"l":4.5}},
+  "Pla d'Urgell": {"Mollerussa":{"v":1400,"l":7.5},"Bell-lloc d'Urgell":{"v":1200,"l":6.0},"Golmés":{"v":1150,"l":6.0},"Miralcamp":{"v":1150,"l":6.0},"Sidamon":{"v":1100,"l":6.0},"Fondarella":{"v":1050,"l":5.0},"Linyola":{"v":1150,"l":6.0},"Barbens":{"v":1150,"l":6.0},"Castellnou de Seana":{"v":1150,"l":6.0},"Ivars d'Urgell":{"v":1150,"l":6.0},"El Palau d'Anglesola":{"v":1150,"l":6.0},"Vila-sana":{"v":1100,"l":5.5},"Bellvís":{"v":1100,"l":5.5},"Torregrossa":{"v":1100,"l":5.5}},
+  "Conca de Barberà": {"Montblanc":{"v":1450,"l":7.5},"L'Espluga de Francolí":{"v":1300,"l":7.0},"Sarral":{"v":1100,"l":5.5},"Santa Coloma de Queralt":{"v":1200,"l":6.5},"Rocafort de Queralt":{"v":1050,"l":5.0},"Solivella":{"v":1050,"l":5.0},"Pira":{"v":1050,"l":5.0},"Barberà de la Conca":{"v":1150,"l":6.0},"Blancafort":{"v":1100,"l":5.5},"Vimbodí i Poblet":{"v":1150,"l":6.0},"Les Piles":{"v":1050,"l":5.0},"Forès":{"v":1050,"l":5.0},"Conesa":{"v":1050,"l":5.0},"Vilaverd":{"v":1100,"l":5.5}},
+  "Alt Camp": {"Valls":{"v":1850,"l":10.0},"Alcover":{"v":1600,"l":9.0},"Vila-rodona":{"v":1400,"l":7.0},"La Riba":{"v":1300,"l":7.0},"Nulles":{"v":1250,"l":6.5},"El Pont d'Armentera":{"v":1250,"l":6.5},"Puigpelat":{"v":1300,"l":7.0},"Bràfim":{"v":1250,"l":6.5},"Vilardida":{"v":1150,"l":5.5},"Cabra del Camp":{"v":1250,"l":6.5},"La Masó":{"v":1200,"l":6.0},"Vallmoll":{"v":1250,"l":6.5},"Aiguamúrcia":{"v":1300,"l":7.0},"Querol":{"v":1300,"l":7.0},"Pla de Santa Maria":{"v":1250,"l":6.5}},
+  "Tarragonès": {"Tarragona":{"v":3400,"l":17.0},"Salou":{"v":4000,"l":19.0},"Cambrils":{"v":4050,"l":19.0},"Vila-seca":{"v":2900,"l":14.5},"Altafulla":{"v":4550,"l":19.5},"Torredembarra":{"v":3750,"l":16.0},"El Catllar":{"v":2200,"l":11.0},"La Canonja":{"v":2650,"l":13.5},"Constantí":{"v":2350,"l":12.0},"Perafort":{"v":2250,"l":11.5},"Renau":{"v":2050,"l":10.5},"La Secuita":{"v":2100,"l":11.0},"Vilallonga del Camp":{"v":2100,"l":11.0},"Creixell":{"v":3150,"l":15.0},"Roda de Barà":{"v":2900,"l":14.5},"El Morell":{"v":2300,"l":11.5},"Pallaresos":{"v":2400,"l":12.0},"Pobla de Mafumet":{"v":2400,"l":12.0},"Pobla de Montornès":{"v":2300,"l":11.5},"Vespella de Gaià":{"v":2050,"l":10.5}},
+  "Baix Camp": {"Reus":{"v":2650,"l":13.5},"Mont-roig del Camp":{"v":2900,"l":14.0},"Vandellòs i l'Hospitalet de l'Infant":{"v":4350,"l":19.0},"Miami Platja":{"v":2750,"l":14.0},"Riudoms":{"v":1950,"l":10.5},"La Selva del Camp":{"v":2000,"l":11.0},"L'Aleixar":{"v":1800,"l":9.5},"Almoster":{"v":1700,"l":9.0},"Botarell":{"v":1650,"l":8.5},"Castellvell del Camp":{"v":1800,"l":9.5},"Duesaigües":{"v":1600,"l":8.5},"Colldejou":{"v":1450,"l":7.5},"Les Borges del Camp":{"v":2100,"l":11.0},"Riudecanyes":{"v":1700,"l":9.0},"Pratdip":{"v":1600,"l":8.5},"Vinyols i els Arcs":{"v":2400,"l":12.0}},
+  "Baix Ebre": {"Tortosa":{"v":1650,"l":9.5},"Deltebre":{"v":1300,"l":7.0},"Roquetes":{"v":1400,"l":7.0},"Sant Carles de la Ràpita":{"v":1900,"l":10.0},"L'Aldea":{"v":1300,"l":7.0},"Benifallet":{"v":1150,"l":5.5},"Paüls":{"v":1100,"l":5.5},"Tivenys":{"v":1150,"l":5.5},"Xerta":{"v":1200,"l":6.5},"El Perelló":{"v":1850,"l":10.0},"Aldover":{"v":1200,"l":6.0},"Alfara de Carles":{"v":1100,"l":5.5},"L'Ametlla de Mar":{"v":2850,"l":13.5}},
+  "Montsià": {"Amposta":{"v":1550,"l":9.0},"Alcanar":{"v":1400,"l":7.0},"Ulldecona":{"v":1150,"l":5.5},"Mas de Barberans":{"v":1050,"l":5.0},"La Sénia":{"v":1100,"l":5.5},"Sant Jaume d'Enveja":{"v":1300,"l":7.0},"Godall":{"v":1050,"l":5.0},"Freginals":{"v":950,"l":5.0},"La Galera":{"v":1050,"l":5.0},"Masdenverge":{"v":1100,"l":5.5}},
+  "Priorat": {"Falset":{"v":1600,"l":9.0},"Cornudella de Montsant":{"v":1450,"l":7.5},"Gratallops":{"v":1700,"l":9.0},"El Masroig":{"v":1300,"l":7.0},"Porrera":{"v":1400,"l":7.0},"Torroja del Priorat":{"v":1300,"l":7.0},"Bellmunt del Priorat":{"v":1250,"l":6.5},"La Vilella Baixa":{"v":1300,"l":7.0},"Poboleda":{"v":1500,"l":7.5},"La Vilella Alta":{"v":1450,"l":7.5},"Pradell de la Teixeta":{"v":1400,"l":7.0},"El Lloar":{"v":1300,"l":7.0},"La Morera de Montsant":{"v":1500,"l":7.5},"Cabacés":{"v":1450,"l":7.5},"Capçanes":{"v":1400,"l":7.0},"Ulldemolins":{"v":1250,"l":6.5}},
+  "Ribera d'Ebre": {"Móra d'Ebre":{"v":1250,"l":6.5},"Ascó":{"v":1100,"l":5.5},"Flix":{"v":1050,"l":5.0},"Móra la Nova":{"v":1200,"l":6.5},"Garcia":{"v":1100,"l":5.5},"La Torre de l'Espanyol":{"v":1050,"l":5.0},"Tivissa":{"v":1100,"l":5.5},"Benissanet":{"v":1050,"l":5.0},"La Palma d'Ebre":{"v":1150,"l":6.0},"Ginestar":{"v":1100,"l":5.5},"Rasquera":{"v":1100,"l":5.5},"Darmós":{"v":1100,"l":5.5},"Miravet":{"v":1150,"l":6.0}},
+  "Terra Alta": {"Gandesa":{"v":1150,"l":6.5},"Bot":{"v":850,"l":5.0},"Batea":{"v":950,"l":5.0},"Corbera d'Ebre":{"v":850,"l":5.0},"El Pinell de Brai":{"v":900,"l":5.0},"La Fatarella":{"v":850,"l":5.0},"Prat de Comte":{"v":800,"l":4.5},"Vilalba dels Arcs":{"v":850,"l":4.5},"Arnes":{"v":900,"l":5.0},"Caseres":{"v":900,"l":5.0},"La Pobla de Massaluca":{"v":850,"l":4.5},"Horta de Sant Joan":{"v":950,"l":5.5}},
+  "Moianès": {"Moià":{"v":2100,"l":11.0},"Calders":{"v":1650,"l":8.5},"Castellcir":{"v":1800,"l":10.0},"El Brull":{"v":1650,"l":8.5},"Monistrol de Calders":{"v":1700,"l":9.5},"L'Estany":{"v":1650,"l":8.5},"Santa Maria d'Oló":{"v":1600,"l":8.0}}
 };
+
 
 const COEF={"Cunit":{c:1.157,r:.975},"El Vendrell":{c:.912,r:.842},"Calafell":{c:.856,r:.983},"Santa Oliva":{c:.783,r:.825},"Bellvei":{c:.783,r:.925},"L'Arboç":{c:.735,r:.883},"Banyeres del Penedès":{c:.614,r:.783},"Albinyana":{c:.766,r:.825},"Bonastre":{c:.497,r:.683},"Masllorenç":{c:.549,r:.75},"La Bisbal del Penedès":{c:.623,r:.808},"Llorenç del Penedès":{c:.856,r:.65},"Sant Jaume dels Domenys":{c:.614,r:.65},"El Montmell":{c:.529,r:.675}};
 const BASE={m2:2000,rent:10,close:.12,rate:.0289}; // close: 10% ITP + ~2% notaria/registro Catalunya
@@ -8551,362 +8592,428 @@ function getCurrentLang(){
 }
 
 function exportPDF(){
-    // Professional offline-safe PDF export (no sharing).
-    const lang = (getCurrentLang() || (typeof LANG==="string"? LANG : "") || (localStorage.getItem("lang")||localStorage.getItem("LANG")||"ES")).toUpperCase();
-    const PDF_I18N = {
-      ES:{
-        title:"Assessoria d'Habitatge · Informe",
-        subtitle:"Baix Penedès",
-        need:"Genera un análisis antes de exportar.",
-        sectionData:"Datos y resultado",
-        sectionSummary:"Resumen",
-        zone:"Zona",
-        type:"Tipo",
-        m2:"m²",
-        rooms:"Habitaciones",
-        baths:"Baños",
-        buy:"Compra estimada",
-        rent:"Alquiler estimado",
-        mortgage:"Cuota hipoteca",
-        rec:"Recomendación",
-        note:"Nota: estimaciones orientativas. No sustituye asesoramiento profesional.",
-        perMonth:"€/mes",
-        eur:"€",
-      },
-      CA:{
-        title:"Assessoria d'Habitatge · Informe",
-        subtitle:"Baix Penedès",
-        need:"Genera una anàlisi abans d'exportar.",
-        sectionData:"Dades i resultat",
-        sectionSummary:"Resum",
-        zone:"Zona",
-        type:"Tipus",
-        m2:"m²",
-        rooms:"Habitacions",
-        baths:"Banys",
-        buy:"Compra estimada",
-        rent:"Lloguer estimat",
-        mortgage:"Quota hipoteca",
-        rec:"Recomanació",
-        note:"Nota: estimacions orientatives. No substitueix assessorament professional.",
-        perMonth:"€/mes",
-        eur:"€",
-      },
-      EN:{
-        title:"Assessoria d'Habitatge · Report",
-        subtitle:"Baix Penedès",
-        need:"Run an analysis before exporting.",
-        sectionData:"Data & result",
-        sectionSummary:"Summary",
-        zone:"Area",
-        type:"Type",
-        m2:"m²",
-        rooms:"Bedrooms",
-        baths:"Bathrooms",
-        buy:"Estimated purchase",
-        rent:"Estimated rent",
-        mortgage:"Mortgage payment",
-        rec:"Recommendation",
-        note:"Note: indicative estimates. Not professional advice.",
-        perMonth:"€/mo",
-        eur:"€",
-      }
-    };
-    const t = (k)=> (PDF_I18N[lang] && PDF_I18N[lang][k]) || (PDF_I18N.ES[k]||k);
-    const safe = (s)=> String(s==null?'':s).replace(/\u00A0/g,' ').replace(/\s+/g,' ').trim();
-    // Heuristic: sometimes the summary becomes "&H&u&g&o ..." (ampersand before
-    // almost every character). If detected (many '&' and no normal entities), strip.
-    const decodeHtml = (s)=>{ 
-      try{ 
-        const doc = new DOMParser().parseFromString(String(s==null?"":s), "text/html"); 
-        return (doc && doc.documentElement && doc.documentElement.textContent) ? doc.documentElement.textContent : String(s==null?"":s);
-      }catch(e){ 
-        return String(s==null?"":s); 
-      }
-    };
-    const decodeEntities = (s)=>{ 
-    const str = String(s ?? "");
-    if(!str.includes("&")) return str;
-    const ta = document.createElement("textarea");
-    ta.innerHTML = str;
-    const once = ta.value;
-    if(once.includes("&")) { ta.innerHTML = once; return ta.value; }
-    return once;
+  const lang = (typeof getCurrentLang==="function"?getCurrentLang():"") || (typeof LANG==="string"?LANG:"") || (localStorage.getItem("lang")||"ES");
+  const L = lang.toUpperCase();
+
+  // Gather all state
+  const nm   = (typeof nameOut!=="undefined"?nameOut:null) || (document.getElementById("inName")||{}).value || "";
+  const ag   = (typeof ageOut!=="undefined"?ageOut:null)  || (document.getElementById("inAge")||{}).value  || "";
+  const inc  = (typeof incOut!=="undefined"?incOut:null)  || (document.getElementById("inIncome")||{}).value || 0;
+  const sav  = (typeof savOut!=="undefined"?savOut:null)  || (document.getElementById("inSavings")||{}).value || 0;
+  const muni = (typeof muniOut!=="undefined"?muniOut:null) || (document.getElementById("selMuni")||{}).value || "";
+  const m2v  = (typeof buyVal!=="undefined"?buyVal:null)  || 0;
+  const rentv= (typeof rentVal!=="undefined"?rentVal:null)|| 0;
+  const mortv= (typeof mortVal!=="undefined"?mortVal:null)|| 0;
+  const recTx= (typeof rec!=="undefined"?rec:null)        || (document.getElementById("recText")||{}).textContent || "";
+  const recCode= (typeof recCode!=="undefined"?recCode:null)||(typeof lastRecCode!=="undefined"?lastRecCode:null)||"";
+  const m2s  = (typeof m2Out!=="undefined"?m2Out:null)    || 0;
+  const rooms= (typeof roomsOut!=="undefined"?roomsOut:null)||0;
+  const baths= (typeof bathsOut!=="undefined"?bathsOut:null)||0;
+  const kind = (typeof kindOut!=="undefined"?kindOut:null) ||(document.getElementById("selType")||{}).value||"";
+  const comarca=(typeof curComarca!=="undefined"?curComarca:null)||"";
+
+  const Ctor = (window.jspdf&&window.jspdf.jsPDF)?window.jspdf.jsPDF:(window.jsPDF||null);
+  if(!Ctor){ try{alert(L==="CA"?"Genera una anàlisi primer.":"Genera un análisis primero.");}catch(e){} return; }
+  if(!m2v && !rentv){ try{alert(L==="CA"?"Genera una anàlisi primer.":"Genera un análisis primero.");}catch(e){} return; }
+
+  const doc = new Ctor({unit:"pt", format:"a4"});
+  const W=595.28, H=841.89, MX=48;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L==="CA"?"ca-ES":L==="EN"?"en-GB":"es-ES",{year:"numeric",month:"long",day:"numeric"});
+
+  const fmtE  = v=>v?new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v):"—";
+  const fmtM  = v=>v?fmtE(v)+"/mes":"—";
+  const sf    = v=>v!=null&&v!=""&&v!==undefined?String(v).replace(/[^\x00-\x7E\u00C0-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim():"—";
+
+  // Colors
+  const C_DARK=[6,14,30], C_BRAND=[56,189,248], C_GREEN=[52,211,153], C_PURPLE=[139,92,246];
+  const C_AMBER=[245,158,11], C_TEXT=[15,23,42], C_MUTED=[100,116,139], C_LIGHT=[241,245,249];
+  const C_CARD=[245,248,252], C_BORDER=[203,213,225];
+
+  // ─── helpers ────────────────────────────────────────────────────────────────
+  const fillRect=(x,y,w,h,r,col)=>{ doc.setFillColor(...col); if(r) doc.roundedRect(x,y,w,h,r,r,"F"); else doc.rect(x,y,w,h,"F"); };
+  const strokeRect=(x,y,w,h,r,col,lw=0.5)=>{ doc.setDrawColor(...col); doc.setLineWidth(lw); if(r) doc.roundedRect(x,y,w,h,r,r,"S"); else doc.rect(x,y,w,h,"S"); };
+  const txt=(t,x,y,sz,col,style="normal",align="left")=>{ doc.setFont("helvetica",style); doc.setFontSize(sz); doc.setTextColor(...col); doc.text(sf(t),x,y,{align}); };
+  const line=(x1,y1,x2,y2,col,lw=0.5)=>{ doc.setDrawColor(...col); doc.setLineWidth(lw); doc.line(x1,y1,x2,y2); };
+
+  const kpiCard=(x,y,w,h,label,value,sub,accentCol)=>{
+    fillRect(x,y,w,h,10,C_CARD);
+    strokeRect(x,y,w,h,10,C_BORDER);
+    doc.setFillColor(...accentCol);
+    doc.roundedRect(x,y,w,3,2,2,"F");
+    txt(sf(label),x+14,y+20,7.5,C_MUTED,"bold");
+    txt(sf(value),x+14,y+38,16,C_TEXT,"bold");
+    if(sub) txt(sf(sub),x+14,y+52,7.5,C_MUTED,"normal");
   };
 
-  const cleanSummary = (text)=>{
-    let t = decodeEntities(text ?? "").trim();
-    // Caso típico de texto corrupto tipo "&H&u&g&o..."
-    if(/^(?:&[A-Za-zÀ-ÿ0-9]){8,}/.test(t)) t = t.replace(/&/g,"");
-    // Por si quedan ampersands sueltos entre letras
-    t = t.replace(/([A-Za-zÀ-ÿ0-9])&(?=[A-Za-zÀ-ÿ0-9])/g, "$1");
-    t = t.replace(/\s+/g," ").trim();
-    return t || "—";
+  const sectionHeader=(title,y,col)=>{
+    doc.setFillColor(...col,0.12);
+    fillRect(MX,y-14,W-MX*2,24,6,col.map(c=>Math.min(255,c+200)));
+    fillRect(MX,y-14,4,24,2,col);
+    txt(sf(title),MX+14,y+3,11,C_TEXT,"bold");
+    return y+20;
   };
 
-  const deAmp = (s)=>{ 
-      let t = decodeHtml(s);
-      t = t.replace(/\u00a0/g, " ");
-      t = t.replace(/\s+/g, " ").trim();
-      return t.replace(/&(?!amp;|lt;|gt;|quot;|#39;|nbsp;)/g, ""); 
-    };
-    const fmtEur = (n)=>{
-      const v = Number(n);
-      if(!isFinite(v)) return "—";
-      try{
-        const nf = new Intl.NumberFormat(lang==="EN"?"en-GB":(lang==="CA"?"ca-ES":"es-ES"), {maximumFractionDigits:0});
-        return nf.format(v) + " " + t("eur");
-      }catch(e){
-        return Math.round(v).toString() + " " + t("eur");
-      }
-    };
-    const fmtEurPerMonth = (n)=>{
-      const v = Number(n);
-      if(!isFinite(v)) return "—";
-      const base = fmtEur(v);
-      return base.replace(/\s*€$/," "+t("perMonth"));
-    };
+  // ══════════════════════════════════════════════════════════════════
+  // PAGE 1 — COVER
+  // ══════════════════════════════════════════════════════════════════
+  // Dark background
+  fillRect(0,0,W,H,0,C_DARK);
 
-    // Pull latest computed result from global "last" snapshot (the app keeps updating it).
-    const X = (typeof last==="object" && last) ? last : null;
-    if(!X){
-      try{ alert(t("need")); }catch(e){}
-      return;
-    }
+  // Top gradient strip
+  doc.setFillColor(56,189,248);
+  doc.rect(0,0,W,5,"F");
+  doc.setFillColor(52,211,153);
+  doc.rect(W/3,0,W/3,5,"F");
+  doc.setFillColor(139,92,246);
+  doc.rect(2*W/3,0,W/3,5,"F");
 
-    // Summary is intentionally excluded from PDF export (user request).
-    // Keep variable for backward compatibility with older fallbacks.
-    let summaryText = "";
+  // Hero area background card
+  doc.setFillColor(12,22,48);
+  doc.roundedRect(MX,60,W-MX*2,520,18,18,"F");
+  doc.setDrawColor(56,189,248,0.25);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(MX,60,W-MX*2,520,18,18,"S");
 
-    // Translate kind if needed
-    const kindMap = {
-      flat:{ES:"Piso",CA:"Pis",EN:"Flat"},
-      piso:{ES:"Piso",CA:"Pis",EN:"Flat"},
-      pis:{ES:"Piso",CA:"Pis",EN:"Flat"},
-      house:{ES:"Casa",CA:"Casa",EN:"House"},
-      casa:{ES:"Casa",CA:"Casa",EN:"House"},
-      any:{ES:"Cualquiera",CA:"Qualsevol",EN:"Any"},
-      cualquiera:{ES:"Cualquiera",CA:"Qualsevol",EN:"Any"},
-      qualsevol:{ES:"Cualquiera",CA:"Qualsevol",EN:"Any"},
-    };
-    const kindRaw = safe(X.kind || X.tipo || X.type || "");
-    const kindKey = kindRaw.toLowerCase();
-    const kind = (kindMap[kindKey] && kindMap[kindKey][lang]) ? kindMap[kindKey][lang] : (kindRaw || "—");
+  // Logo house icon (simple SVG-style lines)
+  const hx=W/2, hy=130, hs=38;
+  doc.setDrawColor(56,189,248); doc.setLineWidth(2.5);
+  doc.lines([[hs,0],[hs,hs*1.1],[-(hs*2),0],[0,-hs*1.1]],hx-hs,hy,undefined,"S");
+  doc.lines([[0,-hs]],hx,hy+hs*1.1,undefined,"S");
+  doc.setDrawColor(52,211,153); doc.setLineWidth(1.5);
+  doc.rect(hx-10,hy+hs*0.4,20,hs*0.7,"S");
 
-    // Recommendation normalize
-    const recMap = {
-      "NO FACTIBLE":{ES:"NO FACTIBLE",CA:"NO VIABLE",EN:"NOT FEASIBLE"},
-      "NO VIABLE":{ES:"NO FACTIBLE",CA:"NO VIABLE",EN:"NOT FEASIBLE"},
-      "NOT FEASIBLE":{ES:"NO FACTIBLE",CA:"NO VIABLE",EN:"NOT FEASIBLE"},
-      "COMPRAR":{ES:"COMPRAR",CA:"COMPRAR",EN:"BUY"},
-      "BUY":{ES:"COMPRAR",CA:"COMPRAR",EN:"BUY"},
-      "ALQUILAR":{ES:"ALQUILAR",CA:"LLOGAR",EN:"RENT"},
-      "RENT":{ES:"ALQUILAR",CA:"LLOGAR",EN:"RENT"},
-    };
-    const recRaw0 = safe(X.rec || X.reco || X.recommendation || "");
-    // fallback: intentar leer la recomendación visible en pantalla
-    const recRaw = (recRaw0 || safe((document.querySelector('#k4')||document.querySelector('[data-k="rec"]')||document.querySelector('.recoPill')||document.querySelector('.reco-pill'))?.textContent || "")).trim();
-    const recKey = recRaw.toUpperCase();
-    const rec = (recMap[recKey] && recMap[recKey][lang]) ? recMap[recKey][lang] : (recRaw || "—");
+  // BADGE — Premium
+  const badgeW=130, badgeH=24, badgeX=(W-badgeW)/2, badgeY=180;
+  doc.setFillColor(245,158,11,0.18);
+  doc.roundedRect(badgeX,badgeY,badgeW,badgeH,12,12,"F");
+  doc.setDrawColor(245,158,11,0.5);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(badgeX,badgeY,badgeW,badgeH,12,12,"S");
+  doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(245,158,11);
+  doc.text("✦ INFORME PREMIUM 2026",W/2,badgeY+15.5,{align:"center"});
 
-    // DOM fallbacks (important when "last" uses different key names or when user exports after reload)
-    const domNum = (id)=>{
-      try{ const el=Q('#'+id); if(!el) return undefined; const v=String(el.value||'').replace(',','.'); const n=+v; return isFinite(n)?n:undefined; }catch{return undefined;}
-    };
-    // Lowercase language helper for internal strings (prevents ReferenceError: langL is not defined)
-    const langL = String(lang || (typeof LANG==="string"?LANG:"ES")).toLowerCase();
+  // Main title
+  doc.setFont("helvetica","bold"); doc.setFontSize(34); doc.setTextColor(248,250,252);
+  doc.text("Informe d'Habitatge",W/2,228,{align:"center"});
+  doc.setFont("helvetica","bold"); doc.setFontSize(34);
+  doc.setTextColor(56,189,248);
+  doc.text("Catalunya 2026",W/2,268,{align:"center"});
 
-    const domMuniLabel = ()=>{
-      const sel=Q('#muni');
-      if(!sel) return '';
-      const opts=[...sel.selectedOptions].map(o=>String(o.text||o.value||'').trim()).filter(Boolean);
-      const cleaned=opts.filter(t=>t!=='*' && t!=='__multi__' && t.toLowerCase()!=='any');
-      if(cleaned.length===0) return (opts[0]||'');
-      if(cleaned.length===1) return cleaned[0];
-      return (langL==='ca'?'Diversos municipis: ':(langL==='en'?'Multiple towns: ':'Varios municipios: ')) + cleaned.join(', ');
-    };
+  // Divider
+  doc.setDrawColor(56,189,248,0.3); doc.setLineWidth(0.5);
+  doc.line(MX+60,290,W-MX-60,290);
 
-    // Normalize keys from different "last" snapshots
-    const zoneVal = safe(X.muni || X.zone || X.zona || X.area || domMuniLabel() || '');
-    const m2Val = (X.m2 ?? X.metros); const m2Out = (m2Val!==undefined && m2Val!==null && m2Val!=='') ? m2Val : domNum('m2');
-    const roomsVal = (X.bd ?? X.rooms ?? X.hab); const roomsOut = (roomsVal!==undefined && roomsVal!==null && roomsVal!=='') ? roomsVal : domNum('bd');
-    const bathsVal = (X.ba ?? X.baths ?? X.banys ?? X.banos); const bathsOut = (bathsVal!==undefined && bathsVal!==null && bathsVal!=='') ? bathsVal : domNum('ba');
-    const buyVal = (X.pb ?? X.buy ?? X.compra ?? X.buyEst);
-    const rentVal = (X.pr ?? X.rent ?? X.lloguer ?? X.rentEst);
-    const mortVal = (X.pay ?? X.hipoteca ?? X.mortgage);
+  // Recipient info card
+  fillRect(MX+30,305,W-MX*2-60,115,12,[16,30,60]);
+  doc.setDrawColor(56,189,248,0.2); doc.setLineWidth(0.5);
+  doc.roundedRect(MX+30,305,W-MX*2-60,115,12,12,"S");
 
-    const dataRows = [
-      [t("zone"), zoneVal || "—"],
-      [t("type"), kind],
-      [t("m2"), safe(m2Out)],
-      [t("rooms"), safe(roomsOut)],
-      [t("baths"), safe(bathsOut)],
-      [t("buy"), fmtEur(buyVal)],
-      [t("rent"), fmtEurPerMonth(rentVal)],
-      [t("mortgage"), fmtEurPerMonth(mortVal)],
-      [t("rec"), rec],
-    ];
+  doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(56,189,248);
+  doc.text("PREPARAT PER A",MX+46,324);
+  doc.setFont("helvetica","bold"); doc.setFontSize(22); doc.setTextColor(248,250,252);
+  doc.text(sf(nm)||"—",MX+46,348);
+  doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(148,163,184);
+  doc.text(sf(ag)?(sf(ag)+" anys"):"—",MX+46,365);
 
-    const fileName = "assessoria_habitatge_informe.pdf";
-
-    // Primary: jsPDF if available
-    try{
-      const jspdf = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf : (window.jspdf && window.jspdf.jsPdf ? window.jspdf : null);
-      const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF ? window.jsPDF : null);
-      const Ctor = jsPDFCtor || (jspdf && jspdf.jsPDF) || null;
-
-      if(Ctor){
-        const doc = new Ctor({unit:"pt", format:"a4"});
-        const pageW = 595.28, pageH = 841.89;
-        const margin = 56;
-        let y = 64;
-
-        // Brand bar
-        doc.setFillColor(10, 225, 140);
-        doc.rect(0, 0, pageW, 10, "F");
-
-        // Header
-        doc.setFont("helvetica","bold");
-        doc.setFontSize(22);
-        doc.setTextColor(20);
-        doc.text(safe(t("title")), margin, y);
-        doc.setFont("helvetica","normal");
-        doc.setFontSize(11);
-        doc.setTextColor(90);
-        const stamp = new Date().toLocaleString(lang==="EN"?"en-GB":(lang==="CA"?"ca-ES":"es-ES"));
-        doc.text(stamp, margin, y+18);
-        doc.setFont("helvetica","bold");
-        doc.setTextColor(30);
-        doc.text(safe(t("subtitle")), pageW - margin, y, {align:"right"});
-
-        y += 44;
-
-        // Card container
-        const cardX = margin, cardW = pageW - margin*2;
-        const cardY = y, cardH = 320;
-        doc.setDrawColor(200);
-        doc.setFillColor(248, 250, 252);
-        doc.roundedRect(cardX, cardY, cardW, cardH, 10, 10, "F");
-        doc.setDrawColor(220);
-        doc.roundedRect(cardX, cardY, cardW, cardH, 10, 10, "S");
-
-        // Section title
-        doc.setFont("helvetica","bold");
-        doc.setFontSize(12);
-        doc.setTextColor(25);
-        doc.text(safe(t("sectionData")), cardX+18, cardY+28);
-
-        // Two columns layout
-        const colL = cardX+18, colR = cardX + cardW/2 + 6;
-        const colW = cardW/2 - 24;
-        let yL = cardY+52, yR = cardY+52;
-
-        const rowsL = dataRows.slice(0,5);
-        const rowsR = dataRows.slice(5);
-
-        const drawRows = (rows, x, y0)=>{
-          let yy = y0;
-          doc.setFontSize(10);
-          rows.forEach(([k,v])=>{
-            doc.setFont("helvetica","bold"); doc.setTextColor(60);
-            doc.text(safe(k)+":", x, yy);
-            doc.setFont("helvetica","normal"); doc.setTextColor(20);
-            doc.text(safe(v), x+140, yy);
-            yy += 18;
-          });
-          return yy;
-        };
-
-        yL = drawRows(rowsL, colL, yL);
-        yR = drawRows(rowsR, colR, yR);
-
-        // Highlight recommendation row visually
-        try{
-          const recY = yR - 18;
-          doc.setFillColor(10, 225, 140);
-          doc.roundedRect(colR-6, recY-12, colW+12, 22, 8, 8, "F");
-          doc.setFont("helvetica","bold");
-          doc.setTextColor(0);
-          doc.text(safe(t("rec"))+":", colR, recY);
-          doc.setTextColor(0);
-          doc.text(safe(rec), colR+140, recY);
-        }catch(e){}
-
-        // Summary removed intentionally (user request)
-
-        // Footer (with clickable links)
-        doc.setFontSize(8.5);
-        const footY = pageH - 32;
-        const noteTxt = safe(t("note"));
-        const webTxt  = "assesoriahabitatge.com";
-        const mailTxt = "info@assesoriahabitatge.com";
-
-        // Note (non-clickable)
-        doc.setTextColor(120);
-        let x = margin;
-        doc.text(noteTxt, x, footY);
-        x += doc.getTextWidth(noteTxt);
-
-        // Separator
-        const sep = "  |  ";
-        doc.text(sep, x, footY);
-        x += doc.getTextWidth(sep);
-
-        // Website link
-        const webUrl = "https://assesoriahabitatge.com";
-        doc.setTextColor(0, 102, 204);
-        doc.text(webTxt, x, footY);
-        try{
-          const w = doc.getTextWidth(webTxt);
-          doc.link(x, footY - 7, w, 10, { url: webUrl });
-        }catch(e){}
-        x += doc.getTextWidth(webTxt);
-
-        // Separator
-        doc.setTextColor(120);
-        doc.text(sep, x, footY);
-        x += doc.getTextWidth(sep);
-
-        // Email link
-        const mailUrl = "mailto:" + mailTxt;
-        doc.setTextColor(0, 102, 204);
-        doc.text(mailTxt, x, footY);
-        try{
-          const w = doc.getTextWidth(mailTxt);
-          doc.link(x, footY - 7, w, 10, { url: mailUrl });
-        }catch(e){}
-
-        doc.save(fileName);
-        return;
-      }
-    }catch(e){
-      // fall through to minimal PDF
-    }
-
-    // Fallback: minimal PDF (text-only)
-    try{
-      const pdfData = {
-        title: safe(t("title")),
-        stamp: safe(new Date().toLocaleString(lang==="EN"?"en-GB":(lang==="CA"?"ca-ES":"es-ES"))),
-        rows: dataRows.map(r=>[safe(r[0]), safe(r[1])]),
-        // summary intentionally omitted
-        footer: safe(t("note")) + " | assesoriahabitatge.com | info@assesoriahabitatge.com",
-      };
-      const pdfBytes = buildMinimalPDF(pdfData);
-      const blob = new Blob([pdfBytes], {type:"application/pdf"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url), 1500);
-      return;
-    }catch(e){
-      try{ alert("No se ha podido exportar el PDF en este navegador."); }catch(e2){}
-    }
+  if(muni||comarca){
+    doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(52,211,153);
+    doc.text("ZONA D'INTERÈS",W-MX-46,324,{align:"right"});
+    doc.setFont("helvetica","bold"); doc.setFontSize(16); doc.setTextColor(248,250,252);
+    doc.text(sf(muni)||sf(comarca)||"—",W-MX-46,348,{align:"right"});
+    if(comarca&&muni) { doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(148,163,184); doc.text(sf(comarca),W-MX-46,365,{align:"right"}); }
   }
+
+  // Date line
+  doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(100,116,139);
+  doc.text(sf(dateStr),MX+46,398);
+  doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(139,92,246);
+  doc.text("DADES ACTUALITZADES MARÇ 2026",W-MX-46,398,{align:"right"});
+
+  // 4 content previews
+  const previews=[
+    {icon:"01",title:"Perfil Financer",desc:"Capacitat d'estalvi i accés",col:C_BRAND},
+    {icon:"02",title:"Mercat Local",desc:"Preus m² i tendències",col:C_GREEN},
+    {icon:"03",title:"Comparativa",desc:"Compra vs. lloguer",col:C_PURPLE},
+    {icon:"04",title:"Pla d'Acció",desc:"Passos personalitzats",col:C_AMBER},
+  ];
+  const pvW=(W-MX*2-36)/4, pvY=450;
+  previews.forEach((p,i)=>{
+    const px=MX+i*(pvW+12);
+    fillRect(px,pvY,pvW,80,10,[16,30,60]);
+    doc.setDrawColor(...p.col); doc.setLineWidth(0.5);
+    doc.roundedRect(px,pvY,pvW,80,10,10,"S");
+    doc.setFillColor(...p.col); doc.roundedRect(px,pvY,pvW,3,2,2,"F");
+    doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...p.col);
+    doc.text(p.icon,px+pvW/2,pvY+28,{align:"center"});
+    doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(240,248,255);
+    doc.text(sf(p.title),px+pvW/2,pvY+44,{align:"center"});
+    doc.setFont("helvetica","normal"); doc.setFontSize(7); doc.setTextColor(148,163,184);
+    doc.text(sf(p.desc),px+pvW/2,pvY+57,{align:"center"});
+  });
+
+  // Bottom brand
+  doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(56,189,248);
+  doc.text("Assessoria d'Habitatge",W/2,620,{align:"center"});
+  doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(100,116,139);
+  doc.text("assesoriahabitatge.com  ·  info@assesoriahabitatge.com",W/2,638,{align:"center"});
+
+  // ══════════════════════════════════════════════════════════════════
+  // PAGE 2 — PERFIL FINANCER
+  // ══════════════════════════════════════════════════════════════════
+  doc.addPage();
+
+  // Header bar
+  fillRect(0,0,W,52,0,C_DARK);
+  doc.setFillColor(...C_BRAND); doc.rect(0,0,W,4,"F");
+  txt("Assessoria d'Habitatge · Informe 2026",MX,32,10,[148,163,184],"bold");
+  txt("Pàg. 2/4",W-MX,32,10,[56,189,248],"bold","right");
+  line(0,52,W,52,C_BORDER);
+
+  let y2=82;
+  txt(sf(nm)?"Perfil Financer de "+sf(nm):"Perfil Financer",MX,y2,18,C_TEXT,"bold"); y2+=8;
+  line(MX,y2,W-MX,y2,C_BRAND,1); y2+=20;
+
+  // 4 KPI cards
+  const incNum=parseFloat(inc)||0, savNum=parseFloat(sav)||0;
+  const maxMort=incNum*0.35;
+  const savCapacity=incNum*0.20;
+  const yearsTo=m2v&&savNum>0?(m2v*0.2-savNum)/Math.max(savCapacity*12,1):null;
+
+  const kpis=[
+    {label:L==="CA"?"Ingressos mensuals":"Ingresos mensuales",value:fmtE(incNum),sub:L==="CA"?"Net/mes":"Neto/mes",col:C_BRAND},
+    {label:L==="CA"?"Estalvis actuals":"Ahorros actuales",value:fmtE(savNum),sub:L==="CA"?"Disponibles":"Disponibles",col:C_GREEN},
+    {label:L==="CA"?"Màx. hipoteca recomanada":"Máx. hipoteca recomendada",value:fmtM(maxMort),sub:"35% ingressos",col:C_PURPLE},
+    {label:L==="CA"?"Capacitat d'estalvi est.":"Capacidad de ahorro est.",value:fmtE(savCapacity)+"/mes",sub:"20% ingressos",col:C_AMBER},
+  ];
+  const kW=(W-MX*2-30)/4;
+  kpis.forEach((k,i)=>{ kpiCard(MX+i*(kW+10),y2,kW,70,k.label,k.value,k.sub,k.col); });
+  y2+=88;
+
+  // Mortgage viability section
+  y2=sectionHeader(L==="CA"?"Viabilitat Hipotecària":"Viabilidad Hipotecaria",y2,C_BRAND); y2+=14;
+
+  const rows2=[
+    [L==="CA"?"Preu estimat compra":"Precio estimado compra", fmtE(m2v)],
+    [L==="CA"?"Entrada necessària (20%)":"Entrada necesaria (20%)", fmtE(m2v*0.2)],
+    [L==="CA"?"Estalvis actuals":"Ahorros actuales", fmtE(savNum)],
+    [L==="CA"?"Diferència fins entrada":"Diferencia hasta entrada", fmtE(Math.max(0,m2v*0.2-savNum))],
+    [L==="CA"?"Anys estalviant (est.)":"Años ahorrando (est.)", yearsTo!=null?(yearsTo<0?"Ja pots comprar!":Math.ceil(yearsTo)+" anys"):"—"],
+    [L==="CA"?"Quota hipoteca estim.":"Cuota hipoteca estim.", fmtM(mortv)],
+    [L==="CA"?"Lloguer de mercat estim.":"Alquiler de mercado estim.", fmtM(rentv)],
+    [L==="CA"?"% hipoteca sobre ingressos":"% hipoteca sobre ingresos", incNum>0?Math.round((mortv/incNum)*100)+"%":"—"],
+  ];
+
+  const colLX=MX, colRX=W/2+10, colW2=(W/2-MX-10);
+  let yL=y2, yR=y2;
+  rows2.forEach(([k,v],i)=>{
+    const isRight=i>=4;
+    const cx=isRight?colRX:colLX, cy=isRight?yR:yL;
+    const isHighlight=(k.includes("pots") || v.includes("pots") || (i===4&&yearsTo!=null&&yearsTo<0));
+    if(i%2===0&&!isRight) fillRect(cx-4,cy-12,colW2+8,20,4,C_LIGHT);
+    if(i%2===0&&isRight) fillRect(cx-4,cy-12,colW2+8,20,4,C_LIGHT);
+    doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(...C_MUTED);
+    doc.text(sf(k),cx,cy);
+    doc.setFont("helvetica","bold"); doc.setFontSize(10);
+    doc.setTextColor(isHighlight?52:C_TEXT[0],isHighlight?211:C_TEXT[1],isHighlight?153:C_TEXT[2]);
+    doc.text(sf(v),cx+colW2,cy,{align:"right"});
+    if(isRight) yR+=22; else yL+=22;
+  });
+  y2=Math.max(yL,yR)+18;
+
+  // Recommendation box
+  if(recTx){
+    const recColor = recCode==="buy"?C_GREEN:recCode==="rent"?C_BRAND:C_AMBER;
+    fillRect(MX,y2,W-MX*2,56,10,recColor.map(c=>Math.min(255,Math.round(c*0.12+240))));
+    doc.setFillColor(...recColor); doc.roundedRect(MX,y2,W-MX*2,4,2,2,"F");
+    strokeRect(MX,y2,W-MX*2,56,10,recColor,0.8);
+    txt(L==="CA"?"Recomanació IA":"Recomendación IA",MX+14,y2+18,8,[...recColor],"bold");
+    const recLines=doc.splitTextToSize(sf(recTx),W-MX*2-28);
+    doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(...C_TEXT);
+    doc.text(recLines.slice(0,2),MX+14,y2+32);
+    y2+=70;
+  }
+
+  // Footer pg2
+  line(0,H-36,W,H-36,C_BORDER);
+  txt("Assessoria d'Habitatge · assesoriahabitatge.com",MX,H-20,7.5,C_MUTED);
+  txt(sf(dateStr),W-MX,H-20,7.5,C_MUTED,"normal","right");
+
+  // ══════════════════════════════════════════════════════════════════
+  // PAGE 3 — MERCAT LOCAL
+  // ══════════════════════════════════════════════════════════════════
+  doc.addPage();
+  fillRect(0,0,W,52,0,C_DARK);
+  doc.setFillColor(...C_GREEN); doc.rect(0,0,W,4,"F");
+  txt("Assessoria d'Habitatge · Informe 2026",MX,32,10,[148,163,184],"bold");
+  txt("Pàg. 3/4",W-MX,32,10,[52,211,153],"bold","right");
+  line(0,52,W,52,C_BORDER);
+
+  let y3=80;
+  txt("Anàlisi del Mercat Local 2026",MX,y3,18,C_TEXT,"bold"); y3+=8;
+  line(MX,y3,W-MX,y3,C_GREEN,1); y3+=24;
+
+  // Market KPIs
+  const buyM2 = m2v&&m2s?Math.round(m2v/m2s):0;
+  const rentM2 = rentv&&m2s?Math.round(rentv*12/m2s):0;
+  const mkpis=[
+    {label:"Preu total estimat",value:fmtE(m2v),sub:kind,col:C_BRAND},
+    {label:"Preu per m²",value:buyM2?fmtE(buyM2)+"/m²":"—",sub:sf(muni)||sf(comarca)||"Catalunya",col:C_GREEN},
+    {label:"Lloguer anual estim.",value:rentM2?fmtE(rentM2*m2s):"—",sub:rentv?fmtM(rentv):"—",col:C_PURPLE},
+    {label:"Superfície estimada",value:m2s?m2s+" m²":"—",sub:rooms?rooms+" hab. · "+baths+" banys":"—",col:C_AMBER},
+  ];
+  const mkW=(W-MX*2-30)/4;
+  mkpis.forEach((k,i)=>{ kpiCard(MX+i*(mkW+10),y3,mkW,70,k.label,k.value,k.sub,k.col); });
+  y3+=90;
+
+  // Compra vs Lloguer comparison
+  y3=sectionHeader("Comparativa: Compra vs. Lloguer a 20 anys",y3,C_GREEN); y3+=14;
+
+  const totBuy = m2v + (m2v*0.12);
+  const totRent = rentv*12*20;
+  const mortTotal = mortv*12*20;
+  const patrimoniBuy = m2v*1.30;
+
+  fillRect(MX,y3,W-MX*2,130,12,C_CARD);
+  strokeRect(MX,y3,W-MX*2,130,12,C_BORDER);
+  const halfW=(W-MX*2)/2-20;
+
+  // Buy column
+  fillRect(MX+10,y3+10,halfW,110,10,[230,247,240]);
+  doc.setFillColor(...C_GREEN); doc.roundedRect(MX+10,y3+10,halfW,110,10,10,"S");
+  txt("🏠 COMPRA",MX+20,y3+30,10,C_GREEN,"bold");
+  txt("Entrada (20%) + despeses (12%)",MX+20,y3+50,8,C_MUTED);
+  txt(fmtE(totBuy),MX+20,y3+65,13,C_TEXT,"bold");
+  txt("Quota mensual hipoteca",MX+20,y3+82,8,C_MUTED);
+  txt(fmtM(mortv),MX+20,y3+96,11,C_TEXT,"bold");
+  txt("Patrimoni estimat a 20 anys: "+fmtE(patrimoniBuy),MX+20,y3+112,7.5,C_GREEN,"bold");
+
+  // Rent column
+  const rx=MX+(W-MX*2)/2+10;
+  fillRect(rx,y3+10,halfW,110,10,[235,242,255]);
+  doc.setFillColor(...C_BRAND); doc.roundedRect(rx,y3+10,halfW,110,10,10,"S");
+  txt("🔑 LLOGUER",rx+10,y3+30,10,C_BRAND,"bold");
+  txt("Cost total 20 anys",rx+10,y3+50,8,C_MUTED);
+  txt(fmtE(totRent),rx+10,y3+65,13,C_TEXT,"bold");
+  txt("Mensualitat actual",rx+10,y3+82,8,C_MUTED);
+  txt(fmtM(rentv),rx+10,y3+96,11,C_TEXT,"bold");
+  txt("Patrimoni estimat a 20 anys: —",rx+10,y3+112,7.5,C_MUTED,"bold");
+  y3+=148;
+
+  // Simple bar chart — Preu m² context
+  y3=sectionHeader("Context de Preus per Comarca 2026",y3,C_PURPLE); y3+=16;
+
+  const barData=[
+    {label:"Barcelona",val:6750,col:C_BRAND},
+    {label:"Sitges/Garraf",val:7700,col:C_PURPLE},
+    {label:"Girona",val:4250,col:C_GREEN},
+    {label:"Tarragona",val:3400,col:C_AMBER},
+    {label:sf(muni)||"El teu municipi",val:buyM2||2800,col:[239,68,68]},
+    {label:"Lleida",val:2200,col:[148,163,184]},
+  ].sort((a,b)=>b.val-a.val);
+
+  const maxVal=Math.max(...barData.map(d=>d.val));
+  const barH=14, barGap=6, barMaxW=W-MX*2-120;
+  barData.forEach((d,i)=>{
+    const by=y3+i*(barH+barGap);
+    const bw=Math.round((d.val/maxVal)*barMaxW);
+    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(...C_MUTED);
+    doc.text(sf(d.label),MX+114,by+10,{align:"right"});
+    fillRect(MX+120,by,bw,barH,4,d.col);
+    doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(...C_TEXT);
+    doc.text(fmtE(d.val)+"/m²",MX+122+bw,by+10);
+  });
+  y3+=barData.length*(barH+barGap)+10;
+
+  line(0,H-36,W,H-36,C_BORDER);
+  txt("Assessoria d'Habitatge · assesoriahabitatge.com",MX,H-20,7.5,C_MUTED);
+  txt(sf(dateStr),W-MX,H-20,7.5,C_MUTED,"normal","right");
+
+  // ══════════════════════════════════════════════════════════════════
+  // PAGE 4 — PLA D'ACCIÓ
+  // ══════════════════════════════════════════════════════════════════
+  doc.addPage();
+  fillRect(0,0,W,52,0,C_DARK);
+  doc.setFillColor(...C_PURPLE); doc.rect(0,0,W,4,"F");
+  txt("Assessoria d'Habitatge · Informe 2026",MX,32,10,[148,163,184],"bold");
+  txt("Pàg. 4/4",W-MX,32,10,[139,92,246],"bold","right");
+  line(0,52,W,52,C_BORDER);
+
+  let y4=80;
+  txt("Pla d'Acció Personalitzat",MX,y4,18,C_TEXT,"bold"); y4+=8;
+  line(MX,y4,W-MX,y4,C_PURPLE,1); y4+=26;
+
+  // Recommendation hero
+  const recBig = recCode==="buy"?"✓ RECOMANACIÓ: COMPRA":recCode==="rent"?"✓ RECOMANACIÓ: LLOGUER":"⟳ RECOMANACIÓ: ESPERA";
+  const rcol = recCode==="buy"?C_GREEN:recCode==="rent"?C_BRAND:C_AMBER;
+  fillRect(MX,y4,W-MX*2,60,12,rcol.map(c=>Math.min(255,Math.round(c*0.15+228))));
+  doc.setFillColor(...rcol); doc.roundedRect(MX,y4,W-MX*2,6,3,3,"F");
+  strokeRect(MX,y4,W-MX*2,60,12,rcol,1);
+  txt(recBig,W/2,y4+30,15,rcol,"bold","center");
+  const shortRec=sf(recTx).substring(0,110)+(sf(recTx).length>110?"…":"");
+  txt(shortRec,W/2,y4+48,8.5,C_TEXT,"normal","center");
+  y4+=76;
+
+  // 5-step action plan
+  y4=sectionHeader("Passos a Seguir",y4,C_PURPLE); y4+=14;
+
+  const isBuy=recCode==="buy"||(!recCode&&m2v>0);
+  const steps=isBuy?[
+    {num:"1",title:"Revisa la teva puntuació creditícia",desc:"Sol·licita l'informe CIRBE al Banc d'Espanya i assegura't de tenir un perfil net.",col:C_BRAND},
+    {num:"2",title:"Acumula el 20% d'entrada + 12% despeses",desc:"Necessites aprox. "+fmtE(m2v*0.32)+" en total. Objectiu d'estalvi mensual: "+fmtE(savCapacity)+".",col:C_GREEN},
+    {num:"3",title:"Compara hipoteques (mínim 3 bancs)",desc:"Busca euríbor +0.8% o menys. La quota no ha de superar el 35% dels teus ingressos.",col:C_PURPLE},
+    {num:"4",title:"Visita 5-10 immobles a "+sf(muni||comarca),desc:"Usa els filtres d'Idealista i Habitaclia. Negocia entre un 5-10% a la baixa del preu publicat.",col:C_AMBER},
+    {num:"5",title:"Contracta assessor/notari independent",desc:"El cost és aprox. 500-1.500 €. Revisa càrregues, IBI, deutes de comunitat i certificat energètic.",col:[239,68,68]},
+  ]:[
+    {num:"1",title:"Defineix el teu pressupost màxim de lloguer",desc:"El lloguer no hauria de superar el 30% dels teus ingressos nets. Màxim recomanat: "+fmtE(incNum*0.30)+"/mes.",col:C_BRAND},
+    {num:"2",title:"Compara pisos a "+sf(muni||comarca)+" i voltants",desc:"Busca a Idealista, Fotocasa i Habitaclia. Considera municipis veïns amb millor preu.",col:C_GREEN},
+    {num:"3",title:"Continua estalviant per a la futura compra",desc:"Objectiu mensual d'estalvi: "+fmtE(savCapacity)+". D'aquí "+(yearsTo!=null?Math.max(0,Math.ceil(yearsTo))+" anys":"uns anys")+" podràs plantejar-te la compra.",col:C_PURPLE},
+    {num:"4",title:"Negocia el preu del lloguer",desc:"El mercat actual permet negociar fins a un 8-12%. Demana sempre contracte de 5 anys (llei vigent).",col:C_AMBER},
+    {num:"5",title:"Consulta ajuts i subvencions",desc:"Revisa el portal habitatge.gencat.cat per a ajuts al lloguer per a joves i bonificacions IRPF.",col:[139,92,246]},
+  ];
+
+  steps.forEach((s,i)=>{
+    const sy=y4+i*52;
+    fillRect(MX,sy,W-MX*2,44,8,C_CARD);
+    strokeRect(MX,sy,W-MX*2,44,8,C_BORDER);
+    // Step number circle
+    doc.setFillColor(...s.col); doc.circle(MX+20,sy+22,11,"F");
+    doc.setFont("helvetica","bold"); doc.setFontSize(11); doc.setTextColor(255,255,255);
+    doc.text(s.num,MX+20,sy+26,{align:"center"});
+    // Text
+    txt(s.title,MX+38,sy+18,9.5,C_TEXT,"bold");
+    const descLines=doc.splitTextToSize(sf(s.desc),W-MX*2-52);
+    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(...C_MUTED);
+    doc.text(descLines[0]||"",MX+38,sy+32);
+  });
+  y4+=steps.length*52+14;
+
+  // Legal disclaimer
+  fillRect(MX,y4,W-MX*2,48,8,[255,251,235]);
+  strokeRect(MX,y4,W-MX*2,48,8,[245,158,11,0.4]);
+  doc.setFillColor(245,158,11); doc.roundedRect(MX,y4,W-MX*2,3,2,2,"F");
+  txt("⚠ Avís Legal",MX+14,y4+16,8.5,[180,120,0],"bold");
+  const disc=L==="CA"?"Aquest informe té caràcter orientatiu i no substitueix assessorament professional. Les estimacions es basen en dades de mercat de Catalunya (Q1 2026).":"Este informe tiene carácter orientativo y no sustituye asesoramiento profesional. Las estimaciones se basan en datos de mercado de Catalunya (Q1 2026).";
+  const dLines=doc.splitTextToSize(sf(disc),W-MX*2-28);
+  doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(120,80,0);
+  doc.text(dLines,MX+14,y4+30);
+
+  // Final footer
+  line(0,H-52,W,H-52,C_BORDER);
+  fillRect(0,H-51,W,51,0,C_DARK);
+  doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(56,189,248);
+  doc.text("Assessoria d'Habitatge",MX,H-28);
+  doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(100,116,139);
+  doc.text("assesoriahabitatge.com  ·  info@assesoriahabitatge.com",MX,H-14);
+  doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(139,92,246);
+  doc.text("✦ Informe Premium · "+sf(dateStr),W-MX,H-14,{align:"right"});
+  doc.setFillColor(...C_BRAND); doc.rect(0,H-4,W/3,4,"F");
+  doc.setFillColor(...C_GREEN); doc.rect(W/3,H-4,W/3,4,"F");
+  doc.setFillColor(...C_PURPLE); doc.rect(2*W/3,H-4,W/3,4,"F");
+
+  doc.save("Informe_Habitatge_Premium_2026.pdf");
+}
+
 
 try{ window.exportPDF = exportPDF; }catch(e){}
 

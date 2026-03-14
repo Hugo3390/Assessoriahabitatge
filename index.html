@@ -1491,6 +1491,45 @@ header.c.hrow::before { display: none; }
 @media(prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
 }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0;
+  color: rgba(255,255,255,.45);
+  font-weight: 700;
+  font-size: .9rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.12);
+}
+.auth-google {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 18px;
+  background: #ffffff;
+  color: #1f2937;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.auth-google:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+.auth-google:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 </style>
 
 
@@ -2643,10 +2682,14 @@ body.auth-locked > *:not(#authGate){display:none!important;}
           </div>
           <div id="registerMsg" class="auth-msg"></div>
           <button class="auth-submit" id="registerSubmit" type="submit">Crear compte i entrar</button>
+          <div class="auth-divider"><span>o</span></div>
+          <button class="auth-google" id="googleRegisterBtn" type="button">Continuar amb Google</button>
         </form>
       </div>
 
-      
+      <div class="auth-note">
+        Si obres aquest fitxer com <b>file://</b>, alguns navegadors poden bloquejar Firebase Auth. El comportament correcte és publicar-lo a GitHub Pages, Hostinger o provar-lo en un servidor local.
+      </div>
       <div id="authLoading" class="auth-loading"><span class="dot"></span><span>Comprovant sessió...</span></div>
     </section>
   </div>
@@ -10447,7 +10490,7 @@ const normalizeError = (err) => {
     'auth/too-many-requests': 'Massa intents. Torna-ho a provar més tard.',
     'auth/network-request-failed': 'Error de connexió. Revisa internet.'
   };
-  
+  if (location.protocol === 'file:') return `Aquest fitxer s'està executant com a file://. Publica'l a GitHub Pages, Hostinger o prova'l en localhost perquè Firebase Auth funcioni bé.`;
   return map[code] || ('Error: ' + (err?.message || `No s'ha pogut completar l'acció.`));
 };
 
@@ -10595,6 +10638,29 @@ $('googleLoginBtn')?.addEventListener('click', async () => {
     if (btn) btn.disabled = false;
   }
 });
+
+$('googleRegisterBtn')?.addEventListener('click', async () => {
+  showMsg(registerMsg, '');
+  const btn = $('googleRegisterBtn');
+  if (btn) btn.disabled = true;
+  authLoading.style.display = 'flex';
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    await setDoc(doc(db, 'users', result.user.uid), {
+      uid: result.user.uid,
+      email: result.user.email || '',
+      createdAt: serverTimestamp(),
+      lastLoginAt: serverTimestamp()
+    }, { merge: true });
+    showMsg(registerMsg, "Compte creat o iniciat amb Google correctament.", true);
+  } catch (err) {
+    showMsg(registerMsg, normalizeError(err));
+    authLoading.style.display = 'none';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+});
+
 
 $('forgotPasswordBtn')?.addEventListener('click', async () => {
   const email = $('loginEmail').value.trim();

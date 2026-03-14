@@ -2597,7 +2597,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 
       <div id="loginView">
         <h2 class="auth-h1">Benvingut de nou</h2>
-        <p class="auth-sub">Entra amb el teu correu i contrasenya per accedir a l'eina.</p>
+        <p class="auth-sub">Entra amb el teu correu o amb Google per accedir a l'eina.</p>
         <form id="loginForm" class="auth-form">
           <div class="auth-field">
             <label for="loginEmail">Correu electrònic</label>
@@ -2612,12 +2612,20 @@ body.auth-locked > *:not(#authGate){display:none!important;}
           </div>
           <div id="loginMsg" class="auth-msg"></div>
           <button class="auth-submit" id="loginSubmit" type="submit">Entrar a la plataforma</button>
+          <div style="display:flex;align-items:center;gap:10px;margin:14px 0 10px;color:rgba(234,241,255,.45);font-size:.82rem;font-weight:700">
+            <span style="flex:1;height:1px;background:rgba(255,255,255,.10)"></span>
+            <span>o</span>
+            <span style="flex:1;height:1px;background:rgba(255,255,255,.10)"></span>
+          </div>
+          <button class="auth-submit" id="googleLoginBtn" type="button" style="background:#fff;color:#0f172a;border:1px solid rgba(15,23,42,.08);box-shadow:0 6px 18px rgba(255,255,255,.08)">
+            Continuar con Google
+          </button>
         </form>
       </div>
 
       <div id="registerView" style="display:none">
         <h2 class="auth-h1">Crea el teu compte</h2>
-        <p class="auth-sub">Registra't per guardar resultats, correu i historial de simulacions.</p>
+        <p class="auth-sub">Registra't amb el teu correu. El nom i l'edat es demanen dins de l'eina.</p>
         <form id="registerForm" class="auth-form">
           <div class="auth-field">
             <label for="registerEmail">Correu electrònic</label>
@@ -2638,9 +2646,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
         </form>
       </div>
 
-      <div class="auth-note">
-        Si obres aquest fitxer com <b>file://</b>, alguns navegadors poden bloquejar Firebase Auth. El comportament correcte és publicar-lo a GitHub Pages, Hostinger o provar-lo en un servidor local.
-      </div>
+      
       <div id="authLoading" class="auth-loading"><span class="dot"></span><span>Comprovant sessió...</span></div>
     </section>
   </div>
@@ -4917,7 +4923,7 @@ const hideValidationAlert=()=>{
 /* =====================
    ANALIZAR
    ===================== */
-const analyze=async()=>{
+const analyze=()=>{
   const missing = findMissingRequired();
   if(missing.length){
     showValidationAlert(buildMissingMessage(missing), missing);
@@ -5058,7 +5064,6 @@ const analyze=async()=>{
   setAnalyzeLoading(false);
   // Save a snapshot of this analysis for personal and staff history
   saveAnalysisSnapshot(last);
-  await saveAnalysisToFirestore(last);
   renderAnalysisHistory();
   renderStaffPanel();
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
@@ -5126,6 +5131,7 @@ const _origUpdateKPI = () => {
 const _analyzeOrig = window.analyze;
 window.analyze = async function() {
   await _analyzeOrig.apply(this, arguments);
+  await saveAnalysisToFirestore(window.last);
   setTimeout(_origUpdateKPI, 80);
 };
 
@@ -10395,7 +10401,7 @@ function updateInstallBanner() {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -10411,6 +10417,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 window.auth = auth;
 window.db = db;
 
@@ -10439,7 +10447,7 @@ const normalizeError = (err) => {
     'auth/too-many-requests': 'Massa intents. Torna-ho a provar més tard.',
     'auth/network-request-failed': 'Error de connexió. Revisa internet.'
   };
-  if (location.protocol === 'file:') return `Aquest fitxer s'està executant com a file://. Publica'l a GitHub Pages, Hostinger o prova'l en localhost perquè Firebase Auth funcioni bé.`;
+  
   return map[code] || ('Error: ' + (err?.message || `No s'ha pogut completar l'acció.`));
 };
 
@@ -10470,6 +10478,42 @@ const lockApp = () => {
   gate.classList.add('show');
   authLoading.style.display = 'flex';
 };
+
+const saveAnalysisToFirestore = async (data) => {
+  try {
+    const user = auth.currentUser;
+    if (!user || !data) return;
+
+    const nombre = (data.nm || '').trim();
+    const edad = Number(data.ag || 0);
+    const resultado = (data.rec || '').trim();
+    const resultadoCodigo = (data.recCode || '').trim();
+
+    if (!nombre || !edad || !resultadoCodigo) return;
+
+    await addDoc(collection(db, 'simulations'), {
+      uid: user.uid,
+      email: user.email || '',
+      nombre,
+      edad,
+      resultado,
+      resultadoCodigo,
+      municipio: data.muni || '',
+      createdAt: serverTimestamp()
+    });
+
+    await setDoc(doc(db, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email || '',
+      nombre,
+      edad,
+      lastAnalysisAt: serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.error('Error guardando análisis en Firestore:', err);
+  }
+};
+
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -10531,40 +10575,26 @@ $('registerForm')?.addEventListener('submit', async (e) => {
   }
 });
 
-const saveAnalysisToFirestore = async (data) => {
+$('googleLoginBtn')?.addEventListener('click', async () => {
+  showMsg(loginMsg, '');
+  const btn = $('googleLoginBtn');
+  if (btn) btn.disabled = true;
+  authLoading.style.display = 'flex';
   try {
-    const user = auth.currentUser;
-    if (!user || !data) return;
-
-    const nombre = String(data.nm || '').trim();
-    const edad = Number(data.ag || 0);
-    const resultado = String(data.rec || '');
-    const resultadoCodigo = String(data.recCode || '');
-
-    if (!nombre || !edad || !resultadoCodigo) return;
-
-    await addDoc(collection(db, 'simulations'), {
-      uid: user.uid,
-      email: user.email || '',
-      nombre,
-      edad,
-      resultado,
-      resultadoCodigo,
-      municipio: data.muni || '',
-      createdAt: serverTimestamp()
-    });
-
-    await setDoc(doc(db, 'users', user.uid), {
-      uid: user.uid,
-      email: user.email || '',
-      nombre,
-      edad,
-      lastAnalysisAt: serverTimestamp()
+    const result = await signInWithPopup(auth, googleProvider);
+    await setDoc(doc(db, 'users', result.user.uid), {
+      uid: result.user.uid,
+      email: result.user.email || '',
+      lastLoginAt: serverTimestamp()
     }, { merge: true });
+    showMsg(loginMsg, "Sessió iniciada amb Google.", true);
   } catch (err) {
-    console.error('Error guardando análisis en Firestore:', err);
+    showMsg(loginMsg, normalizeError(err));
+    authLoading.style.display = 'none';
+  } finally {
+    if (btn) btn.disabled = false;
   }
-};
+});
 
 $('forgotPasswordBtn')?.addEventListener('click', async () => {
   const email = $('loginEmail').value.trim();

@@ -2617,7 +2617,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 
       <div id="registerView" style="display:none">
         <h2 class="auth-h1">Crea el teu compte</h2>
-        <p class="auth-sub">Registra't per accedir i guardar els teus resultats.</p>
+        <p class="auth-sub">Registra't per guardar resultats, correu i historial de simulacions.</p>
         <form id="registerForm" class="auth-form">
           <div class="auth-field">
             <label for="registerEmail">Correu electrònic</label>
@@ -4917,7 +4917,7 @@ const hideValidationAlert=()=>{
 /* =====================
    ANALIZAR
    ===================== */
-const analyze=()=>{
+const analyze=async()=>{
   const missing = findMissingRequired();
   if(missing.length){
     showValidationAlert(buildMissingMessage(missing), missing);
@@ -5058,7 +5058,7 @@ const analyze=()=>{
   setAnalyzeLoading(false);
   // Save a snapshot of this analysis for personal and staff history
   saveAnalysisSnapshot(last);
-  saveAnalysisToFirestore(last);
+  await saveAnalysisToFirestore(last);
   renderAnalysisHistory();
   renderStaffPanel();
   setTimeout(()=>{drawEffortChart();drawSensChart();},120);
@@ -10471,41 +10471,6 @@ const lockApp = () => {
   authLoading.style.display = 'flex';
 };
 
-const saveAnalysisToFirestore = async (data) => {
-  try {
-    const user = auth.currentUser;
-    if (!user || !data) return;
-
-    const nombre = String(data.nm || '').trim();
-    const edad = Number(data.ag || 0);
-    const resultado = String(data.rec || '').trim();
-    const resultadoCodigo = String(data.recCode || '').trim();
-
-    if (!nombre || !edad || !resultadoCodigo) return;
-
-    await addDoc(collection(db, 'simulations'), {
-      uid: user.uid,
-      email: user.email || '',
-      nombre,
-      edad,
-      resultado,
-      resultadoCodigo,
-      municipio: data.muni || '',
-      createdAt: serverTimestamp()
-    });
-
-    await setDoc(doc(db, 'users', user.uid), {
-      uid: user.uid,
-      email: user.email || '',
-      nombre,
-      edad,
-      lastAnalysisAt: serverTimestamp()
-    }, { merge: true });
-  } catch (err) {
-    console.error('Error guardando análisis en Firestore:', err);
-  }
-};
-
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     try {
@@ -10565,6 +10530,41 @@ $('registerForm')?.addEventListener('submit', async (e) => {
     registerSubmit.disabled = false;
   }
 });
+
+const saveAnalysisToFirestore = async (data) => {
+  try {
+    const user = auth.currentUser;
+    if (!user || !data) return;
+
+    const nombre = String(data.nm || '').trim();
+    const edad = Number(data.ag || 0);
+    const resultado = String(data.rec || '');
+    const resultadoCodigo = String(data.recCode || '');
+
+    if (!nombre || !edad || !resultadoCodigo) return;
+
+    await addDoc(collection(db, 'simulations'), {
+      uid: user.uid,
+      email: user.email || '',
+      nombre,
+      edad,
+      resultado,
+      resultadoCodigo,
+      municipio: data.muni || '',
+      createdAt: serverTimestamp()
+    });
+
+    await setDoc(doc(db, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email || '',
+      nombre,
+      edad,
+      lastAnalysisAt: serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.error('Error guardando análisis en Firestore:', err);
+  }
+};
 
 $('forgotPasswordBtn')?.addEventListener('click', async () => {
   const email = $('loginEmail').value.trim();

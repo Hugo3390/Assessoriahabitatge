@@ -8609,418 +8609,520 @@ function getCurrentLang(){
 }
 
 function exportPDF(){
-  // Use the global `last` object populated after analysis
-  const _d = (typeof last !== "undefined" && last) ? last : null;
-  const Ctor = (window.jspdf&&window.jspdf.jsPDF)?window.jspdf.jsPDF:(window.jsPDF||null);
+  const _d = (typeof last!=="undefined"&&last)?last:null;
+  const Ctor=(window.jspdf&&window.jspdf.jsPDF)?window.jspdf.jsPDF:(window.jsPDF||null);
+  const _lang=((typeof getCurrentLang==="function"?getCurrentLang():null)||(typeof LANG==="string"?LANG:null)||(localStorage.getItem("lang")||"ES")).toUpperCase();
 
-  const _lang = (typeof getCurrentLang==="function"?getCurrentLang():null)
-              ||(typeof LANG==="string"?LANG:null)
-              ||(localStorage.getItem("lang")||"ES");
-  const L = _lang.toUpperCase();
+  if(!Ctor){try{alert(_lang==="CA"?"No s'ha pogut carregar la llibreria PDF. Recarrega la pàgina.":"No se pudo cargar la librería PDF. Recarga la página.");}catch(e){}return;}
+  if(!_d||(!_d.pb&&!_d.pr)){try{alert(_lang==="CA"?"Genera una anàlisi primer i després exporta.":"Genera un análisis primero y luego exporta.");}catch(e){}return;}
 
-  if(!Ctor){
-    try{alert(L==="CA"?"No s'ha pogut carregar la llibreria PDF. Recarrega la pàgina.":"No se pudo cargar la librería PDF. Recarga la página.");}catch(e){}
-    return;
-  }
-  if(!_d || (!_d.pb && !_d.pr)){
-    try{alert(L==="CA"?"Genera una anàlisi primer i després exporta.":"Genera un análisis primero y luego exporta.");}catch(e){}
-    return;
-  }
-
-  // ── Extract data from last ──────────────────────────────────────────────────
-  const _nm    = _d.nm   || "";
-  const _ag    = _d.ag   || "";
-  const _inc   = parseFloat(_d.inc)  || 0;
-  const _sav   = parseFloat(_d.sav)  || 0;
-  const _muni  = _d.muni || "";
-  const _comarca = (typeof curComarca!=="undefined"?curComarca:null)||"";
-  const _m2v   = parseFloat(_d.pb)   || 0;   // buy price
-  const _rentv = parseFloat(_d.pr)   || 0;   // monthly rent
-  const _mortv = parseFloat(_d.pay)  || 0;   // mortgage payment
-  const _recTx = _d.rec  || "";
-  const _rcCode= _d.recCode || "";
-  const _m2s   = parseFloat(_d.m2)   || 0;   // surface m2
-  const _rooms = _d.bd   || 0;
-  const _baths = _d.ba   || 0;
-  const _kind  = _d.type || "";
-
-  // ── Helpers ─────────────────────────────────────────────────────────────────
-  const now = new Date();
-  const _dateStr = now.toLocaleDateString(
-    L==="CA"?"ca-ES":L==="EN"?"en-GB":"es-ES",
-    {year:"numeric",month:"long",day:"numeric"}
-  );
-  const fmtE = v => v ? new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v) : "—";
-  const fmtM = v => v ? fmtE(v)+"/mes" : "—";
-  const sf   = v => {
-    if(v==null||v===undefined||v==="") return "—";
-    return String(v).replace(/[^\x00-\x7E\u00C0-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim()||"—";
+  // ── i18n ─────────────────────────────────────────────────────────
+  const i18={
+    CA:{
+      premiumBadge:"INFORME PREMIUM 2026",preparedFor:"PREPARAT PER A",zone:"ZONA D'INTERÈS",
+      yearsOld:"anys",dataQ1:"DADES ACTUALITZADES Q1 2026",
+      execSummary:"Resum de la teva situació",
+      buyPrice:"Preu compra estimat",mortMonth:"Quota hipoteca/mes",
+      rentMonth:"Lloguer estimat/mes",rec:"Recomanació",
+      p2title:"El teu Perfil Financer",
+      monthlyInc:"Ingressos mensuals nets",currentSav:"Estalvis actuals",
+      maxMort:"Màxim hipoteca recomanat",savMonth:"Capacitat d'estalvi/mes",
+      mortViab:"Com de viable és comprar ara?",
+      totalBuy:"Preu total de l'habitatge",entry20:"Entrada necessària (20%)",
+      costs12:"Despeses compra (~12%)",totalNeeded:"Total que necessites tenir",
+      currentSavRow:"Tens ara mateix",gap:"Et falten encara",
+      yearsRow:"Anys estalviant fins arribar-hi",mortRow:"Quota hipoteca estimada",
+      rentRow:"Lloguer de mercat estimat",ratioRow:"Hipoteca sobre els teus ingressos",
+      aiRec:"La nostra recomanació",
+      p3title:"El mercat on vols viure",
+      buyTotal:"Preu habitatge estimat",priceM2:"Preu m² de la zona",
+      surface:"Superfície estimada",yearRent:"Lloguer anual estimat",
+      buyVsRent:"Comprar o llogar? Aquí la diferència real",
+      buy:"COMPRAR",rent:"LLOGAR",
+      totalCost20:"Cost total en 20 anys",monthPay:"Pagament mensual",
+      heritage20:"Patrimoni estimat als 20 anys",
+      noHeritage:"Sense patrimoni acumulat",
+      contextTitle:"Com estan els preus on vols viure",
+      contextSub:"Preus de compra per m² a municipis similars (Q1 2026)",
+      yourMuni:"La teva zona",
+      comarcaAvg:"Mitja comarca",catAvg:"Mitja Catalunya",
+      p4title:"Pla d'acció personalitzat",
+      recHero:"La nostra recomanació per a tu",
+      stepsTitle:"Passos concrets a seguir",
+      disclaimer:"Avís: Aquest informe té caràcter orientatiu i no substitueix l'assessorament professional. Estimacions basades en dades de mercat de Catalunya Q1 2026.",
+      brand:"Assessoria d'Habitatge · assesoriahabitatge.com",
+      page:"Pàg.",of:"de",
+      isFeasible:"SÍ, POTS COMPRAR",isRent:"MILLOR LLOGAR ARA",notFeasible:"NO ÉS FACTIBLE ARA",
+      buyStep1t:"Comprova la teva salut financera",buyStep1d:"Demana el teu informe CIRBE al Banc d'Espanya (gratuït). Un perfil net pot estalviar-te fins a 0,5% en la hipoteca.",
+      buyStep2t:"Acumula l'entrada i les despeses",buyStep2d:"Necessites aproximadament el 32% del preu total. Amb el teu ritme d'estalvi actual, hi arribaràs en",
+      buyStep3t:"Compara hipoteques en almenys 3 bancs",buyStep3d:"Busca Euribor +0,6% o menys. La quota no hauria de superar el 30% dels teus ingressos nets.",
+      buyStep4t:"Visita habitatges a la teva zona",buyStep4d:"Parla amb agents locals. Pots negociar entre un 5-10% a la baixa. Comprova sempre l'IBI, deutes de comunitat i certificat energètic.",
+      buyStep5t:"Fes-ho amb un professional al teu costat",buyStep5d:"Un assessor o notari independent (500-1.500 €) pot detectar problemes que et costarien molt més després.",
+      rentStep1t:"Fixa el que et pots permetre",rentStep1d:"El lloguer no hauria de superar el 30% dels teus ingressos nets mensuals. El teu màxim recomanat és",
+      rentStep2t:"Busca a la teva zona i als voltants",rentStep2d:"Compara a Idealista, Fotocasa i Habitaclia. Municipis veïns sovint tenen preus un 15-20% més baixos.",
+      rentStep3t:"Segueix estalviant per al futur",rentStep3d:"Mantén l'hàbit d'estalvi mensual. En uns anys podràs plantejar-te la compra amb una base sòlida.",
+      rentStep4t:"Negocia el contracte",rentStep4d:"La llei actual (2023) et permet contractes de 5 anys. Exigeix inventari signat i comprova que no hi ha desperfectes.",
+      rentStep5t:"Aprofita els ajuts disponibles",rentStep5d:"Consulta habitatge.gencat.cat: ajuts al lloguer per a joves, bonificació IRPF fins al 60% i deduccions autonòmiques.",
+    },
+    EN:{
+      premiumBadge:"PREMIUM REPORT 2026",preparedFor:"PREPARED FOR",zone:"AREA OF INTEREST",
+      yearsOld:"years old",dataQ1:"DATA UPDATED Q1 2026",
+      execSummary:"Your situation at a glance",
+      buyPrice:"Estimated purchase price",mortMonth:"Monthly mortgage payment",
+      rentMonth:"Estimated monthly rent",rec:"Recommendation",
+      p2title:"Your Financial Profile",
+      monthlyInc:"Net monthly income",currentSav:"Current savings",
+      maxMort:"Recommended max mortgage",savMonth:"Monthly saving capacity",
+      mortViab:"How viable is buying right now?",
+      totalBuy:"Total property price",entry20:"Down payment needed (20%)",
+      costs12:"Purchase costs (~12%)",totalNeeded:"Total you need to have",
+      currentSavRow:"You currently have",gap:"Still needed",
+      yearsRow:"Years of saving to get there",mortRow:"Estimated mortgage payment",
+      rentRow:"Estimated market rent",ratioRow:"Mortgage as % of income",
+      aiRec:"Our recommendation",
+      p3title:"The market where you want to live",
+      buyTotal:"Estimated property price",priceM2:"Price per m² in the area",
+      surface:"Estimated surface",yearRent:"Estimated annual rent",
+      buyVsRent:"Buy or rent? The real difference",
+      buy:"BUY",rent:"RENT",
+      totalCost20:"Total cost over 20 years",monthPay:"Monthly payment",
+      heritage20:"Estimated net worth after 20 years",
+      noHeritage:"No assets accumulated",
+      contextTitle:"How prices look where you want to live",
+      contextSub:"Purchase price per m² at similar locations (Q1 2026)",
+      yourMuni:"Your area",comarcaAvg:"County average",catAvg:"Catalonia average",
+      p4title:"Your personalised action plan",
+      recHero:"Our recommendation for you",
+      stepsTitle:"Concrete steps to take",
+      disclaimer:"Notice: This report is for guidance only and does not replace professional advice. Estimates based on Catalonia market data Q1 2026.",
+      brand:"Assessoria d'Habitatge · assesoriahabitatge.com",
+      page:"Page",of:"of",
+      isFeasible:"YES, YOU CAN BUY",isRent:"BETTER TO RENT NOW",notFeasible:"NOT FEASIBLE NOW",
+      buyStep1t:"Check your financial health",buyStep1d:"Request your credit report (CIRBE at Banco de España, free). A clean profile can save you up to 0.5% on your mortgage rate.",
+      buyStep2t:"Build up the down payment and costs",buyStep2d:"You need roughly 32% of the total price. At your current saving pace, you'll get there in",
+      buyStep3t:"Compare mortgages at 3+ banks",buyStep3d:"Look for Euribor +0.6% or less. Your monthly payment should stay below 30% of your net income.",
+      buyStep4t:"Visit properties in your area",buyStep4d:"Talk to local agents. You can negotiate 5-10% below the listed price. Always check IBI tax, community debts and energy certificate.",
+      buyStep5t:"Get professional help",buyStep5d:"An independent advisor or notary (€500-1,500) can catch issues that would cost you much more later.",
+      rentStep1t:"Set your maximum budget",rentStep1d:"Rent should not exceed 30% of your net monthly income. Your recommended maximum is",
+      rentStep2t:"Search your area and surroundings",rentStep2d:"Compare on Idealista, Fotocasa and Habitaclia. Nearby towns often offer prices 15-20% lower.",
+      rentStep3t:"Keep saving for the future",rentStep3d:"Maintain your monthly saving habit. In a few years you'll be able to consider buying with a solid foundation.",
+      rentStep4t:"Negotiate the contract",rentStep4d:"Current law (2023) entitles you to 5-year contracts. Demand a signed inventory and check for defects.",
+      rentStep5t:"Take advantage of available aids",rentStep5d:"Check habitatge.gencat.cat: rental aid for young people, income tax relief up to 60% and regional deductions.",
+    },
+    ES:{
+      premiumBadge:"INFORME PREMIUM 2026",preparedFor:"PREPARADO PARA",zone:"ZONA DE INTERÉS",
+      yearsOld:"años",dataQ1:"DATOS ACTUALIZADOS Q1 2026",
+      execSummary:"Tu situación en un vistazo",
+      buyPrice:"Precio compra estimado",mortMonth:"Cuota hipoteca/mes",
+      rentMonth:"Alquiler estimado/mes",rec:"Recomendación",
+      p2title:"Tu Perfil Financiero",
+      monthlyInc:"Ingresos mensuales netos",currentSav:"Ahorros actuales",
+      maxMort:"Máx. hipoteca recomendado",savMonth:"Capacidad de ahorro/mes",
+      mortViab:"¿Es viable comprar ahora?",
+      totalBuy:"Precio total del inmueble",entry20:"Entrada necesaria (20%)",
+      costs12:"Gastos de compra (~12%)",totalNeeded:"Total que necesitas tener",
+      currentSavRow:"Tienes ahora mismo",gap:"Te falta todavía",
+      yearsRow:"Años ahorrando para llegar",mortRow:"Cuota hipoteca estimada",
+      rentRow:"Alquiler de mercado estimado",ratioRow:"Hipoteca sobre tus ingresos",
+      aiRec:"Nuestra recomendación",
+      p3title:"El mercado donde quieres vivir",
+      buyTotal:"Precio inmueble estimado",priceM2:"Precio m² de la zona",
+      surface:"Superficie estimada",yearRent:"Alquiler anual estimado",
+      buyVsRent:"¿Comprar o alquilar? La diferencia real",
+      buy:"COMPRAR",rent:"ALQUILAR",
+      totalCost20:"Coste total en 20 años",monthPay:"Pago mensual",
+      heritage20:"Patrimonio estimado a 20 años",
+      noHeritage:"Sin patrimonio acumulado",
+      contextTitle:"Cómo están los precios donde quieres vivir",
+      contextSub:"Precios de compra por m² en municipios similares (Q1 2026)",
+      yourMuni:"Tu zona",comarcaAvg:"Media comarca",catAvg:"Media Catalunya",
+      p4title:"Plan de acción personalizado",
+      recHero:"Nuestra recomendación para ti",
+      stepsTitle:"Pasos concretos a seguir",
+      disclaimer:"Aviso: Este informe tiene carácter orientativo y no sustituye el asesoramiento profesional. Estimaciones basadas en datos de mercado de Catalunya Q1 2026.",
+      brand:"Assessoria d'Habitatge · assesoriahabitatge.com",
+      page:"Pág.",of:"de",
+      isFeasible:"SÍ, PUEDES COMPRAR",isRent:"MEJOR ALQUILAR AHORA",notFeasible:"NO ES FACTIBLE AHORA",
+      buyStep1t:"Comprueba tu salud financiera",buyStep1d:"Pide tu informe CIRBE al Banco de España (gratuito). Un perfil limpio puede ahorrarte hasta 0,5% en la hipoteca.",
+      buyStep2t:"Acumula la entrada y los gastos",buyStep2d:"Necesitas aproximadamente el 32% del precio total. A tu ritmo de ahorro actual, llegarás en",
+      buyStep3t:"Compara hipotecas en al menos 3 bancos",buyStep3d:"Busca Euribor +0,6% o menos. La cuota no debería superar el 30% de tus ingresos netos.",
+      buyStep4t:"Visita inmuebles en tu zona",buyStep4d:"Habla con agentes locales. Puedes negociar un 5-10% a la baja. Comprueba siempre el IBI, deudas de comunidad y certificado energético.",
+      buyStep5t:"Hazlo con un profesional a tu lado",buyStep5d:"Un asesor o notario independiente (500-1.500 €) puede detectar problemas que te costarían mucho más después.",
+      rentStep1t:"Fija lo que te puedes permitir",rentStep1d:"El alquiler no debería superar el 30% de tus ingresos netos mensuales. Tu máximo recomendado es",
+      rentStep2t:"Busca en tu zona y alrededores",rentStep2d:"Compara en Idealista, Fotocasa y Habitaclia. Los municipios cercanos suelen tener precios un 15-20% más bajos.",
+      rentStep3t:"Sigue ahorrando para el futuro",rentStep3d:"Mantén el hábito de ahorro mensual. En unos años podrás plantearte la compra con una base sólida.",
+      rentStep4t:"Negocia el contrato",rentStep4d:"La ley actual (2023) te permite contratos de 5 años. Exige inventario firmado y comprueba que no hay desperfectos.",
+      rentStep5t:"Aprovecha las ayudas disponibles",rentStep5d:"Consulta habitatge.gencat.cat: ayudas al alquiler para jóvenes, bonificación IRPF hasta el 60% y deducciones autonómicas.",
+    }
   };
+  const T=i18[_lang]||i18.ES;
 
-  // ── jsPDF setup ─────────────────────────────────────────────────────────────
-  const doc = new Ctor({unit:"pt", format:"a4"});
-  const W=595.28, H=841.89, MX=48;
+  // ── Data ─────────────────────────────────────────────────────────
+  const _nm    = _d.nm||"";
+  const _ag    = _d.ag||"";
+  const _inc   = parseFloat(_d.inc)||0;
+  const _sav   = parseFloat(_d.sav)||0;
+  const _muni  = _d.muni||"";
+  const _comarca=(typeof curComarca!=="undefined"?curComarca:null)||"";
+  const _m2v   = parseFloat(_d.pb)||0;
+  const _rentv = parseFloat(_d.pr)||0;
+  const _mortv = parseFloat(_d.pay)||0;
+  const _recTx = _d.rec||"";
+  const _rcCode= _d.recCode||"";
+  const _m2s   = parseFloat(_d.m2)||0;
+  const _rooms = _d.bd||0;
+  const _baths = _d.ba||0;
+  const _kind  = _d.type||"";
+  const _isBuy = _rcCode==="BUY"||_rcCode==="BUY_SHORT";
+  const _isRent= _rcCode==="RENT";
 
-  // Colors (RGB arrays)
-  const C_DARK  =[6,14,30];
-  const C_BRAND =[56,189,248];
-  const C_GREEN =[52,211,153];
-  const C_PURPLE=[139,92,246];
-  const C_AMBER =[245,158,11];
-  const C_TEXT  =[15,23,42];
-  const C_MUTED =[100,116,139];
-  const C_CARD  =[245,248,252];
-  const C_BORDER=[210,220,235];
-  const C_LIGHT =[240,245,252];
+  const _maxMort = _inc*0.35;
+  const _savCap  = _inc*0.20;
+  const _needed  = Math.max(0,_m2v*0.32-_sav);
+  const _yearsTo = _savCap>0?(_needed/(_savCap*12)):null;
+  const _mortRatio= _inc>0?Math.round((_mortv/_inc)*100):0;
+  const _buyM2   = _m2v&&_m2s?Math.round(_m2v/_m2s):0;
 
-  // ── Drawing helpers ──────────────────────────────────────────────────────────
-  function fillR(x,y,w,h,r,col){
-    doc.setFillColor(col[0],col[1],col[2]);
-    r ? doc.roundedRect(x,y,w,h,r,r,"F") : doc.rect(x,y,w,h,"F");
+  const now=new Date();
+  const _dateStr=now.toLocaleDateString(_lang==="CA"?"ca-ES":_lang==="EN"?"en-GB":"es-ES",{year:"numeric",month:"long",day:"numeric"});
+
+  const fmtE=v=>v?new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v):"—";
+  const fmtM=v=>v?fmtE(v)+"/mes":"—";
+  const sf=v=>{if(v==null||v===undefined||v==="")return"—";return String(v).replace(/[^\x00-\x7E\u00C0-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim()||"—";};
+
+  // ── Build contextual bar chart data from CATALUNYA_DB ──────────────
+  // Show: user's comarca munis (up to 4 nearest by price), + catalan avg, + user's muni highlighted
+  const _barData=[];
+  try{
+    if(typeof CATALUNYA_DB!=="undefined"&&_comarca&&CATALUNYA_DB[_comarca]){
+      const comarcaMunis=Object.entries(CATALUNYA_DB[_comarca]);
+      const _userMuniPrice=_buyM2||(_m2v&&_m2s?Math.round(_m2v/_m2s):0);
+      // Sort by price and take a spread (lowest, 2 mid, highest + user's)
+      const sorted=comarcaMunis.sort((a,b)=>a[1].v-b[1].v);
+      const pick=new Set();
+      if(sorted.length>0) pick.add(sorted[0][0]);
+      if(sorted.length>2) pick.add(sorted[Math.floor(sorted.length/2)][0]);
+      if(sorted.length>1) pick.add(sorted[sorted.length-1][0]);
+      // Add user's specific muni
+      const userMuniKey=comarcaMunis.find(([k])=>k===_muni||k.toLowerCase()===(_muni||"").toLowerCase());
+      if(userMuniKey) pick.add(userMuniKey[0]);
+      // Fill up to 4 with neighbours
+      sorted.forEach(([k])=>{if(pick.size<4)pick.add(k);});
+      pick.forEach(name=>{
+        const entry=CATALUNYA_DB[_comarca][name];
+        if(entry) _barData.push({l:name,v:entry.v,isUser:name===_muni||name===userMuniKey?.[0]});
+      });
+    }
+    // Always add Catalunya average (~3200 Q1 2026)
+    const catAvg=2950;
+    _barData.push({l:T.catAvg,v:catAvg,isCat:true});
+    // Sort by value desc
+    _barData.sort((a,b)=>b.v-a.v);
+  }catch(e){
+    _barData.push({l:T.yourMuni,v:_buyM2||2800,isUser:true});
+    _barData.push({l:T.catAvg,v:2950,isCat:true});
   }
-  function strokeR(x,y,w,h,r,col,lw){
-    doc.setDrawColor(col[0],col[1],col[2]);
-    doc.setLineWidth(lw||0.5);
-    r ? doc.roundedRect(x,y,w,h,r,r,"S") : doc.rect(x,y,w,h,"S");
-  }
-  function txt(t,x,y,sz,col,style,align){
-    doc.setFont("helvetica",style||"normal");
-    doc.setFontSize(sz);
-    doc.setTextColor(col[0],col[1],col[2]);
-    doc.text(sf(t),x,y,{align:align||"left"});
-  }
-  function hline(x1,y1,x2,y2,col,lw){
-    doc.setDrawColor(col[0],col[1],col[2]);
-    doc.setLineWidth(lw||0.5);
-    doc.line(x1,y1,x2,y2);
-  }
-  function kpiCard(x,y,w,h,label,value,sub,accentCol){
-    fillR(x,y,w,h,10,C_CARD);
-    strokeR(x,y,w,h,10,C_BORDER);
-    doc.setFillColor(accentCol[0],accentCol[1],accentCol[2]);
-    doc.roundedRect(x,y,w,3,2,2,"F");
-    txt(label,x+12,y+18,7,C_MUTED,"bold");
-    txt(value,x+12,y+35,14,C_TEXT,"bold");
-    if(sub) txt(sub,x+12,y+48,7,C_MUTED,"normal");
-  }
-  function secHeader(title,y,col){
-    fillR(MX,y-14,W-MX*2,26,6,C_LIGHT);
-    fillR(MX,y-14,4,26,2,col);
-    txt(title,MX+14,y+5,10,C_TEXT,"bold");
-    return y+22;
+
+  // ── jsPDF setup ──────────────────────────────────────────────────
+  const doc=new Ctor({unit:"pt",format:"a4"});
+  const W=595.28,H=841.89,MX=48;
+
+  const C_DARK=[6,14,30],C_BRAND=[56,189,248],C_GREEN=[52,211,153];
+  const C_PURPLE=[139,92,246],C_AMBER=[245,158,11],C_RED=[239,68,68];
+  const C_TEXT=[15,23,42],C_MUTED=[100,116,139],C_CARD=[245,248,252],C_BORDER=[210,220,235],C_LIGHT=[238,244,252];
+
+  function fillR(x,y,w,h,r,col){doc.setFillColor(col[0],col[1],col[2]);r?doc.roundedRect(x,y,w,h,r,r,"F"):doc.rect(x,y,w,h,"F");}
+  function strokeR(x,y,w,h,r,col,lw){doc.setDrawColor(col[0],col[1],col[2]);doc.setLineWidth(lw||0.5);r?doc.roundedRect(x,y,w,h,r,r,"S"):doc.rect(x,y,w,h,"S");}
+  function T_(t,x,y,sz,col,style,align){doc.setFont("helvetica",style||"normal");doc.setFontSize(sz);doc.setTextColor(col[0],col[1],col[2]);doc.text(sf(t),x,y,{align:align||"left"});}
+  function hline(x1,y1,x2,y2,col,lw){doc.setDrawColor(col[0],col[1],col[2]);doc.setLineWidth(lw||0.5);doc.line(x1,y1,x2,y2);}
+  function triBar(){doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]);doc.rect(0,0,W/3,5,"F");doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]);doc.rect(W/3,0,W/3,5,"F");doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]);doc.rect(2*W/3,0,W/3,5,"F");}
+  function triFoot(){doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]);doc.rect(0,H-4,W/3,4,"F");doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]);doc.rect(W/3,H-4,W/3,4,"F");doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]);doc.rect(2*W/3,H-4,W/3,4,"F");}
+
+  function pageHeader(col,pg,ttl){
+    fillR(0,0,W,48,0,C_DARK);
+    doc.setFillColor(col[0],col[1],col[2]);doc.rect(0,0,W,4,"F");
+    T_(sf(T.brand),MX,31,8.5,C_MUTED,"bold");
+    T_(T.page+" "+pg+" "+T.of+" 4",W-MX,31,8.5,col,"bold","right");
+    hline(0,48,W,48,C_BORDER,0.5);
   }
   function footer(pg){
-    hline(0,H-38,W,H-38,C_BORDER);
-    fillR(0,H-37,W,37,0,C_DARK);
-    txt("Assessoria d'Habitatge  ·  assesoriahabitatge.com",MX,H-18,7.5,C_MUTED);
-    txt(sf(_dateStr),W-MX,H-18,7.5,C_MUTED,"normal","right");
-    doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.rect(0,H-4,W/3,4,"F");
-    doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.rect(W/3,H-4,W/3,4,"F");
-    doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]); doc.rect(2*W/3,H-4,W/3,4,"F");
+    hline(0,H-36,W,H-36,C_BORDER,0.5);
+    fillR(0,H-35,W,31,0,C_DARK);
+    T_(sf(T.brand),MX,H-16,7.5,C_MUTED);
+    T_(sf(_dateStr),W-MX,H-16,7.5,C_MUTED,"normal","right");
+    triFoot();
   }
-  function pageHeader(label,col,pg){
-    fillR(0,0,W,50,0,C_DARK);
-    doc.setFillColor(col[0],col[1],col[2]); doc.rect(0,0,W,4,"F");
-    txt("Assessoria d'Habitatge  ·  Informe Premium 2026",MX,32,9,C_MUTED,"bold");
-    txt("Pag. "+pg+"/4",W-MX,32,9,col,"bold","right");
-    hline(0,50,W,50,C_BORDER,0.5);
+  function kpiCard(x,y,w,h,label,value,sub,accentCol){
+    fillR(x,y,w,h,10,C_CARD);strokeR(x,y,w,h,10,C_BORDER);
+    doc.setFillColor(accentCol[0],accentCol[1],accentCol[2]);doc.roundedRect(x,y,w,3,2,2,"F");
+    T_(label,x+12,y+17,7,C_MUTED,"bold");
+    T_(value,x+12,y+33,13,C_TEXT,"bold");
+    if(sub)T_(sub,x+12,y+46,7,C_MUTED,"normal");
+  }
+  function secHdr(title,sub,y,col){
+    fillR(MX,y,W-MX*2,sub?36:26,6,C_LIGHT);
+    fillR(MX,y,4,sub?36:26,2,col);
+    T_(title,MX+14,y+16,10,C_TEXT,"bold");
+    if(sub)T_(sub,MX+14,y+29,7.5,C_MUTED,"normal");
+    return y+(sub?46:36);
   }
 
-  // ══════════════════════════════════════════════════════════════════
-  // PAGE 1 — COVER
-  // ══════════════════════════════════════════════════════════════════
-  fillR(0,0,W,H,0,C_DARK);
-  // Tri-color top bar
-  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.rect(0,0,W/3,6,"F");
-  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.rect(W/3,0,W/3,6,"F");
-  doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]); doc.rect(2*W/3,0,W/3,6,"F");
+  // ══════════════════════════ PAGE 1 — COVER ═══════════════════════════════════
+  fillR(0,0,W,H,0,C_DARK);triBar();
 
   // Hero card
-  doc.setFillColor(12,22,50);
-  doc.roundedRect(MX,58,W-MX*2,530,18,18,"F");
-  doc.setDrawColor(56,189,248); doc.setLineWidth(0.5);
-  doc.roundedRect(MX,58,W-MX*2,530,18,18,"S");
+  doc.setFillColor(12,22,50);doc.roundedRect(MX,56,W-MX*2,540,18,18,"F");
+  doc.setDrawColor(56,189,248);doc.setLineWidth(0.5);doc.roundedRect(MX,56,W-MX*2,540,18,18,"S");
 
-  // Premium badge
-  const bW=150,bH=24,bX=(W-bW)/2,bY=80;
-  fillR(bX,bY,bW,bH,12,C_AMBER.map(c=>Math.min(255,Math.round(c*0.18+220))));
-  doc.setDrawColor(C_AMBER[0],C_AMBER[1],C_AMBER[2]); doc.setLineWidth(0.5);
-  doc.roundedRect(bX,bY,bW,bH,12,12,"S");
-  txt("INFORME PREMIUM 2026",W/2,bY+16,8,C_AMBER,"bold","center");
+  // Badge
+  const bW=160,bH=22;
+  fillR((W-bW)/2,76,bW,bH,11,[60,40,5]);
+  strokeR((W-bW)/2,76,bW,bH,11,C_AMBER,0.6);
+  T_(T.premiumBadge,W/2,76+15,7.5,C_AMBER,"bold","center");
 
-  // Title
-  doc.setFont("helvetica","bold"); doc.setFontSize(30);
-  doc.setTextColor(248,250,252);
-  doc.text("Informe d'Habitatge",W/2,138,{align:"center"});
-  doc.setFontSize(30); doc.setTextColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]);
-  doc.text("Catalunya 2026",W/2,174,{align:"center"});
+  // Titles
+  doc.setFont("helvetica","bold");doc.setFontSize(28);doc.setTextColor(248,250,252);
+  doc.text("Informe d'Habitatge",W/2,132,{align:"center"});
+  doc.setTextColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]);
+  doc.text("Catalunya 2026",W/2,166,{align:"center"});
+  hline(MX+80,182,W-MX-80,182,[56,189,248],0.4);
 
-  // Divider
-  hline(MX+70,192,W-MX-70,192,[56,189,248,0.3],0.5);
-
-  // Recipient card
-  fillR(MX+28,204,W-MX*2-56,118,12,[16,28,60]);
-  strokeR(MX+28,204,W-MX*2-56,118,12,C_BRAND,0.5);
-  txt("PREPARAT PER A",MX+44,224,8,C_BRAND,"bold");
-  txt(sf(_nm)||"—",MX+44,246,20,[248,250,252],"bold");
-  txt(_ag?(sf(_ag)+" anys"):"—",MX+44,263,9,C_MUTED,"normal");
+  // Recipient
+  fillR(MX+28,192,W-MX*2-56,110,12,[16,28,60]);
+  strokeR(MX+28,192,W-MX*2-56,110,12,C_BRAND,0.4);
+  T_(T.preparedFor,MX+44,212,7.5,C_BRAND,"bold");
+  T_(sf(_nm)||"—",MX+44,234,20,[248,250,252],"bold");
+  T_(_ag?(sf(_ag)+" "+T.yearsOld):"",MX+44,252,9,C_MUTED);
   if(_muni||_comarca){
-    txt("ZONA D'INTERES",W-MX-44,224,8,C_GREEN,"bold","right");
-    txt(sf(_muni)||sf(_comarca)||"—",W-MX-44,246,16,[248,250,252],"bold","right");
-    if(_comarca&&_muni) txt(sf(_comarca),W-MX-44,263,9,C_MUTED,"normal","right");
+    T_(T.zone,W-MX-44,212,7.5,C_GREEN,"bold","right");
+    T_(sf(_muni)||sf(_comarca)||"—",W-MX-44,234,15,[248,250,252],"bold","right");
+    if(_comarca)T_(sf(_comarca),W-MX-44,252,8,C_MUTED,"normal","right");
   }
-  txt(sf(_dateStr),MX+44,296,8,C_MUTED,"normal");
-  txt("DADES Q1 2026",W-MX-44,296,8,C_PURPLE,"bold","right");
+  T_(sf(_dateStr)+"  ·  "+T.dataQ1,W/2,287,7.5,C_MUTED,"normal","center");
 
-  // 4 page previews
-  const pvItems=[
-    {n:"01",t:"Perfil Financer",d:"Capacitat estalvi",c:C_BRAND},
-    {n:"02",t:"Mercat Local",d:"Preus m2 2026",c:C_GREEN},
-    {n:"03",t:"Compra vs Lloguer",d:"Comparativa 20 anys",c:C_PURPLE},
-    {n:"04",t:"Pla d'Accio",d:"Passos personalitzats",c:C_AMBER},
+  // 4 section previews
+  const pvs=[
+    {n:"01",t:_lang==="CA"?"Perfil Financer":_lang==="EN"?"Financial Profile":"Perfil Financiero",c:C_BRAND},
+    {n:"02",t:_lang==="CA"?"Mercat Local":_lang==="EN"?"Local Market":"Mercado Local",c:C_GREEN},
+    {n:"03",t:_lang==="CA"?"Compra vs Lloguer":_lang==="EN"?"Buy vs Rent":"Compra vs Alquiler",c:C_PURPLE},
+    {n:"04",t:_lang==="CA"?"Pla d'Acció":_lang==="EN"?"Action Plan":"Plan de Acción",c:C_AMBER},
   ];
-  const pvW2=(W-MX*2-36)/4, pvY2=352;
-  pvItems.forEach((p,i)=>{
-    const px=MX+i*(pvW2+12);
-    fillR(px,pvY2,pvW2,82,10,[16,28,60]);
-    strokeR(px,pvY2,pvW2,82,10,p.c,0.5);
-    doc.setFillColor(p.c[0],p.c[1],p.c[2]); doc.roundedRect(px,pvY2,pvW2,3,2,2,"F");
-    txt(p.n,px+pvW2/2,pvY2+26,16,p.c,"bold","center");
-    txt(p.t,px+pvW2/2,pvY2+44,7.5,[240,248,255],"bold","center");
-    txt(p.d,px+pvW2/2,pvY2+57,6.5,C_MUTED,"normal","center");
+  const pvW=(W-MX*2-36)/4,pvY=312;
+  pvs.forEach((p,i)=>{
+    const px=MX+i*(pvW+12);
+    fillR(px,pvY,pvW,72,10,[14,26,56]);
+    strokeR(px,pvY,pvW,72,10,p.c,0.5);
+    doc.setFillColor(p.c[0],p.c[1],p.c[2]);doc.roundedRect(px,pvY,pvW,3,2,2,"F");
+    T_(p.n,px+pvW/2,pvY+26,16,p.c,"bold","center");
+    const tLines=doc.splitTextToSize(sf(p.t),pvW-12);
+    doc.setFont("helvetica","bold");doc.setFontSize(7.5);doc.setTextColor(235,244,255);
+    doc.text(tLines,px+pvW/2,pvY+44,{align:"center"});
   });
 
-  // Summary KPIs on cover
-  const sumY=464;
-  fillR(MX+28,sumY,W-MX*2-56,100,12,[16,28,60]);
-  strokeR(MX+28,sumY,W-MX*2-56,100,12,C_BORDER,0.5);
-  txt("RESUM EXECUTIU",MX+44,sumY+18,8,C_MUTED,"bold");
-  const sumItems=[
-    {l:"Preu compra estimat",v:fmtE(_m2v)},
-    {l:"Quota hipoteca/mes",v:fmtM(_mortv)},
-    {l:"Lloguer estimat/mes",v:fmtM(_rentv)},
-    {l:"Recomanacio",v:_rcCode==="BUY"||_rcCode==="BUY_SHORT"?"COMPRA":_rcCode==="RENT"?"LLOGUER":"NO FACTIBLE"},
+  // Exec summary — clean, human
+  const esY=404;
+  fillR(MX+28,esY,W-MX*2-56,120,12,[14,26,56]);
+  strokeR(MX+28,esY,W-MX*2-56,120,12,C_BORDER,0.4);
+  T_(T.execSummary,MX+44,esY+20,9,C_MUTED,"bold");
+  hline(MX+44,esY+26,W-MX-44,esY+26,C_BORDER,0.4);
+
+  const esItems=[
+    {l:T.buyPrice,v:fmtE(_m2v),c:C_TEXT},
+    {l:T.mortMonth,v:fmtM(_mortv),c:C_TEXT},
+    {l:T.rentMonth,v:fmtM(_rentv),c:C_TEXT},
+    {l:T.rec,v:_isBuy?T.isFeasible:_isRent?T.isRent:T.notFeasible,c:_isBuy?C_GREEN:_isRent?C_BRAND:C_RED},
   ];
-  const siW=(W-MX*2-56-32)/4;
-  sumItems.forEach((s,i)=>{
-    const sx=MX+40+i*siW;
-    txt(sf(s.l),sx,sumY+38,7,C_MUTED,"normal");
-    const sc=i===3?(_rcCode==="BUY"||_rcCode==="BUY_SHORT"?C_GREEN:_rcCode==="RENT"?C_BRAND:C_AMBER):C_TEXT;
-    txt(sf(s.v),sx,sumY+56,10,sc,"bold");
+  const esW=(W-MX*2-56-32)/4;
+  esItems.forEach((s,i)=>{
+    const sx=MX+40+i*(esW+2);
+    T_(s.l,sx,esY+44,7,C_MUTED,"normal");
+    T_(s.v,sx,esY+62,10,s.c,"bold");
   });
-  txt("Informe generat a assesoriahabitatge.com  -  "+sf(_dateStr),MX+44,sumY+80,7,C_MUTED,"normal");
 
-  // Brand footer cover
-  txt("Assessoria d'Habitatge",W/2,614,10,C_BRAND,"bold","center");
-  txt("assesoriahabitatge.com  -  info@assesoriahabitatge.com",W/2,630,8,C_MUTED,"normal","center");
-  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.rect(0,H-4,W/3,4,"F");
-  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.rect(W/3,H-4,W/3,4,"F");
-  doc.setFillColor(C_PURPLE[0],C_PURPLE[1],C_PURPLE[2]); doc.rect(2*W/3,H-4,W/3,4,"F");
+  // Rec pill
+  const recPillCol=_isBuy?C_GREEN:_isRent?C_BRAND:C_RED;
+  fillR(MX+44,esY+78,W-MX*2-88,32,8,recPillCol.map(v=>Math.min(255,v*0.12+232)));
+  strokeR(MX+44,esY+78,W-MX*2-88,32,8,recPillCol,0.6);
+  const shortR=sf(_recTx).substring(0,100)+(sf(_recTx).length>100?"...":"");
+  T_(shortR,W/2,esY+97,8,C_TEXT,"normal","center");
 
-  // ══════════════════════════════════════════════════════════════════
-  // PAGE 2 — PERFIL FINANCER
-  // ══════════════════════════════════════════════════════════════════
-  doc.addPage();
-  pageHeader("Perfil Financer",C_BRAND,2);
-  let y2=72;
-  txt((_nm?"Perfil Financer de "+sf(_nm):"Perfil Financer"),MX,y2,17,C_TEXT,"bold"); y2+=6;
-  hline(MX,y2,W-MX,y2,C_BRAND,1); y2+=20;
+  T_(sf(T.brand),W/2,608,9,C_BRAND,"bold","center");
+  triFoot();
 
-  const _maxMort = _inc * 0.35;
-  const _savCap  = _inc * 0.20;
-  const _needed  = Math.max(0, _m2v * 0.32 - _sav);
-  const _yearsTo = _savCap > 0 ? (_needed / (_savCap * 12)) : null;
-  const _mortRatio = _inc > 0 ? Math.round((_mortv / _inc) * 100) : 0;
+  // ══════════════════════════ PAGE 2 — PERFIL FINANCER ═════════════════════════
+  doc.addPage();pageHeader(C_BRAND,2,T.p2title);
+  let y2=66;
+  T_(sf(T.p2title),MX,y2,17,C_TEXT,"bold");y2+=5;
+  hline(MX,y2,W-MX,y2,C_BRAND,1);y2+=18;
 
-  const kpiW=(W-MX*2-30)/4;
+  const kW=(W-MX*2-30)/4;
   [
-    {l:"Ingressos mensuals",v:fmtE(_inc),s:"Net/mes",c:C_BRAND},
-    {l:"Estalvis actuals",v:fmtE(_sav),s:"Disponibles",c:C_GREEN},
-    {l:"Max. hipoteca rec.",v:fmtM(_maxMort),s:"35% ingressos",c:C_PURPLE},
-    {l:"Estalvi estim./mes",v:fmtE(_savCap)+"/mes",s:"20% ingressos",c:C_AMBER},
-  ].forEach((k,i)=>{ kpiCard(MX+i*(kpiW+10),y2,kpiW,66,k.l,k.v,k.s,k.c); });
-  y2+=84;
+    {l:T.monthlyInc,v:fmtE(_inc),s:"net",c:C_BRAND},
+    {l:T.currentSav,v:fmtE(_sav),s:_lang==="CA"?"Disponibles":_lang==="EN"?"Available":"Disponibles",c:C_GREEN},
+    {l:T.maxMort,v:fmtM(_maxMort),s:"35% "+(_lang==="CA"?"ingressos":_lang==="EN"?"income":"ingresos"),c:C_PURPLE},
+    {l:T.savMonth,v:fmtE(_savCap)+"/mes",s:"20% "+(_lang==="CA"?"ingressos":_lang==="EN"?"income":"ingresos"),c:C_AMBER},
+  ].forEach((k,i)=>{kpiCard(MX+i*(kW+10),y2,kW,62,k.l,k.v,k.s,k.c);});
+  y2+=80;
 
-  y2=secHeader("Viabilitat Hipotecaria",y2,C_BRAND); y2+=12;
-  const rowData=[
-    [L==="CA"?"Preu estimat compra":"Precio estimado compra",fmtE(_m2v)],
-    [L==="CA"?"Entrada necessaria (20%)":"Entrada necesaria (20%)",fmtE(_m2v*0.20)],
-    [L==="CA"?"Despeses estimades (12%)":"Gastos estimados (12%)",fmtE(_m2v*0.12)],
-    [L==="CA"?"Total necessari":"Total necesario",fmtE(_m2v*0.32)],
-    [L==="CA"?"Estalvis actuals":"Ahorros actuales",fmtE(_sav)],
-    [L==="CA"?"Diferencia fins accedir":"Diferencia hasta acceder",fmtE(_needed)],
-    [L==="CA"?"Anys estalviant (est.)":"Anos ahorrando (est.)",_yearsTo!=null?(_yearsTo<=0?"Ja pots comprar!":Math.ceil(_yearsTo)+" anys"):"—"],
-    [L==="CA"?"Quota hipoteca estim.":"Cuota hipoteca estim.",fmtM(_mortv)],
-    [L==="CA"?"Lloguer mercat estim.":"Alquiler mercado estim.",fmtM(_rentv)],
-    ["% hipoteca sobre ingressos",_mortRatio?_mortRatio+"%":"—"],
+  y2=secHdr(T.mortViab,null,y2,C_BRAND);
+
+  const rowsData=[
+    [T.totalBuy,fmtE(_m2v),false],
+    [T.entry20,fmtE(_m2v*0.20),false],
+    [T.costs12,fmtE(_m2v*0.12),false],
+    [T.totalNeeded,fmtE(_m2v*0.32),true],
+    [T.currentSavRow,fmtE(_sav),false],
+    [T.gap,fmtE(_needed),_needed===0],
+    [T.yearsRow,_yearsTo!=null?(_yearsTo<=0?(_lang==="CA"?"Ja pots comprar!":_lang==="EN"?"You can buy now!":"¡Ya puedes comprar!"):Math.ceil(_yearsTo)+" "+(_lang==="CA"?"anys":_lang==="EN"?"years":"años")):"—",_yearsTo!=null&&_yearsTo<=0],
+    [T.mortRow,fmtM(_mortv),false],
+    [T.rentRow,fmtM(_rentv),false],
+    [T.ratioRow,_mortRatio?_mortRatio+"%":"—",_mortRatio>0&&_mortRatio<=35],
   ];
-  const cLX=MX, cRX=W/2+8, cHalfW=W/2-MX-12;
-  let yL=y2, yR=y2;
-  rowData.forEach(([k,v],i)=>{
-    const isR=i>=5; const cx=isR?cRX:cLX; const cy=isR?yR:yL;
-    if(i%2===0) fillR(cx-4,cy-12,cHalfW+8,20,3,C_LIGHT);
-    doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
+  const cHalf=W/2-MX-8;
+  let yL=y2,yR=y2;
+  rowsData.forEach(([k,v,highlight],i)=>{
+    const isR=i>=5;const cx=isR?(W/2+4):MX;const cy=isR?yR:yL;
+    if(i%2===0)fillR(cx-3,cy-11,cHalf+6,19,3,C_LIGHT);
+    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
     doc.text(sf(k),cx,cy);
-    const isGood=(v.includes("pots comprar")||v.includes("puedes comprar"));
-    doc.setFont("helvetica","bold"); doc.setFontSize(9.5);
-    const vc=isGood?C_GREEN:C_TEXT;
-    doc.setTextColor(vc[0],vc[1],vc[2]);
-    doc.text(sf(v),cx+cHalfW,cy,{align:"right"});
-    if(isR) yR+=22; else yL+=22;
+    const vc=highlight?C_GREEN:C_TEXT;
+    doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(vc[0],vc[1],vc[2]);
+    doc.text(sf(v),cx+cHalf,cy,{align:"right"});
+    if(isR)yR+=21;else yL+=21;
   });
-  y2=Math.max(yL,yR)+20;
+  y2=Math.max(yL,yR)+16;
 
-  // Recommendation box
+  // AI rec box
   if(_recTx){
-    const _recCol=_rcCode==="BUY"||_rcCode==="BUY_SHORT"?C_GREEN:_rcCode==="RENT"?C_BRAND:C_AMBER;
-    fillR(MX,y2,W-MX*2,60,10,_recCol.map(c=>Math.min(255,Math.round(c*0.10+235))));
-    strokeR(MX,y2,W-MX*2,60,10,_recCol,0.8);
-    doc.setFillColor(_recCol[0],_recCol[1],_recCol[2]); doc.roundedRect(MX,y2,W-MX*2,4,2,2,"F");
-    txt("Recomanacio IA:",MX+14,y2+20,9,_recCol,"bold");
-    const rLines=doc.splitTextToSize(sf(_recTx),W-MX*2-28);
-    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(C_TEXT[0],C_TEXT[1],C_TEXT[2]);
-    doc.text((rLines||[]).slice(0,2),MX+14,y2+34);
+    const _recColArr=_isBuy?C_GREEN:_isRent?C_BRAND:C_RED;
+    fillR(MX,y2,W-MX*2,54,10,_recColArr.map(v=>Math.min(255,v*0.10+234)));
+    doc.setFillColor(_recColArr[0],_recColArr[1],_recColArr[2]);doc.roundedRect(MX,y2,W-MX*2,4,2,2,"F");
+    strokeR(MX,y2,W-MX*2,54,10,_recColArr,0.7);
+    T_(T.aiRec,MX+14,y2+18,8.5,_recColArr,"bold");
+    const rL=doc.splitTextToSize(sf(_recTx),W-MX*2-28);
+    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(C_TEXT[0],C_TEXT[1],C_TEXT[2]);
+    doc.text((rL||[]).slice(0,2),MX+14,y2+32);
   }
   footer(2);
 
-  // ══════════════════════════════════════════════════════════════════
-  // PAGE 3 — MERCAT LOCAL + COMPARATIVA
-  // ══════════════════════════════════════════════════════════════════
-  doc.addPage();
-  pageHeader("Mercat Local i Comparativa",C_GREEN,3);
-  let y3=72;
-  txt("Analisi del Mercat Local 2026",MX,y3,17,C_TEXT,"bold"); y3+=6;
-  hline(MX,y3,W-MX,y3,C_GREEN,1); y3+=20;
+  // ══════════════════════════ PAGE 3 — MERCAT LOCAL ════════════════════════════
+  doc.addPage();pageHeader(C_GREEN,3,T.p3title);
+  let y3=66;
+  T_(sf(T.p3title),MX,y3,17,C_TEXT,"bold");y3+=5;
+  hline(MX,y3,W-MX,y3,C_GREEN,1);y3+=18;
 
-  const _buyM2 = _m2v&&_m2s ? Math.round(_m2v/_m2s) : 0;
-  const mkpiW=(W-MX*2-30)/4;
+  const mkW=(W-MX*2-30)/4;
   [
-    {l:"Preu total estimat",v:fmtE(_m2v),s:sf(_kind),c:C_BRAND},
-    {l:"Preu per m2 (est.)",v:_buyM2?fmtE(_buyM2)+"/m2":"—",s:sf(_muni)||sf(_comarca)||"Catalunya",c:C_GREEN},
-    {l:"Superficie estimada",v:_m2s?sf(_m2s)+" m2":"—",s:_rooms?sf(_rooms)+" hab. "+sf(_baths)+" b.":"—",c:C_PURPLE},
-    {l:"Lloguer anual est.",v:_rentv?fmtE(_rentv*12):"—",s:fmtM(_rentv),c:C_AMBER},
-  ].forEach((k,i)=>{ kpiCard(MX+i*(mkpiW+10),y3,mkpiW,66,k.l,k.v,k.s,k.c); });
-  y3+=84;
+    {l:T.buyTotal,v:fmtE(_m2v),s:sf(_kind),c:C_BRAND},
+    {l:T.priceM2,v:_buyM2?fmtE(_buyM2)+"/m²":"—",s:sf(_muni)||sf(_comarca)||"Catalunya",c:C_GREEN},
+    {l:T.surface,v:_m2s?sf(_m2s)+" m²":"—",s:_rooms?sf(_rooms)+" hab. · "+sf(_baths)+" b.":"—",c:C_PURPLE},
+    {l:T.yearRent,v:_rentv?fmtE(_rentv*12):"—",s:fmtM(_rentv),c:C_AMBER},
+  ].forEach((k,i)=>{kpiCard(MX+i*(mkW+10),y3,mkW,62,k.l,k.v,k.s,k.c);});
+  y3+=80;
 
-  // Compra vs Lloguer 20 years
-  y3=secHeader("Comparativa Compra vs. Lloguer a 20 anys",y3,C_GREEN); y3+=12;
-  const _totBuy  = _m2v + (_m2v*0.12);
-  const _totRent = _rentv*12*20;
-  const _mortTot = _mortv*12*20;
-  const _patriB  = _m2v*1.30;
-  const hfW=(W-MX*2)/2-10;
+  // Buy vs Rent — clean comparison
+  y3=secHdr(T.buyVsRent,null,y3,C_GREEN);
+  const _totBuy=_m2v+(_m2v*0.12);
+  const _totRent=_rentv*12*20;
+  const _patriB=_m2v*1.30;
+  const hfW=(W-MX*2)/2-8;
 
-  // Buy box
-  fillR(MX,y3,hfW,118,10,C_GREEN.map(c=>Math.min(255,Math.round(c*0.08+236))));
-  strokeR(MX,y3,hfW,118,10,C_GREEN,0.8);
-  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]); doc.roundedRect(MX,y3,hfW,5,3,3,"F");
-  txt("COMPRA",MX+14,y3+22,11,C_GREEN,"bold");
-  txt("Cost total (entrada+despeses)",MX+14,y3+40,8,C_MUTED,"normal");
-  txt(fmtE(_totBuy),MX+14,y3+55,13,C_TEXT,"bold");
-  txt("Quota mensual hipoteca",MX+14,y3+73,8,C_MUTED,"normal");
-  txt(fmtM(_mortv),MX+14,y3+88,11,C_TEXT,"bold");
-  txt("Patrimoni estim. a 20 anys: "+fmtE(_patriB),MX+14,y3+106,7.5,C_GREEN,"bold");
+  // Buy column
+  fillR(MX,y3,hfW,106,10,C_GREEN.map(v=>Math.min(255,v*0.07+238)));
+  strokeR(MX,y3,hfW,106,10,C_GREEN,0.7);
+  doc.setFillColor(C_GREEN[0],C_GREEN[1],C_GREEN[2]);doc.roundedRect(MX,y3,hfW,4,2,2,"F");
+  T_("🏠 "+T.buy,MX+14,y3+22,11,C_GREEN,"bold");
+  T_(T.totalCost20,MX+14,y3+38,7.5,C_MUTED);T_(fmtE(_totBuy),MX+14,y3+52,12,C_TEXT,"bold");
+  T_(T.monthPay,MX+14,y3+68,7.5,C_MUTED);T_(fmtM(_mortv),MX+14,y3+82,11,C_TEXT,"bold");
+  T_(T.heritage20+": "+fmtE(_patriB),MX+14,y3+100,7.5,C_GREEN,"bold");
 
-  // Rent box
-  const rx3=MX+hfW+20;
-  fillR(rx3,y3,hfW,118,10,C_BRAND.map(c=>Math.min(255,Math.round(c*0.08+236))));
-  strokeR(rx3,y3,hfW,118,10,C_BRAND,0.8);
-  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]); doc.roundedRect(rx3,y3,hfW,5,3,3,"F");
-  txt("LLOGUER",rx3+14,y3+22,11,C_BRAND,"bold");
-  txt("Cost total 20 anys",rx3+14,y3+40,8,C_MUTED,"normal");
-  txt(fmtE(_totRent),rx3+14,y3+55,13,C_TEXT,"bold");
-  txt("Mensualitat actual",rx3+14,y3+73,8,C_MUTED,"normal");
-  txt(fmtM(_rentv),rx3+14,y3+88,11,C_TEXT,"bold");
-  txt("Patrimoni estim. a 20 anys: —",rx3+14,y3+106,7.5,C_MUTED,"bold");
-  y3+=134;
+  // Rent column
+  const rx=MX+hfW+16;
+  fillR(rx,y3,hfW,106,10,C_BRAND.map(v=>Math.min(255,v*0.07+238)));
+  strokeR(rx,y3,hfW,106,10,C_BRAND,0.7);
+  doc.setFillColor(C_BRAND[0],C_BRAND[1],C_BRAND[2]);doc.roundedRect(rx,y3,hfW,4,2,2,"F");
+  T_("🔑 "+T.rent,rx+14,y3+22,11,C_BRAND,"bold");
+  T_(T.totalCost20,rx+14,y3+38,7.5,C_MUTED);T_(fmtE(_totRent),rx+14,y3+52,12,C_TEXT,"bold");
+  T_(T.monthPay,rx+14,y3+68,7.5,C_MUTED);T_(fmtM(_rentv),rx+14,y3+82,11,C_TEXT,"bold");
+  T_(T.noHeritage,rx+14,y3+100,7.5,C_MUTED,"bold");
+  y3+=122;
 
-  // Bar chart — price context
-  y3=secHeader("Context de Preus per Comarca (Q1 2026)",y3,C_PURPLE); y3+=14;
-  const _barData=[
-    {l:"Sitges",v:7700,c:C_PURPLE},
-    {l:"Barcelona",v:6750,c:C_BRAND},
-    {l:"Girona",v:4250,c:C_GREEN},
-    {l:"Tarragona",v:3400,c:C_AMBER},
-    {l:sf(_muni)||"El teu municipi",v:_buyM2||2800,c:[239,68,68]},
-    {l:"Lleida",v:2200,c:C_MUTED},
-  ].sort((a,b)=>b.v-a.v);
-  const _maxV=Math.max(..._barData.map(d=>d.v));
-  const _bH=13,_bGap=7,_bMaxW=W-MX*2-130;
+  // Contextual bar chart — only relevant munis from user's comarca
+  y3=secHdr(T.contextTitle,T.contextSub,y3,C_PURPLE);
+  const _maxV=Math.max(..._barData.map(d=>d.v),1);
+  const _bH=14,_bGap=6,_bMaxW=W-MX*2-140;
   _barData.forEach((d,i)=>{
-    const _by=y3+i*(_bH+_bGap);
-    const _bw=Math.max(4,Math.round((d.v/_maxV)*_bMaxW));
-    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
-    doc.text(sf(d.l),MX+124,_by+10,{align:"right"});
-    fillR(MX+130,_by,_bw,_bH,4,d.c);
-    doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(C_TEXT[0],C_TEXT[1],C_TEXT[2]);
-    doc.text(fmtE(d.v)+"/m2",MX+134+_bw,_by+10);
+    const by=y3+i*(_bH+_bGap);
+    const bw=Math.max(5,Math.round((d.v/_maxV)*_bMaxW));
+    const bc=d.isUser?C_RED:d.isCat?C_MUTED:C_BRAND;
+    doc.setFont("helvetica",d.isUser?"bold":"normal");doc.setFontSize(8);
+    doc.setTextColor(d.isUser?C_TEXT[0]:C_MUTED[0],d.isUser?C_TEXT[1]:C_MUTED[1],d.isUser?C_TEXT[2]:C_MUTED[2]);
+    doc.text(sf(d.l).substring(0,22),MX+134,by+11,{align:"right"});
+    fillR(MX+140,by,bw,_bH,4,bc);
+    if(d.isUser){strokeR(MX+140,by,bw,_bH,4,C_RED,0.8);}
+    doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(C_TEXT[0],C_TEXT[1],C_TEXT[2]);
+    doc.text(fmtE(d.v)+"/m²",MX+144+bw,by+11);
   });
+  // Legend
+  const legY=y3+_barData.length*(_bH+_bGap)+6;
+  fillR(MX,legY,10,10,2,C_RED);T_(_lang==="CA"?"La teva zona":_lang==="EN"?"Your area":"Tu zona",MX+14,legY+9,7.5,C_TEXT);
+  fillR(MX+130,legY,10,10,2,C_BRAND);T_(_lang==="CA"?"Altres municipis comarca":_lang==="EN"?"Other local towns":"Otros municipios comarca",MX+144,legY+9,7.5,C_TEXT);
+  fillR(MX+310,legY,10,10,2,C_MUTED);T_(_lang==="CA"?"Mitja Catalunya":_lang==="EN"?"Catalonia avg.":"Media Catalunya",MX+324,legY+9,7.5,C_TEXT);
   footer(3);
 
-  // ══════════════════════════════════════════════════════════════════
-  // PAGE 4 — PLA D'ACCIÓ
-  // ══════════════════════════════════════════════════════════════════
-  doc.addPage();
-  pageHeader("Pla d'Accio Personalitzat",C_PURPLE,4);
-  let y4=72;
-  txt("Pla d'Accio Personalitzat",MX,y4,17,C_TEXT,"bold"); y4+=6;
-  hline(MX,y4,W-MX,y4,C_PURPLE,1); y4+=20;
+  // ══════════════════════════ PAGE 4 — PLA D'ACCIÓ ══════════════════════════════
+  doc.addPage();pageHeader(C_PURPLE,4,T.p4title);
+  let y4=66;
+  T_(sf(T.p4title),MX,y4,17,C_TEXT,"bold");y4+=5;
+  hline(MX,y4,W-MX,y4,C_PURPLE,1);y4+=16;
 
   // Big rec hero
-  const _rcol=_rcCode==="BUY"||_rcCode==="BUY_SHORT"?C_GREEN:_rcCode==="RENT"?C_BRAND:C_AMBER;
-  const _recLabel=_rcCode==="BUY"?"RECOMANACIO: COMPRA":_rcCode==="BUY_SHORT"?"RECOMANACIO: COMPRA (CURT TERMINI)":_rcCode==="RENT"?"RECOMANACIO: LLOGUER":"RECOMANACIO: NO FACTIBLE ARA";
-  fillR(MX,y4,W-MX*2,58,12,_rcol.map(c=>Math.min(255,Math.round(c*0.12+230))));
-  doc.setFillColor(_rcol[0],_rcol[1],_rcol[2]); doc.roundedRect(MX,y4,W-MX*2,5,3,3,"F");
-  strokeR(MX,y4,W-MX*2,58,12,_rcol,0.8);
-  txt(sf(_recLabel),W/2,y4+28,13,_rcol,"bold","center");
-  const _shortRec=sf(_recTx).substring(0,120)+(sf(_recTx).length>120?"...":"");
-  txt(sf(_shortRec),W/2,y4+46,8,C_TEXT,"normal","center");
-  y4+=72;
+  const _rColArr=_isBuy?C_GREEN:_isRent?C_BRAND:C_RED;
+  const _rLabel=_isBuy?T.isFeasible:_isRent?T.isRent:T.notFeasible;
+  fillR(MX,y4,W-MX*2,54,12,_rColArr.map(v=>Math.min(255,v*0.10+232)));
+  doc.setFillColor(_rColArr[0],_rColArr[1],_rColArr[2]);doc.roundedRect(MX,y4,W-MX*2,5,3,3,"F");
+  strokeR(MX,y4,W-MX*2,54,12,_rColArr,0.8);
+  T_(T.recHero,W/2,y4+20,7.5,C_MUTED,"bold","center");
+  T_(sf(_rLabel),W/2,y4+40,14,_rColArr,"bold","center");
+  y4+=66;
 
-  // 5 action steps
-  y4=secHeader("Passos a Seguir",y4,C_PURPLE); y4+=12;
-  const _isBuy=_rcCode==="BUY"||_rcCode==="BUY_SHORT";
+  // Steps
+  y4=secHdr(T.stepsTitle,null,y4,C_PURPLE);
   const _steps=_isBuy?[
-    {n:"1",t:"Revisa la puntuacio crediticia (CIRBE)",d:"Sol·licita l'informe al Banc d'Espanya. Un perfil net millora les condicions hipotecaries fins un 0.5%.",c:C_BRAND},
-    {n:"2",t:"Acumula "+fmtE(_m2v*0.32)+" (entrada + despeses)",d:"Objectiu d'estalvi mensual recomanat: "+fmtE(_savCap)+". Anys necessaris: "+(_yearsTo!=null&&_yearsTo>0?Math.ceil(_yearsTo)+" anys":"Ja pots!"),c:C_GREEN},
-    {n:"3",t:"Compara hipoteques en 3+ bancs",d:"Busca euribor +0.6% o menys. Quota ideal: sota el 30% ingressos. Actual recomanat max: "+fmtM(_maxMort),c:C_PURPLE},
-    {n:"4",t:"Visita 8-12 immobles a "+sf(_muni||_comarca),d:"Negocia un 5-10% a la baixa del preu publicat. Comprova IBI, deutes comunitat i certificat energetic.",c:C_AMBER},
-    {n:"5",t:"Contracta assessor/notari independent",d:"Cost: 500-1.500 Eur. Revisa carregues, certificat energetic (minim D) i estat estructural de l'immoble.",c:[180,80,220]},
+    {t:T.buyStep1t,d:T.buyStep1d,c:C_BRAND},
+    {t:T.buyStep2t,d:T.buyStep2d+" "+(_yearsTo!=null&&_yearsTo>0?Math.ceil(_yearsTo)+" "+(_lang==="CA"?"anys":_lang==="EN"?"years":"años."):(_lang==="CA"?"menys d'un any.":_lang==="EN"?"less than a year.":"menos de un año.")),c:C_GREEN},
+    {t:T.buyStep3t,d:T.buyStep3d,c:C_PURPLE},
+    {t:T.buyStep4t,d:T.buyStep4d,c:C_AMBER},
+    {t:T.buyStep5t,d:T.buyStep5d,c:[160,80,220]},
   ]:[
-    {n:"1",t:"Fixa un pressupost maxim de lloguer",d:"El lloguer no ha de superar el 30% ingressos nets. Maxim recomanat: "+fmtM(_inc*0.30),c:C_BRAND},
-    {n:"2",t:"Cerca a "+sf(_muni||_comarca)+" i municipis veins",d:"Usa Idealista, Fotocasa i Habitaclia. Compara sempre preus per m2. Municipis veins poden estalviar un 15-20%.",c:C_GREEN},
-    {n:"3",t:"Continua estalviant per a la futura compra",d:"Objectiu: "+fmtE(_savCap)+"/mes. "+(_yearsTo!=null&&_yearsTo>0?"D'aqui "+Math.ceil(_yearsTo)+" anys podras plantejar-te la compra.":"Aviat podras comprar!"),c:C_PURPLE},
-    {n:"4",t:"Negocia el preu del lloguer",d:"El mercat permet negociar fins un 8-12%. Exigeix contracte de 5 anys (Llei d'Habitatge 2023) i inventari signat.",c:C_AMBER},
-    {n:"5",t:"Consulta ajuts al lloguer",d:"Portal habitatge.gencat.cat: ajuts per a joves, bonificacio IRPF fins 60%, i deduccions autonomiques a Catalunya.",c:[180,80,220]},
+    {t:T.rentStep1t,d:T.rentStep1d+" "+fmtM(_inc*0.30)+".",c:C_BRAND},
+    {t:T.rentStep2t,d:T.rentStep2d,c:C_GREEN},
+    {t:T.rentStep3t,d:T.rentStep3d,c:C_PURPLE},
+    {t:T.rentStep4t,d:T.rentStep4d,c:C_AMBER},
+    {t:T.rentStep5t,d:T.rentStep5d,c:[160,80,220]},
   ];
   _steps.forEach((s,i)=>{
-    const _sy=y4+i*50;
-    fillR(MX,_sy,W-MX*2,42,8,C_CARD);
-    strokeR(MX,_sy,W-MX*2,42,8,C_BORDER);
-    doc.setFillColor(s.c[0],s.c[1],s.c[2]); doc.circle(MX+20,_sy+21,10,"F");
-    doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(255,255,255);
-    doc.text(s.n,MX+20,_sy+25,{align:"center"});
-    txt(s.t,MX+38,_sy+17,9,C_TEXT,"bold");
-    const _dLines=doc.splitTextToSize(sf(s.d),W-MX*2-52);
-    doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
-    doc.text((_dLines||[]).slice(0,1),MX+38,_sy+30);
+    const sy=y4+i*48;
+    fillR(MX,sy,W-MX*2,40,8,C_CARD);strokeR(MX,sy,W-MX*2,40,8,C_BORDER);
+    doc.setFillColor(s.c[0],s.c[1],s.c[2]);doc.circle(MX+20,sy+20,9,"F");
+    doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(255,255,255);
+    doc.text(String(i+1),MX+20,sy+24,{align:"center"});
+    T_(s.t,MX+37,sy+15,9,C_TEXT,"bold");
+    const dL=doc.splitTextToSize(sf(s.d),W-MX*2-50);
+    doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(C_MUTED[0],C_MUTED[1],C_MUTED[2]);
+    doc.text((dL||[]).slice(0,1),MX+37,sy+28);
   });
-  y4+=_steps.length*50+16;
+  y4+=_steps.length*48+12;
 
-  // Legal disclaimer
-  const _discH=52;
-  fillR(MX,y4,W-MX*2,_discH,8,[255,251,235]);
-  doc.setFillColor(C_AMBER[0],C_AMBER[1],C_AMBER[2]); doc.roundedRect(MX,y4,W-MX*2,4,3,3,"F");
-  strokeR(MX,y4,W-MX*2,_discH,8,C_AMBER,0.4);
-  txt("Avis Legal",MX+14,y4+18,8,[150,100,0],"bold");
-  const _disc=L==="CA"?"Aquest informe te caracter orientatiu i no substitueix assessorament professional. Estimacions basades en dades de mercat de Catalunya Q1 2026.":"Este informe tiene caracter orientativo y no sustituye asesoramiento profesional. Estimaciones basadas en datos de mercado de Catalunya Q1 2026.";
-  const _dL=doc.splitTextToSize(sf(_disc),W-MX*2-28);
-  doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(120,80,0);
-  doc.text(_dL,MX+14,y4+32);
+  // Disclaimer
+  fillR(MX,y4,W-MX*2,44,8,[255,252,235]);
+  doc.setFillColor(C_AMBER[0],C_AMBER[1],C_AMBER[2]);doc.roundedRect(MX,y4,W-MX*2,4,3,3,"F");
+  strokeR(MX,y4,W-MX*2,44,8,C_AMBER,0.4);
+  const dlines=doc.splitTextToSize(sf(T.disclaimer),W-MX*2-28);
+  doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(120,80,0);
+  doc.text(dlines,MX+14,y4+20);
 
   footer(4);
-
-  // Save
   doc.save("Informe_Habitatge_Premium_2026_"+sf(_nm).replace(/\s+/g,"_")+".pdf");
 }
 

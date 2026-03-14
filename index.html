@@ -8794,8 +8794,8 @@ function exportPDF(){
   const _dateStr=now.toLocaleDateString(_locale,{year:"numeric",month:"long",day:"numeric"});
 
   const fmtE=v=>v?new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v):"—";
-  const fmtM=v=>v?fmtE(v)+"/mes":"—";
-  const sf=v=>{if(v==null||v===undefined||v==="")return"—";return String(v).replace(/[^\x00-\x7E\u00C0-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim()||"—";};
+  const fmtM=v=>v?fmtE(v)+(_lang==="EN"?"/month":"/mes"):"—";
+  const sf=v=>{if(v==null||v===undefined||v==="")return"—";return String(v).replace(/[^\x00-\u024F\u1E00-\u1EFF]/g," ").replace(/\s+/g," ").trim()||"—";};
   const yrsStr=_yearsTo!=null?(_yearsTo<=0?(_lang==="CA"?"menys d'un any":_lang==="EN"?"less than a year":"menos de un año"):(Math.ceil(_yearsTo)+" "+T.years)):(_lang==="CA"?"més de 15 anys":_lang==="EN"?"over 15 years":"más de 15 años");
 
   // ── Rec text (always in current language) ───────────────────────
@@ -8860,7 +8860,7 @@ function exportPDF(){
   function triB(){doc.setFillColor(C_B[0],C_B[1],C_B[2]);doc.rect(0,H-4,W/3,4,"F");doc.setFillColor(C_G[0],C_G[1],C_G[2]);doc.rect(W/3,H-4,W/3,4,"F");doc.setFillColor(C_P[0],C_P[1],C_P[2]);doc.rect(2*W/3,H-4,W/3,4,"F");}
   function pgH(col,pg){fr(0,0,W,48,0,C_DK);doc.setFillColor(col[0],col[1],col[2]);doc.rect(0,0,W,4,"F");tx(T.brand,MX,31,8,C_MT,"bold");tx(T.pg+" "+pg+" "+T.of+" 4",W-MX,31,8,col,"bold","right");hl(0,48,W,48,C_BD,0.4);}
   function pgF(){hl(0,H-34,W,H-34,C_BD,0.4);fr(0,H-33,W,29,0,C_DK);tx(T.brand,MX,H-16,7.5,C_MT);tx(sf(_dateStr),W-MX,H-16,7.5,C_MT,"normal","right");triB();}
-  function kpi(x,y,w,h,lbl,val,sub,ac){fr(x,y,w,h,10,C_CD);sr(x,y,w,h,10,C_BD);doc.setFillColor(ac[0],ac[1],ac[2]);doc.roundedRect(x,y,w,3,2,2,"F");tx(lbl,x+12,y+17,7,C_MT,"bold");tx(val,x+12,y+33,13,C_TX,"bold");if(sub)tx(sub,x+12,y+46,7,C_MT);}
+  function kpi(x,y,w,h,lbl,val,sub,ac){fr(x,y,w,h,10,C_CD);sr(x,y,w,h,10,ac,0.8);doc.setFillColor(ac[0],ac[1],ac[2]);doc.roundedRect(x,y,w,4,2,2,"F");tx(lbl,x+12,y+18,7.5,C_MT,"bold");tx(val,x+12,y+36,13.5,[30,40,65],"bold");if(sub)tx(sub,x+12,y+49,7.5,ac);}
   function secH(title,sub,y,col){fr(MX,y,W-MX*2,sub?36:26,6,C_LT);fr(MX,y,4,sub?36:26,2,col);tx(title,MX+14,y+16,10,C_TX,"bold");if(sub)tx(sub,MX+14,y+29,7.5,C_MT);return y+(sub?46:36);}
 
   // ════════════ PAGE 1 ════════════════════════════════════════════
@@ -8898,7 +8898,7 @@ function exportPDF(){
   tx(T.execTitle,MX+44,416,9,C_MT,"bold");hl(MX+44,422,W-MX-44,422,C_BD,0.3);
   const si=[{l:T.buyPrice,v:fmtE(_m2v),c:C_TX},{l:T.mortMonth,v:fmtM(_mortv),c:C_TX},{l:T.rentMonth,v:fmtM(_rentv),c:C_TX},{l:T.recLabel,v:rLabel,c:rCol}];
   const siW=(W-MX*2-56-32)/4;
-  si.forEach((s,i)=>{const sx=MX+40+i*(siW+2);tx(s.l,sx,396+42,7,C_MT);tx(s.v,sx,396+60,9.5,s.c,"bold");});
+  si.forEach((s,i)=>{const sx=MX+40+i*(siW+2);tx(s.l,sx,396+42,7.5,[148,163,184]);tx(s.v,sx,396+62,10,s.c,"bold");});
   fr(MX+44,396+78,W-MX*2-88,26,8,rCol.map(v=>Math.min(255,v*0.10+234)));sr(MX+44,396+78,W-MX*2-88,26,8,rCol,0.5);
   const shortR=sf(_recTxGen).substring(0,105)+(sf(_recTxGen).length>105?"...":"");
   tx(shortR,W/2,396+94,7.5,C_TX,"normal","center");
@@ -8910,7 +8910,7 @@ function exportPDF(){
   let y2=66;tx(sf(T.p2h)+(sf(_nm)?" — "+sf(_nm):""),MX,y2,16,C_TX,"bold");y2+=5;hl(MX,y2,W-MX,y2,C_B,1);y2+=18;
 
   const kW=(W-MX*2-30)/4;
-  [{l:T.inc,v:fmtE(_inc),s:"net",c:C_B},{l:T.sav,v:fmtE(_sav),s:_lang==="CA"?"Disponibles":_lang==="EN"?"Available":"Disponibles",c:C_G},{l:T.maxMort,v:fmtM(_maxMort),s:"35%",c:C_P},{l:T.savCap,v:fmtE(_savCap)+"/mes",s:"20%",c:C_A}].forEach((k,i)=>{kpi(MX+i*(kW+10),y2,kW,60,k.l,k.v,k.s,k.c);});
+  [{l:T.inc,v:fmtE(_inc),s:"net",c:C_B},{l:T.sav,v:fmtE(_sav),s:_lang==="CA"?"Disponibles":_lang==="EN"?"Available":"Disponibles",c:C_G},{l:T.maxMort,v:fmtM(_maxMort),s:"35%",c:C_P},{l:T.savCap,v:fmtE(_savCap)+(_lang==="EN"?"/month":"/mes"),s:"20%",c:C_A}].forEach((k,i)=>{kpi(MX+i*(kW+10),y2,kW,60,k.l,k.v,k.s,k.c);});
   y2+=78;
 
   y2=secH(T.viabH,null,y2,C_B);

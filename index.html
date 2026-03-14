@@ -2528,8 +2528,130 @@ button:active:not(#go) {
   .k b { color: #0ea5e9 !important; }
   [data-p]:not([data-p="r"]) { display: none !important; }
 }
-</style></head>
-<body>
+</style>
+<style id="firebase-auth-gate-styles">
+body.auth-locked{overflow:hidden!important;}
+body.auth-locked > *:not(#authGate){display:none!important;}
+#authGate{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at top left, rgba(56,189,248,.18), transparent 35%),radial-gradient(circle at bottom right, rgba(34,197,94,.14), transparent 35%),linear-gradient(180deg,#060e1e 0%,#040b18 55%,#020810 100%);font-family:'Plus Jakarta Sans','Outfit',system-ui,sans-serif;}
+#authGate.show{display:flex;}
+.auth-shell{width:min(980px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch;}
+.auth-brand,.auth-panel{border:1px solid rgba(255,255,255,.1);border-radius:26px;background:rgba(7,14,30,.86);backdrop-filter:blur(18px) saturate(1.3);box-shadow:0 16px 50px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05);}
+.auth-brand{padding:34px;position:relative;overflow:hidden;}
+.auth-brand::before{content:"";position:absolute;inset:0;background:linear-gradient(140deg,rgba(56,189,248,.08),transparent 35%,rgba(34,197,94,.08) 100%);pointer-events:none;}
+.auth-panel{padding:30px;}
+.auth-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:rgba(56,189,248,.09);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;font-size:.82rem;font-weight:800;letter-spacing:.25px;}
+.auth-title{margin:16px 0 10px;color:#f8fafc;font-size:2rem;line-height:1.08;font-weight:900;}
+.auth-copy{color:rgba(234,241,255,.76);font-size:.97rem;line-height:1.7;max-width:44ch;}
+.auth-points{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px;}
+.auth-point{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+.auth-point i{font-style:normal;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#22c55e);color:#001820;font-weight:900;flex:none;}
+.auth-point b{display:block;color:#f8fafc;font-size:.92rem;margin-bottom:3px;}
+.auth-point span{color:rgba(234,241,255,.68);font-size:.85rem;line-height:1.45;}
+.auth-tabs{display:flex;gap:8px;background:rgba(255,255,255,.04);padding:6px;border-radius:999px;border:1px solid rgba(255,255,255,.08);margin-bottom:20px;}
+.auth-tab{flex:1;border:0;border-radius:999px;padding:10px 14px;font-weight:900;font-size:.92rem;cursor:pointer;background:transparent;color:rgba(234,241,255,.56);transition:.18s ease;font-family:inherit;}
+.auth-tab.active{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#001820;box-shadow:0 6px 18px rgba(56,189,248,.22);}
+.auth-h1{margin:0 0 6px;color:#f8fafc;font-size:1.48rem;font-weight:900;}
+.auth-sub{margin:0 0 16px;color:rgba(234,241,255,.62);font-size:.9rem;line-height:1.6;}
+.auth-form{display:grid;gap:12px;}
+.auth-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.auth-field label{display:block;margin:0 0 6px;color:rgba(234,241,255,.82);font-size:.82rem;font-weight:800;letter-spacing:.2px;}
+.auth-field input{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid rgba(148,163,184,.18);background:rgba(4,10,22,.75);color:#eaf1ff;outline:none;font-size:.95rem;font-family:inherit;transition:border-color .16s ease, box-shadow .16s ease, background .16s ease;}
+.auth-field input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.18);background:rgba(4,10,22,.92);}
+.auth-field input::placeholder{color:rgba(234,241,255,.32);}
+.auth-submit{width:100%;margin-top:4px;border:0;border-radius:14px;padding:14px 18px;background:linear-gradient(135deg,#38bdf8,#22c55e);color:#001820;font-size:.96rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(56,189,248,.18);transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;}
+.auth-submit:hover{transform:translateY(-1px);filter:brightness(1.04);box-shadow:0 14px 36px rgba(56,189,248,.24);}
+.auth-submit:disabled{opacity:.55;cursor:not-allowed;transform:none;filter:none;box-shadow:none;}
+.auth-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.auth-link{background:none;border:0;padding:0;color:#7dd3fc;font-size:.84rem;font-weight:800;cursor:pointer;font-family:inherit;}
+.auth-link:hover{text-decoration:underline;}
+.auth-msg{min-height:22px;font-size:.84rem;line-height:1.45;font-weight:700;margin-top:2px;}
+.auth-msg.ok{color:#86efac;}
+.auth-msg.err{color:#fca5a5;}
+.auth-note{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:#fde68a;font-size:.79rem;line-height:1.55;}
+.auth-loading{display:flex;align-items:center;gap:10px;color:rgba(234,241,255,.62);font-size:.85rem;font-weight:700;margin-top:8px;}
+.auth-loading .dot{width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:authPulse 1.1s ease-in-out infinite;}
+@keyframes authPulse{0%,100%{transform:scale(.7);opacity:.5}50%{transform:scale(1);opacity:1}}
+@media (max-width: 860px){.auth-shell{grid-template-columns:1fr;}.auth-brand{display:none;}.auth-panel{padding:24px;}}
+@media (max-width: 560px){#authGate{padding:12px;}.auth-panel{padding:18px;border-radius:20px;}.auth-grid2{grid-template-columns:1fr;}.auth-tabs{margin-bottom:16px;}.auth-title{font-size:1.68rem;}}
+</style>
+</head>
+<body class="auth-locked">
+
+<div id="authGate" class="show" aria-live="polite">
+  <div class="auth-shell">
+    <section class="auth-brand" aria-hidden="true">
+      <div class="auth-kicker">🔐 Espai privat</div>
+      <h1 class="auth-title">Inicia sessió per guardar els teus resultats</h1>
+      <p class="auth-copy">Registra't o entra amb el teu correu per conservar simulacions, continuar més tard i crear un historial real d'ús de la plataforma.</p>
+      <div class="auth-points">
+        <div class="auth-point"><i>✓</i><div><b>Historial personal</b><span>Guarda simulacions i torna a consultar-les sense començar de zero.</span></div></div>
+        <div class="auth-point"><i>✉</i><div><b>Contacte i seguiment</b><span>Podràs rebre recomanacions i futures millores del projecte.</span></div></div>
+        <div class="auth-point"><i>🏠</i><div><b>Experiència completa</b><span>La calculadora i la resta de funcionalitats s'obren després del login.</span></div></div>
+      </div>
+    </section>
+    <section class="auth-panel">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" id="loginTab">Entrar</button>
+        <button type="button" class="auth-tab" id="registerTab">Registrar-se</button>
+      </div>
+
+      <div id="loginView">
+        <h2 class="auth-h1">Benvingut de nou</h2>
+        <p class="auth-sub">Entra amb el teu correu i contrasenya per accedir a l'eina.</p>
+        <form id="loginForm" class="auth-form">
+          <div class="auth-field">
+            <label for="loginEmail">Correu electrònic</label>
+            <input id="loginEmail" type="email" autocomplete="email" required placeholder="nom@exemple.com">
+          </div>
+          <div class="auth-field">
+            <label for="loginPassword">Contrasenya</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="••••••••">
+          </div>
+          <div class="auth-row">
+            <button type="button" class="auth-link" id="forgotPasswordBtn">He oblidat la contrasenya</button>
+          </div>
+          <div id="loginMsg" class="auth-msg"></div>
+          <button class="auth-submit" id="loginSubmit" type="submit">Entrar a la plataforma</button>
+        </form>
+      </div>
+
+      <div id="registerView" style="display:none">
+        <h2 class="auth-h1">Crea el teu compte</h2>
+        <p class="auth-sub">Registra't per guardar resultats, correu i historial de simulacions.</p>
+        <form id="registerForm" class="auth-form">
+          <div class="auth-grid2">
+            <div class="auth-field">
+              <label for="registerName">Nom d'usuari</label>
+              <input id="registerName" type="text" autocomplete="username" required placeholder="El teu nom">
+            </div>
+            <div class="auth-field">
+              <label for="registerEmail">Correu electrònic</label>
+              <input id="registerEmail" type="email" autocomplete="email" required placeholder="nom@exemple.com">
+            </div>
+          </div>
+          <div class="auth-grid2">
+            <div class="auth-field">
+              <label for="registerPassword">Contrasenya</label>
+              <input id="registerPassword" type="password" autocomplete="new-password" required placeholder="Mínim 6 caràcters">
+            </div>
+            <div class="auth-field">
+              <label for="registerPassword2">Repeteix la contrasenya</label>
+              <input id="registerPassword2" type="password" autocomplete="new-password" required placeholder="Repeteix la contrasenya">
+            </div>
+          </div>
+          <div id="registerMsg" class="auth-msg"></div>
+          <button class="auth-submit" id="registerSubmit" type="submit">Crear compte i entrar</button>
+        </form>
+      </div>
+
+      <div class="auth-note">
+        Si obres aquest fitxer com <b>file://</b>, alguns navegadors poden bloquejar Firebase Auth. El comportament correcte és publicar-lo a GitHub Pages, Hostinger o provar-lo en un servidor local.
+      </div>
+      <div id="authLoading" class="auth-loading"><span class="dot"></span><span>Comprovant sessió...</span></div>
+    </section>
+  </div>
+</div>
+
 
 <!-- SPLASH SCREEN -->
 <div id="hx-splash">
@@ -2553,7 +2675,7 @@ button:active:not(#go) {
     </div>
     <div id="hx-splash-title">Assessoria d'Habitatge</div>
     <div id="hx-splash-sub">
-      <span>Catalunya</span><span class="hx-splash-dot"> · </span><span>224 municipis</span><span class="hx-splash-dot"> · </span><span>AI Advisor</span>
+      <span>Catalunya</span><span class="hx-splash-dot"> · </span><span>550+ municipis</span><span class="hx-splash-dot"> · </span><span>AI Advisor</span>
     </div>
     <div id="hx-splash-bar-wrap"><div id="hx-splash-bar"></div></div>
     <div id="hx-splash-hint">Carregant dades de mercat...</div>
@@ -3363,48 +3485,48 @@ const FALLBACK_POLYGONS={
 
 // Centroides para etiquetas permanentes
 const CATALUNYA_DB = {
-  "Barcelonès": {"Barcelona":{"v":5650,"l":23.5},"L'Hospitalet de Llobregat":{"v":3900,"l":19.5},"Badalona":{"v":3350,"l":18.0},"Santa Coloma de Gramenet":{"v":2800,"l":16.5},"Sant Adrià de Besòs":{"v":3300,"l":17.5}},
-  "Baix Llobregat": {"Castelldefels":{"v":5450,"l":21.0},"Gavà":{"v":4850,"l":20.0},"Viladecans":{"v":3900,"l":19.0},"Sant Boi de Llobregat":{"v":3700,"l":18.0},"Cornellà de Llobregat":{"v":4300,"l":19.5},"Esplugues de Llobregat":{"v":5200,"l":20.5},"Sant Joan Despí":{"v":4550,"l":19.5},"El Prat de Llobregat":{"v":3650,"l":18.0},"Molins de Rei":{"v":4050,"l":18.5},"Sant Feliu de Llobregat":{"v":3950,"l":18.5},"Sant Vicenç dels Horts":{"v":2900,"l":15.0},"Martorell":{"v":2600,"l":13.5},"Abrera":{"v":2500,"l":13.0},"Olesa de Montserrat":{"v":2400,"l":12.5},"Cervelló":{"v":2800,"l":14.0},"Corbera de Llobregat":{"v":3200,"l":14.5},"Begues":{"v":3400,"l":15.0},"Pallejà":{"v":3100,"l":14.5},"Sant Andreu de la Barca":{"v":2550,"l":13.5},"Torrelles de Llobregat":{"v":3200,"l":14.5},"Vallirana":{"v":2850,"l":14.0}},
-  "Vallès Occidental": {"Sabadell":{"v":3100,"l":15.0},"Terrassa":{"v":2900,"l":14.5},"Sant Cugat del Vallès":{"v":5750,"l":23.0},"Rubí":{"v":2550,"l":14.0},"Cerdanyola del Vallès":{"v":3500,"l":17.5},"Barberà del Vallès":{"v":2950,"l":14.5},"Montcada i Reixac":{"v":2750,"l":14.5},"Ripollet":{"v":3050,"l":15.0},"Castellbisbal":{"v":2650,"l":13.5},"Badia del Vallès":{"v":2200,"l":12.5},"Sant Quirze del Vallès":{"v":4200,"l":18.0},"Matadepera":{"v":4600,"l":19.0},"Vacarisses":{"v":2400,"l":12.5},"Ullastrell":{"v":2750,"l":13.5},"Viladecavalls":{"v":2600,"l":13.5},"Polinyà":{"v":2550,"l":13.5},"Sentmenat":{"v":2650,"l":13.5},"Palau-solità i Plegamans":{"v":2850,"l":14.0}},
+  "Barcelonès": {"Barcelona":{"v":6100,"l":24.5},"L'Hospitalet de Llobregat":{"v":4200,"l":20.5},"Badalona":{"v":3600,"l":18.5},"Santa Coloma de Gramenet":{"v":3000,"l":17.0},"Sant Adrià de Besòs":{"v":3550,"l":18.0}},
+  "Baix Llobregat": {"Castelldefels":{"v":5800,"l":22.0},"Gavà":{"v":5200,"l":21.0},"Viladecans":{"v":4100,"l":19.5},"Sant Boi de Llobregat":{"v":3700,"l":18.0},"Cornellà de Llobregat":{"v":4600,"l":20.5},"Esplugues de Llobregat":{"v":5500,"l":21.5},"Sant Joan Despí":{"v":4800,"l":20.0},"El Prat de Llobregat":{"v":3850,"l":18.5},"Molins de Rei":{"v":4050,"l":18.5},"Sant Feliu de Llobregat":{"v":3950,"l":18.5},"Sant Vicenç dels Horts":{"v":2900,"l":15.0},"Martorell":{"v":2600,"l":13.5},"Abrera":{"v":2500,"l":13.0},"Olesa de Montserrat":{"v":2400,"l":12.5},"Cervelló":{"v":2800,"l":14.0},"Corbera de Llobregat":{"v":3200,"l":14.5},"Begues":{"v":3400,"l":15.0},"Pallejà":{"v":3100,"l":14.5},"Sant Andreu de la Barca":{"v":2550,"l":13.5},"Torrelles de Llobregat":{"v":3200,"l":14.5},"Vallirana":{"v":2850,"l":14.0}},
+  "Vallès Occidental": {"Sabadell":{"v":3300,"l":15.5},"Terrassa":{"v":3100,"l":15.0},"Sant Cugat del Vallès":{"v":6200,"l":24.0},"Rubí":{"v":2550,"l":14.0},"Cerdanyola del Vallès":{"v":3750,"l":18.0},"Barberà del Vallès":{"v":2950,"l":14.5},"Montcada i Reixac":{"v":2750,"l":14.5},"Ripollet":{"v":3050,"l":15.0},"Castellbisbal":{"v":2650,"l":13.5},"Badia del Vallès":{"v":2200,"l":12.5},"Sant Quirze del Vallès":{"v":4200,"l":18.0},"Matadepera":{"v":4600,"l":19.0},"Vacarisses":{"v":2400,"l":12.5},"Ullastrell":{"v":2750,"l":13.5},"Viladecavalls":{"v":2600,"l":13.5},"Polinyà":{"v":2550,"l":13.5},"Sentmenat":{"v":2650,"l":13.5},"Palau-solità i Plegamans":{"v":2850,"l":14.0}},
   "Vallès Oriental": {"Granollers":{"v":2650,"l":14.0},"Mollet del Vallès":{"v":3050,"l":15.0},"La Roca del Vallès":{"v":3500,"l":16.5},"Cardedeu":{"v":3400,"l":15.0},"Caldes de Montbui":{"v":2800,"l":13.5},"Parets del Vallès":{"v":2650,"l":14.0},"Montmeló":{"v":2400,"l":13.0},"Lliçà d'Amunt":{"v":2550,"l":13.0},"Santa Perpètua de Mogoda":{"v":2900,"l":14.5},"Les Franqueses del Vallès":{"v":2650,"l":13.5},"Canovelles":{"v":2300,"l":12.5},"Lliçà de Vall":{"v":2400,"l":12.5},"Bigues i Riells":{"v":2600,"l":13.0},"Sant Celoni":{"v":2350,"l":12.5},"L'Ametlla del Vallès":{"v":2750,"l":13.5},"Martorelles":{"v":2550,"l":13.0}},
-  "Maresme": {"Mataró":{"v":2550,"l":14.5},"Vilassar de Mar":{"v":4050,"l":18.0},"Premià de Mar":{"v":4300,"l":18.5},"Masnou":{"v":5150,"l":20.0},"Montgat":{"v":4450,"l":19.0},"Calella":{"v":2800,"l":14.0},"Pineda de Mar":{"v":2400,"l":12.5},"Sant Pol de Mar":{"v":3950,"l":17.0},"Arenys de Mar":{"v":3500,"l":16.0},"Canet de Mar":{"v":3300,"l":15.0},"Santa Susanna":{"v":2300,"l":12.5},"Argentona":{"v":3750,"l":16.5},"Vilassar de Dalt":{"v":3950,"l":17.0},"Premià de Dalt":{"v":3500,"l":16.0},"Teià":{"v":4600,"l":19.0},"Alella":{"v":5500,"l":21.0},"Tiana":{"v":4950,"l":20.0},"Sant Vicenç de Montalt":{"v":4200,"l":18.0},"Caldes d'Estrac":{"v":3850,"l":17.5},"Arenys de Munt":{"v":3100,"l":14.5},"Sant Iscle de Vallalta":{"v":2400,"l":12.5}},
-  "Garraf": {"Vilanova i la Geltrú":{"v":3100,"l":15.0},"Sitges":{"v":6500,"l":23.0},"Sant Pere de Ribes":{"v":3500,"l":16.0},"Cubelles":{"v":2800,"l":14.0},"Canyelles":{"v":2500,"l":12.5},"Olivella":{"v":2550,"l":13.0}},
-  "Alt Penedès": {"Vilafranca del Penedès":{"v":2500,"l":12.0},"Sant Sadurní d'Anoia":{"v":2200,"l":11.0},"Gelida":{"v":2900,"l":13.0},"Castellví de la Marca":{"v":1850,"l":9.0},"Subirats":{"v":2050,"l":10.0},"Santa Fe del Penedès":{"v":1750,"l":9.0},"Sant Quintí de Mediona":{"v":1700,"l":8.5},"Mediona":{"v":1650,"l":8.0},"Font-rubí":{"v":1550,"l":8.0},"Pacs del Penedès":{"v":1950,"l":9.5},"Sant Martí Sarroca":{"v":1800,"l":9.0},"Avinyonet del Penedès":{"v":1750,"l":9.0},"Olèrdola":{"v":1900,"l":9.5},"Santa Margarida i els Monjos":{"v":2000,"l":10.0},"Torrelavit":{"v":1700,"l":8.5}},
-  "Baix Penedès": {"El Vendrell":{"v":2300,"l":11.0},"Calafell":{"v":2750,"l":12.5},"Cunit":{"v":2900,"l":13.0},"Santa Oliva":{"v":2000,"l":9.5},"Bellvei":{"v":2000,"l":10.5},"L'Arboç":{"v":1850,"l":10.0},"Banyeres del Penedès":{"v":1550,"l":9.0},"Albinyana":{"v":1950,"l":9.5},"Bonastre":{"v":1250,"l":8.0},"Masllorenç":{"v":1400,"l":8.5},"La Bisbal del Penedès":{"v":1600,"l":9.0},"Llorenç del Penedès":{"v":2150,"l":7.5},"Sant Jaume dels Domenys":{"v":1550,"l":7.5},"El Montmell":{"v":1350,"l":8.0}},
-  "Anoia": {"Igualada":{"v":2350,"l":11.5},"Vilanova del Camí":{"v":1900,"l":10.0},"Santa Margarida de Montbui":{"v":1700,"l":9.0},"Capellades":{"v":1650,"l":9.0},"Piera":{"v":2550,"l":12.5},"Òdena":{"v":1750,"l":9.5},"Sant Pere Sallavinera":{"v":1300,"l":7.0},"La Llacuna":{"v":1450,"l":7.5},"Jorba":{"v":1400,"l":7.5},"Argençola":{"v":1250,"l":7.0},"Copons":{"v":1300,"l":7.0},"Calaf":{"v":1500,"l":8.0},"Veciana":{"v":1200,"l":6.5}},
-  "Bages": {"Manresa":{"v":2000,"l":10.5},"Sant Joan de Vilatorrada":{"v":1850,"l":10.0},"Santpedor":{"v":1950,"l":10.0},"Artés":{"v":1600,"l":9.0},"Navarcles":{"v":1700,"l":9.0},"Sallent":{"v":1150,"l":7.0},"Avinyó":{"v":1300,"l":7.5},"Sant Fruitós de Bages":{"v":1850,"l":10.0},"Súria":{"v":1250,"l":7.0},"Balsareny":{"v":1200,"l":7.0},"Callús":{"v":1300,"l":7.5},"Castellbell i el Vilar":{"v":1500,"l":8.0},"El Pont de Vilomara i Rocafort":{"v":1450,"l":8.0},"Monistrol de Montserrat":{"v":1650,"l":9.0},"Rajadell":{"v":1250,"l":7.0}},
-  "Berguedà": {"Berga":{"v":1400,"l":7.5},"Gironella":{"v":1200,"l":6.5},"Puig-reig":{"v":1000,"l":6.0},"Olvan":{"v":950,"l":5.0},"Bagà":{"v":1150,"l":6.5},"Guardiola de Berguedà":{"v":1000,"l":6.0},"Cercs":{"v":950,"l":5.0},"Avià":{"v":1100,"l":6.0},"Casserres":{"v":950,"l":5.0},"L'Espunyola":{"v":900,"l":4.5}},
-  "Osona": {"Vic":{"v":2300,"l":11.5},"Manlleu":{"v":1650,"l":9.0},"Torelló":{"v":1500,"l":8.5},"Roda de Ter":{"v":1450,"l":8.0},"Sant Julià de Vilatorta":{"v":1750,"l":9.0},"Centelles":{"v":1700,"l":9.0},"Tona":{"v":1800,"l":9.5},"Gurb":{"v":1650,"l":9.0},"Santa Eugènia de Berga":{"v":1650,"l":9.0},"Malla":{"v":1500,"l":8.0},"Seva":{"v":1650,"l":9.0},"Balenyà":{"v":1650,"l":8.5},"Calldetenes":{"v":1600,"l":8.5},"L'Esquirol":{"v":1300,"l":7.5}},
-  "Ripollès": {"Ripoll":{"v":1250,"l":7.0},"Ribes de Freser":{"v":1400,"l":7.5},"Campdevànol":{"v":1150,"l":6.5},"Sant Joan de les Abadesses":{"v":1150,"l":6.5},"Camprodon":{"v":1650,"l":8.5},"Vallfogona de Ripollès":{"v":1050,"l":6.0}},
-  "Gironès": {"Girona":{"v":3400,"l":17.0},"Salt":{"v":2200,"l":12.0},"Sarrià de Ter":{"v":2400,"l":12.5},"Sant Gregori":{"v":2350,"l":12.0},"Fornells de la Selva":{"v":2300,"l":11.5},"Cassà de la Selva":{"v":2150,"l":11.0},"Celrà":{"v":2100,"l":11.0},"Bordils":{"v":2000,"l":10.5},"Quart":{"v":2150,"l":11.5},"Llambilles":{"v":2200,"l":11.5},"Juià":{"v":1950,"l":10.0},"Sant Andreu Salou":{"v":2050,"l":10.5}},
-  "Selva": {"Lloret de Mar":{"v":2650,"l":12.5},"Tossa de Mar":{"v":4050,"l":16.5},"Santa Coloma de Farners":{"v":1750,"l":10.0},"Sils":{"v":1900,"l":10.0},"Hostalric":{"v":1650,"l":9.0},"Vidreres":{"v":1750,"l":9.5},"Maçanet de la Selva":{"v":1950,"l":10.5},"Tordera":{"v":2100,"l":11.0},"Caldes de Malavella":{"v":2550,"l":12.5},"Riudarenes":{"v":1700,"l":9.0},"Anglès":{"v":1700,"l":9.0},"Amer":{"v":1550,"l":8.5},"Sant Hilari Sacalm":{"v":1600,"l":9.0},"Blanes":{"v":2400,"l":13.0},"Malgrat de Mar":{"v":2250,"l":12.0},"Arbúcies":{"v":1700,"l":9.0},"Sant Feliu de Buixalleu":{"v":1550,"l":8.5}},
-  "Alt Empordà": {"Figueres":{"v":2150,"l":11.0},"Roses":{"v":3950,"l":16.5},"Empuriabrava":{"v":4450,"l":18.5},"Cadaqués":{"v":7000,"l":21.0},"El Port de la Selva":{"v":5350,"l":17.5},"Castelló d'Empúries":{"v":2800,"l":13.5},"L'Escala":{"v":3700,"l":16.5},"Llançà":{"v":3050,"l":14.0},"Portbou":{"v":1900,"l":10.0},"Peralada":{"v":2000,"l":10.5},"Pau":{"v":2200,"l":11.5},"Vilafant":{"v":2100,"l":11.0},"Pont de Molins":{"v":1850,"l":10.0},"Garriguella":{"v":1750,"l":9.5},"Colera":{"v":2400,"l":12.5},"El Far d'Empordà":{"v":1950,"l":10.0},"Mollet de Peralada":{"v":1800,"l":9.5},"Sant Pere Pescador":{"v":3100,"l":14.0},"Torroella de Fluvià":{"v":1850,"l":10.0}},
-  "Baix Empordà": {"Palafrugell":{"v":4050,"l":17.0},"Platja d'Aro":{"v":5700,"l":21.0},"Sant Feliu de Guíxols":{"v":4550,"l":18.0},"Palamós":{"v":3500,"l":16.0},"La Bisbal d'Empordà":{"v":2250,"l":11.5},"Torroella de Montgrí":{"v":2650,"l":13.0},"Calonge":{"v":3500,"l":16.0},"Begur":{"v":6050,"l":20.0},"Pals":{"v":4450,"l":16.5},"Llagostera":{"v":2000,"l":10.5},"Castell-Platja d'Aro":{"v":5700,"l":21.0},"Mont-ras":{"v":3100,"l":14.5},"Vall-llobrega":{"v":2750,"l":13.5},"Fonteta":{"v":2100,"l":10.5},"Forallac":{"v":2150,"l":11.0},"Cruïlles, Monells i Sant Sadurní de l'Heura":{"v":2000,"l":10.5},"Vulpellac":{"v":2100,"l":11.0},"Gualta":{"v":2050,"l":10.5},"Ultramort":{"v":1950,"l":10.0}},
+  "Maresme": {"Mataró":{"v":2800,"l":15.0},"Vilassar de Mar":{"v":4350,"l":18.5},"Premià de Mar":{"v":4600,"l":19.0},"Masnou":{"v":5500,"l":21.0},"Montgat":{"v":4750,"l":19.5},"Calella":{"v":2800,"l":14.0},"Pineda de Mar":{"v":2400,"l":12.5},"Sant Pol de Mar":{"v":3950,"l":17.0},"Arenys de Mar":{"v":3750,"l":16.5},"Canet de Mar":{"v":3300,"l":15.0},"Santa Susanna":{"v":2300,"l":12.5},"Argentona":{"v":3750,"l":16.5},"Vilassar de Dalt":{"v":3950,"l":17.0},"Premià de Dalt":{"v":3500,"l":16.0},"Teià":{"v":4900,"l":19.5},"Alella":{"v":5800,"l":22.0},"Tiana":{"v":5200,"l":21.0},"Sant Vicenç de Montalt":{"v":4200,"l":18.0},"Caldes d'Estrac":{"v":3850,"l":17.5},"Arenys de Munt":{"v":3100,"l":14.5},"Sant Iscle de Vallalta":{"v":2400,"l":12.5}},
+  "Garraf": {"Vilanova i la Geltrú":{"v":3350,"l":16.0},"Sitges":{"v":7000,"l":24.5},"Sant Pere de Ribes":{"v":3750,"l":16.5},"Cubelles":{"v":2800,"l":14.0},"Canyelles":{"v":2500,"l":12.5},"Olivella":{"v":2550,"l":13.0}},
+  "Alt Penedès": {"Vilafranca del Penedès":{"v":2700,"l":12.5},"Sant Sadurní d'Anoia":{"v":2400,"l":11.5},"Gelida":{"v":3100,"l":13.5},"Castellví de la Marca":{"v":1850,"l":9.0},"Subirats":{"v":2050,"l":10.0},"Santa Fe del Penedès":{"v":1750,"l":9.0},"Sant Quintí de Mediona":{"v":1700,"l":8.5},"Mediona":{"v":1650,"l":8.0},"Font-rubí":{"v":1550,"l":8.0},"Pacs del Penedès":{"v":1950,"l":9.5},"Sant Martí Sarroca":{"v":1800,"l":9.0},"Avinyonet del Penedès":{"v":1750,"l":9.0},"Olèrdola":{"v":1900,"l":9.5},"Santa Margarida i els Monjos":{"v":2000,"l":10.0},"Torrelavit":{"v":1700,"l":8.5}},
+  "Baix Penedès": {"El Vendrell":{"v":2500,"l":11.5},"Calafell":{"v":3000,"l":13.0},"Cunit":{"v":3150,"l":13.5},"Santa Oliva":{"v":2000,"l":9.5},"Bellvei":{"v":2000,"l":10.5},"L'Arboç":{"v":1850,"l":10.0},"Banyeres del Penedès":{"v":1550,"l":9.0},"Albinyana":{"v":1950,"l":9.5},"Bonastre":{"v":1250,"l":8.0},"Masllorenç":{"v":1400,"l":8.5},"La Bisbal del Penedès":{"v":1600,"l":9.0},"Llorenç del Penedès":{"v":2150,"l":7.5},"Sant Jaume dels Domenys":{"v":1550,"l":7.5},"El Montmell":{"v":1350,"l":8.0}},
+  "Anoia": {"Igualada":{"v":2550,"l":12.0},"Vilanova del Camí":{"v":1900,"l":10.0},"Santa Margarida de Montbui":{"v":1700,"l":9.0},"Capellades":{"v":1650,"l":9.0},"Piera":{"v":2750,"l":13.0},"Òdena":{"v":1750,"l":9.5},"Sant Pere Sallavinera":{"v":1300,"l":7.0},"La Llacuna":{"v":1450,"l":7.5},"Jorba":{"v":1400,"l":7.5},"Argençola":{"v":1250,"l":7.0},"Copons":{"v":1300,"l":7.0},"Calaf":{"v":1500,"l":8.0},"Veciana":{"v":1200,"l":6.5}},
+  "Bages": {"Manresa":{"v":2150,"l":11.0},"Sant Joan de Vilatorrada":{"v":1850,"l":10.0},"Santpedor":{"v":1950,"l":10.0},"Artés":{"v":1600,"l":9.0},"Navarcles":{"v":1700,"l":9.0},"Sallent":{"v":1150,"l":7.0},"Avinyó":{"v":1300,"l":7.5},"Sant Fruitós de Bages":{"v":1850,"l":10.0},"Súria":{"v":1250,"l":7.0},"Balsareny":{"v":1200,"l":7.0},"Callús":{"v":1300,"l":7.5},"Castellbell i el Vilar":{"v":1500,"l":8.0},"El Pont de Vilomara i Rocafort":{"v":1450,"l":8.0},"Monistrol de Montserrat":{"v":1650,"l":9.0},"Rajadell":{"v":1250,"l":7.0},"Cardona":{"v":1300,"l":7.0},"Fonollosa":{"v":1200,"l":6.5},"Sant Salvador de Guardiola":{"v":1300,"l":7.0},"Mura":{"v":1450,"l":8.0},"Gaià":{"v":1150,"l":6.0}},
+  "Berguedà": {"Berga":{"v":1400,"l":7.5},"Gironella":{"v":1200,"l":6.5},"Puig-reig":{"v":1000,"l":6.0},"Olvan":{"v":950,"l":5.0},"Bagà":{"v":1150,"l":6.5},"Guardiola de Berguedà":{"v":1000,"l":6.0},"Cercs":{"v":950,"l":5.0},"Avià":{"v":1100,"l":6.0},"Casserres":{"v":950,"l":5.0},"L'Espunyola":{"v":900,"l":4.5},"Borredà":{"v":950,"l":5.0},"Montmajor":{"v":900,"l":5.0},"Sagàs":{"v":900,"l":5.0},"Saldes":{"v":1000,"l":5.5},"Santa Maria de Merlès":{"v":900,"l":5.0},"Viver i Serrateix":{"v":900,"l":5.0},"Vilada":{"v":900,"l":5.0},"Capolat":{"v":850,"l":4.5},"La Nou de Berguedà":{"v":900,"l":5.0}},
+  "Osona": {"Vic":{"v":2500,"l":12.0},"Manlleu":{"v":1650,"l":9.0},"Torelló":{"v":1500,"l":8.5},"Roda de Ter":{"v":1450,"l":8.0},"Sant Julià de Vilatorta":{"v":1750,"l":9.0},"Centelles":{"v":1700,"l":9.0},"Tona":{"v":1800,"l":9.5},"Gurb":{"v":1650,"l":9.0},"Santa Eugènia de Berga":{"v":1650,"l":9.0},"Malla":{"v":1500,"l":8.0},"Seva":{"v":1650,"l":9.0},"Balenyà":{"v":1650,"l":8.5},"Calldetenes":{"v":1600,"l":8.5},"L'Esquirol":{"v":1300,"l":7.5},"Taradell":{"v":2000,"l":10.0},"Sant Hipòlit de Voltregà":{"v":1500,"l":8.0},"Prats de Lluçanès":{"v":1600,"l":8.5},"Les Masies de Roda":{"v":1500,"l":8.0},"Perafita":{"v":1400,"l":7.5},"Sant Boi de Lluçanès":{"v":1350,"l":7.5},"Espinelves":{"v":1750,"l":9.5},"Tavèrnoles":{"v":1700,"l":9.0}},
+  "Ripollès": {"Ripoll":{"v":1250,"l":7.0},"Ribes de Freser":{"v":1400,"l":7.5},"Campdevànol":{"v":1150,"l":6.5},"Sant Joan de les Abadesses":{"v":1150,"l":6.5},"Camprodon":{"v":1650,"l":8.5},"Vallfogona de Ripollès":{"v":1050,"l":6.0},"Gombrèn":{"v":1250,"l":6.5},"Ogassa":{"v":950,"l":5.0},"Planoles":{"v":1600,"l":8.0},"Queralbs":{"v":1550,"l":8.0},"Setcases":{"v":2100,"l":9.5},"Les Llosses":{"v":950,"l":5.0},"Vilallonga de Ter":{"v":1150,"l":6.0},"Toses":{"v":1500,"l":7.5},"Pardines":{"v":1150,"l":6.0}},
+  "Gironès": {"Girona":{"v":3750,"l":18.0},"Salt":{"v":2400,"l":12.5},"Sarrià de Ter":{"v":2400,"l":12.5},"Sant Gregori":{"v":2350,"l":12.0},"Fornells de la Selva":{"v":2300,"l":11.5},"Cassà de la Selva":{"v":2150,"l":11.0},"Celrà":{"v":2100,"l":11.0},"Bordils":{"v":2000,"l":10.5},"Quart":{"v":2150,"l":11.5},"Llambilles":{"v":2200,"l":11.5},"Juià":{"v":1950,"l":10.0},"Sant Andreu Salou":{"v":2050,"l":10.5}},
+  "Selva": {"Lloret de Mar":{"v":3200,"l":13.5},"Tossa de Mar":{"v":4300,"l":17.5},"Santa Coloma de Farners":{"v":1750,"l":10.0},"Sils":{"v":1900,"l":10.0},"Hostalric":{"v":1650,"l":9.0},"Vidreres":{"v":1750,"l":9.5},"Maçanet de la Selva":{"v":1950,"l":10.5},"Tordera":{"v":2100,"l":11.0},"Caldes de Malavella":{"v":2750,"l":13.5},"Riudarenes":{"v":1700,"l":9.0},"Anglès":{"v":1700,"l":9.0},"Amer":{"v":1550,"l":8.5},"Sant Hilari Sacalm":{"v":1600,"l":9.0},"Blanes":{"v":2700,"l":13.5},"Malgrat de Mar":{"v":2250,"l":12.0},"Arbúcies":{"v":1700,"l":9.0},"Sant Feliu de Buixalleu":{"v":1550,"l":8.5}},
+  "Alt Empordà": {"Figueres":{"v":2300,"l":11.5},"Roses":{"v":4250,"l":17.5},"Empuriabrava":{"v":4800,"l":19.5},"Cadaqués":{"v":7500,"l":22.0},"El Port de la Selva":{"v":5700,"l":18.5},"Castelló d'Empúries":{"v":2800,"l":13.5},"L'Escala":{"v":3950,"l":17.0},"Llançà":{"v":3050,"l":14.0},"Portbou":{"v":1900,"l":10.0},"Peralada":{"v":2000,"l":10.5},"Pau":{"v":2200,"l":11.5},"Vilafant":{"v":2100,"l":11.0},"Pont de Molins":{"v":1850,"l":10.0},"Garriguella":{"v":1750,"l":9.5},"Colera":{"v":2400,"l":12.5},"El Far d'Empordà":{"v":1950,"l":10.0},"Mollet de Peralada":{"v":1800,"l":9.5},"Sant Pere Pescador":{"v":3100,"l":14.0},"Torroella de Fluvià":{"v":1850,"l":10.0}},
+  "Baix Empordà": {"Palafrugell":{"v":4350,"l":18.0},"Platja d'Aro":{"v":6100,"l":22.0},"Sant Feliu de Guíxols":{"v":4850,"l":19.0},"Palamós":{"v":3750,"l":17.0},"La Bisbal d'Empordà":{"v":2250,"l":11.5},"Torroella de Montgrí":{"v":2650,"l":13.0},"Calonge":{"v":3500,"l":16.0},"Begur":{"v":6500,"l":21.5},"Pals":{"v":4750,"l":17.5},"Llagostera":{"v":2000,"l":10.5},"Castell-Platja d'Aro":{"v":6100,"l":22.0},"Mont-ras":{"v":3100,"l":14.5},"Vall-llobrega":{"v":2750,"l":13.5},"Fonteta":{"v":2100,"l":10.5},"Forallac":{"v":2150,"l":11.0},"Cruïlles, Monells i Sant Sadurní de l'Heura":{"v":2000,"l":10.5},"Vulpellac":{"v":2100,"l":11.0},"Gualta":{"v":2050,"l":10.5},"Ultramort":{"v":1950,"l":10.0}},
   "Pla de l'Estany": {"Banyoles":{"v":2150,"l":11.5},"Porqueres":{"v":2000,"l":11.0},"Mieres":{"v":1400,"l":8.0},"Cornellà del Terri":{"v":1750,"l":9.5},"Esponellà":{"v":1650,"l":9.0},"Fontcoberta":{"v":1700,"l":9.0},"Crespià":{"v":1600,"l":8.5},"Palol de Revardit":{"v":1650,"l":9.0}},
-  "La Garrotxa": {"Olot":{"v":2000,"l":11.0},"Sant Joan les Fonts":{"v":1250,"l":7.0},"La Vall d'en Bas":{"v":1400,"l":7.5},"Les Planes d'Hostoles":{"v":1200,"l":6.5},"Santa Pau":{"v":1300,"l":7.0},"Castellfollit de la Roca":{"v":1150,"l":6.5},"Sant Jaume de Llierca":{"v":1100,"l":6.0},"Besalú":{"v":1650,"l":8.5},"Maià de Montcal":{"v":1150,"l":6.5}},
-  "Cerdanya": {"Puigcerdà":{"v":3500,"l":15.0},"Alp":{"v":2800,"l":13.0},"Bellver de Cerdanya":{"v":2000,"l":10.5},"Llívia":{"v":3100,"l":13.5},"Prullans":{"v":1750,"l":9.5},"Isòvol":{"v":1650,"l":9.0},"Das":{"v":1850,"l":9.5},"Ger":{"v":1700,"l":9.0},"Guils de Cerdanya":{"v":1850,"l":9.5},"Prats i Sansor":{"v":1650,"l":9.0}},
-  "Alt Urgell": {"La Seu d'Urgell":{"v":1500,"l":9.0},"Organyà":{"v":1150,"l":6.5},"Oliana":{"v":1100,"l":6.0},"Coll de Nargó":{"v":1000,"l":6.0},"Ribera d'Urgellet":{"v":1050,"l":6.0},"Montferrer i Castellbò":{"v":1000,"l":5.0},"Valls de Valira":{"v":950,"l":5.0}},
-  "Pallars Jussà": {"Tremp":{"v":1150,"l":6.5},"La Pobla de Segur":{"v":1100,"l":6.0},"Salàs de Pallars":{"v":950,"l":5.0},"Gavet de la Conca":{"v":900,"l":4.5},"Conca de Dalt":{"v":900,"l":4.5}},
-  "Pallars Sobirà": {"Sort":{"v":1400,"l":7.0},"Llavorsí":{"v":1150,"l":6.0},"Esterri d'Àneu":{"v":1500,"l":7.5},"Rialp":{"v":1200,"l":6.5},"Alins":{"v":1050,"l":6.0},"Farrera":{"v":950,"l":4.5},"La Guingueta d'Àneu":{"v":1300,"l":7.0}},
+  "La Garrotxa": {"Olot":{"v":2000,"l":11.0},"Sant Joan les Fonts":{"v":1250,"l":7.0},"La Vall d'en Bas":{"v":1400,"l":7.5},"Les Planes d'Hostoles":{"v":1200,"l":6.5},"Santa Pau":{"v":1300,"l":7.0},"Castellfollit de la Roca":{"v":1150,"l":6.5},"Sant Jaume de Llierca":{"v":1100,"l":6.0},"Besalú":{"v":1650,"l":8.5},"Maià de Montcal":{"v":1150,"l":6.5},"Sant Feliu de Pallerols":{"v":1350,"l":7.5},"La Vall de Bianya":{"v":1250,"l":7.0},"Argelaguer":{"v":1200,"l":6.5},"Montagut i Oix":{"v":1200,"l":6.5}},
+  "Cerdanya": {"Puigcerdà":{"v":3800,"l":16.0},"Alp":{"v":2800,"l":13.0},"Bellver de Cerdanya":{"v":2000,"l":10.5},"Llívia":{"v":3100,"l":13.5},"Prullans":{"v":1750,"l":9.5},"Isòvol":{"v":1650,"l":9.0},"Das":{"v":1850,"l":9.5},"Ger":{"v":1700,"l":9.0},"Guils de Cerdanya":{"v":1850,"l":9.5},"Prats i Sansor":{"v":1650,"l":9.0},"Bolvir":{"v":2700,"l":12.0},"Fontanals de Cerdanya":{"v":2350,"l":11.5},"Lles de Cerdanya":{"v":1950,"l":10.0},"Montellà i Martinet":{"v":2050,"l":10.5},"Urús":{"v":2150,"l":11.0},"Músser":{"v":2000,"l":10.0}},
+  "Alt Urgell": {"La Seu d'Urgell":{"v":1500,"l":9.0},"Organyà":{"v":1150,"l":6.5},"Oliana":{"v":1100,"l":6.0},"Coll de Nargó":{"v":1000,"l":6.0},"Ribera d'Urgellet":{"v":1050,"l":6.0},"Montferrer i Castellbò":{"v":1000,"l":5.0},"Valls de Valira":{"v":950,"l":5.0},"Alàs i Cerc":{"v":1100,"l":6.0},"Arsèguel":{"v":1050,"l":5.5}},
+  "Pallars Jussà": {"Tremp":{"v":1150,"l":6.5},"La Pobla de Segur":{"v":1100,"l":6.0},"Salàs de Pallars":{"v":950,"l":5.0},"Gavet de la Conca":{"v":900,"l":4.5},"Conca de Dalt":{"v":900,"l":4.5},"Isona i Conca Dellà":{"v":1000,"l":5.5},"Talarn":{"v":950,"l":5.0},"Senterada":{"v":950,"l":5.0}},
+  "Pallars Sobirà": {"Sort":{"v":1400,"l":7.0},"Llavorsí":{"v":1150,"l":6.0},"Esterri d'Àneu":{"v":1500,"l":7.5},"Rialp":{"v":1200,"l":6.5},"Alins":{"v":1050,"l":6.0},"Farrera":{"v":950,"l":4.5},"La Guingueta d'Àneu":{"v":1300,"l":7.0},"Soriguera":{"v":1100,"l":6.0},"Baix Pallars":{"v":1150,"l":6.0},"Tírvia":{"v":1000,"l":5.5}},
   "Alta Ribagorça": {"El Pont de Suert":{"v":1100,"l":6.0},"Boi":{"v":1250,"l":6.5},"Vilaller":{"v":950,"l":5.0},"Barruera":{"v":1000,"l":5.0}},
-  "Val d'Aran": {"Vielha e Mijaran":{"v":4050,"l":15.0},"Bossòst":{"v":2550,"l":11.5},"Les":{"v":1900,"l":9.5},"Naut Aran":{"v":4950,"l":17.0},"Bausen":{"v":1650,"l":9.0},"Es Bòrdes":{"v":1750,"l":9.5},"Arres":{"v":1550,"l":8.5},"Canejan":{"v":1500,"l":8.0}},
-  "Solsonès": {"Solsona":{"v":1400,"l":7.5},"Llobera":{"v":1150,"l":6.5},"Clariana de Cardener":{"v":1100,"l":6.0},"Navès":{"v":1000,"l":5.0},"Riner":{"v":1000,"l":5.0},"Olius":{"v":1100,"l":6.0}},
-  "Segarra": {"Cervera":{"v":1200,"l":6.5},"Guissona":{"v":1150,"l":6.0},"Els Prats de Rei":{"v":1100,"l":6.0},"Torà":{"v":1050,"l":6.0},"Biosca":{"v":1000,"l":5.0},"Sanaüja":{"v":950,"l":5.0}},
-  "Urgell": {"Tàrrega":{"v":1350,"l":7.0},"Agramunt":{"v":1200,"l":6.5},"Verdú":{"v":1150,"l":6.5},"Bellpuig":{"v":1150,"l":6.5},"Preixana":{"v":1050,"l":6.0},"Vilagrassa":{"v":1100,"l":6.0},"L'Ametlla de Segarra":{"v":1000,"l":5.0}},
-  "Noguera": {"Balaguer":{"v":1250,"l":7.0},"Artesa de Segre":{"v":1000,"l":5.0},"Àger":{"v":950,"l":4.5},"Camarasa":{"v":1000,"l":5.0},"Ponts":{"v":1050,"l":6.0},"Os de Balaguer":{"v":950,"l":4.5},"Montgai":{"v":950,"l":5.0}},
-  "Segrià": {"Lleida":{"v":1950,"l":10.5},"Almacelles":{"v":1250,"l":7.0},"Alguaire":{"v":1150,"l":6.5},"Torres de Segre":{"v":1100,"l":6.0},"Alpicat":{"v":1300,"l":7.0},"Rosselló":{"v":1150,"l":6.5},"Torrefarrera":{"v":1200,"l":6.5},"Corbins":{"v":1100,"l":6.0},"Sudanell":{"v":1100,"l":6.0},"Granyena de Segarra":{"v":1000,"l":5.0},"Soses":{"v":1050,"l":6.0},"Aitona":{"v":1100,"l":6.0}},
-  "Les Garrigues": {"Les Borges Blanques":{"v":1000,"l":5.0},"Juneda":{"v":1100,"l":6.0},"Arbeca":{"v":950,"l":5.0},"Vinaixa":{"v":900,"l":4.5},"Cervià de les Garrigues":{"v":900,"l":4.5},"L'Albagés":{"v":850,"l":4.5},"El Soleràs":{"v":850,"l":4.0}},
-  "Pla d'Urgell": {"Mollerussa":{"v":1350,"l":7.0},"Bell-lloc d'Urgell":{"v":1150,"l":6.0},"Golmés":{"v":1100,"l":6.0},"Miralcamp":{"v":1100,"l":6.0},"Sidamon":{"v":1050,"l":6.0},"Fondarella":{"v":1000,"l":5.0},"Linyola":{"v":1100,"l":6.0}},
-  "Conca de Barberà": {"Montblanc":{"v":1250,"l":7.0},"L'Espluga de Francolí":{"v":1150,"l":6.5},"Sarral":{"v":950,"l":5.0},"Santa Coloma de Queralt":{"v":1050,"l":6.0},"Rocafort de Queralt":{"v":900,"l":4.5},"Solivella":{"v":900,"l":4.5},"Pira":{"v":900,"l":4.5}},
-  "Alt Camp": {"Valls":{"v":1600,"l":9.0},"Alcover":{"v":1400,"l":8.0},"Vila-rodona":{"v":1200,"l":6.5},"La Riba":{"v":1150,"l":6.5},"Nulles":{"v":1100,"l":6.0},"El Pont d'Armentera":{"v":1100,"l":6.0},"Puigpelat":{"v":1150,"l":6.5},"Bràfim":{"v":1100,"l":6.0},"Vilardida":{"v":1000,"l":5.0}},
-  "Tarragonès": {"Tarragona":{"v":2800,"l":15.0},"Salou":{"v":3200,"l":16.0},"Cambrils":{"v":3300,"l":16.0},"Vila-seca":{"v":2550,"l":13.0},"Altafulla":{"v":3700,"l":16.5},"Torredembarra":{"v":3050,"l":14.0},"El Catllar":{"v":1900,"l":10.0},"La Canonja":{"v":2300,"l":12.0},"Constantí":{"v":2050,"l":11.0},"Perafort":{"v":1950,"l":10.5},"Renau":{"v":1800,"l":9.5},"La Secuita":{"v":1850,"l":10.0},"Vilallonga del Camp":{"v":1850,"l":10.0},"Creixell":{"v":2750,"l":13.5},"Roda de Barà":{"v":2550,"l":13.0}},
-  "Baix Camp": {"Reus":{"v":2150,"l":11.5},"Mont-roig del Camp":{"v":2550,"l":12.5},"Vandellòs i l'Hospitalet de l'Infant":{"v":3550,"l":16.0},"Miami Platja":{"v":2400,"l":12.5},"Riudoms":{"v":1700,"l":9.5},"La Selva del Camp":{"v":1750,"l":10.0},"L'Aleixar":{"v":1550,"l":8.5},"Almoster":{"v":1500,"l":8.0},"Botarell":{"v":1450,"l":7.5},"Castellvell del Camp":{"v":1550,"l":8.5},"Duesaigües":{"v":1400,"l":7.5},"Colldejou":{"v":1250,"l":7.0}},
-  "Baix Ebre": {"Tortosa":{"v":1350,"l":8.0},"Deltebre":{"v":1150,"l":6.5},"Roquetes":{"v":1200,"l":6.5},"Sant Carles de la Ràpita":{"v":1500,"l":8.5},"L'Aldea":{"v":1150,"l":6.5},"Benifallet":{"v":1000,"l":5.0},"Paüls":{"v":950,"l":5.0},"Tivenys":{"v":1000,"l":5.0},"Xerta":{"v":1050,"l":6.0}},
-  "Montsià": {"Amposta":{"v":1250,"l":7.5},"Alcanar":{"v":1200,"l":6.5},"Ulldecona":{"v":1000,"l":5.0},"Mas de Barberans":{"v":900,"l":4.5},"La Sénia":{"v":950,"l":5.0},"Sant Jaume d'Enveja":{"v":1150,"l":6.5},"Godall":{"v":900,"l":4.5},"Freginals":{"v":850,"l":4.5}},
-  "Priorat": {"Falset":{"v":1400,"l":8.0},"Cornudella de Montsant":{"v":1250,"l":7.0},"Gratallops":{"v":1500,"l":8.0},"El Masroig":{"v":1150,"l":6.5},"Porrera":{"v":1200,"l":6.5},"Torroja del Priorat":{"v":1150,"l":6.5},"Bellmunt del Priorat":{"v":1100,"l":6.0},"La Vilella Baixa":{"v":1150,"l":6.5}},
-  "Ribera d'Ebre": {"Móra d'Ebre":{"v":1100,"l":6.0},"Ascó":{"v":950,"l":5.0},"Flix":{"v":900,"l":4.5},"Móra la Nova":{"v":1050,"l":6.0},"Garcia":{"v":950,"l":5.0},"La Torre de l'Espanyol":{"v":900,"l":4.5},"Tivissa":{"v":950,"l":5.0},"Benissanet":{"v":900,"l":4.5}},
-  "Terra Alta": {"Gandesa":{"v":1000,"l":6.0},"Bot":{"v":750,"l":4.5},"Batea":{"v":850,"l":4.5},"Corbera d'Ebre":{"v":750,"l":4.5},"El Pinell de Brai":{"v":800,"l":4.5},"La Fatarella":{"v":750,"l":4.5},"Prat de Comte":{"v":700,"l":4.0},"Vilalba dels Arcs":{"v":750,"l":4.0}},
-  "Moianès": {"Moià":{"v":1750,"l":9.5},"Calders":{"v":1500,"l":8.0},"Castellcir":{"v":1650,"l":9.0},"El Brull":{"v":1500,"l":8.0},"Monistrol de Calders":{"v":1550,"l":8.5},"L'Estany":{"v":1500,"l":8.0},"Santa Maria d'Oló":{"v":1450,"l":7.5}},
+  "Val d'Aran": {"Vielha e Mijaran":{"v":4400,"l":16.0},"Bossòst":{"v":2550,"l":11.5},"Les":{"v":1900,"l":9.5},"Naut Aran":{"v":5300,"l":18.0},"Bausen":{"v":1650,"l":9.0},"Es Bòrdes":{"v":1750,"l":9.5},"Arres":{"v":1550,"l":8.5},"Canejan":{"v":1500,"l":8.0}},
+  "Solsonès": {"Solsona":{"v":1400,"l":7.5},"Llobera":{"v":1150,"l":6.5},"Clariana de Cardener":{"v":1100,"l":6.0},"Navès":{"v":1000,"l":5.0},"Riner":{"v":1000,"l":5.0},"Olius":{"v":1100,"l":6.0},"Sant Llorenç de Morunys":{"v":1200,"l":6.5},"Guixers":{"v":1050,"l":5.5},"Pinell de Solsonès":{"v":1000,"l":5.0},"La Molsosa":{"v":950,"l":4.5}},
+  "Segarra": {"Cervera":{"v":1200,"l":6.5},"Guissona":{"v":1150,"l":6.0},"Els Prats de Rei":{"v":1100,"l":6.0},"Torà":{"v":1050,"l":6.0},"Biosca":{"v":1000,"l":5.0},"Sanaüja":{"v":950,"l":5.0},"Sant Guim de Freixenet":{"v":1050,"l":5.5},"Estaràs":{"v":1050,"l":5.5},"Torrefeta i Florejacs":{"v":1000,"l":5.0}},
+  "Urgell": {"Tàrrega":{"v":1350,"l":7.0},"Agramunt":{"v":1200,"l":6.5},"Verdú":{"v":1150,"l":6.5},"Bellpuig":{"v":1150,"l":6.5},"Preixana":{"v":1050,"l":6.0},"Vilagrassa":{"v":1100,"l":6.0},"L'Ametlla de Segarra":{"v":1000,"l":5.0},"Guimerà":{"v":1000,"l":5.5},"Els Omells de na Gaia":{"v":1000,"l":5.5}},
+  "Noguera": {"Balaguer":{"v":1250,"l":7.0},"Artesa de Segre":{"v":1000,"l":5.0},"Àger":{"v":950,"l":4.5},"Camarasa":{"v":1000,"l":5.0},"Ponts":{"v":1050,"l":6.0},"Os de Balaguer":{"v":950,"l":4.5},"Montgai":{"v":950,"l":5.0},"Cubells":{"v":1000,"l":5.5},"Vilanova de Meià":{"v":1000,"l":5.5}},
+  "Segrià": {"Lleida":{"v":2100,"l":11.0},"Almacelles":{"v":1250,"l":7.0},"Alguaire":{"v":1150,"l":6.5},"Torres de Segre":{"v":1100,"l":6.0},"Alpicat":{"v":1300,"l":7.0},"Rosselló":{"v":1150,"l":6.5},"Torrefarrera":{"v":1200,"l":6.5},"Corbins":{"v":1100,"l":6.0},"Sudanell":{"v":1100,"l":6.0},"Granyena de Segarra":{"v":1000,"l":5.0},"Soses":{"v":1050,"l":6.0},"Aitona":{"v":1100,"l":6.0}},
+  "Les Garrigues": {"Les Borges Blanques":{"v":1000,"l":5.0},"Juneda":{"v":1100,"l":6.0},"Arbeca":{"v":950,"l":5.0},"Vinaixa":{"v":900,"l":4.5},"Cervià de les Garrigues":{"v":900,"l":4.5},"L'Albagés":{"v":850,"l":4.5},"El Soleràs":{"v":850,"l":4.0},"L'Albi":{"v":950,"l":5.0},"Puiggròs":{"v":950,"l":5.0},"Castelldans":{"v":950,"l":5.0},"Fulleda":{"v":900,"l":4.5}},
+  "Pla d'Urgell": {"Mollerussa":{"v":1350,"l":7.0},"Bell-lloc d'Urgell":{"v":1150,"l":6.0},"Golmés":{"v":1100,"l":6.0},"Miralcamp":{"v":1100,"l":6.0},"Sidamon":{"v":1050,"l":6.0},"Fondarella":{"v":1000,"l":5.0},"Linyola":{"v":1100,"l":6.0},"Barbens":{"v":1100,"l":6.0},"Castellnou de Seana":{"v":1100,"l":6.0},"Ivars d'Urgell":{"v":1100,"l":6.0},"El Palau d'Anglesola":{"v":1100,"l":6.0},"Vila-sana":{"v":1050,"l":5.5}},
+  "Conca de Barberà": {"Montblanc":{"v":1250,"l":7.0},"L'Espluga de Francolí":{"v":1150,"l":6.5},"Sarral":{"v":950,"l":5.0},"Santa Coloma de Queralt":{"v":1050,"l":6.0},"Rocafort de Queralt":{"v":900,"l":4.5},"Solivella":{"v":900,"l":4.5},"Pira":{"v":900,"l":4.5},"Barberà de la Conca":{"v":1000,"l":5.5},"Blancafort":{"v":950,"l":5.0},"Vimbodí i Poblet":{"v":1000,"l":5.5},"Les Piles":{"v":900,"l":4.5},"Forès":{"v":900,"l":4.5}},
+  "Alt Camp": {"Valls":{"v":1600,"l":9.0},"Alcover":{"v":1400,"l":8.0},"Vila-rodona":{"v":1200,"l":6.5},"La Riba":{"v":1150,"l":6.5},"Nulles":{"v":1100,"l":6.0},"El Pont d'Armentera":{"v":1100,"l":6.0},"Puigpelat":{"v":1150,"l":6.5},"Bràfim":{"v":1100,"l":6.0},"Vilardida":{"v":1000,"l":5.0},"Cabra del Camp":{"v":1100,"l":6.0},"La Masó":{"v":1050,"l":5.5},"Vallmoll":{"v":1100,"l":6.0},"Aiguamúrcia":{"v":1150,"l":6.5},"Querol":{"v":1150,"l":6.5}},
+  "Tarragonès": {"Tarragona":{"v":2950,"l":15.5},"Salou":{"v":3500,"l":17.0},"Cambrils":{"v":3550,"l":17.0},"Vila-seca":{"v":2550,"l":13.0},"Altafulla":{"v":3950,"l":17.5},"Torredembarra":{"v":3250,"l":14.5},"El Catllar":{"v":1900,"l":10.0},"La Canonja":{"v":2300,"l":12.0},"Constantí":{"v":2050,"l":11.0},"Perafort":{"v":1950,"l":10.5},"Renau":{"v":1800,"l":9.5},"La Secuita":{"v":1850,"l":10.0},"Vilallonga del Camp":{"v":1850,"l":10.0},"Creixell":{"v":2750,"l":13.5},"Roda de Barà":{"v":2550,"l":13.0}},
+  "Baix Camp": {"Reus":{"v":2300,"l":12.0},"Mont-roig del Camp":{"v":2550,"l":12.5},"Vandellòs i l'Hospitalet de l'Infant":{"v":3800,"l":17.0},"Miami Platja":{"v":2400,"l":12.5},"Riudoms":{"v":1700,"l":9.5},"La Selva del Camp":{"v":1750,"l":10.0},"L'Aleixar":{"v":1550,"l":8.5},"Almoster":{"v":1500,"l":8.0},"Botarell":{"v":1450,"l":7.5},"Castellvell del Camp":{"v":1550,"l":8.5},"Duesaigües":{"v":1400,"l":7.5},"Colldejou":{"v":1250,"l":7.0},"Les Borges del Camp":{"v":1850,"l":10.0},"Riudecanyes":{"v":1500,"l":8.0},"Pratdip":{"v":1400,"l":7.5}},
+  "Baix Ebre": {"Tortosa":{"v":1450,"l":8.5},"Deltebre":{"v":1150,"l":6.5},"Roquetes":{"v":1200,"l":6.5},"Sant Carles de la Ràpita":{"v":1650,"l":9.0},"L'Aldea":{"v":1150,"l":6.5},"Benifallet":{"v":1000,"l":5.0},"Paüls":{"v":950,"l":5.0},"Tivenys":{"v":1000,"l":5.0},"Xerta":{"v":1050,"l":6.0},"El Perelló":{"v":1600,"l":9.0},"Aldover":{"v":1050,"l":5.5},"Alfara de Carles":{"v":950,"l":5.0}},
+  "Montsià": {"Amposta":{"v":1350,"l":8.0},"Alcanar":{"v":1200,"l":6.5},"Ulldecona":{"v":1000,"l":5.0},"Mas de Barberans":{"v":900,"l":4.5},"La Sénia":{"v":950,"l":5.0},"Sant Jaume d'Enveja":{"v":1150,"l":6.5},"Godall":{"v":900,"l":4.5},"Freginals":{"v":850,"l":4.5},"La Galera":{"v":900,"l":4.5}},
+  "Priorat": {"Falset":{"v":1400,"l":8.0},"Cornudella de Montsant":{"v":1250,"l":7.0},"Gratallops":{"v":1500,"l":8.0},"El Masroig":{"v":1150,"l":6.5},"Porrera":{"v":1200,"l":6.5},"Torroja del Priorat":{"v":1150,"l":6.5},"Bellmunt del Priorat":{"v":1100,"l":6.0},"La Vilella Baixa":{"v":1150,"l":6.5},"Poboleda":{"v":1300,"l":7.0},"La Vilella Alta":{"v":1250,"l":7.0},"Pradell de la Teixeta":{"v":1200,"l":6.5},"El Lloar":{"v":1150,"l":6.5},"La Morera de Montsant":{"v":1300,"l":7.0},"Cabacés":{"v":1250,"l":7.0}},
+  "Ribera d'Ebre": {"Móra d'Ebre":{"v":1100,"l":6.0},"Ascó":{"v":950,"l":5.0},"Flix":{"v":900,"l":4.5},"Móra la Nova":{"v":1050,"l":6.0},"Garcia":{"v":950,"l":5.0},"La Torre de l'Espanyol":{"v":900,"l":4.5},"Tivissa":{"v":950,"l":5.0},"Benissanet":{"v":900,"l":4.5},"La Palma d'Ebre":{"v":1000,"l":5.5},"Ginestar":{"v":950,"l":5.0},"Rasquera":{"v":950,"l":5.0},"Darmós":{"v":950,"l":5.0}},
+  "Terra Alta": {"Gandesa":{"v":1000,"l":6.0},"Bot":{"v":750,"l":4.5},"Batea":{"v":850,"l":4.5},"Corbera d'Ebre":{"v":750,"l":4.5},"El Pinell de Brai":{"v":800,"l":4.5},"La Fatarella":{"v":750,"l":4.5},"Prat de Comte":{"v":700,"l":4.0},"Vilalba dels Arcs":{"v":750,"l":4.0},"Arnes":{"v":800,"l":4.5},"Caseres":{"v":800,"l":4.5},"La Pobla de Massaluca":{"v":750,"l":4.0},"Horta de Sant Joan":{"v":850,"l":5.0}},
+  "Moianès": {"Moià":{"v":1900,"l":10.0},"Calders":{"v":1500,"l":8.0},"Castellcir":{"v":1650,"l":9.0},"El Brull":{"v":1500,"l":8.0},"Monistrol de Calders":{"v":1550,"l":8.5},"L'Estany":{"v":1500,"l":8.0},"Santa Maria d'Oló":{"v":1450,"l":7.5}},
 };
 
 const COEF={"Cunit":{c:1.157,r:.975},"El Vendrell":{c:.912,r:.842},"Calafell":{c:.856,r:.983},"Santa Oliva":{c:.783,r:.825},"Bellvei":{c:.783,r:.925},"L'Arboç":{c:.735,r:.883},"Banyeres del Penedès":{c:.614,r:.783},"Albinyana":{c:.766,r:.825},"Bonastre":{c:.497,r:.683},"Masllorenç":{c:.549,r:.75},"La Bisbal del Penedès":{c:.623,r:.808},"Llorenç del Penedès":{c:.856,r:.65},"Sant Jaume dels Domenys":{c:.614,r:.65},"El Montmell":{c:.529,r:.675}};
@@ -3712,7 +3834,107 @@ const MUNI_CENTROIDS={
   "Prat de Comte":[40.9710,0.3650],"Vilalba dels Arcs":[41.0430,0.3330],
   // Misc missing
   "Cruïlles, Monells i Sant Sadurní de l'Heura":[41.9290,3.0100],
-  "Sant Pere Sallavinera":[41.6900,1.4190]
+  "Sant Pere Sallavinera":[41.6900,1.4190],
+  "Borredà":[42.086,2.028],
+  "Montmajor":[41.95,1.799],
+  "Sagàs":[41.978,1.95],
+  "Saldes":[42.205,1.782],
+  "Santa Maria de Merlès":[41.962,2.006],
+  "Viver i Serrateix":[41.933,1.813],
+  "Vilada":[42.051,1.909],
+  "Capolat":[41.989,1.72],
+  "La Nou de Berguedà":[42.015,2.078],
+  "Taradell":[41.885,2.276],
+  "Sant Hipòlit de Voltregà":[42.02,2.278],
+  "Prats de Lluçanès":[41.99,2.024],
+  "Les Masies de Roda":[41.975,2.35],
+  "Perafita":[41.988,2.09],
+  "Sant Boi de Lluçanès":[42.004,2.064],
+  "Espinelves":[41.88,2.453],
+  "Tavèrnoles":[41.901,2.253],
+  "Gombrèn":[42.188,2.088],
+  "Ogassa":[42.159,2.145],
+  "Planoles":[42.287,2.183],
+  "Queralbs":[42.321,2.109],
+  "Setcases":[42.392,2.269],
+  "Les Llosses":[42.133,2.144],
+  "Vilallonga de Ter":[42.357,2.359],
+  "Toses":[42.318,2.045],
+  "Pardines":[42.27,2.177],
+  "Cardona":[41.9145,1.682],
+  "Fonollosa":[41.838,1.71],
+  "Sant Salvador de Guardiola":[41.765,1.782],
+  "Mura":[41.721,1.916],
+  "Gaià":[41.73,1.75],
+  "Sant Feliu de Pallerols":[42.144,2.467],
+  "La Vall de Bianya":[42.235,2.471],
+  "Argelaguer":[42.217,2.65],
+  "Montagut i Oix":[42.226,2.62],
+  "Bolvir":[42.419,1.96],
+  "Fontanals de Cerdanya":[42.406,2.005],
+  "Lles de Cerdanya":[42.358,1.762],
+  "Montellà i Martinet":[42.357,1.694],
+  "Urús":[42.387,1.948],
+  "Músser":[42.419,1.849],
+  "Alàs i Cerc":[42.343,1.518],
+  "Arsèguel":[42.363,1.6],
+  "Isona i Conca Dellà":[42.131,1.027],
+  "Talarn":[42.15,0.99],
+  "Senterada":[42.166,0.936],
+  "Soriguera":[42.403,1.184],
+  "Baix Pallars":[42.431,1.155],
+  "Tírvia":[42.497,1.201],
+  "Sant Llorenç de Morunys":[42.132,1.579],
+  "Guixers":[42.063,1.574],
+  "Pinell de Solsonès":[41.952,1.544],
+  "La Molsosa":[41.923,1.609],
+  "Sant Guim de Freixenet":[41.731,1.384],
+  "Estaràs":[41.637,1.362],
+  "Torrefeta i Florejacs":[41.704,1.34],
+  "Guimerà":[41.478,1.105],
+  "Els Omells de na Gaia":[41.467,1.143],
+  "Cubells":[41.846,0.858],
+  "Vilanova de Meià":[42.035,1.046],
+  "Barbens":[41.65,0.946],
+  "Castellnou de Seana":[41.625,1.005],
+  "Ivars d'Urgell":[41.615,0.925],
+  "El Palau d'Anglesola":[41.677,0.969],
+  "Vila-sana":[41.612,0.95],
+  "L'Albi":[41.478,1.03],
+  "Puiggròs":[41.51,0.945],
+  "Castelldans":[41.47,0.887],
+  "Fulleda":[41.41,0.932],
+  "Barberà de la Conca":[41.418,1.192],
+  "Blancafort":[41.382,1.28],
+  "Vimbodí i Poblet":[41.387,1.054],
+  "Les Piles":[41.484,1.24],
+  "Forès":[41.454,1.2],
+  "Cabra del Camp":[41.319,1.203],
+  "La Masó":[41.292,1.211],
+  "Vallmoll":[41.258,1.24],
+  "Aiguamúrcia":[41.353,1.332],
+  "Querol":[41.33,1.308],
+  "Les Borges del Camp":[41.174,1.061],
+  "Riudecanyes":[41.138,0.97],
+  "Pratdip":[40.997,0.802],
+  "Poboleda":[41.205,0.843],
+  "La Vilella Alta":[41.219,0.799],
+  "Pradell de la Teixeta":[41.196,0.948],
+  "El Lloar":[41.194,0.889],
+  "La Morera de Montsant":[41.254,0.87],
+  "Cabacés":[41.241,0.879],
+  "La Palma d'Ebre":[41.178,0.6],
+  "Ginestar":[41.048,0.568],
+  "Rasquera":[41.006,0.5],
+  "Darmós":[41.01,0.573],
+  "Arnes":[40.897,0.254],
+  "Caseres":[41.038,0.304],
+  "La Pobla de Massaluca":[41.119,0.214],
+  "Horta de Sant Joan":[40.949,0.328],
+  "El Perelló":[40.882,0.705],
+  "Aldover":[40.854,0.533],
+  "Alfara de Carles":[40.746,0.458],
+  "La Galera":[40.704,0.311]
 };
 
 // MUNI_NAMES is now dynamic — updated when comarca changes
@@ -4205,7 +4427,7 @@ const applyI18n=()=>{
   if(hTitle)hTitle.textContent=LANG==="EN"?"Buy or rent in Baix Penedès?":LANG==="CA"?"Comprar o llogar a Catalunya?":"¿Comprar o alquilar en Catalunya?";
   const hSub=Q("#heroSub");
   if(hSub)hSub.textContent=LANG==="EN"?"Calculate your mortgage, compare prices by municipality and get a personalised recommendation in 2 minutes.":LANG==="CA"?"Calcula la teva hipoteca, compara preus per municipi arreu de Catalunya i rep una recomanació personalitzada en 2 minuts.":"Calcula tu hipoteca, compara precios por municipio y recibe una recomendación personalizada en 2 minutos.";
-  const hS1=Q("#heroStat1");if(hS1)hS1.textContent=LANG==="EN"?"municipalities":LANG==="CA"?"municipis":"municipios";
+  const hS1=Q("#heroStat1");if(hS1)hS1.textContent=LANG==="EN"?"municipis (ES/CA)":LANG==="CA"?"municipis":"municipios";
   const hS2=Q("#heroStat2");if(hS2)hS2.textContent=LANG==="EN"?"free":LANG==="CA"?"gratuït":"gratuito";
   const hS3=Q("#heroStat3");if(hS3)hS3.textContent=LANG==="EN"?"analysis":LANG==="CA"?"anàlisi":"análisis";
   // Amortization button + note
@@ -10175,5 +10397,161 @@ function updateInstallBanner() {
 
 })();
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCujYxCvGNdKIDFdLgcnD6fICFaioLEK4c",
+  authDomain: "assessoria-habitatge.firebaseapp.com",
+  projectId: "assessoria-habitatge",
+  storageBucket: "assessoria-habitatge.firebasestorage.app",
+  messagingSenderId: "245611874171",
+  appId: "1:245611874171:web:7076495a1f83c0a4e69fde",
+  measurementId: "G-8MZQVQXDP2"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+window.auth = auth;
+window.db = db;
+
+const $ = (id)=>document.getElementById(id);
+const gate = $('authGate');
+const authLoading = $('authLoading');
+const loginView = $('loginView');
+const registerView = $('registerView');
+const loginTab = $('loginTab');
+const registerTab = $('registerTab');
+const loginMsg = $('loginMsg');
+const registerMsg = $('registerMsg');
+const loginSubmit = $('loginSubmit');
+const registerSubmit = $('registerSubmit');
+
+const normalizeError = (err) => {
+  const code = err?.code || '';
+  const map = {
+    'auth/invalid-email': 'El correu no és vàlid.',
+    'auth/missing-password': 'Falta la contrasenya.',
+    'auth/invalid-credential': 'Correu o contrasenya incorrectes.',
+    'auth/user-not-found': 'Aquest usuari no existeix.',
+    'auth/wrong-password': 'Contrasenya incorrecta.',
+    'auth/email-already-in-use': 'Aquest correu ja està registrat.',
+    'auth/weak-password': 'La contrasenya ha de tenir com a mínim 6 caràcters.',
+    'auth/too-many-requests': 'Massa intents. Torna-ho a provar més tard.',
+    'auth/network-request-failed': 'Error de connexió. Revisa internet.'
+  };
+  if (location.protocol === 'file:') return `Aquest fitxer s'està executant com a file://. Publica'l a GitHub Pages, Hostinger o prova'l en localhost perquè Firebase Auth funcioni bé.`;
+  return map[code] || ('Error: ' + (err?.message || `No s'ha pogut completar l'acció.`));
+};
+
+const showMsg = (el, msg, ok=false) => {
+  el.textContent = msg || '';
+  el.className = 'auth-msg ' + (msg ? (ok ? 'ok' : 'err') : '');
+};
+
+const setMode = (mode) => {
+  const login = mode === 'login';
+  loginView.style.display = login ? 'block' : 'none';
+  registerView.style.display = login ? 'none' : 'block';
+  loginTab.classList.toggle('active', login);
+  registerTab.classList.toggle('active', !login);
+  showMsg(loginMsg, '');
+  showMsg(registerMsg, '');
+};
+loginTab?.addEventListener('click', ()=>setMode('login'));
+registerTab?.addEventListener('click', ()=>setMode('register'));
+
+const unlockApp = () => {
+  document.body.classList.remove('auth-locked');
+  gate.classList.remove('show');
+  authLoading.style.display = 'none';
+};
+const lockApp = () => {
+  document.body.classList.add('auth-locked');
+  gate.classList.add('show');
+  authLoading.style.display = 'flex';
+};
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    try {
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: user.email || '',
+        displayName: user.displayName || '',
+        lastLoginAt: serverTimestamp()
+      }, { merge: true });
+    } catch (e) {
+      console.error(`No s'ha pogut actualitzar user doc:`, e);
+    }
+    unlockApp();
+  } else {
+    lockApp();
+    authLoading.style.display = 'none';
+  }
+});
+
+$('loginForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  showMsg(loginMsg, '');
+  loginSubmit.disabled = true;
+  authLoading.style.display = 'flex';
+  try {
+    await signInWithEmailAndPassword(auth, $('loginEmail').value.trim(), $('loginPassword').value);
+    showMsg(loginMsg, "Sessió iniciada correctament.", true);
+  } catch (err) {
+    showMsg(loginMsg, normalizeError(err));
+    authLoading.style.display = 'none';
+  } finally {
+    loginSubmit.disabled = false;
+  }
+});
+
+$('registerForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  showMsg(registerMsg, '');
+  const name = $('registerName').value.trim();
+  const email = $('registerEmail').value.trim();
+  const p1 = $('registerPassword').value;
+  const p2 = $('registerPassword2').value;
+  if (!name) { showMsg(registerMsg, "Escriu un nom d'usuari."); return; }
+  if (p1 !== p2) { showMsg(registerMsg, "Les contrasenyes no coincideixen."); return; }
+  registerSubmit.disabled = true;
+  authLoading.style.display = 'flex';
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, p1);
+    if (name) await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      uid: cred.user.uid,
+      email,
+      displayName: name,
+      createdAt: serverTimestamp(),
+      lastLoginAt: serverTimestamp()
+    }, { merge: true });
+    showMsg(registerMsg, "Compte creat correctament.", true);
+  } catch (err) {
+    showMsg(registerMsg, normalizeError(err));
+    authLoading.style.display = 'none';
+  } finally {
+    registerSubmit.disabled = false;
+  }
+});
+
+$('forgotPasswordBtn')?.addEventListener('click', async () => {
+  const email = $('loginEmail').value.trim();
+  if (!email) { showMsg(loginMsg, "Escriu primer el teu correu i després prem aquest botó."); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMsg(loginMsg, "T'hem enviat un correu per restablir la contrasenya.", true);
+  } catch (err) {
+    showMsg(loginMsg, normalizeError(err));
+  }
+});
+</script>
+
 </body>
 </html>

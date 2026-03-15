@@ -13424,32 +13424,42 @@ window.__callAIAdvisor = async function() {
   };
   var muniData = muniPrices[muniKey] || { rent: 750, buy: 160000 };
 
-  var systemPrompt = `Ets un assessor expert en independència residencial per a joves a Catalunya, especialitzat en el Baix Penedès. El teu estil és directe, honest i empàtic — com un amic que sap de finances i li diu la veritat sense filtres. Escrius en català. 
 
-L\'informe ha de tenir EXACTAMENT aquestes seccions en format HTML:
+  var systemPrompt = `Ets un amic de confiança que entén molt de finances i habitatge a Catalunya. Parles amb naturalitat, com en una conversa real. Escrius en català col·loquial però correcte.
 
-<h3>📊 El teu diagnòstic</h3>
-2-3 paràgrafs honestos sobre la seva situació real. Digues si pot o no pot independitzar-se ara i per què.
+REGLES D'ESTIL IMPORTANTS:
+- Parla directament: "Mira,", "Et dic una cosa,", "Honestament,", "La veritat és que..."
+- Frases curtes. Res de paràgrafs interminables.
+- No repeteixes les dades que ja sap — interpreta-les
+- Evita frases com "la teva situació és que", "el que significa que", "no obstant això"
+- Si pot fer-ho ara: "Sí, pots. Aquí tens el pla."
+- Si no pot: digues quan exactament i per què, sense suavitzar
+- Números integrats a frases naturals, no com a llistat de dades
 
-<h3>✅ Punts forts</h3>
-<ul> amb 3-4 avantatges reals de la seva situació.
+L'informe ha de tenir EXACTAMENT aquestes seccions en format HTML:
 
-<h3>⚠️ Riscos i limitacions</h3>
-<ul> amb 3-4 riscos concrets i honests. No suavitzis.
+<h3>📊 La teva situació real</h3>
+2 paràgrafs màxim. Directe, com si li expliquessis a un amic. Comença amb una frase que enganxi — mai amb "La teva situació és...". Exemple: "Amb 1.400€ nets i 8.000€ estalviats, tens una base decent — però hi ha un número que et complica la vida..."
 
-<h3>🏠 La recomanació: llogar o comprar?</h3>
-Analitza clarament quina opció li convé MÉS donada la seva situació específica. Compara números reals.
+<h3>✅ El que tens a favor</h3>
+<ul> 3-4 punts curts i directes.
 
-<h3>📅 Quan pots independitzar-te?</h3>
-Donada tota la informació, digues si pot fer-ho ARA o quan exactament (mes i any aproximat). Usa els càlculs previs.
+<h3>⚠️ El que et pot complicar</h3>
+<ul> 3-4 punts honestos. Digues la veritat sense por.
 
-<h3>🚀 Els teus 5 passos immediats</h3>
-<ol> amb 5 accions concretes i accionables que ha de fer en les properes 4 setmanes. Molt específiques.
+<h3>🏠 Llogar o comprar?</h3>
+Una recomanació clara amb números reals per a la seva situació concreta.
 
-<h3>💰 El teu pressupost real</h3>
-Desglossa quant necessita tenir estalviat mínim per fer el pas, i quant li quedarà al mes un cop visqui sol.
+<h3>📅 Pots fer-ho ara?</h3>
+Resposta directa: sí o no, i quan exactament si és no. Data concreta.
 
-Usa <b> per xifres importants. Fes servir els números exactes dels càlculs previs. Sigues específic amb els preus del municipi. No escriguis frases genèriques — cada frase ha de ser útil per a AQUESTA persona concreta.`;
+<h3>🚀 Cinc coses que has de fer</h3>
+<ol> Accions molt concretes per les properes 4 setmanes. No "busca un pis" — digues on, com, quan.
+
+<h3>💰 Els teus números reals</h3>
+Quant et quedarà al mes. Quant necessites tenir. Sense sorpreses.
+
+Usa <b> per xifres clau. Cada frase ha de ser útil per a AQUESTA persona — res de genèric.`;
 
   var currentRentNum = parseFloat(currentRent) || 0;
   var companionLabel = { alone: 'sol/a', partner: 'amb la parella', roommate: 'amb company/a de pis' };
@@ -13800,11 +13810,15 @@ window.__generatePDFReport = async function() {
   + '<div style="text-align:right;line-height:1.7;"><b>Assessoria d\'Habitatge \u00b7 Baix Pened\u00e8s</b><br>assesoriahabitatge.com<br>' + today + ' \u00b7 Ref. ' + ref + '</div></div>'
   + '</div></body></html>';
 
-  var win = window.open('','_blank');
-  if (!win) { alert('Activa les finestres emergents per descarregar el PDF'); if(btn){btn.disabled=false;btn.innerHTML='📄 Descarregar informe PDF';} return; }
-  win.document.write(html);
-  win.document.close();
-  setTimeout(function(){ win.focus(); win.print(); }, 900);
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Informe_Habitatge_' + new Date().toISOString().slice(0,10) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
   if (btn) { btn.disabled=false; btn.innerHTML='📄 Descarregar informe PDF'; }
 };
 
@@ -14037,11 +14051,16 @@ window.__generateIndependenciaPDF = function() {
   + '<div>' + today + ' · Ref. ' + ref + ' · Document orientatiu</div></div>'
   + '</div></body></html>';
 
-  var win = window.open('','_blank');
-  if (!win) { alert('Activa les finestres emergents per descarregar el PDF'); return; }
-  win.document.write(html);
-  win.document.close();
-  setTimeout(function(){ win.focus(); win.print(); }, 800);
+  // Descarregar com a fitxer HTML (s'obre al navegador i es pot desar com PDF des de Ctrl+P)
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Pla_Independencia_' + (muniText || 'Catalunya').replace(/\s+/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
 };
 </script>
 

@@ -2944,7 +2944,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
     <div id="t_m" class="tab dis" data-i="tab5">5 Comparador</div>
     <div id="t_x" class="tab dis" data-i="tab6">6 Ejemplos reales</div>
     <div id="t_ai" class="tab dis" data-i="tab7">🤖 AI Advisor</div>
-    <div id="t_premium" class="tab" onclick="window.__openPremiumSection()" style="background:linear-gradient(135deg,rgba(234,179,8,.18),rgba(180,130,0,.12));border-color:rgba(234,179,8,.45);color:#fde68a;font-weight:900;position:relative;overflow:hidden;">
+    <div id="t_premium" class="tab" onclick="window.__openPremiumSection && window.__openPremiumSection()" style="background:linear-gradient(135deg,rgba(234,179,8,.18),rgba(180,130,0,.12));border-color:rgba(234,179,8,.45);color:#fde68a;font-weight:900;position:relative;overflow:hidden;">
       <span style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(253,230,138,.5),transparent);"></span>
       ✨ Premium
     </div>
@@ -3166,6 +3166,8 @@ body.auth-locked > *:not(#authGate){display:none!important;}
       <div class="k"><span data-i="kPay">Cuota hipoteca</span><b id="k3">0 €</b><div class="sub" id="k3sub"></div></div>
       <div class="k"><span data-i="kRec">Recomendación</span><b id="k4">–</b><div class="sub" id="k4sub"></div></div>
     </div>
+    <!-- Verdict + Offer + CTA injection point -->
+    <div id="verdictContainer"></div>
     <div id="rCard" class="cardx" style="display:none">
       <div class="top"><div class="title" id="rTitle"></div><div class="chips" id="rChips"></div></div>
       <div class="grid3" id="rMini"></div>
@@ -3299,108 +3301,33 @@ body.auth-locked > *:not(#authGate){display:none!important;}
   <!--  Placeholder removed from here; the actual staff panel is now defined near
     the bottom of the document. -->
 
-  <!-- ══ CARD PREMIUM — Asesoramiento personalizado ══ -->
-  <div id="premiumCTA" style="
-    margin: 22px 0 4px;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-    background: linear-gradient(140deg, #0d1f3c 0%, #0a1628 40%, #100c2a 100%);
-    border: 1px solid rgba(139,92,246,.45);
-    box-shadow: 0 0 0 1px rgba(139,92,246,.08) inset, 0 20px 60px rgba(0,0,0,.5), 0 0 40px rgba(139,92,246,.08);
-  ">
-    <!-- Shimmer top border -->
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,#8b5cf6 30%,#a78bfa 50%,#38bdf8 70%,transparent 100%);"></div>
-    <!-- Glow orbs -->
-    <div style="position:absolute;top:-80px;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 65%);pointer-events:none;"></div>
-    <div style="position:absolute;bottom:-60px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.10),transparent 65%);pointer-events:none;"></div>
 
-    <div style="padding: 26px 28px 24px; position:relative; z-index:1;">
 
-      <!-- Header row -->
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <!-- Icon -->
-          <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:0 6px 20px rgba(139,92,246,.40);">🏡</div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-              <span style="font-size:1.12rem;font-weight:900;color:#f1f5f9;letter-spacing:-.2px;">Asesoramiento Premium</span>
-              <span style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-size:.65rem;font-weight:900;letter-spacing:.6px;text-transform:uppercase;padding:2px 8px;border-radius:999px;">PRO</span>
-            </div>
-            <div style="font-size:.84rem;color:rgba(234,241,255,.55);font-weight:500;">Assessoria d'Habitatge · Baix Penedès</div>
-          </div>
-        </div>
-        <!-- Price -->
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:1.9rem;font-weight:900;color:#f8fafc;line-height:1;font-family:'DM Mono',monospace;letter-spacing:-1px;">desde <span style="background:linear-gradient(135deg,#a78bfa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">X€</span></div>
-          <div style="font-size:.76rem;color:rgba(234,241,255,.45);font-weight:700;margin-top:3px;">/ mes · cancela cuando quieras</div>
-        </div>
+  <!-- ══ FORMULARI: REP EL RESULTAT PER CORREU ══ -->
+  <div id="emailResultCard" style="margin:18px 0 4px;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.20);border-radius:20px;padding:22px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.5),transparent);"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,rgba(56,189,248,.20),rgba(14,165,233,.10));border:1px solid rgba(56,189,248,.30);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📧</div>
+      <div>
+        <div id="emailFormTitle" style="font-size:.97rem;font-weight:900;color:#e0f2fe;">Rep el resultat al teu correu</div>
+        <div id="emailFormSub" style="font-size:.78rem;color:rgba(186,230,253,.55);">T'enviem el resum complet de l'anàlisi al teu email. Gratis, sense spam.</div>
       </div>
-
-      <!-- Description -->
-      <p style="font-size:.9rem;color:rgba(234,241,255,.68);line-height:1.70;margin:0 0 20px;max-width:520px;">
-        Recibe <b style="color:#e2d9f3;">asesoramiento 100% personalizado</b> basado en tus datos reales: ingresos, zona, perfil financiero y objetivos. Te acompañamos en cada decisión, desde la búsqueda hasta la firma.
-      </p>
-
-      <!-- Features grid -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:22px;">
-        <div style="display:flex;align-items:center;gap:10px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.20);border-radius:12px;padding:12px 14px;">
-          <span style="font-size:1.2rem;flex-shrink:0;">🎯</span>
-          <div>
-            <div style="font-size:.82rem;font-weight:800;color:#e2d9f3;margin-bottom:1px;">Análisis personalizado</div>
-            <div style="font-size:.74rem;color:rgba(234,241,255,.48);">Basado en tus datos reales</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:12px;padding:12px 14px;">
-          <span style="font-size:1.2rem;flex-shrink:0;">💬</span>
-          <div>
-            <div style="font-size:.82rem;font-weight:800;color:#bae6fd;margin-bottom:1px;">Consultas ilimitadas</div>
-            <div style="font-size:.74rem;color:rgba(234,241,255,.48);">Respuesta en menos de 24h</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:12px;padding:12px 14px;">
-          <span style="font-size:1.2rem;flex-shrink:0;">📋</span>
-          <div>
-            <div style="font-size:.82rem;font-weight:800;color:#bbf7d0;margin-bottom:1px;">Informe mensual</div>
-            <div style="font-size:.74rem;color:rgba(234,241,255,.48);">Seguimiento de tu plan</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);border-radius:12px;padding:12px 14px;">
-          <span style="font-size:1.2rem;flex-shrink:0;">🏦</span>
-          <div>
-            <div style="font-size:.82rem;font-weight:800;color:#fde68a;margin-bottom:1px;">Negociación bancaria</div>
-            <div style="font-size:.74rem;color:rgba(234,241,255,.48);">Te ayudamos a conseguir el mejor tipo</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CTA row -->
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <a href="https://assesoriahabitatge.com" target="_blank" rel="noopener" id="premiumCTAbtn" style="
-          display:inline-flex;align-items:center;gap:9px;
-          background:linear-gradient(135deg,#8b5cf6,#6d28d9);
-          color:#fff;text-decoration:none;
-          border-radius:13px;padding:13px 24px;
-          font-weight:900;font-size:.95rem;letter-spacing:.1px;
-          box-shadow:0 8px 28px rgba(139,92,246,.45),0 2px 8px rgba(0,0,0,.3);
-          transition:transform .15s ease,box-shadow .15s ease;
-          position:relative;overflow:hidden;
-          border:1px solid rgba(255,255,255,.12);
-        "
-        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 14px 36px rgba(139,92,246,.60)'"
-        onmouseout="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(139,92,246,.45),0 2px 8px rgba(0,0,0,.3)'">
-          <span>✨</span>
-          <span>Quiero asesoramiento profesional</span>
-          <span style="font-size:.8rem;opacity:.75;">→</span>
-        </a>
-        <div style="font-size:.78rem;color:rgba(234,241,255,.38);line-height:1.5;">
-          Sin permanencia · Cancela cuando quieras
-        </div>
-      </div>
-
     </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
+      <input id="emailResultInput" type="email" placeholder="el-teu@correu.com" autocomplete="email"
+        style="flex:1;min-width:200px;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(56,189,248,.25);background:rgba(4,10,22,.75);color:#eaf1ff;font-size:.93rem;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;"
+        onfocus="this.style.borderColor='#38bdf8';this.style.boxShadow='0 0 0 3px rgba(56,189,248,.18)';"
+        onblur="this.style.borderColor='rgba(56,189,248,.25)';this.style.boxShadow='';">
+      <button id="emailResultBtn" type="button" onclick="window.__sendResultByEmail()"
+        style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#001820;border:none;border-radius:12px;padding:12px 20px;font-weight:900;font-size:.90rem;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 4px 14px rgba(56,189,248,.30);transition:transform .15s,box-shadow .15s;"
+        onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 22px rgba(56,189,248,.45)';"
+        onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(56,189,248,.30)';">
+        <span id="emailResultBtnLbl">📨 Enviar resultat</span>
+      </button>
+    </div>
+    <div id="emailResultMsg" style="min-height:18px;margin-top:10px;font-size:.82rem;font-weight:700;"></div>
   </div>
-  <!-- ══ FIN CARD PREMIUM ══ -->
+  <!-- ══ FI FORMULARI EMAIL ══ -->
 
     </div>
     <div class="r" style="margin-top:10px;flex-wrap:wrap;gap:10px;">
@@ -3589,7 +3516,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
   <div style="height:2px;background:linear-gradient(90deg,transparent,#92400e,#f59e0b,#fde68a,#f59e0b,#92400e,transparent);"></div>
 
   <!-- ── BLURRED PREVIEW ── -->
-  <div id="premiumBlurContent" style="filter:blur(5px);pointer-events:none;user-select:none;padding:28px 24px 36px;transition:filter .4s ease;">
+  <div id="premiumBlurContent" style="filter:none;pointer-events:auto;user-select:auto;padding:28px 24px 36px;transition:filter .4s ease;">
 
 <style>
 .pm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
@@ -3610,31 +3537,39 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 .pm-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(234,179,8,.10);border:1px solid rgba(234,179,8,.25);color:#fde68a;border-radius:999px;padding:4px 11px;font-size:.72rem;font-weight:800;}
 </style>
 
-    <!-- Hero header -->
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
-      <div>
-        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.30);border-radius:999px;padding:4px 12px;font-size:.69rem;font-weight:900;color:#fde68a;letter-spacing:.7px;text-transform:uppercase;margin-bottom:10px;">✨ Eines Exclusives Premium</div>
-        <h2 style="margin:0 0 6px;font-size:1.55rem;font-weight:900;background:linear-gradient(135deg,#fde68a,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.3px;line-height:1.2;">El teu centre de<br>decisió immobiliària</h2>
-        <p style="margin:0;font-size:.85rem;color:rgba(253,230,138,.50);line-height:1.65;max-width:380px;">Eines avançades per prendre decisions de 200.000€ amb confiança total.</p>
+    <!-- Oferta limitada banner -->
+    <div id="pmFreeBanner" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(22,163,74,.07));border:1px solid rgba(34,197,94,.30);border-radius:16px;padding:14px 18px;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,.6),transparent);"></div>
+      <div style="font-size:1.6rem;flex-shrink:0;animation:dotPulse 2s ease-in-out infinite;">🎁</div>
+      <div style="flex:1;min-width:200px;">
+        <div id="pmFreeTitle" style="font-size:.95rem;font-weight:900;color:#86efac;margin-bottom:2px;">Accés gratuït per temps limitat</div>
+        <div id="pmFreeSub" style="font-size:.78rem;color:rgba(134,239,172,.60);line-height:1.5;">Totes les eines premium disponibles sense cost. Oferta de llançament.</div>
       </div>
-      <div style="background:rgba(234,179,8,.10);border:1px solid rgba(234,179,8,.30);border-radius:18px;padding:16px 22px;text-align:center;flex-shrink:0;min-width:130px;">
-        <div style="font-size:2.2rem;font-weight:900;font-family:'DM Mono',monospace;background:linear-gradient(135deg,#fde68a,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">7€</div>
-        <div style="font-size:.75rem;color:#fbbf24;font-weight:700;margin-top:2px;">/mes</div>
-        <div style="font-size:.67rem;color:rgba(253,230,138,.38);margin-top:5px;line-height:1.4;">Cancel·la<br>quan vulguis</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;">
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);border-radius:999px;padding:4px 12px;font-size:.72rem;font-weight:800;color:#fca5a5;animation:dotPulse 2s ease-in-out infinite;">⏳ <span id="pmOfertaBadge">Oferta limitada</span></div>
+        <div style="background:linear-gradient(135deg,rgba(34,197,94,.20),rgba(22,163,74,.12));border:1px solid rgba(34,197,94,.40);border-radius:10px;padding:8px 16px;font-size:.80rem;font-weight:800;color:#86efac;">✅ Accés gratuït activat</div>
       </div>
     </div>
 
+    <!-- Hero header -->
+    <div style="margin-bottom:24px;">
+      <div id="pmKicker" style="display:inline-flex;align-items:center;gap:6px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.30);border-radius:999px;padding:4px 12px;font-size:.69rem;font-weight:900;color:#fde68a;letter-spacing:.7px;text-transform:uppercase;margin-bottom:10px;">✨ Eines Exclusives Premium</div>
+      <h2 id="pmTitle" style="margin:0 0 6px;font-size:1.55rem;font-weight:900;background:linear-gradient(135deg,#fde68a,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.3px;line-height:1.2;">El teu centre de<br>decisió immobiliària</h2>
+      <p id="pmSubtitle" style="margin:0;font-size:.85rem;color:rgba(253,230,138,.50);line-height:1.65;max-width:500px;">Eines avançades per prendre decisions de 200.000€ amb confiança total. Inicia sessió per guardar els teus resultats i accedir des de qualsevol lloc.</p>
+    </div>
+
     <!-- IA primer -->
-    <div class="pm-section-divider">Informe IA personalitzat</div>
+    <div id="pmDivIA" class="pm-section-divider">Informe IA personalitzat</div>
     <div class="pm-tool" style="border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.06);">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <span style="font-size:1.8rem;">🤖</span>
         <div>
-          <div style="font-size:.95rem;font-weight:900;color:#c4b5fd;">Anàlisi Personalitzada amb IA</div>
-          <div style="font-size:.79rem;color:rgba(196,181,253,.50);">Diagnòstic · Fortaleses · Riscos · Recomanació · Passos immediats</div>
+          <div id="pmIATitle" style="font-size:.95rem;font-weight:900;color:#c4b5fd;">Anàlisi Personalitzada amb IA</div>
+          <div id="pmIASub" style="font-size:.79rem;color:rgba(196,181,253,.50);">Diagnòstic · Fortaleses · Riscos · Recomanació · Passos immediats</div>
         </div>
         <div style="margin-left:auto;background:rgba(139,92,246,.20);border:1px solid rgba(139,92,246,.35);border-radius:999px;padding:3px 10px;font-size:.70rem;font-weight:900;color:#c4b5fd;white-space:nowrap;">PDF incl.</div>
       </div>
+      <div id="pmIADesc" style="font-size:.82rem;color:rgba(196,181,253,.70);line-height:1.6;margin-bottom:12px;padding:10px 12px;background:rgba(139,92,246,.08);border-radius:10px;border-left:3px solid rgba(139,92,246,.40);">Introdueix les teves dades i la IA genera un diagnòstic complet de la teva situació financera: fortaleses, riscos, recomanació concreta i els passos immediats a seguir. S'exporta en PDF professional.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <div style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:8px 12px;font-size:.78rem;color:rgba(196,181,253,.65);">📋 Diagnòstic</div>
         <div style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:8px 12px;font-size:.78rem;color:rgba(196,181,253,.65);">✅ Fortaleses</div>
@@ -3644,13 +3579,14 @@ body.auth-locked > *:not(#authGate){display:none!important;}
     </div>
 
     <!-- Simuladors -->
-    <div class="pm-section-divider">Simuladors financers</div>
+    <div id="pmDivSim" class="pm-section-divider">Simuladors financers</div>
     <div class="pm-grid">
       <div class="pm-tool">
         <span class="pm-tool-icon">📈</span>
-        <div class="pm-tool-title">Simulador de Rendibilitat</div>
-        <div class="pm-tool-desc">Compara: comprar per viure · per llogar · no comprar</div>
-        <div style="display:flex;gap:8px;margin-top:14px;">
+        <div id="pmRendTitle" class="pm-tool-title">Simulador de Rendibilitat</div>
+        <div id="pmRendSub" class="pm-tool-desc">Compara: comprar per viure · per llogar · no comprar</div>
+        <div id="pmRendDesc" style="font-size:.79rem;color:rgba(253,230,138,.55);line-height:1.55;margin:8px 0 12px;padding:8px 10px;background:rgba(234,179,8,.06);border-radius:8px;border-left:2px solid rgba(234,179,8,.30);">Calcula si comprar és millor que llogar amb les teves dades reals: ROI anual, punt d'equilibri i estalvi acumulat a 20 anys.</div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
           <div class="pm-stat"><div class="pm-stat-val">6.8%</div><div class="pm-stat-lbl">ROI anual</div></div>
           <div class="pm-stat"><div class="pm-stat-val">12a</div><div class="pm-stat-lbl">Equilibri</div></div>
           <div class="pm-stat"><div class="pm-stat-val">+48k</div><div class="pm-stat-lbl">Vs lloguer</div></div>
@@ -3658,9 +3594,10 @@ body.auth-locked > *:not(#authGate){display:none!important;}
       </div>
       <div class="pm-tool">
         <span class="pm-tool-icon">🏦</span>
-        <div class="pm-tool-title">Comparador d'Hipoteques</div>
-        <div class="pm-tool-desc">Fins a 5 bancs lado a lado amb cost total real</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px;">
+        <div id="pmHipTitle" class="pm-tool-title">Comparador d'Hipoteques</div>
+        <div id="pmHipSub" class="pm-tool-desc">Fins a 5 bancs lado a lado amb cost total real</div>
+        <div id="pmHipDesc" style="font-size:.79rem;color:rgba(253,230,138,.55);line-height:1.55;margin:8px 0 12px;padding:8px 10px;background:rgba(234,179,8,.06);border-radius:8px;border-left:2px solid rgba(234,179,8,.30);">Compara fins a 5 ofertes hipotecàries de bancs reals: quota mensual, cost total a 20/30 anys, TAE i comissions. Veu quina t'estalvia més diners.</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px;">
           <div style="background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.25);border-radius:8px;height:40px;"></div>
           <div style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.15);border-radius:8px;height:40px;"></div>
           <div style="background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.25);border-radius:8px;height:40px;"></div>
@@ -3670,13 +3607,14 @@ body.auth-locked > *:not(#authGate){display:none!important;}
     </div>
 
     <!-- Calculadores -->
-    <div class="pm-section-divider">Calculadores avançades</div>
+    <div id="pmDivCalc" class="pm-section-divider">Calculadores avançades</div>
     <div class="pm-grid">
       <div class="pm-tool">
         <span class="pm-tool-icon">🧮</span>
-        <div class="pm-tool-title">Calculadora d'Esforç Financer</div>
-        <div class="pm-tool-desc">Evolució a 5, 10 i 20 anys vista</div>
-        <div style="display:flex;gap:8px;margin-top:14px;">
+        <div id="pmEffTitle" class="pm-tool-title">Calculadora d'Esforç Financer</div>
+        <div id="pmEffSub" class="pm-tool-desc">Evolució a 5, 10 i 20 anys vista</div>
+        <div id="pmEffDesc" style="font-size:.79rem;color:rgba(253,230,138,.55);line-height:1.55;margin:8px 0 12px;padding:8px 10px;background:rgba(234,179,8,.06);border-radius:8px;border-left:2px solid rgba(234,179,8,.30);">Veu com evoluciona el percentatge dels teus ingressos que destines a la hipoteca al llarg del temps. Inclou simulació d'augment de salari i inflació.</div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
           <div class="pm-stat"><div class="pm-stat-val">28%</div><div class="pm-stat-lbl">Any 1</div></div>
           <div class="pm-stat"><div class="pm-stat-val">22%</div><div class="pm-stat-lbl">Any 10</div></div>
           <div class="pm-stat"><div class="pm-stat-val">15%</div><div class="pm-stat-lbl">Any 20</div></div>
@@ -3684,9 +3622,10 @@ body.auth-locked > *:not(#authGate){display:none!important;}
       </div>
       <div class="pm-tool">
         <span class="pm-tool-icon">🎯</span>
-        <div class="pm-tool-title">Preu Màxim Personalitzat</div>
-        <div class="pm-tool-desc">3 escenaris: conservador · recomanat · optimista</div>
-        <div style="background:rgba(234,179,8,.10);border:1px solid rgba(234,179,8,.22);border-radius:12px;padding:12px 14px;margin-top:14px;text-align:center;">
+        <div id="pmMaxTitle" class="pm-tool-title">Preu Màxim Personalitzat</div>
+        <div id="pmMaxSub" class="pm-tool-desc">3 escenaris: conservador · recomanat · optimista</div>
+        <div id="pmMaxDesc" style="font-size:.79rem;color:rgba(253,230,138,.55);line-height:1.55;margin:8px 0 12px;padding:8px 10px;background:rgba(234,179,8,.06);border-radius:8px;border-left:2px solid rgba(234,179,8,.30);">Calcula el preu màxim de vivienda que et pots permetre en 3 escenaris (conservador, recomanat, optimista) basant-se en els teus ingressos i estalvis reals.</div>
+        <div style="background:rgba(234,179,8,.10);border:1px solid rgba(234,179,8,.22);border-radius:12px;padding:12px 14px;margin-top:4px;text-align:center;">
           <div style="font-size:1.5rem;font-weight:900;font-family:'DM Mono',monospace;color:#fbbf24;">245.000€</div>
           <div style="font-size:.73rem;color:rgba(253,230,138,.45);margin-top:3px;">Preu màxim recomanat</div>
         </div>
@@ -3703,63 +3642,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 
   </div><!-- end blur content -->
 
-  <!-- ── PAYWALL OVERLAY ── -->
-  <div id="premiumOverlay" style="position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,rgba(13,10,0,.05) 0%,rgba(13,10,0,.70) 30%,rgba(13,10,0,.95) 100%);backdrop-filter:blur(1px);">
-    <div style="background:linear-gradient(160deg,#1c1400,#0f0b00 55%,#160f00);border:1px solid rgba(234,179,8,.45);border-radius:26px;padding:34px 30px 28px;max-width:480px;width:100%;box-shadow:0 0 0 1px rgba(234,179,8,.10) inset,0 40px 90px rgba(0,0,0,.85),0 0 70px rgba(234,179,8,.10);text-align:center;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#b45309,#f59e0b,#fde68a,#f59e0b,#b45309,transparent);"></div>
-      <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(234,179,8,.14),transparent 65%);pointer-events:none;"></div>
 
-      <!-- VISTA A: Compra (per defecte) -->
-      <div id="prem-view-buy">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border-radius:50%;background:linear-gradient(145deg,rgba(234,179,8,.20),rgba(120,80,0,.15));border:1.5px solid rgba(234,179,8,.40);margin-bottom:16px;position:relative;z-index:1;box-shadow:0 6px 24px rgba(234,179,8,.22);">
-          <svg width="30" height="34" viewBox="0 0 30 34" fill="none"><rect x="2" y="15" width="26" height="17" rx="5" fill="rgba(234,179,8,0.18)" stroke="#f59e0b" stroke-width="1.8"/><path d="M8 15V10a7 7 0 0 1 14 0v5" stroke="#fde68a" stroke-width="2" stroke-linecap="round"/><circle cx="15" cy="23.5" r="2.5" fill="#fbbf24"/><line x1="15" y1="26" x2="15" y2="29" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h2 style="color:#fde68a;font-size:1.45rem;font-weight:900;margin:0 0 6px;letter-spacing:-.3px;position:relative;z-index:1;">Eines Premium Exclusives</h2>
-        <p style="color:rgba(253,230,138,.60);font-size:.85rem;line-height:1.65;margin:0 0 6px;position:relative;z-index:1;">Pla d'independència personalitzat amb IA, 12 eines avançades i exportació PDF professional.</p>
-        <p style="color:rgba(253,230,138,.40);font-size:.78rem;line-height:1.55;margin:0 0 18px;position:relative;z-index:1;">Pagament únic de <b style="color:#fbbf24;">5€</b> · Rebràs un codi d'accés per correu · Accés per sessió d'un sol ús</p>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;position:relative;z-index:1;">
-          <div style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.20);border-radius:13px;padding:12px 8px;"><div style="font-size:1.4rem;margin-bottom:5px;">🤖</div><div style="font-size:.72rem;font-weight:800;color:#fde68a;line-height:1.3;">Pla IA</div></div>
-          <div style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.20);border-radius:13px;padding:12px 8px;"><div style="font-size:1.4rem;margin-bottom:5px;">📈</div><div style="font-size:.72rem;font-weight:800;color:#fde68a;line-height:1.3;">12 Eines</div></div>
-          <div style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.20);border-radius:13px;padding:12px 8px;"><div style="font-size:1.4rem;margin-bottom:5px;">📄</div><div style="font-size:.72rem;font-weight:800;color:#fde68a;line-height:1.3;">PDF Pro</div></div>
-        </div>
-        <div style="position:relative;z-index:1;">
-          <a id="premiumPayBtn" href="https://assesoriahabitatge.com/premium" target="_blank" rel="noopener"
-            style="display:flex;align-items:center;justify-content:space-between;width:100%;background:linear-gradient(135deg,#f59e0b,#d97706,#b45309);color:#1a0e00;text-decoration:none;border-radius:14px;padding:14px 20px;font-weight:900;font-size:1rem;box-shadow:0 10px 36px rgba(234,179,8,.40),0 0 0 1px rgba(253,230,138,.18) inset;transition:transform .15s ease,box-shadow .15s ease;margin-bottom:12px;"
-            onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 18px 48px rgba(234,179,8,.60)'"
-            onmouseout="this.style.transform='';this.style.boxShadow='0 10px 36px rgba(234,179,8,.40),0 0 0 1px rgba(253,230,138,.18) inset'">
-            <span style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.1rem;">✨</span>Obtenir accés Premium</span>
-            <span style="background:rgba(0,0,0,.18);border-radius:8px;padding:3px 10px;font-size:.88rem;">5€ únic</span>
-          </a>
-          <button onclick="window.__showCodeInput()" style="width:100%;background:rgba(234,179,8,.10);border:1px solid rgba(234,179,8,.30);color:#fde68a;border-radius:12px;padding:11px 20px;font-weight:800;font-family:inherit;font-size:.88rem;cursor:pointer;transition:background .15s;">
-            🔑 Ja tinc un codi d'accés
-          </button>
-        </div>
-      </div>
-
-      <!-- VISTA B: Introduir codi -->
-      <div id="prem-view-code" style="display:none;">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;background:linear-gradient(145deg,rgba(234,179,8,.20),rgba(120,80,0,.15));border:1.5px solid rgba(234,179,8,.40);margin-bottom:14px;font-size:1.6rem;">🔑</div>
-        <h2 style="color:#fde68a;font-size:1.3rem;font-weight:900;margin:0 0 6px;">Introdueix el teu codi</h2>
-        <p style="color:rgba(253,230,138,.45);font-size:.80rem;line-height:1.6;margin:0 0 20px;">Introdueix el codi d'accés que has rebut per correu electrònic després del pagament.<br><span style="color:rgba(253,230,138,.28);font-size:.74rem;">⚠️ Codi d'un sol ús · Un cop surtis de la sessió no podrà tornar a usar-se</span></p>
-        <div style="margin-bottom:12px;">
-          <input id="premCodeInput" type="text" placeholder="XXXX-XXXX-XXXX" maxlength="14"
-            style="width:100%;padding:14px 18px;background:rgba(0,0,0,.50);border:2px solid rgba(234,179,8,.35);border-radius:12px;color:#fde68a;font-size:1.1rem;font-weight:900;font-family:'DM Mono',monospace;text-align:center;letter-spacing:2px;outline:none;transition:border-color .15s;"
-            oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'').substring(0,14)"
-            onkeydown="if(event.key==='Enter')window.__submitPremCode()"
-            onfocus="this.style.borderColor='rgba(234,179,8,.70)'" onblur="this.style.borderColor='rgba(234,179,8,.35)'">
-        </div>
-        <div id="premCodeError" style="display:none;padding:8px 14px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.30);border-radius:9px;color:#fca5a5;font-size:.80rem;margin-bottom:12px;"></div>
-        <button onclick="window.__submitPremCode()" id="premCodeBtn"
-          style="width:100%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#1a0e00;border:0;border-radius:12px;padding:13px 20px;font-weight:900;font-family:inherit;font-size:.95rem;cursor:pointer;box-shadow:0 8px 24px rgba(234,179,8,.35);margin-bottom:10px;">
-          ✅ Activar accés
-        </button>
-        <button onclick="window.__showBuyView()" style="background:none;border:none;color:rgba(253,230,138,.35);font-size:.78rem;cursor:pointer;font-family:inherit;text-decoration:underline;">
-          ← Tornar
-        </button>
-      </div>
-
-    </div>
-  </div><!-- end overlay -->
 
 </div><!-- end premium section -->
 
@@ -3830,205 +3713,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 }
 </style>
 
-<!-- ══════════════════════════════════════════
-     SECCIÓ PREMIUM OR — Pla d'Assessorament
-     ══════════════════════════════════════════ -->
-<section id="premiumGold" style="
-  position:relative;
-  padding: 64px 16px 72px;
-  overflow: hidden;
-  background: linear-gradient(160deg, #0d0a00 0%, #1a1200 30%, #0f0d02 60%, #0a0800 100%);
-">
-  <!-- Ambient gold glows -->
-  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
-    <div style="position:absolute;top:-120px;left:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(234,179,8,.13),transparent 65%);"></div>
-    <div style="position:absolute;bottom:-100px;right:-60px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.10),transparent 65%);"></div>
-    <div style="position:absolute;top:40%;left:50%;transform:translateX(-50%);width:700px;height:300px;border-radius:50%;background:radial-gradient(ellipse,rgba(234,179,8,.06),transparent 65%);"></div>
-  </div>
 
-  <!-- Gold shimmer top border -->
-  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,#92400e 15%,#f59e0b 35%,#fde68a 50%,#f59e0b 65%,#92400e 85%,transparent 100%);"></div>
-
-  <div style="max-width:860px;margin:0 auto;position:relative;z-index:1;">
-
-    <!-- Badge -->
-    <div style="text-align:center;margin-bottom:10px;">
-      <span style="display:inline-flex;align-items:center;gap:7px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.35);border-radius:999px;padding:6px 16px;font-size:.74rem;font-weight:900;color:#fde68a;letter-spacing:.8px;text-transform:uppercase;">
-        <span style="width:6px;height:6px;border-radius:50%;background:#fbbf24;display:inline-block;animation:dotPulse 2s ease-in-out infinite;"></span>
-        Pla Premium · Assessoria d'Habitatge
-      </span>
-    </div>
-
-    <!-- Headline -->
-    <h2 style="text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.5px;margin:0 0 16px;background:linear-gradient(135deg,#fde68a 0%,#f59e0b 40%,#fbbf24 70%,#fef3c7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-      Tot el que necessites<br>per prendre la millor decisió
-    </h2>
-    <p style="text-align:center;color:rgba(253,230,138,.60);font-size:1rem;line-height:1.7;max-width:560px;margin:0 auto 48px;">
-      Per menys del que costa un cafè al dia, tens un assessor immobiliari del Baix Penedès al teu costat durant tot el procés.
-    </p>
-
-    <!-- Main card -->
-    <div style="
-      background:linear-gradient(145deg,rgba(30,20,0,.90),rgba(20,14,0,.95));
-      border:1px solid rgba(234,179,8,.30);
-      border-radius:28px;
-      overflow:hidden;
-      box-shadow:0 0 0 1px rgba(234,179,8,.08) inset, 0 32px 80px rgba(0,0,0,.6), 0 0 60px rgba(234,179,8,.06);
-    ">
-      <!-- Inner shimmer -->
-      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(253,230,138,.25),transparent);"></div>
-
-      <div style="padding:36px 32px 32px;">
-
-        <!-- Plan name + price -->
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px;">
-          <div>
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.30);border-radius:999px;padding:3px 12px;font-size:.70rem;font-weight:900;color:#fbbf24;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px;">🔑 Accés per codi · Un sol ús</div>
-            <div style="font-size:1.4rem;font-weight:900;color:#fde68a;letter-spacing:-.2px;margin-bottom:4px;">✨ Accés Premium</div>
-            <div style="font-size:.86rem;color:rgba(253,230,138,.50);font-weight:600;">Pagament únic · Sense subscripció · Sense renovació</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:3rem;font-weight:900;line-height:1;font-family:'DM Mono',monospace;background:linear-gradient(135deg,#fde68a,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">5€</div>
-            <div style="font-size:.78rem;color:rgba(253,230,138,.45);font-weight:700;margin-top:2px;">pagament únic · per sempre</div>
-          </div>
-        </div>
-
-        <!-- Benefits grid -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px;">
-
-          <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.18);border-radius:16px;padding:16px 18px;">
-            <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(234,179,8,.25),rgba(251,191,36,.15));border:1px solid rgba(234,179,8,.30);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🤖</div>
-            <div>
-              <div style="font-size:.9rem;font-weight:800;color:#fde68a;margin-bottom:4px;">Pla d'independència amb IA</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.52);line-height:1.5;">Respon 16 preguntes i rep un pla personalitzat que et diu quan i com pots independitzar-te.</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.18);border-radius:16px;padding:16px 18px;">
-            <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(234,179,8,.25),rgba(251,191,36,.15));border:1px solid rgba(234,179,8,.30);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">📊</div>
-            <div>
-              <div style="font-size:.9rem;font-weight:800;color:#fde68a;margin-bottom:4px;">12 eines avançades de càlcul</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.52);line-height:1.5;">Comparador de bancs, stress test, ROI de reforma, fiscalitat de venda i molt més.</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.18);border-radius:16px;padding:16px 18px;">
-            <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(234,179,8,.25),rgba(251,191,36,.15));border:1px solid rgba(234,179,8,.30);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">📄</div>
-            <div>
-              <div style="font-size:.9rem;font-weight:800;color:#fde68a;margin-bottom:4px;">Exportació PDF professional</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.52);line-height:1.5;">Descarrega el teu pla d'independència en PDF per guardar-lo o ensenyar-lo al banc.</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.18);border-radius:16px;padding:16px 18px;">
-            <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(234,179,8,.25),rgba(251,191,36,.15));border:1px solid rgba(234,179,8,.30);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🏠</div>
-            <div>
-              <div style="font-size:.9rem;font-weight:800;color:#fde68a;margin-bottom:4px;">Anàlisi llogar vs comprar</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.52);line-height:1.5;">Comparativa real amb números del teu municipi. Sap quina opció et convé més i quan.</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.18);border-radius:16px;padding:16px 18px;">
-            <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(234,179,8,.25),rgba(251,191,36,.15));border:1px solid rgba(234,179,8,.30);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🧾</div>
-            <div>
-              <div style="font-size:.9rem;font-weight:800;color:#fde68a;margin-bottom:4px;">Fiscalitat i costos complets</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.52);line-height:1.5;">ITP, notaria, registre, gestoria... Tots els costos reals sense sorpreses ni lletra petita.</div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.25);border-radius:16px;padding:16px 18px;">
-            <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(139,92,246,.30),rgba(109,40,217,.20));border:1px solid rgba(139,92,246,.40);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🔑</div>
-            <div>
-              <div style="font-size:.9rem;font-weight:800;color:#c4b5fd;margin-bottom:4px;">Codi d'accés d'un sol ús</div>
-              <div style="font-size:.78rem;color:rgba(196,181,253,.55);line-height:1.5;">Pagues una vegada i reps un codi per correu. L'introdueixes i tens accés immediat a tot.</div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- How it works -->
-        <div style="background:rgba(0,0,0,.25);border:1px solid rgba(234,179,8,.15);border-radius:16px;padding:20px 22px;margin-bottom:28px;">
-          <div style="font-size:.75rem;font-weight:900;color:#fbbf24;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;">Com funciona</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#1a0e00;font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.60);line-height:1.45;"><b style="color:#fde68a;">Pagues 5€</b> una sola vegada al checkout segur</div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#1a0e00;font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.60);line-height:1.45;"><b style="color:#fde68a;">Reps un codi</b> únic per correu electrònic en menys de 24h</div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#1a0e00;font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-              <div style="font-size:.78rem;color:rgba(253,230,138,.60);line-height:1.45;"><b style="color:#fde68a;">Introdueixes el codi</b> i tens accés immediat a totes les eines</div>
-            </div>
-          </div>
-          <div style="margin-top:12px;padding:8px 12px;background:rgba(234,179,8,.06);border-radius:9px;font-size:.73rem;color:rgba(253,230,138,.38);line-height:1.5;">
-            ⚠️ El codi és d'un sol ús i funciona per a una sessió. Assegura't d'usar-lo quan tinguis temps per explorar totes les eines.
-          </div>
-        </div>
-
-        <!-- Divider -->
-        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(234,179,8,.20),transparent);margin-bottom:24px;"></div>
-
-        <!-- Social proof -->
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
-          <div style="display:flex;">
-            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:.9rem;">👤</div>
-            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-left:-8px;">👤</div>
-            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#fde68a,#fbbf24);border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-left:-8px;">👤</div>
-          </div>
-          <div>
-            <div style="font-size:.82rem;font-weight:800;color:#fde68a;">Joves del Baix Penedès ja han fet el salt</div>
-            <div style="font-size:.74rem;color:rgba(253,230,138,.45);margin-top:1px;">Cunit · Calafell · El Vendrell · Cubelles i més</div>
-          </div>
-          <div style="margin-left:auto;display:flex;gap:2px;">
-            <span style="color:#f59e0b;font-size:1rem;">★★★★★</span>
-          </div>
-        </div>
-
-        <!-- CTA button -->
-        <div style="text-align:center;">
-          <button onclick="window.__showCodeInput()" style="
-            display:inline-flex;align-items:center;gap:10px;
-            background:linear-gradient(135deg,#f59e0b 0%,#d97706 50%,#b45309 100%);
-            color:#1a0e00;border:0;
-            border-radius:16px;padding:16px 36px;
-            font-weight:900;font-size:1.05rem;letter-spacing:.1px;font-family:inherit;
-            box-shadow:0 10px 36px rgba(234,179,8,.40),0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(253,230,138,.25) inset;
-            transition:transform .15s ease,box-shadow .15s ease;cursor:pointer;
-          "
-          onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 18px 48px rgba(234,179,8,.55),0 4px 12px rgba(0,0,0,.35)'"
-          onmouseout="this.style.transform='';this.style.boxShadow='0 10px 36px rgba(234,179,8,.40),0 4px 12px rgba(0,0,0,.35),0 0 0 1px rgba(253,230,138,.25) inset'">
-            <span style="font-size:1.2rem;">🔑</span>
-            <span>Introduir codi d'accés</span>
-            <span style="font-size:.85rem;opacity:.75;">→</span>
-          </button>
-          <div style="margin-top:10px;">
-            <a href="https://assesoriahabitatge.com/premium" target="_blank" rel="noopener"
-              style="display:inline-flex;align-items:center;gap:6px;color:rgba(253,230,138,.55);font-size:.80rem;font-weight:700;text-decoration:none;border:1px solid rgba(234,179,8,.20);border-radius:10px;padding:7px 16px;transition:all .15s;"
-              onmouseover="this.style.color='#fde68a';this.style.borderColor='rgba(234,179,8,.45)'"
-              onmouseout="this.style.color='rgba(253,230,138,.55)';this.style.borderColor='rgba(234,179,8,.20)'">
-              ✨ Obtenir accés — 5€ únic
-            </a>
-          </div>
-          <div style="margin-top:10px;font-size:.75rem;color:rgba(253,230,138,.30);line-height:1.6;">
-            Pagament únic · Sense subscripció · Codi enviat en menys de 24h
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Bottom tagline -->
-    <p style="text-align:center;margin-top:28px;font-size:.84rem;color:rgba(253,230,138,.30);line-height:1.6;">
-      Una decisió de 200.000€ no es pren sols.<br>
-      <span style="color:rgba(253,230,138,.50);font-weight:700;">5€ únics per tenir un pla clar i eines professionals al teu costat.</span>
-    </p>
-
-  </div>
-</section>
-<!-- ══ FI SECCIÓ PREMIUM OR ══ -->
 
 <footer class="site-footer" role="contentinfo">
   <div class="footer-inner">
@@ -5047,7 +4732,8 @@ const buildLLMPrompt = (userMsg) => {
   }
 
   // 2) Detectar si la pregunta es sobre VIVIENDA específicamente
-  const msgLower = userMsg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  // Convertir el mensaje a string antes de aplicar toLowerCase para evitar errores cuando sea undefined
+  const msgLower = String(userMsg || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   const isHousingQuestion = /\b(vivienda|vivenda|casa|pis|piso|comprar|llogar|alquilar|alquiler|lloguer|hipoteca|hipotec|entrada|enganxe|itp|notaria|notari)\b/.test(msgLower);
   
   // 3) Construir contexto SOLO si es pregunta de vivienda
@@ -5117,6 +4803,18 @@ const applyI18n=()=>{
     :"Cunit y Calafell tienen la mejor relación playa-precio del Baix Penedès. El Vendrell ofrece más servicios. El interior es hasta un 50% más barato.";
   updateCTA();
   if(window._refreshMuniLabels) window._refreshMuniLabels();
+  // ── Lead form i18n ──
+  var lN=Q('#leadLblName');if(lN)lN.textContent=LANG==='EN'?'Full name':LANG==='CA'?'Nom complet':'Nombre completo';
+  var lP=Q('#leadLblPhone');if(lP)lP.textContent=LANG==='EN'?'Phone':LANG==='CA'?'Telèfon':'Teléfono';
+  var lS=Q('#leadSubmitBtn');if(lS&&!lS.disabled)lS.textContent=LANG==='EN'?'See my real options':LANG==='CA'?'Veure les meves opcions reals':'Quiero ver mis opciones reales';
+  var lST=Q('#leadSuccessTitle');if(lST)lST.textContent=LANG==='EN'?'Received!':LANG==='CA'?'Rebut!':'¡Recibido!';
+  var lT1=Q('#leadTrust1');if(lT1)lT1.textContent=LANG==='EN'?'🔒 No commitment':LANG==='CA'?'🔒 Sense compromís':'🔒 Sin compromiso';
+  var lT2=Q('#leadTrust2');if(lT2)lT2.textContent=LANG==='EN'?'⏱ Response in 24h':LANG==='CA'?'⏱ Resposta en 24h':'⏱ Respuesta en 24h';
+  var lT3=Q('#leadTrust3');if(lT3)lT3.textContent=LANG==='EN'?'💶 No cost for you':LANG==='CA'?'💶 Sense cost per a tu':'💶 Sin coste para ti';
+  var lRT=Q('#leadResponseTime');if(lRT)lRT.innerHTML=LANG==='EN'?'⏱ Usual response time: <b style="color:#f1f5f9">less than 24 hours</b>':LANG==='CA'?'⏱ Temps de resposta habitual: <b style="color:#f1f5f9">menys de 24 hores</b>':'⏱ Tiempo de respuesta habitual: <b style="color:#f1f5f9">menos de 24 horas</b>';
+  var lSM=Q('#leadSuccessMsg');if(lSM)lSM.textContent=LANG==='EN'?'We have received your case. An advisor will review your situation and contact you with real financing options.':LANG==='CA'?'Hem rebut el teu cas. Un assessor revisarà la teva situació i et contactarà amb opcions reals de finançament.':'Hemos recibido tu caso. Un asesor revisará tu situación y te contactará con opciones reales de financiación.';
+  var lPL=Q('#leadPrivLink');if(lPL)lPL.textContent=LANG==='EN'?'Privacy policy':LANG==='CA'?'Política de privacitat':'Política de privacidad';
+  var lTM=Q('#leadToggleMore');if(lTM&&lTM.textContent.includes('▼'))lTM.textContent=LANG==='EN'?'▼ Help us give you better guidance (optional)':LANG==='CA'?"▼ Ajuda'ns a orientar-te millor (opcional)":'▼ Ayúdanos a darte mejor orientación (opcional)';
   // Hero i18n
   const hBadge=Q("#heroBadge");
   if(hBadge)hBadge.textContent=LANG==="EN"?"Free tool · Baix Penedès":LANG==="CA"?"Eina gratuïta · Catalunya":"Herramienta gratuita · Catalunya";
@@ -5758,6 +5456,7 @@ const analyze=()=>{
   Q("#k4sub").textContent=(recCode==="BUY"||recCode==="BUY_SHORT")?(LANG==="EN"?"Ready to buy":(LANG==="CA"?"Efectiu + esforç OK":"Encajas en efectivo + esfuerzo")):recCode==="RENT"?(LANG==="EN"?"Buying is tight":(LANG==="CA"?"Comprar apura":"Comprar aprieta")):(LANG==="EN"?"Neither option fits safely":(LANG==="CA"?"Cap opció encaixa de forma segura":"No encaja con seguridad"));
 
   renderResult();renderAIContext();renderAISuggestions();setTabsEnabled();saveForm();show("r");updateCTA();
+  try { if(typeof window.__injectVerdict==='function') window.__injectVerdict(); } catch(_e){ console.warn('Verdict error:',_e); }
   setAnalyzeLoading(false);
   // Save a snapshot of this analysis for personal and staff history
   saveAnalysisSnapshot(last);
@@ -6034,6 +5733,12 @@ const renderResult=()=>{
   setTimeout(()=>{drawEffortChart();drawSensChart();},70);
 };
 window.renderResult = renderResult; // expose globally
+// Patch: also inject verdict whenever renderResult runs
+const _origRenderResultLead = renderResult;
+window.renderResult = function() {
+  _origRenderResultLead.apply(this, arguments);
+  try { if(typeof window.__injectVerdict==='function') window.__injectVerdict(); } catch(_e) {}
+};
 
 /* =====================
    MAPA COMPARADOR
@@ -6243,7 +5948,13 @@ const _fillCmpSelect = (query) => {
   const sel = Q('#cmList'); if (!sel) return;
   const list = _buildMuniList();
   const q = (query || '').toLowerCase().trim();
-  const filtered = q ? list.filter(x => x.m.toLowerCase().includes(q) || x.comarca.toLowerCase().includes(q)) : list;
+  // Filtrar de forma segura: convertir a cadena antes de aplicar toLowerCase
+  const filtered = q
+    ? list.filter(x =>
+        ((x.m || '').toLowerCase().includes(q)) ||
+        ((x.comarca || '').toLowerCase().includes(q))
+      )
+    : list;
   sel.innerHTML = filtered.map(x => `<option value="${x.m}">${x.m} — ${x.comarca}</option>`).join('');
 };
 
@@ -7278,7 +6989,8 @@ const removeThinking=()=>{Q("#thinking-indicator")?.remove();};
 /* ────────────────────────────────
    MOTOR DE INTENCIONES — detecta
    ──────────────────────────────── */
-const normMsg=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
+// Normalizador seguro: convierte la entrada a cadena antes de usar toLowerCase
+const normMsg=s=>String(s||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
 const has=(m,...kw)=>kw.some(k=>m.includes(k));
 
 const detectIntent=msg=>{
@@ -7349,7 +7061,8 @@ const buildReply=msg=>{
   const es=(esStr,caStr,enStr)=>L==="CA"?caStr:L==="EN"?enStr:esStr;
   const fm=n=>fmtMoney(n);
   const fp=n=>Number(n).toFixed(1)+"%";
-  const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  // Normaliza de forma segura: garantiza que s es una cadena antes de usar toLowerCase
+  const norm=s=>String(s||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   const m=norm(msg);
   
   // ═══════════════════════════════════════════════════════════
@@ -8755,7 +8468,8 @@ const renderMuniCards = () => {
 
   // Filter
   const q = (_muniCardSearch || '').toLowerCase().trim();
-  if (q) munis = munis.filter(n => n.toLowerCase().includes(q));
+  // Convert each value to string before calling toLowerCase to handle undefined values safely
+  if (q) munis = munis.filter(n => String(n || '').toLowerCase().includes(q));
 
   // Sort
   munis = [...munis].sort((a, b) => {
@@ -9004,6 +8718,283 @@ try {
 }
 </script>
 
+<script>
+/* ══════════════════════════════════════
+   PREMIUM i18n — traduccions per idioma
+   ══════════════════════════════════════ */
+(function() {
+  var PM = {
+    CA: {
+      freeTitle: 'Accés gratuït per temps limitat',
+      freeSub: 'Totes les eines premium disponibles sense cost. Oferta de llançament.',
+      ofertaBadge: 'Oferta limitada',
+      loginBtnLbl: 'Inicia sessió per guardar',
+      kicker: '✨ Eines Exclusives Premium',
+      title: 'El teu centre de\ndecisió immobiliària',
+      subtitle: 'Eines avançades per prendre decisions de 200.000€ amb confiança total. Inicia sessió per guardar els teus resultats.',
+      divIA: 'Informe IA personalitzat',
+      iaTitle: 'Anàlisi Personalitzada amb IA',
+      iaSub: 'Diagnòstic · Fortaleses · Riscos · Recomanació · Passos immediats',
+      iaDesc: 'Introdueix les teves dades i la IA genera un diagnòstic complet de la teva situació financera: fortaleses, riscos, recomanació concreta i els passos immediats a seguir. S\'exporta en PDF professional.',
+      divSim: 'Simuladors financers',
+      rendTitle: 'Simulador de Rendibilitat',
+      rendSub: 'Compara: comprar per viure · per llogar · no comprar',
+      rendDesc: 'Calcula si comprar és millor que llogar amb les teves dades reals: ROI anual, punt d\'equilibri i estalvi acumulat a 20 anys.',
+      hipTitle: 'Comparador d\'Hipoteques',
+      hipSub: 'Fins a 5 bancs costat a costat amb cost total real',
+      hipDesc: 'Compara fins a 5 ofertes hipotecàries de bancs reals: quota mensual, cost total a 20/30 anys, TAE i comissions. Veu quina t\'estalvia més diners.',
+      divCalc: 'Calculadores avançades',
+      effTitle: 'Calculadora d\'Esforç Financer',
+      effSub: 'Evolució a 5, 10 i 20 anys vista',
+      effDesc: 'Veu com evoluciona el percentatge dels teus ingressos que destines a la hipoteca al llarg del temps.',
+      maxTitle: 'Preu Màxim Personalitzat',
+      maxSub: '3 escenaris: conservador · recomanat · optimista',
+      maxDesc: 'Calcula el preu màxim de vivienda que et pots permetre en 3 escenaris basant-se en els teus ingressos i estalvis reals.',
+      emailFormTitle: 'Rep el resultat al teu correu',
+      emailFormSub: 'T\'enviem el resum complet de l\'anàlisi al teu email. Gratis, sense spam.',
+      emailBtnLbl: '📨 Enviar resultat',
+    },
+    ES: {
+      freeTitle: 'Acceso gratuito por tiempo limitado',
+      freeSub: 'Todas las herramientas premium disponibles sin coste. Oferta de lanzamiento.',
+      ofertaBadge: 'Oferta limitada',
+      loginBtnLbl: 'Inicia sesión para guardar',
+      kicker: '✨ Herramientas Exclusivas Premium',
+      title: 'Tu centro de\ndecisión inmobiliaria',
+      subtitle: 'Herramientas avanzadas para tomar decisiones de 200.000€ con total confianza. Inicia sesión para guardar tus resultados.',
+      divIA: 'Informe IA personalizado',
+      iaTitle: 'Análisis Personalizado con IA',
+      iaSub: 'Diagnóstico · Fortalezas · Riesgos · Recomendación · Pasos inmediatos',
+      iaDesc: 'Introduce tus datos y la IA genera un diagnóstico completo de tu situación financiera: fortalezas, riesgos, recomendación concreta y los pasos inmediatos a seguir. Se exporta en PDF profesional.',
+      divSim: 'Simuladores financieros',
+      rendTitle: 'Simulador de Rentabilidad',
+      rendSub: 'Compara: comprar para vivir · para alquilar · no comprar',
+      rendDesc: 'Calcula si comprar es mejor que alquilar con tus datos reales: ROI anual, punto de equilibrio y ahorro acumulado a 20 años.',
+      hipTitle: 'Comparador de Hipotecas',
+      hipSub: 'Hasta 5 bancos lado a lado con coste total real',
+      hipDesc: 'Compara hasta 5 ofertas hipotecarias de bancos reales: cuota mensual, coste total a 20/30 años, TAE y comisiones. Ve cuál te ahorra más dinero.',
+      divCalc: 'Calculadoras avanzadas',
+      effTitle: 'Calculadora de Esfuerzo Financiero',
+      effSub: 'Evolución a 5, 10 y 20 años vista',
+      effDesc: 'Ve cómo evoluciona el porcentaje de tus ingresos que destinas a la hipoteca a lo largo del tiempo.',
+      maxTitle: 'Precio Máximo Personalizado',
+      maxSub: '3 escenarios: conservador · recomendado · optimista',
+      maxDesc: 'Calcula el precio máximo de vivienda que te puedes permitir en 3 escenarios basándose en tus ingresos y ahorros reales.',
+      emailFormTitle: 'Recibe el resultado en tu correo',
+      emailFormSub: 'Te enviamos el resumen completo del análisis a tu email. Gratis, sin spam.',
+      emailBtnLbl: '📨 Enviar resultado',
+    },
+    EN: {
+      freeTitle: 'Free access — limited time offer',
+      freeSub: 'All premium tools available at no cost. Launch offer.',
+      ofertaBadge: 'Limited offer',
+      loginBtnLbl: 'Sign in to save results',
+      kicker: '✨ Exclusive Premium Tools',
+      title: 'Your real estate\ndecision centre',
+      subtitle: 'Advanced tools to make €200,000 decisions with total confidence. Sign in to save your results.',
+      divIA: 'Personalised AI Report',
+      iaTitle: 'Personalised AI Analysis',
+      iaSub: 'Diagnosis · Strengths · Risks · Recommendation · Immediate steps',
+      iaDesc: 'Enter your data and the AI generates a complete diagnosis of your financial situation: strengths, risks, a concrete recommendation and the immediate steps to take. Exported as a professional PDF.',
+      divSim: 'Financial simulators',
+      rendTitle: 'Profitability Simulator',
+      rendSub: 'Compare: buy to live · buy to rent · don\'t buy',
+      rendDesc: 'Calculate whether buying is better than renting with your real data: annual ROI, break-even point and cumulative savings over 20 years.',
+      hipTitle: 'Mortgage Comparator',
+      hipSub: 'Up to 5 banks side by side with real total cost',
+      hipDesc: 'Compare up to 5 real mortgage offers: monthly payment, total cost over 20/30 years, APR and fees. See which saves you the most money.',
+      divCalc: 'Advanced calculators',
+      effTitle: 'Financial Effort Calculator',
+      effSub: 'Evolution over 5, 10 and 20 years',
+      effDesc: 'See how the percentage of your income dedicated to the mortgage evolves over time.',
+      maxTitle: 'Personalised Maximum Price',
+      maxSub: '3 scenarios: conservative · recommended · optimistic',
+      maxDesc: 'Calculate the maximum property price you can afford in 3 scenarios based on your real income and savings.',
+      emailFormTitle: 'Receive the result by email',
+      emailFormSub: 'We send you the full analysis summary to your email. Free, no spam.',
+      emailBtnLbl: '📨 Send result',
+    }
+  };
+
+  function applyPremiumI18n() {
+    var L = (window.LANG || 'CA');
+    var p = PM[L] || PM.CA;
+    var set = function(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; };
+    set('pmFreeTitle',    p.freeTitle);
+    set('pmFreeSub',      p.freeSub);
+    set('pmOfertaBadge',  p.ofertaBadge);
+    set('pmLoginBtnLbl',  p.loginBtnLbl);
+    set('pmKicker',       p.kicker);
+    set('pmDivIA',        p.divIA);
+    set('pmIATitle',      p.iaTitle);
+    set('pmIASub',        p.iaSub);
+    set('pmIADesc',       p.iaDesc);
+    set('pmDivSim',       p.divSim);
+    set('pmRendTitle',    p.rendTitle);
+    set('pmRendSub',      p.rendSub);
+    set('pmRendDesc',     p.rendDesc);
+    set('pmHipTitle',     p.hipTitle);
+    set('pmHipSub',       p.hipSub);
+    set('pmHipDesc',      p.hipDesc);
+    set('pmDivCalc',      p.divCalc);
+    set('pmEffTitle',     p.effTitle);
+    set('pmEffSub',       p.effSub);
+    set('pmEffDesc',      p.effDesc);
+    set('pmMaxTitle',     p.maxTitle);
+    set('pmMaxSub',       p.maxSub);
+    set('pmMaxDesc',      p.maxDesc);
+    set('emailFormTitle', p.emailFormTitle);
+    set('emailFormSub',   p.emailFormSub);
+    set('emailResultBtnLbl', p.emailBtnLbl);
+    // Title with line break
+    var tEl = document.getElementById('pmTitle');
+    if (tEl) tEl.innerHTML = p.title.replace('\n','<br>');
+    var sEl = document.getElementById('pmSubtitle');
+    if (sEl) sEl.textContent = p.subtitle;
+  }
+
+  // Hook into setLang
+  var _origSetLang = window.setLang;
+  window.setLang = function(l) {
+    if (_origSetLang) _origSetLang(l);
+    setTimeout(applyPremiumI18n, 0);
+  };
+
+  // Apply on load
+  document.addEventListener('DOMContentLoaded', applyPremiumI18n);
+  setTimeout(applyPremiumI18n, 300);
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════
+   EMAIL RESULTAT — via EmailJS
+   ══════════════════════════════════════ */
+// EmailJS — càrrega asíncrona
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  s.onload = function() {
+    // Substitueix pels teus IDs reals de EmailJS
+    // 1. Crea compte a https://www.emailjs.com (gratis fins 200 emails/mes)
+    // 2. Crea un servei (Gmail, Outlook...) i anota el SERVICE_ID
+    // 3. Crea un template amb les variables {{to_email}}, {{result_text}}, {{name}}
+    // 4. Anota el TEMPLATE_ID i el PUBLIC_KEY
+    if (window.emailjs) {
+      window.emailjs.init({ publicKey: 'EL_TEU_PUBLIC_KEY' }); // <-- canvia això
+    }
+  };
+  document.head.appendChild(s);
+})();
+
+window.__sendResultByEmail = function() {
+  var emailInput = document.getElementById('emailResultInput');
+  var btn = document.getElementById('emailResultBtn');
+  var msg = document.getElementById('emailResultMsg');
+  var lbl = document.getElementById('emailResultBtnLbl');
+  var L = window.LANG || 'CA';
+
+  if (!emailInput || !msg) return;
+
+  var email = emailInput.value.trim();
+  var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!re.test(email)) {
+    msg.style.color = '#f87171';
+    msg.textContent = L === 'EN' ? '⚠️ Enter a valid email.' : L === 'CA' ? '⚠️ Introdueix un email vàlid.' : '⚠️ Introduce un email válido.';
+    emailInput.style.borderColor = 'rgba(239,68,68,.6)';
+    return;
+  }
+  emailInput.style.borderColor = 'rgba(56,189,248,.25)';
+
+  // Build result text from last analysis
+  var last = window.__lastResult || window.last;
+  if (!last) {
+    msg.style.color = '#f87171';
+    msg.textContent = L === 'EN' ? '⚠️ Run the analysis first.' : L === 'CA' ? '⚠️ Primer fes l\'anàlisi.' : '⚠️ Primero analiza tus datos.';
+    return;
+  }
+
+  var fmt = function(n) { return n ? Math.round(n).toLocaleString('ca-ES') + ' €' : '—'; };
+  var resultText = [
+    '📊 RESULTAT DE L\'ANÀLISI — Assessoria d\'Habitatge',
+    '─────────────────────────────────────',
+    '🏠 Preu estimat:    ' + fmt(last.price),
+    '🏡 Alquiler estimat: ' + fmt(last.rent),
+    '💳 Quota hipoteca:  ' + fmt(last.pay),
+    '🎯 Recomanació:     ' + (last.rec || last.recCode || '—'),
+    '─────────────────────────────────────',
+    '👤 Nom:      ' + (last.nm || last.name || '—'),
+    '📍 Municipi: ' + (last.muni || '—'),
+    '💰 Ingressos: ' + fmt(last.inc || last.income),
+    '💾 Estalvis:  ' + fmt(last.sav || last.savings),
+    '─────────────────────────────────────',
+    'Generat per Assessoria d\'Habitatge · Catalunya',
+    'https://assesoriahabitatge.com'
+  ].join('\n');
+
+  // Disable button
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = L === 'EN' ? '⏳ Sending...' : L === 'CA' ? '⏳ Enviant...' : '⏳ Enviando...';
+  msg.textContent = '';
+
+  // Try EmailJS
+  if (window.emailjs && window.emailjs.send) {
+    window.emailjs.send(
+      'SERVICE_ID',   // <-- el teu Service ID de EmailJS
+      'TEMPLATE_ID',  // <-- el teu Template ID de EmailJS
+      {
+        to_email:    email,
+        result_text: resultText,
+        name:        last.nm || last.name || 'Usuari',
+        rec:         last.rec || last.recCode || '—',
+        price:       fmt(last.price),
+        rent:        fmt(last.rent),
+        pay:         fmt(last.pay),
+        muni:        last.muni || '—'
+      }
+    ).then(function() {
+      msg.style.color = '#86efac';
+      msg.textContent = L === 'EN' ? '✅ Sent! Check your inbox.' : L === 'CA' ? '✅ Enviat! Comprova el correu.' : '✅ ¡Enviado! Revisa tu bandeja.';
+      emailInput.value = '';
+      if (btn) btn.disabled = false;
+      if (lbl) lbl.textContent = L === 'EN' ? '📨 Send result' : L === 'CA' ? '📨 Enviar resultat' : '📨 Enviar resultado';
+    }).catch(function(err) {
+      console.error('EmailJS error:', err);
+      // Fallback: mailto
+      window.__emailFallback(email, resultText, L, btn, lbl, msg);
+    });
+  } else {
+    // Fallback si EmailJS no s'ha configurat: obre client de correu
+    window.__emailFallback(email, resultText, L, btn, lbl, msg);
+  }
+};
+
+window.__emailFallback = function(email, text, L, btn, lbl, msg) {
+  var subject = encodeURIComponent("Resultat Assessoria d'Habitatge");
+  var body = encodeURIComponent(text);
+  window.open('mailto:' + email + '?subject=' + subject + '&body=' + body);
+  if (msg) {
+    msg.style.color = '#fde68a';
+    msg.textContent = L === 'EN'
+      ? '📬 Opening your email client. Configure EmailJS for automatic sending.'
+      : L === 'CA'
+      ? '📬 S\'obre el client de correu. Configura EmailJS per a enviament automàtic.'
+      : '📬 Abriendo tu cliente de correo. Configura EmailJS para envío automático.';
+  }
+  if (btn) btn.disabled = false;
+  if (lbl) lbl.textContent = L === 'EN' ? '📨 Send result' : L === 'CA' ? '📨 Enviar resultat' : '📨 Enviar resultado';
+};
+
+// Expose last result globally when analysis runs
+var _origAnalyze = window.analyze;
+if (typeof _origAnalyze === 'function') {
+  window.analyze = function() {
+    var r = _origAnalyze.apply(this, arguments);
+    setTimeout(function() { window.__lastResult = window.last; }, 500);
+    return r;
+  };
+}
+</script>
 
 <script>
 /* =====================
@@ -9420,7 +9411,12 @@ function exportPDF(){
       // Always include user's specific muni if known
       if(_multiCount===1){
         const rawMuni=_d.muni||"";
-        const found=all.find(([k])=>k===rawMuni||k.toLowerCase()===rawMuni.toLowerCase());
+        // Buscar coincidència de manera segura: convertir clau i rawMuni a minúscules per evitar errors
+        const found=all.find(([k])=>{
+          const keyLower = String(k || '').toLowerCase();
+          const rawLower = String(rawMuni || '').toLowerCase();
+          return k === rawMuni || keyLower === rawLower;
+        });
         if(found) picked.add(found[0]);
       }
       // Add evenly spread munis
@@ -9432,8 +9428,11 @@ function exportPDF(){
       picked.forEach(name=>{
         const entry=CATALUNYA_DB[_comarca][name];
         if(!entry) return;
-        const isUser=_multiCount===1&&(name===(_d.muni||"")||name.toLowerCase()===(_d.muni||"").toLowerCase());
-        _barData.push({l:name,v:entry.v,isUser});
+        const isUser = _multiCount === 1 && (
+          name === (_d.muni || "") ||
+          String(name || '').toLowerCase() === String((_d.muni || '')).toLowerCase()
+        );
+        _barData.push({ l: name, v: entry.v, isUser });
       });
       _barData.sort((a,b)=>b.v-a.v);
     }
@@ -11193,6 +11192,102 @@ document.addEventListener('click', function(e) {
   m.addEventListener('click', function(e) { if (e.target === m) m.remove(); });
 }, true); // capture=true: fires before any other handler
 
+// ── Guest Lock Modal — per secció ──
+window.__showGuestLockModal = function(section) {
+  var L = typeof LANG !== 'undefined' ? LANG : 'ES';
+  var old = document.getElementById('__guestSectionModal');
+  if (old) old.remove();
+
+  var cfg = {
+    m: {
+      emoji: '📊',
+      title: { CA:'Comparador de zones', ES:'Comparador de zonas', EN:'Zone Comparator' },
+      desc:  { CA:'Compara preus d\'habitatge entre municipis i analitza on s\'adapta millor al teu perfil econòmic.', ES:'Compara precios de vivienda entre municipios y analiza dónde se adapta mejor a tu perfil económico.', EN:'Compare housing prices between municipalities and find the best fit for your financial profile.' },
+      features: {
+        CA: ['📍 Comparació per municipi o província','📈 Evolució de preus en temps real','💡 Recomanació personalitzada segons els teus ingressos'],
+        ES: ['📍 Comparación por municipio o provincia','📈 Evolución de precios en tiempo real','💡 Recomendación personalizada según tus ingresos'],
+        EN: ['📍 Comparison by municipality or province','📈 Real-time price evolution','💡 Personalised recommendation based on your income']
+      }
+    },
+    x: {
+      emoji: '🏠',
+      title: { CA:'Exemples reals de la zona', ES:'Ejemplos reales de la zona', EN:'Real local examples' },
+      desc:  { CA:'Veu casos reals de compra i lloguer al Baix Penedès amb dades actualitzades del mercat.', ES:'Ve casos reales de compra y alquiler en el Baix Penedès con datos actualizados del mercado.', EN:'See real buy and rent cases in Baix Penedès with up-to-date market data.' },
+      features: {
+        CA: ['🏡 Pisos i cases reals publicades','📊 Preu per m² per municipi','🔍 Filtre per tipus i pressupost'],
+        ES: ['🏡 Pisos y casas reales publicadas','📊 Precio por m² por municipio','🔍 Filtro por tipo y presupuesto'],
+        EN: ['🏡 Real listed properties','📊 Price per m² by municipality','🔍 Filter by type and budget']
+      }
+    },
+    ai: {
+      emoji: '💬',
+      title: { CA:'Consulta amb IA', ES:'Consulta con IA', EN:'Ask the AI' },
+      desc:  { CA:'Fes preguntes concretes sobre la teva situació i rep respostes personalitzades basades en les teves dades.', ES:'Haz preguntas concretas sobre tu situación y recibe respuestas personalizadas basadas en tus datos.', EN:'Ask specific questions about your situation and get personalised answers based on your data.' },
+      features: {
+        CA: ['🤖 Anàlisi basada en les teves dades','📋 Respostes detallades i accionables','🔒 Privadesa garantida'],
+        ES: ['🤖 Análisis basado en tus datos','📋 Respuestas detalladas y accionables','🔒 Privacidad garantizada'],
+        EN: ['🤖 Analysis based on your data','📋 Detailed, actionable answers','🔒 Privacy guaranteed']
+      }
+    },
+    pdf: {
+      emoji: '📄',
+      title: { CA:'Informe PDF exclusiu', ES:'Informe PDF exclusivo', EN:'Exclusive PDF Report' },
+      desc:  { CA:'Genera un informe PDF personalitzat de 4 pàgines amb la teva anàlisi completa.', ES:'Genera un informe PDF personalizado de 4 páginas con tu análisis completo.', EN:'Generate a personalised 4-page PDF report with your full analysis.' },
+      features: {
+        CA: ['📊 Resum executiu de la teva situació','📈 Gràfics d\'amortització','💡 Recomanacions personalitzades'],
+        ES: ['📊 Resumen ejecutivo de tu situación','📈 Gráficos de amortización','💡 Recomendaciones personalizadas'],
+        EN: ['📊 Executive summary','📈 Amortisation charts','💡 Personalised recommendations']
+      }
+    }
+  };
+
+  var c = cfg[section] || cfg['m'];
+  var lang = (L === 'CA' || L === 'ES' || L === 'EN') ? L : 'ES';
+
+  var featureItems = c.features[lang].map(function(f) {
+    return '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;text-align:left;">'
+      + '<span style="font-size:.9rem;flex-shrink:0;">' + f.split(' ')[0] + '</span>'
+      + '<span style="font-size:.82rem;color:rgba(234,241,255,.70);line-height:1.5;">' + f.split(' ').slice(1).join(' ') + '</span>'
+      + '</div>';
+  }).join('');
+
+  var cancelLabel = { CA:'Continuar com a convidat', ES:'Continuar como invitado', EN:'Continue as guest' };
+  var subtitleLabel = { CA:'Funcionalitat per a usuaris registrats', ES:'Funcionalidad para usuarios registrados', EN:'Feature for registered users' };
+  var signupLabel = { CA:'✨ Crear compte gratuït', ES:'✨ Crear cuenta gratis', EN:'✨ Create free account' };
+
+  var m = document.createElement('div');
+  m.id = '__guestSectionModal';
+  m.style.cssText = 'position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(2,6,18,.90);backdrop-filter:blur(16px);';
+  m.innerHTML =
+    '<div style="background:linear-gradient(145deg,#070f26,#040b1a);border:1px solid rgba(139,92,246,.38);border-radius:24px;padding:32px 28px;max-width:420px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.70);text-align:center;position:relative;">'
+    + '<div style="position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0;background:linear-gradient(90deg,#8b5cf6,#6d28d9);"></div>'
+    + '<div style="font-size:2.6rem;margin-bottom:10px;">' + c.emoji + '</div>'
+    + '<div style="font-size:.75rem;font-weight:700;color:rgba(139,92,246,.8);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">' + subtitleLabel[lang] + '</div>'
+    + '<h2 style="color:#f8fafc;font-size:1.25rem;font-weight:900;margin:0 0 10px;">' + c.title[lang] + '</h2>'
+    + '<p style="color:rgba(234,241,255,.60);font-size:.85rem;line-height:1.65;margin:0 0 18px;">' + c.desc[lang] + '</p>'
+    + '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;margin-bottom:20px;">' + featureItems + '</div>'
+    + '<button id="__guestSectionSignup" style="width:100%;padding:13px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:0;border-radius:13px;font-size:.95rem;font-weight:900;cursor:pointer;font-family:inherit;margin-bottom:10px;">' + signupLabel[lang] + '</button>'
+    + '<button id="__guestSectionCancel" style="width:100%;padding:11px;background:rgba(255,255,255,.04);color:rgba(234,241,255,.50);border:1px solid rgba(255,255,255,.08);border-radius:13px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;">' + cancelLabel[lang] + '</button>'
+    + '</div>';
+
+  document.body.appendChild(m);
+  document.getElementById('__guestSectionSignup').onclick = function() {
+    m.remove();
+    window.__isGuest = false;
+    var gate = document.getElementById('authGate');
+    if (gate) { gate.style.display = ''; gate.classList.add('show'); }
+    document.body.classList.add('auth-locked');
+    // Switch to register tab
+    var loginTab = document.getElementById('loginTab');
+    var registerTab = document.getElementById('registerTab');
+    var loginView = document.getElementById('loginView');
+    var registerView = document.getElementById('registerView');
+    if (registerTab) registerTab.click();
+  };
+  document.getElementById('__guestSectionCancel').onclick = function() { m.remove(); };
+  m.addEventListener('click', function(e) { if (e.target === m) m.remove(); });
+};
+
 document.addEventListener('DOMContentLoaded', function() {
   // Hide Staff button
   var staffBtn = document.getElementById('staffLoginBtn');
@@ -11293,10 +11388,8 @@ window.__openPremiumSection = function() {
   document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('a'); });
   var tprem = document.getElementById('t_premium');
   if (tprem) tprem.classList.add('a');
-  // Auto-unlock si ja té codi guardat
-  if (window.__premiumAutoUnlock) {
-    setTimeout(function() { window.__unlockPremium(); }, 200);
-  }
+  // Premium FREE — always unlock for everyone
+  setTimeout(function() { window.__unlockPremium(); }, 200);
 };
 
 // ── Sistema de codis d'accés Premium ──────────────────────────────────────
@@ -11360,23 +11453,17 @@ window.__checkPremiumCode = async function() {
   }
 };
 
-// ── Desbloquear Premium ──
+// ── Desbloquear Premium (premium és gratuït — overlay eliminat) ──
 window.__unlockPremium = function() {
-  var overlay = document.getElementById('premiumOverlay');
   var content = document.getElementById('premiumBlurContent');
-  if (!overlay || !content) return;
-
-  overlay.style.transition = 'opacity .5s ease';
-  overlay.style.opacity = '0';
-  content.style.transition = 'filter .6s ease';
+  if (!content) return;
   content.style.filter = 'none';
   content.style.pointerEvents = 'auto';
   content.style.userSelect = 'auto';
-
-  setTimeout(function() {
-    overlay.style.display = 'none';
+  // Render premium tools immediately
+  if (window.__getPremiumToolsHTML) {
     content.innerHTML = window.__getPremiumToolsHTML();
-  }, 550);
+  }
 };
 
 // ── Comprovar si ja estava desbloquejat (localStorage) ──
@@ -13442,7 +13529,8 @@ window.__callAIAdvisor = async function() {
   };
   var goalLabels = { rent: 'llogar', buy: 'comprar', unsure: 'decidir entre llogar o comprar' };
   // Preu de mercat estimat per municipi (la IA ajustarà si coneix el preu real)
-  var muniKey = muniText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-');
+  // Normalize muniText defensivamente: convertir a cadena i minúscules
+  var muniKey = String(muniText || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-');
   var muniPrices = {
     'cunit':{ rent:750, buy:155000 }, 'calafell':{ rent:800, buy:170000 },
     'el-vendrell':{ rent:650, buy:130000 }, 'cubelles':{ rent:820, buy:180000 },
@@ -13562,7 +13650,7 @@ Genera el pla complet per a aquesta persona que vol independitzar-se a ${muniTex
               <div style="font-size:.72rem;color:rgba(196,181,253,.45);margin-top:2px;">Generat el ${new Date().toLocaleDateString('ca-ES', {day:'numeric',month:'long',year:'numeric'})} · Basat en les teves dades reals</div>
             </div>
           </div>
-          <button onclick="window.__generateIndependenciaPDF()" style="display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:800;font-family:inherit;font-size:.82rem;cursor:pointer;box-shadow:0 4px 14px rgba(139,92,246,.35);transition:transform .15s,box-shadow .15s;flex-shrink:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(139,92,246,.50)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(139,92,246,.35)'">
+        <button onclick="window.__generateIndependenciaPDF && window.__generateIndependenciaPDF()" style="display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:800;font-family:inherit;font-size:.82rem;cursor:pointer;box-shadow:0 4px 14px rgba(139,92,246,.35);transition:transform .15s,box-shadow .15s;flex-shrink:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(139,92,246,.50)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(139,92,246,.35)'">
             📄 Descarregar PDF
           </button>
         </div>
@@ -14259,10 +14347,9 @@ onAuthStateChanged(auth, async (user) => {
 
       // ── Mostrar botó admin d'inicialització si és l'admin ──
       const ADMIN_EMAIL = 'hibanezborreguero@gmail.com';
-      const isAdmin = user.email && (
-        user.email.toLowerCase() === ADMIN_EMAIL ||
-        user.email.toLowerCase().includes('hibanezborreguero')
-      );
+      // Convertir el correu a cadena i minúscules per evitar errors quan user.email sigui undefined
+      const emailLower = String(user.email || '').toLowerCase();
+      const isAdmin = emailLower === ADMIN_EMAIL || emailLower.includes('hibanezborreguero');
       const initPanel = document.getElementById('initCodesPanel');
       if (initPanel && isAdmin) initPanel.style.display = 'block';
 
@@ -14386,5 +14473,931 @@ try {
 } catch(e) {}
 </script>
 
+<!-- ═══════════════════════════════════════════════════
+     COOKIE CONSENT v2 — Optimized UX
+     ═══════════════════════════════════════════════════ -->
+<style>
+/* ── Floating card banner ── */
+#cookieBanner {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(calc(100% + 30px));
+  z-index: 99999; width: calc(100% - 32px); max-width: 680px;
+  background: linear-gradient(160deg, rgba(8,16,36,.98) 0%, rgba(5,11,26,.99) 100%);
+  border: 1px solid rgba(56,189,248,.22);
+  border-radius: 22px;
+  padding: 22px 24px 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.65), 0 0 0 1px rgba(56,189,248,.08);
+  backdrop-filter: blur(28px) saturate(1.5);
+  transition: transform 500ms cubic-bezier(.16,1,.3,1), opacity 500ms;
+  opacity: 0;
+}
+#cookieBanner::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px; border-radius:22px 22px 0 0;
+  background: linear-gradient(90deg, transparent 0%, #38bdf8 40%, #22c55e 70%, transparent 100%);
+  opacity:.7;
+}
+#cookieBanner.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.cb-top { display:flex; align-items:flex-start; gap:14px; margin-bottom:14px; }
+.cb-icon {
+  width:42px; height:42px; flex-shrink:0;
+  background: linear-gradient(135deg,rgba(56,189,248,.18),rgba(56,189,248,.06));
+  border: 1px solid rgba(56,189,248,.25); border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-size:1.25rem;
+}
+.cb-copy { flex:1; }
+.cb-title { font-size:.98rem; font-weight:800; color:#f1f5f9; margin-bottom:5px; }
+.cb-desc { font-size:.81rem; color:rgba(234,241,255,.62); line-height:1.58; }
+.cb-legal {
+  font-size:.72rem; color:rgba(234,241,255,.35); margin-top:7px;
+  display:flex; align-items:flex-start; gap:5px;
+}
+.cb-legal a { color:rgba(56,189,248,.60); text-decoration:underline; }
+
+/* ── Buttons row ── */
+.cb-btns { display:flex; gap:9px; flex-wrap:wrap; }
+.cbb {
+  border:0; border-radius:11px; padding:10px 18px; cursor:pointer;
+  font-weight:700; font-family:inherit; font-size:.84rem; letter-spacing:.1px;
+  transition: transform 140ms, box-shadow 140ms, filter 140ms, background 140ms;
+  flex: 1 1 0;
+}
+.cbb:hover { transform:translateY(-2px); }
+.cbb:active { transform:scale(.97); }
+.cbb.primary {
+  background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+  color:#001520; font-size:.88rem; font-weight:800;
+  box-shadow: 0 4px 18px rgba(56,189,248,.35);
+}
+.cbb.primary:hover { box-shadow:0 8px 28px rgba(56,189,248,.50); filter:brightness(1.05); }
+.cbb.secondary {
+  background: rgba(56,189,248,.08);
+  color:#7dd3fc; border:1px solid rgba(56,189,248,.20);
+}
+.cbb.secondary:hover { background:rgba(56,189,248,.13); }
+.cbb.ghost {
+  background:transparent; color:rgba(234,241,255,.40);
+  border:1px solid rgba(255,255,255,.08); font-weight:500; font-size:.78rem;
+}
+.cbb.ghost:hover { color:rgba(234,241,255,.65); border-color:rgba(255,255,255,.16); }
+
+/* ── Cookie preferences modal ── */
+#cookieModal {
+  position:fixed; inset:0; z-index:999999;
+  background:rgba(2,8,18,.82); backdrop-filter:blur(12px);
+  display:flex; align-items:center; justify-content:center; padding:16px;
+  opacity:0; pointer-events:none; transition:opacity 260ms;
+}
+#cookieModal.visible { opacity:1; pointer-events:all; }
+.cm-box {
+  background: linear-gradient(160deg, rgba(8,16,36,.99), rgba(5,11,26,1));
+  border:1px solid rgba(56,189,248,.22); border-radius:22px;
+  padding:26px; max-width:520px; width:100%;
+  max-height:88vh; overflow-y:auto;
+  box-shadow:0 32px 80px rgba(0,0,0,.70);
+  position:relative;
+}
+.cm-box::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px; border-radius:22px 22px 0 0;
+  background:linear-gradient(90deg,transparent,#38bdf8 50%,transparent);
+}
+.cm-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.cm-title { font-size:1.05rem; font-weight:900; color:#f1f5f9; }
+.cm-close {
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.10);
+  color:rgba(234,241,255,.55); border-radius:8px; width:30px; height:30px;
+  cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;
+  transition:background 140ms;
+}
+.cm-close:hover { background:rgba(255,255,255,.13); color:#f1f5f9; }
+.cm-sub { font-size:.80rem; color:rgba(234,241,255,.50); line-height:1.55; margin:8px 0 16px; }
+
+/* ── Category row ── */
+.ck-row {
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px; padding:13px 14px; margin-bottom:8px;
+  background:rgba(255,255,255,.025);
+  transition: border-color 180ms, background 180ms;
+}
+.ck-row:has(.ck-tog input:checked) {
+  border-color:rgba(56,189,248,.22); background:rgba(56,189,248,.04);
+}
+.ck-row .top { display:flex; align-items:center; gap:10px; }
+.ck-row .meta { flex:1; }
+.ck-row .rname {
+  font-size:.87rem; font-weight:800; color:#e2e8f0;
+  display:flex; align-items:center; gap:6px; margin-bottom:2px;
+}
+.ck-row .rdesc { font-size:.76rem; color:rgba(234,241,255,.48); line-height:1.5; }
+.ck-badge {
+  font-size:.62rem; padding:2px 7px; border-radius:999px; font-weight:700; flex-shrink:0;
+}
+.ck-badge.req  { background:rgba(34,197,94,.14); color:#4ade80; border:1px solid rgba(34,197,94,.22); }
+.ck-badge.opt  { background:rgba(56,189,248,.10); color:#7dd3fc; border:1px solid rgba(56,189,248,.18); }
+.ck-badge.ext  { background:rgba(250,204,21,.10); color:#fcd34d; border:1px solid rgba(250,204,21,.20); }
+.ck-note {
+  margin-top:8px; padding:7px 10px;
+  background:rgba(250,204,21,.06); border:1px solid rgba(250,204,21,.14);
+  border-radius:8px; font-size:.72rem; color:rgba(253,230,138,.70); line-height:1.5;
+}
+
+/* ── Toggle ── */
+.ck-tog { position:relative; flex-shrink:0; }
+.ck-tog input { position:absolute; opacity:0; width:0; height:0; }
+.ck-tog label {
+  display:block; width:42px; height:23px;
+  background:rgba(255,255,255,.12); border-radius:999px; cursor:pointer;
+  transition:background 200ms; position:relative;
+}
+.ck-tog label::after {
+  content:""; position:absolute; top:3px; left:3px;
+  width:17px; height:17px; background:#fff; border-radius:50%;
+  box-shadow:0 1px 4px rgba(0,0,0,.3); transition:transform 200ms cubic-bezier(.16,1,.3,1);
+}
+.ck-tog input:checked + label { background:#0ea5e9; }
+.ck-tog input:checked + label::after { transform:translateX(19px); }
+.ck-tog input:disabled + label { opacity:.4; cursor:not-allowed; }
+
+/* ── Modal footer ── */
+.cm-foot {
+  display:flex; gap:9px; flex-wrap:wrap;
+  margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,.07);
+}
+.cm-foot .cbb { flex:1 1 110px; text-align:center; }
+.cm-legal-note {
+  text-align:center; margin-top:10px;
+  font-size:.70rem; color:rgba(234,241,255,.28);
+}
+.cm-legal-note a { color:rgba(56,189,248,.55); }
+
+/* ── Settings link in footer area ── */
+#cookieSettingsLink {
+  position:fixed; bottom:0; left:0; z-index:9990;
+  padding:6px 12px; border-radius:0 10px 0 0;
+  background:rgba(5,11,26,.80); border:1px solid rgba(255,255,255,.08);
+  border-left:0; border-bottom:0;
+  font-size:.70rem; color:rgba(234,241,255,.35); cursor:pointer;
+  transition:color 180ms, background 180ms; backdrop-filter:blur(10px);
+  display:none;
+}
+#cookieSettingsLink:hover { color:rgba(234,241,255,.70); background:rgba(8,18,40,.90); }
+</style>
+
+<!-- BANNER -->
+<div id="cookieBanner" role="dialog" aria-label="Avís de cookies">
+  <div class="cb-top">
+    <div class="cb-icon">🍪</div>
+    <div class="cb-copy">
+      <div class="cb-title">Millora la teva experiència</div>
+      <div class="cb-desc">
+        Fem servir cookies per personalitzar el contingut, recordar les teves preferències i analitzar l'ús del servei. Acceptant-les ens ajudes a millorar la calculadora i el servei d'assessoria.
+      </div>
+      <div class="cb-legal">
+        <span>ℹ️</span>
+        <span>Algunes cookies impliquen la transferència de dades a tercers. <a href="javascript:void(0)" onclick="openCookiePolicyModal()">Saber-ne més</a></span>
+      </div>
+    </div>
+  </div>
+  <div class="cb-btns">
+    <button class="cbb primary" onclick="cookieAcceptAll()">✓ Acceptar totes</button>
+    <button class="cbb secondary" onclick="openCookieModal()">⚙ Personalitzar</button>
+    <button class="cbb ghost" onclick="cookieRejectAll()">Rebutjar</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="cookieModal" role="dialog" aria-modal="true" aria-label="Configuració de cookies">
+  <div class="cm-box">
+    <div class="cm-head">
+      <div class="cm-title">⚙️ Preferències de cookies</div>
+      <button class="cm-close" onclick="closeCookieModal()">✕</button>
+    </div>
+    <div class="cm-sub">
+      Configura quines cookies vols activar. Les necessàries sempre estan actives. Pots canviar les teves preferències en qualsevol moment.
+    </div>
+
+    <div class="ck-row">
+      <div class="top">
+        <div class="meta">
+          <div class="rname">🔒 Necessàries <span class="ck-badge req">Sempre actives</span></div>
+          <div class="rdesc">Sessió, autenticació i seguretat. Imprescindibles per al funcionament del servei.</div>
+        </div>
+        <div class="ck-tog"><input type="checkbox" id="ck_nec" checked disabled><label for="ck_nec"></label></div>
+      </div>
+    </div>
+
+    <div class="ck-row">
+      <div class="top">
+        <div class="meta">
+          <div class="rname">⚙️ Funcionals <span class="ck-badge opt">Opcionals</span></div>
+          <div class="rdesc">Recorden les teves preferències (idioma, configuració de la calculadora) per oferir una experiència personalitzada.</div>
+        </div>
+        <div class="ck-tog"><input type="checkbox" id="ck_fun"><label for="ck_fun"></label></div>
+      </div>
+    </div>
+
+    <div class="ck-row">
+      <div class="top">
+        <div class="meta">
+          <div class="rname">📊 Analítiques <span class="ck-badge opt">Opcionals</span></div>
+          <div class="rdesc">Ens ajuden a entendre com s'utilitza el servei per poder-lo millorar. Dades agregades i anònimes.</div>
+        </div>
+        <div class="ck-tog"><input type="checkbox" id="ck_ana"><label for="ck_ana"></label></div>
+      </div>
+      <div class="ck-note">ℹ️ Les dades d'ús poden ser processades per Google Analytics (Google LLC, EUA) sota les condicions del DPA de Google. Base jurídica: consentiment (Art. 6.1.a RGPD). Pots consultar la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privadesa de Google</a>.</div>
+    </div>
+
+    <div class="ck-row">
+      <div class="top">
+        <div class="meta">
+          <div class="rname">📢 Publicitat i tercers <span class="ck-badge ext">Tercers</span></div>
+          <div class="rdesc">Permeten mostrar anuncis rellevants i mesurar-ne l'efectivitat a través de xarxes publicitàries.</div>
+        </div>
+        <div class="ck-tog"><input type="checkbox" id="ck_ads"><label for="ck_ads"></label></div>
+      </div>
+      <div class="ck-note">ℹ️ Les teves dades de navegació i interessos podran ser processades per xarxes publicitàries de tercers com <strong style="color:#fcd34d">Google Ads o Meta</strong> per mostrar-te anuncis rellevants. Base jurídica: consentiment (Art. 6.1.a RGPD). Pots retirar el consentiment en qualsevol moment.</div>
+    </div>
+
+    <div class="cm-foot">
+      <button class="cbb ghost" onclick="cookieRejectAll();closeCookieModal()">Rebutjar totes</button>
+      <button class="cbb secondary" onclick="cookieSaveSelection()">💾 Desar selecció</button>
+      <button class="cbb primary" onclick="cookieAcceptAll();closeCookieModal()">✓ Acceptar totes</button>
+    </div>
+    <div class="cm-legal-note">
+      Pots canviar les preferències quan vulguis · <a href="javascript:void(0)" onclick="closeCookieModal();openCookiePolicyModal()">Política de cookies</a>
+    </div>
+  </div>
+</div>
+
+<!-- POLÍTICA DE COOKIES MODAL -->
+<div id="cookiePolicyModal" role="dialog" aria-modal="true" aria-label="Política de cookies">
+  <div class="cm-box" style="max-height:85vh;overflow-y:auto;">
+    <div class="cm-head">
+      <div class="cm-title">📄 Política de cookies</div>
+      <button class="cm-close" onclick="closeCookiePolicyModal()">✕</button>
+    </div>
+    <div class="cm-sub" style="line-height:1.7;font-size:.85rem;color:rgba(234,241,255,.72);">
+
+      <p><strong style="color:#e2e8f0;">Responsable del tractament</strong><br>
+      Assessoria d'Habitatge · <a href="/cdn-cgi/l/email-protection#d4bdbab2bb94b5a7a7b1a7bba6bdb5bcb5b6bda0b5a0b3b1fab7bbb9"><span class="__cf_email__" data-cfemail="40292e262f0021333325332f3229212821222934213427256e232f2d">[email&#160;protected]</span></a><br>
+      Baix Penedès, Catalunya</p>
+
+      <p><strong style="color:#e2e8f0;">Què és una cookie?</strong><br>
+      Una cookie és un fitxer de text petit que el teu navegador emmagatzema quan visites un lloc web. Permet recordar informació entre visites i millorar l'experiència d'ús.</p>
+
+      <p><strong style="color:#e2e8f0;">Base jurídica</strong><br>
+      El tractament es basa en el teu <strong>consentiment explícit</strong> (Art. 6.1.a RGPD) per a les cookies opcionals. Les cookies estrictament necessàries es basen en l'interès legítim per garantir el funcionament del servei (Art. 6.1.f RGPD).</p>
+
+      <p><strong style="color:#e2e8f0;">Cookies que utilitzem</strong></p>
+
+      <table style="width:100%;border-collapse:collapse;font-size:.78rem;margin-bottom:12px;">
+        <thead>
+          <tr style="border-bottom:1px solid rgba(255,255,255,.12);">
+            <th style="text-align:left;padding:6px 8px;color:#7dd3fc;">Nom</th>
+            <th style="text-align:left;padding:6px 8px;color:#7dd3fc;">Tipus</th>
+            <th style="text-align:left;padding:6px 8px;color:#7dd3fc;">Finalitat</th>
+            <th style="text-align:left;padding:6px 8px;color:#7dd3fc;">Durada</th>
+            <th style="text-align:left;padding:6px 8px;color:#7dd3fc;">Proveïdor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+            <td style="padding:6px 8px;"><code style="font-size:.75rem;color:#a5f3fc;">ah_cookie_v2</code></td>
+            <td style="padding:6px 8px;"><span class="ck-badge req">Necessària</span></td>
+            <td style="padding:6px 8px;">Emmagatzema les teves preferències de consentiment de cookies</td>
+            <td style="padding:6px 8px;">365 dies</td>
+            <td style="padding:6px 8px;">Pròpia</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+            <td style="padding:6px 8px;"><code style="font-size:.75rem;color:#a5f3fc;">_ga, _ga_*</code></td>
+            <td style="padding:6px 8px;"><span class="ck-badge opt">Analítica</span></td>
+            <td style="padding:6px 8px;">Mesura l'ús del lloc web de forma agregada i anònima</td>
+            <td style="padding:6px 8px;">2 anys</td>
+            <td style="padding:6px 8px;">Google LLC (EUA)</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+            <td style="padding:6px 8px;"><code style="font-size:.75rem;color:#a5f3fc;">_gcl_au</code></td>
+            <td style="padding:6px 8px;"><span class="ck-badge ext">Publicitat</span></td>
+            <td style="padding:6px 8px;">Mesura l'efectivitat de campanyes publicitàries (Google Ads)</td>
+            <td style="padding:6px 8px;">90 dies</td>
+            <td style="padding:6px 8px;">Google LLC (EUA)</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;"><code style="font-size:.75rem;color:#a5f3fc;">_fbp</code></td>
+            <td style="padding:6px 8px;"><span class="ck-badge ext">Publicitat</span></td>
+            <td style="padding:6px 8px;">Seguiment de conversions i públics personalitzats (Meta)</td>
+            <td style="padding:6px 8px;">90 dies</td>
+            <td style="padding:6px 8px;">Meta Platforms (EUA)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong style="color:#e2e8f0;">Transferències internacionals</strong><br>
+      Les cookies de Google Analytics i publicitat impliquen transferències de dades als EUA. Google LLC i Meta Platforms s.r.l. estan adherits al Marc de Privadesa de Dades UE-EUA (Data Privacy Framework), que garanteix un nivell adequat de protecció.</p>
+
+      <p><strong style="color:#e2e8f0;">Els teus drets</strong><br>
+      Tens dret a accedir, rectificar, suprimir i portar les teves dades, així com a oposar-te al tractament o sol·licitar-ne la limitació. Pots exercir-los a <a href="/cdn-cgi/l/email-protection#4920272f2609283a3a2c3a263b202821282b203d283d2e2c672a2624"><span class="__cf_email__" data-cfemail="85ecebe3eac5e4f6f6e0f6eaf7ece4ede4e7ecf1e4f1e2e0abe6eae8">[email&#160;protected]</span></a>. També pots presentar una reclamació a l'<a href="https://www.aepd.es" target="_blank" rel="noopener">AEPD</a> o a l'<a href="https://apdcat.gencat.cat" target="_blank" rel="noopener">APDCAT</a>.</p>
+
+      <p><strong style="color:#e2e8f0;">Retirada del consentiment</strong><br>
+      Pots modificar o retirar el teu consentiment en qualsevol moment clicant el botó "🍪 Cookies" a la part inferior esquerra de la pantalla. La retirada no afectarà la licitud del tractament previ al consentiment.</p>
+
+      <p style="color:rgba(234,241,255,.35);font-size:.72rem;">Última actualització: juny 2025</p>
+    </div>
+    <div class="cm-foot">
+      <button class="cbb secondary" onclick="closeCookiePolicyModal();openCookieModal()">⚙ Gestionar preferències</button>
+      <button class="cbb primary" onclick="closeCookiePolicyModal()">Entès</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     LEAD GENERATION SYSTEM (portat del v28)
+     ══════════════════════════════════════════════════════ -->
+<style id="lead-system">
+/* ── Lead Modal ── */
+#leadModal { position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity 220ms; }
+#leadModal.visible { opacity:1;pointer-events:all; }
+.lead-box { background:#0f172a;border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:28px 26px;max-width:460px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.5);animation:vpIn .28s cubic-bezier(.34,1.3,.64,1); }
+.lead-box h3 { font-size:1.15rem;font-weight:900;color:#f1f5f9;margin:0 0 6px;line-height:1.3; }
+.lead-box .lead-sub { font-size:.86rem;color:rgba(203,213,225,.65);line-height:1.55;margin-bottom:18px; }
+.lead-field { margin-bottom:12px; }
+.lead-field label { display:block;font-size:.78rem;font-weight:700;color:rgba(203,213,225,.55);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px; }
+.lead-field input,.lead-field select { width:100%;padding:12px 14px;border:1.5px solid rgba(148,163,184,.18);border-radius:12px;background:rgba(4,10,26,.75);color:#eaf1ff;font-size:.93rem;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s; }
+.lead-field input:focus,.lead-field select:focus { border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.12); }
+.lead-consent { display:flex;align-items:flex-start;gap:10px;margin:16px 0;font-size:.76rem;color:rgba(203,213,225,.50);line-height:1.55; }
+.lead-consent input[type=checkbox] { margin-top:2px;accent-color:#38bdf8;width:16px;height:16px;flex-shrink:0; }
+.lead-cta { width:100%;padding:14px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(34,197,94,.28);transition:transform .12s,box-shadow .12s; }
+.lead-cta:hover { transform:translateY(-2px);box-shadow:0 8px 24px rgba(34,197,94,.4); }
+.lead-cta:disabled { opacity:.45;cursor:not-allowed;transform:none; }
+.lead-trust { display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:14px;font-size:.72rem;color:rgba(203,213,225,.35);font-weight:600; }
+.lead-close { position:absolute;top:14px;right:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(203,213,225,.5);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center; }
+.lead-close:hover { background:rgba(255,255,255,.10);color:#f1f5f9; }
+.lead-success { text-align:center;padding:20px 0; }
+.lead-success .check { font-size:3rem;margin-bottom:12px; }
+/* ── Verdict badge (injectat després dels resultats) ── */
+.verdict-block { margin:14px 0;padding:20px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(5,12,28,.7);animation:slideUpFade .4s cubic-bezier(.16,1,.3,1) both; }
+.verdict-badge { display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;font-size:.88rem;font-weight:800;margin-bottom:12px; }
+.verdict-badge.overpriced { background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.30);color:#fca5a5; }
+.verdict-badge.fair { background:rgba(56,189,248,.10);border:1px solid rgba(56,189,248,.25);color:#7dd3fc; }
+.verdict-badge.opportunity { background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:#86efac; }
+.verdict-range { font-size:.88rem;color:rgba(203,213,225,.65);line-height:1.6;margin-bottom:8px; }
+.verdict-range b { color:#f1f5f9;font-weight:800; }
+.verdict-diff { font-size:.82rem;font-weight:700;margin-bottom:14px; }
+.verdict-diff.neg { color:#86efac; }
+.verdict-diff.pos { color:#fca5a5; }
+/* ── Contextual CTA card ── */
+.cta-lead-card { margin:16px 0;padding:20px 22px;border-radius:16px;background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(56,189,248,.04));border:1px solid rgba(34,197,94,.18);animation:slideUpFade .4s cubic-bezier(.16,1,.3,1) .15s both; }
+.cta-lead-card h4 { font-size:1rem;font-weight:800;color:#f1f5f9;margin:0 0 6px; }
+.cta-lead-card p { font-size:.85rem;color:rgba(203,213,225,.60);line-height:1.55;margin:0 0 14px; }
+.cta-lead-btn { display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:12px;font-size:.90rem;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(34,197,94,.25);transition:transform .12s,box-shadow .12s; }
+.cta-lead-btn:hover { transform:translateY(-2px);box-shadow:0 8px 20px rgba(34,197,94,.35); }
+.cta-lead-trust { margin-top:10px;font-size:.72rem;color:rgba(203,213,225,.35); }
+/* ── Next step panel ── */
+.next-step-panel { margin:14px 0;padding:18px 20px;border-radius:14px;background:rgba(5,12,28,.6);border:1px solid rgba(255,255,255,.07); }
+.next-step-panel h4 { font-size:.92rem;font-weight:800;color:#e2e8f0;margin:0 0 10px;display:flex;align-items:center;gap:8px; }
+.next-step-item { display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.85rem;color:rgba(203,213,225,.60);line-height:1.5; }
+.next-step-item .icon { font-size:1.1rem;flex-shrink:0; }
+/* ── Offer range card ── */
+.offer-card { margin:14px 0;padding:18px 20px;border-radius:14px;background:rgba(5,12,28,.6);border:1px solid rgba(255,255,255,.07); }
+.offer-row { display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04); }
+.offer-row:last-child { border-bottom:none; }
+.offer-label { font-size:.82rem;color:rgba(203,213,225,.50);font-weight:600; }
+.offer-value { font-size:.95rem;font-weight:800;color:#f1f5f9;font-family:'DM Mono',monospace; }
+</style>
+
+<!-- ── Lead Capture Modal ── -->
+<div id="leadModal" role="dialog" aria-modal="true">
+  <div class="lead-box" style="position:relative" id="leadBoxContent">
+    <button class="lead-close" onclick="window.__closeLead()" aria-label="Cerrar">✕</button>
+    <div id="leadFormView">
+      <h3 id="leadTitle">¿Quieres saber qué hipoteca podrías conseguir?</h3>
+      <div class="lead-sub" id="leadSub">Un asesor revisará tu caso y te orientará sobre opciones reales de financiación. Sin compromiso.</div>
+      <div class="lead-field"><label id="leadLblName">Nombre completo</label><input id="leadName" type="text" placeholder="Nombre y apellidos" autocomplete="name" minlength="3" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿñÑçÇ\s\-']/g,'')"></div>
+      <div class="lead-field"><label id="leadLblPhone">Teléfono</label>
+        <div style="display:flex;gap:0;align-items:stretch">
+          <span style="display:flex;align-items:center;padding:0 12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(148,163,184,.18);border-right:none;border-radius:12px 0 0 12px;color:rgba(203,213,225,.55);font-size:.88rem;font-weight:700;font-family:'DM Mono',monospace;min-height:48px">+34</span>
+          <input id="leadPhone" type="tel" placeholder="612 345 678" autocomplete="tel" maxlength="11" style="border-radius:0 12px 12px 0!important;border-left:none!important" oninput="var v=this.value.replace(/[^0-9]/g,'');if(v.length>9)v=v.substring(0,9);var f='';for(var i=0;i<v.length;i++){if(i===3||i===6)f+=' ';f+=v[i];}this.value=f;">
+        </div>
+      </div>
+      <div class="lead-field"><label>Email</label><input id="leadEmail" type="email" placeholder="nom@exemple.com" autocomplete="email" oninput="this.style.borderColor=this.value.length>3&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value)?'rgba(239,68,68,.50)':'rgba(148,163,184,.18)'"></div>
+      <div id="leadStep2" style="display:none">
+        <div class="lead-field"><label>Ingresos mensuales netos (opcional)</label><input id="leadIncome" type="number" placeholder="Ej: 2.500"></div>
+        <div class="lead-field"><label>Ahorros disponibles (opcional)</label><input id="leadSavings" type="number" placeholder="Ej: 30.000"></div>
+        <div class="lead-field"><label>¿Cuándo piensas comprar?</label>
+          <select id="leadHorizon"><option value="">—</option><option value="<3m">Menos de 3 meses</option><option value="3-6m">3–6 meses</option><option value="6-12m">6–12 meses</option><option value=">12m">Más de 12 meses</option><option value="exploring">Solo explorando</option></select>
+        </div>
+      </div>
+      <button type="button" id="leadToggleMore" onclick="document.getElementById('leadStep2').style.display=document.getElementById('leadStep2').style.display==='none'?'':'none';this.textContent=document.getElementById('leadStep2').style.display===''?'▲ Menos campos':'▼ Ayúdanos a darte mejor orientación (opcional)'" style="background:none;border:none;color:rgba(56,189,248,.55);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;padding:0">▼ Ayúdanos a darte mejor orientación (opcional)</button>
+      <div class="lead-consent">
+        <input type="checkbox" id="leadConsent">
+        <span id="leadConsentText">Acepto que mis datos se utilicen para analizar mi caso y, si procede, se compartan con asesores colaboradores para estudiar opciones de financiación. <a href="javascript:void(0)" onclick="event.preventDefault();event.stopPropagation();var m=document.getElementById('leadModal');if(m)m.classList.remove('visible');document.body.style.overflow='';setTimeout(function(){window.openPrivacyPolicyModal&&window.openPrivacyPolicyModal();},350);" style="color:#38bdf8;text-decoration:underline;cursor:pointer" id="leadPrivLink">Política de privacidad</a></span>
+      </div>
+      <button type="button" class="lead-cta" id="leadSubmitBtn" onclick="window.__submitLead()" disabled>Quiero ver mis opciones reales</button>
+      <div class="lead-trust">
+        <span id="leadTrust1">🔒 Sin compromiso</span>
+        <span id="leadTrust2">⏱ Respuesta en 24h</span>
+        <span id="leadTrust3">💶 Sin coste para ti</span>
+      </div>
+    </div>
+    <div id="leadSuccessView" style="display:none" class="lead-success">
+      <div class="check">✅</div>
+      <h3 id="leadSuccessTitle" style="color:#f1f5f9;margin:0 0 8px">¡Recibido!</h3>
+      <p style="color:rgba(203,213,225,.65);font-size:.90rem;line-height:1.6;margin:0"><span id="leadSuccessMsg">Hemos recibido tu caso. Un asesor revisará tu situación y te contactará con opciones reales de financiación.</span></p>
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;font-size:.82rem;color:rgba(203,213,225,.55);line-height:1.5">
+        <span id="leadResponseTime">⏱ Tiempo de respuesta habitual: <b style="color:#f1f5f9">menos de 24 horas</b></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  LEAD GENERATION ENGINE
+// ══════════════════════════════════════════
+(function(){
+'use strict';
+
+// ── Lead modal controls ──
+window.__openLead = function(context) {
+  var modal = document.getElementById('leadModal');
+  if (!modal) return;
+  var titles = {
+    'affordable': typeof LANG!=='undefined'&&LANG==='EN'?['Want to know what mortgage you could get?','We connect you with an advisor for real financing options.']:typeof LANG!=='undefined'&&LANG==='CA'?['Vols saber quina hipoteca podries aconseguir?','Et posem en contacte amb un assessor per veure opcions reals de finançament.']:['¿Quieres saber qué hipoteca podrías conseguir?','Te ponemos en contacto con un asesor para ver opciones reales de financiación para esta vivienda.'],
+    'overpriced': typeof LANG!=='undefined'&&LANG==='EN'?['Does it make sense to negotiate this price?','An advisor can help you decide.']:typeof LANG!=='undefined'&&LANG==='CA'?['Té sentit negociar aquest preu?','Un assessor pot ajudar-te a decidir.']:['¿Tiene sentido negociar este precio?','Un asesor puede ayudarte a decidir si negociar, buscar alternativas o esperar.'],
+    'notready': typeof LANG!=='undefined'&&LANG==='EN'?['We help you create a purchase plan','An advisor can review your situation and define a realistic plan.']:typeof LANG!=='undefined'&&LANG==='CA'?["T'ajudem a traçar un pla de compra",'Un assessor pot revisar la teva situació.']:['Te ayudamos a trazar un plan de compra','Un asesor puede revisar tu situación y ayudarte a definir un plan realista para comprar.'],
+    'default': typeof LANG!=='undefined'&&LANG==='EN'?['Want your case reviewed?','An advisor will review your situation. No commitment.']:typeof LANG!=='undefined'&&LANG==='CA'?['Vols que revisin el teu cas?','Un assessor revisarà la teva situació. Sense compromís.']:['¿Quieres que revisen tu caso?','Un asesor revisará tu situación y te orientará sobre opciones reales. Sin compromiso.']
+  };
+  var t = titles[context] || titles['default'];
+  var el = document.getElementById('leadTitle'); if(el) el.textContent = t[0];
+  var el2 = document.getElementById('leadSub'); if(el2) el2.textContent = t[1];
+  var fv = document.getElementById('leadFormView'); if(fv) fv.style.display = '';
+  var sv = document.getElementById('leadSuccessView'); if(sv) sv.style.display = 'none';
+  modal.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  window.__leadContext = context || 'default';
+};
+
+window.__closeLead = function() {
+  var modal = document.getElementById('leadModal');
+  if (modal) modal.classList.remove('visible');
+  document.body.style.overflow = '';
+};
+
+document.getElementById('leadModal')?.addEventListener('click', function(e) {
+  if (e.target === this) window.__closeLead();
+});
+
+document.getElementById('leadConsent')?.addEventListener('change', function() {
+  var btn = document.getElementById('leadSubmitBtn');
+  if (btn) btn.disabled = !this.checked;
+});
+
+// ── Lead scoring ──
+window.__scoreLead = function() {
+  var score = 0; var tags = [];
+  if (typeof last !== 'undefined' && last) { score += 20; tags.push('analyzed'); }
+  var inc = document.getElementById('leadIncome')?.value;
+  if (inc && +inc > 0) { score += 10; tags.push('income'); }
+  var sav = document.getElementById('leadSavings')?.value;
+  if (sav && +sav > 0) { score += 10; tags.push('savings'); }
+  var hor = document.getElementById('leadHorizon')?.value;
+  if (hor === '<3m') { score += 25; tags.push('urgent'); }
+  else if (hor === '3-6m') { score += 20; tags.push('soon'); }
+  else if (hor === '6-12m') { score += 10; tags.push('planned'); }
+  if (typeof last !== 'undefined' && last && last.ratio && last.ratio < 45) { score += 10; tags.push('viable'); }
+  if (typeof last !== 'undefined' && last && last.needCash && last.sav) {
+    var gap = last.needCash - last.sav;
+    if (gap <= 0) { score += 15; tags.push('cash-ready'); }
+    else if (gap < last.needCash * 0.3) { score += 5; tags.push('close'); }
+  }
+  var cls = score >= 60 ? 'very_hot' : score >= 40 ? 'hot' : score >= 20 ? 'warm' : 'cold';
+  return { score: Math.min(score, 100), cls: cls, tags: tags };
+};
+
+// ── Submit lead with validation + email ──
+window.__submitLead = function() {
+  var name  = (document.getElementById('leadName')?.value || '').trim();
+  var phone = (document.getElementById('leadPhone')?.value || '').trim();
+  var email = (document.getElementById('leadEmail')?.value || '').trim();
+
+  if (!name || name.length < 3) {
+    alert(typeof LANG!=='undefined'&&LANG==='CA'?'Introdueix el teu nom complet (mínim 3 caràcters).':typeof LANG!=='undefined'&&LANG==='EN'?'Enter your full name (min. 3 characters).':'Introduce tu nombre completo (mínimo 3 caracteres).');
+    document.getElementById('leadName')?.focus(); return;
+  }
+  var cleanPhone = phone.replace(/[\s\-\+]/g,'');
+  if (!cleanPhone || !/^\d{9}$/.test(cleanPhone)) {
+    alert(typeof LANG!=='undefined'&&LANG==='CA'?'Introdueix un número de telèfon vàlid (9 dígits).':typeof LANG!=='undefined'&&LANG==='EN'?'Enter a valid phone number (9 digits).':'Introduce un número de teléfono válido (9 dígitos).');
+    document.getElementById('leadPhone')?.focus(); return;
+  }
+  phone = '+34 ' + phone;
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert(typeof LANG!=='undefined'&&LANG==='CA'?'Introdueix un email vàlid.':typeof LANG!=='undefined'&&LANG==='EN'?'Enter a valid email.':'Introduce un email válido.');
+    document.getElementById('leadEmail')?.focus(); return;
+  }
+  if (!document.getElementById('leadConsent')?.checked) {
+    alert(typeof LANG!=='undefined'&&LANG==='CA'?"Has d'acceptar la política de privacitat per continuar.":typeof LANG!=='undefined'&&LANG==='EN'?'You must accept the privacy policy to continue.':'Debes aceptar la política de privacidad para continuar.');
+    return;
+  }
+
+  var scoring = window.__scoreLead();
+  var L = typeof last !== 'undefined' ? (window.last || {}) : {};
+  var payload = {
+    lead_id:        'L-' + Date.now() + '-' + Math.random().toString(36).substr(2,5),
+    full_name:      name,
+    phone:          phone,
+    email:          email,
+    language:       typeof LANG !== 'undefined' ? LANG : 'ES',
+    source:         window.__leadContext || 'default',
+    lead_score:     scoring.score,
+    lead_class:     scoring.cls,
+    lead_tags:      scoring.tags,
+    timestamp:      new Date().toISOString(),
+    income:         document.getElementById('leadIncome')?.value || null,
+    savings:        document.getElementById('leadSavings')?.value || null,
+    horizon:        document.getElementById('leadHorizon')?.value || null,
+    municipality:   L.muni || null,
+    property_price: L.pb || null,
+    effort_ratio:   L.ratio || null,
+    monthly_payment:L.pay || null,
+    savings_gap:    (L.needCash && L.sav) ? Math.max(0, L.needCash - L.sav) : null
+  };
+
+  var btn = document.getElementById('leadSubmitBtn');
+  if (btn) { btn.disabled = true; btn.textContent = typeof LANG!=='undefined'&&LANG==='CA'?'⏳ Enviant...':typeof LANG!=='undefined'&&LANG==='EN'?'⏳ Sending...':'⏳ Enviando...'; }
+
+  try {
+    var leads = JSON.parse(localStorage.getItem('__ah_leads') || '[]');
+    leads.push(payload); localStorage.setItem('__ah_leads', JSON.stringify(leads));
+  } catch(e) {}
+
+  var emailBody =
+    "🏠 NOU LEAD — Assessoria d'Habitatge\n\n" +
+    'Nom: ' + payload.full_name + '\nTelèfon: ' + payload.phone + '\nEmail: ' + payload.email + '\n' +
+    'Idioma: ' + payload.language + '\nOrigen: ' + payload.source + '\n\n' +
+    '── QUALIFICACIÓ ──\nPuntuació: ' + payload.lead_score + '/100 (' + payload.lead_class + ')\n' +
+    'Tags: ' + (payload.lead_tags || []).join(', ') + '\n\n' +
+    '── CONTEXT ──\nMunicipi: ' + (payload.municipality || '—') + '\n' +
+    'Preu immoble: ' + (payload.property_price ? payload.property_price + '€' : '—') + '\n' +
+    'Esforç: ' + (payload.effort_ratio ? payload.effort_ratio.toFixed(1) + '%' : '—') + '\n' +
+    'Quota: ' + (payload.monthly_payment ? payload.monthly_payment + '€/mes' : '—') + '\n' +
+    'Gap estalvis: ' + (payload.savings_gap != null ? payload.savings_gap + '€' : '—') + '\n\n' +
+    '── OPCIONALS ──\nIngressos: ' + (payload.income || '—') + '€/mes\n' +
+    'Estalvis: ' + (payload.savings || '—') + '€\n' +
+    'Horitzó compra: ' + (payload.horizon || '—') + '\n\n' +
+    'Data: ' + payload.timestamp + '\nID: ' + payload.lead_id;
+
+  (async function() {
+    // 1. Guardar a Firestore si Firebase disponible
+    try {
+      if (window.db) {
+        var fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        await fb.setDoc(fb.doc(window.db, 'leads', payload.lead_id), { ...payload, createdAt: fb.serverTimestamp(), status: 'new' });
+      }
+    } catch(e) {}
+
+    // 2. Enviar email via FormSubmit (principal) + Worker (fallback)
+    var emailSent = false;
+    try {
+      var fRes = await fetch('https://formsubmit.co/ajax/hibanezborreguero@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: '🏠 Nou Lead: ' + payload.full_name + ' (' + payload.lead_class + ')',
+          name: payload.full_name, phone: payload.phone, email: payload.email,
+          score: payload.lead_score + '/100 (' + payload.lead_class + ')',
+          municipality: payload.municipality || '—',
+          price: payload.property_price ? payload.property_price + '€' : '—',
+          message: emailBody
+        })
+      });
+      if (fRes.ok) { emailSent = true; }
+    } catch(e) {}
+
+    if (!emailSent) {
+      try {
+        await fetch('https://soft-poetry-232f.hibanezborreguero.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lead_notification: true, lead: payload, email_body: emailBody })
+        });
+      } catch(e) {}
+    }
+
+    console.log('📧 LEAD:', JSON.stringify(payload, null, 2));
+
+    // 3. Mostrar éxito
+    var fv = document.getElementById('leadFormView'); if(fv) fv.style.display = 'none';
+    var sv = document.getElementById('leadSuccessView'); if(sv) sv.style.display = '';
+    if (typeof toast === 'function') toast(typeof LANG!=='undefined'&&LANG==='CA'?'✅ Sol·licitud enviada':typeof LANG!=='undefined'&&LANG==='EN'?'✅ Request sent':'✅ Solicitud enviada');
+  })();
+};
+
+// ── Verdict + Offer + CTA injection ──
+window.__injectVerdict = function() {
+  var L = window.last;
+  if (!L || !L.pb) return;
+  var vc = document.getElementById('verdictContainer');
+  if (!vc) return;
+
+  var fmt = typeof fmtMoney === 'function' ? fmtMoney : function(n){ return Math.round(n).toLocaleString('es-ES') + ' €'; };
+  var pb = L.pb || 0;
+  var m2val = L.m2 || 80;
+  var muni = L.muni || '';
+
+  var muniData = null;
+  try { var MG = window.M || (typeof M !== 'undefined' ? M : {}); muniData = MG[muni] || null; if (!muniData && L.muniList && L.muniList.length > 0) muniData = MG[L.muniList[0]] || null; } catch(e) {}
+
+  var fairMin = 0, fairMax = 0;
+  if (muniData && muniData.v && m2val > 0) {
+    fairMin = Math.round(muniData.v * m2val * 0.92);
+    fairMax = Math.round(muniData.v * m2val * 1.05);
+  } else if (pb > 0) {
+    fairMin = Math.round(pb * 0.92); fairMax = Math.round(pb * 1.05);
+  }
+  if (fairMin <= 0 || pb <= 0) { vc.innerHTML = ''; return; }
+
+  var midFair = (fairMin + fairMax) / 2;
+  var diff = (pb - midFair) / midFair * 100;
+  var verdictType = diff > 8 ? 'overpriced' : diff < -3 ? 'opportunity' : 'fair';
+  var _L = typeof LANG !== 'undefined' ? LANG : 'ES';
+
+  var verdictLabel = diff > 8
+    ? (_L==='EN'?'⚠️ Seems overpriced':_L==='CA'?'⚠️ Sembla sobrevalorat':'⚠️ Parece sobrevalorado')
+    : diff < -3
+    ? (_L==='EN'?'🟢 Possible opportunity':_L==='CA'?'🟢 Possible oportunitat':'🟢 Posible oportunidad')
+    : (_L==='EN'?'🔵 Reasonable price':_L==='CA'?'🔵 Preu raonable':'🔵 Precio razonable');
+  var diffText = diff > 0
+    ? ('+' + diff.toFixed(1) + '% ' + (_L==='EN'?'above market':_L==='CA'?'sobre mercat':'sobre mercado'))
+    : (diff.toFixed(1) + '% ' + (_L==='EN'?'below market':_L==='CA'?'sota mercat':'bajo mercado'));
+  var diffClass = diff > 0 ? 'pos' : 'neg';
+
+  var aggressiveOffer = Math.round(fairMin * 0.95);
+  var reasonableOffer = Math.round(midFair);
+  var maxOffer = Math.round(fairMax * 1.02);
+
+  var ratio = L.ratio || 0;
+  var gap = (L.needCash && L.sav) ? Math.max(0, L.needCash - L.sav) : 0;
+  var affordText = ratio <= 30
+    ? (_L==='EN'?'✅ The payment is within a reasonable range':_L==='CA'?'✅ La quota entra dins del raonable':'✅ La cuota entra dentro de lo razonable')
+    : ratio <= 40
+    ? (_L==='EN'?"⚠️ High effort — it's tight":_L==='CA'?'⚠️ Esforç elevat — vas just':'⚠️ Esfuerzo elevado — vas algo justo')
+    : (_L==='EN'?"🔴 Excessive effort — we don't recommend proceeding at this price":_L==='CA'?'🔴 Esforç excessiu — no recomanem avançar a aquest preu':'🔴 Esfuerzo excesivo — no recomendamos avanzar a este precio');
+
+  var gapText = gap <= 0
+    ? (_L==='EN'?"✅ Your current savings cover the down payment":_L==='CA'?"✅ El teu estalvi actual cobreix l'entrada":'✅ Tu ahorro actual cubre los gastos de entrada')
+    : (_L==='EN'?'⚠️ You need <b>':_L==='CA'?'⚠️ Et falten <b>':'⚠️ Te faltan <b>') + fmt(gap) + (_L==='EN'?'</b> more for down payment + costs':_L==='CA'?'</b> per cobrir entrada + despeses':'</b> para cubrir entrada + gastos');
+
+  var ctaCtx = 'default', ctaTitle = '', ctaDesc = '';
+  if (L.recCode === 'BUY' || L.recCode === 'BUY_SHORT') {
+    ctaCtx = 'affordable';
+    ctaTitle = _L==='EN'?'Want to know what mortgage you could get?':_L==='CA'?'Vols saber quina hipoteca podries aconseguir?':'¿Quieres saber qué hipoteca real podrías conseguir?';
+    ctaDesc = _L==='EN'?'We connect you with an advisor who will review your case.':_L==='CA'?'Et connectem amb un assessor que revisarà el teu cas.':'Te conectamos con un asesor que revisará tu caso y te dará opciones concretas de financiación.';
+  } else if (verdictType === 'overpriced') {
+    ctaCtx = 'overpriced';
+    ctaTitle = _L==='EN'?'Does it make sense to negotiate or keep looking?':_L==='CA'?'Té sentit negociar o seguir buscant?':'¿Tiene sentido negociar o seguir buscando?';
+    ctaDesc = _L==='EN'?"An advisor can help you decide if it's worth negotiating.":_L==='CA'?"Un assessor pot ajudar-te a decidir si val la pena negociar.":'Un asesor puede ayudarte a decidir si merece la pena negociar este precio.';
+  } else if (gap > 5000) {
+    ctaCtx = 'notready';
+    ctaTitle = _L==='EN'?'We help you prepare a purchase plan':_L==='CA'?"T'ajudem a preparar un pla de compra":'Te ayudamos a preparar un plan de compra';
+    ctaDesc = _L==='EN'?'An advisor can review your situation and help define a realistic plan.':_L==='CA'?"Un assessor pot revisar la teva situació i ajudar-te a definir un pla realista.":'Un asesor puede revisar tu situación y ayudarte a definir un plan realista.';
+  } else {
+    ctaCtx = 'affordable';
+    ctaTitle = _L==='EN'?'Want your case reviewed?':_L==='CA'?'Vols que revisin el teu cas?':'¿Quieres que revisen tu caso?';
+    ctaDesc = _L==='EN'?'An advisor can give you real financing options.':_L==='CA'?'Un assessor pot donar-te opcions reals de finançament.':'Un asesor puede darte opciones reales de financiación adaptadas a tu perfil.';
+  }
+
+  var steps = '';
+  if (ratio < 35 && gap <= 0) {
+    steps =
+      '<div class="next-step-item"><span class="icon">🏦</span><span>'+(_L==='EN'?'Check real mortgage options':_L==='CA'?"Consultar opcions d'hipoteca reals":'Consultar opciones de hipoteca reales')+'</span></div>'+
+      '<div class="next-step-item"><span class="icon">📋</span><span>'+(_L==='EN'?'Request a bank pre-assessment':_L==='CA'?'Sol·licitar una pre-avaluació bancària':'Solicitar una pre-evaluación bancaria')+'</span></div>'+
+      '<div class="next-step-item"><span class="icon">📞</span><span>'+(_L==='EN'?'Talk to an advisor about offer strategy':_L==='CA'?'Parlar amb un assessor sobre estratègia':'Hablar con un asesor sobre estrategia de oferta')+'</span></div>';
+  } else {
+    steps =
+      '<div class="next-step-item"><span class="icon">📊</span><span>'+(_L==='EN'?'Review your real financing capacity':_L==='CA'?'Revisar la teva capacitat real':'Revisar tu capacidad real de financiación')+'</span></div>'+
+      '<div class="next-step-item"><span class="icon">💰</span><span>'+(_L==='EN'?'Define how much more to save':_L==='CA'?"Definir quant més has d'estalviar":'Definir cuánto más necesitas ahorrar')+'</span></div>'+
+      '<div class="next-step-item"><span class="icon">🗺️</span><span>'+(_L==='EN'?'Explore areas that fit your budget':_L==='CA'?'Explorar zones dins el teu pressupost':'Explorar zonas que encajen con tu presupuesto')+'</span></div>';
+  }
+
+  vc.innerHTML =
+    '<div class="verdict-block" style="animation:slideUpFade .4s cubic-bezier(.16,1,.3,1) both">'+
+      '<div class="verdict-badge '+verdictType+'">'+verdictLabel+'</div>'+
+      '<div class="verdict-range">'+(_L==='EN'?'Estimated fair range: ':_L==='CA'?'Rang just estimat: ':'Rango justo estimado: ')+'<b>'+fmt(fairMin)+'</b> – <b>'+fmt(fairMax)+'</b></div>'+
+      '<div class="verdict-diff '+diffClass+'">'+diffText+'</div>'+
+      '<div style="margin-top:10px;font-size:.84rem;color:rgba(203,213,225,.60);line-height:1.6">'+affordText+'<br>'+gapText+'</div>'+
+      '<div style="font-size:.73rem;color:rgba(203,213,225,.32);margin-top:10px;line-height:1.45">'+(_L==='EN'?'📊 Indicative estimate based on local market data.':_L==='CA'?'📊 Estimació orientativa basada en dades de mercat.':'📊 Estimación orientativa basada en referencias de mercado de la zona.')+'</div>'+
+    '</div>'+
+    '<div class="offer-card" style="animation:slideUpFade .4s cubic-bezier(.16,1,.3,1) .08s both">'+
+      '<h4 style="font-size:.90rem;font-weight:800;color:#e2e8f0;margin:0 0 12px;display:flex;align-items:center;gap:8px">💡 '+(_L==='EN'?'How much should you offer?':_L==='CA'?'Quant hauries d\'oferir?':'¿Cuánto deberías ofrecer?')+'</h4>'+
+      '<div class="offer-row"><span class="offer-label">'+(_L==='EN'?'Aggressive offer':_L==='CA'?'Oferta agressiva':'Oferta agresiva')+'</span><span class="offer-value" style="color:#86efac">'+fmt(aggressiveOffer)+'</span></div>'+
+      '<div class="offer-row"><span class="offer-label">'+(_L==='EN'?'Reasonable offer':_L==='CA'?'Oferta raonable':'Oferta razonable')+'</span><span class="offer-value" style="color:#7dd3fc">'+fmt(reasonableOffer)+'</span></div>'+
+      '<div class="offer-row"><span class="offer-label">'+(_L==='EN'?'Maximum recommended':_L==='CA'?'Màxim recomanat':'Máximo recomendado')+'</span><span class="offer-value" style="color:#fca5a5">'+fmt(maxOffer)+'</span></div>'+
+      '<div style="margin-top:10px;font-size:.73rem;color:rgba(203,213,225,.35);line-height:1.45">'+(_L==='EN'?'Above ':_L==='CA'?'Per sobre de ':'Por encima de ')+fmt(maxOffer)+(_L==='EN'?' the safety margin decreases.':_L==='CA'?' el marge de seguretat baixa.':' el margen de seguridad baja.')+'</div>'+
+    '</div>'+
+    '<div class="cta-lead-card" style="animation:slideUpFade .4s cubic-bezier(.16,1,.3,1) .16s both">'+
+      '<h4>'+ctaTitle+'</h4>'+
+      '<p>'+ctaDesc+'</p>'+
+      '<button type="button" class="cta-lead-btn" onclick="window.__openLead(\''+ctaCtx+'\')">'+(_L==='EN'?'See my real options →':_L==='CA'?'Veure les meves opcions reals →':'Quiero ver mis opciones reales →')+'</button>'+
+      '<div class="cta-lead-trust">'+(_L==='EN'?'🔒 No commitment · No cost · Just to review your case':_L==='CA'?'🔒 Sense compromís · Sense cost · Per revisar el teu cas':'🔒 Sin compromiso · Sin coste para ti · Solo para revisar tu caso')+'</div>'+
+    '</div>'+
+    '<div class="next-step-panel" style="animation:slideUpFade .4s cubic-bezier(.16,1,.3,1) .24s both">'+
+      '<h4>🎯 '+(_L==='EN'?'Your best next step':_L==='CA'?'El teu següent millor pas':'Tu siguiente mejor paso')+'</h4>'+steps+
+    '</div>';
+};
+
+})();
+</script>
+
+<!-- Persistent settings link (shown after consent) -->
+<button id="cookieSettingsLink" onclick="openCookieModal()" title="Configuració de cookies">🍪 Cookies</button>
+
+<script>
+(function(){
+  'use strict';
+  const KEY = 'ah_cookie_v2';
+  const EXP = 365;
+
+  function setCk(name, val, days) {
+    const d = new Date(); d.setTime(d.getTime() + days*86400000);
+    const secure = location.protocol === 'https:' ? ';Secure' : '';
+    document.cookie = `${name}=${encodeURIComponent(JSON.stringify(val))};expires=${d.toUTCString()};path=/;SameSite=Lax${secure}`;
+  }
+  function getCk(name) {
+    const m = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith(name+'='));
+    if (!m) return null;
+    try { return JSON.parse(decodeURIComponent(m.split('=').slice(1).join('='))); } catch { return null; }
+  }
+
+  function buildPrefs(all) {
+    return { necessary:true, functional:all, analytics:all, advertising:all, date:new Date().toISOString(), v:'2' };
+  }
+
+  function applyPrefs(p) {
+    window.__cookiePrefs = p;
+    window.dispatchEvent(new CustomEvent('cookieConsentUpdated', { detail: p }));
+
+    // ── Càrrega condicional de scripts de tercers ──
+    // IMPORTANT: els scripts externs NOMÉS es carreguen si l'usuari ha donat consentiment.
+    // Substitueix 'G-XXXXXXXXXX' pel teu ID real de Google Analytics quan l'actives.
+
+    if (p.analytics && !window.__gaLoaded) {
+      window.__gaLoaded = true;
+      // const s = document.createElement('script');
+      // s.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+      // s.async = true;
+      // document.head.appendChild(s);
+      // window.dataLayer = window.dataLayer || [];
+      // function gtag(){dataLayer.push(arguments);}
+      // gtag('js', new Date());
+      // gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+    }
+
+    if (p.advertising && !window.__adsLoaded) {
+      window.__adsLoaded = true;
+      // Afegir aquí el pixel de Meta o Google Ads quan s'activin
+    }
+  }
+
+  function showBanner() {
+    const b = document.getElementById('cookieBanner');
+    if (b) setTimeout(() => b.classList.add('visible'), 700);
+  }
+  function hideBanner() {
+    const b = document.getElementById('cookieBanner');
+    if (b) b.classList.remove('visible');
+    const sl = document.getElementById('cookieSettingsLink');
+    if (sl) sl.style.display = 'block';
+  }
+
+  function syncModal(p) {
+    if (!p) return;
+    const map = { ck_fun:'functional', ck_ana:'analytics', ck_ads:'advertising' };
+    Object.entries(map).forEach(([id,k]) => {
+      const el = document.getElementById(id);
+      if (el) el.checked = !!p[k];
+    });
+  }
+
+  // ── Public
+  window.cookieAcceptAll = function() {
+    const p = buildPrefs(true);
+    setCk(KEY, p, EXP); applyPrefs(p); hideBanner();
+    toast('✓ Cookies acceptades');
+  };
+  window.cookieRejectAll = function() {
+    const p = buildPrefs(false);
+    setCk(KEY, p, EXP); applyPrefs(p); hideBanner();
+  };
+  window.cookieSaveSelection = function() {
+    const p = {
+      necessary: true,
+      functional: !!document.getElementById('ck_fun')?.checked,
+      analytics:  !!document.getElementById('ck_ana')?.checked,
+      advertising:!!document.getElementById('ck_ads')?.checked,
+      date: new Date().toISOString(), v:'2'
+    };
+    setCk(KEY, p, EXP); applyPrefs(p); hideBanner();
+    closeCookieModal();
+    toast('✓ Preferències guardades');
+  };
+  window.openCookiePolicyModal = function() {
+    document.getElementById('cookiePolicyModal')?.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeCookiePolicyModal = function() {
+    document.getElementById('cookiePolicyModal')?.classList.remove('visible');
+    document.body.style.overflow = '';
+  };
+
+  document.getElementById('cookiePolicyModal')?.addEventListener('click', function(e) {
+    if (e.target === this) window.closeCookiePolicyModal();
+  });
+
+  window.openCookieModal = function() {
+    syncModal(getCk(KEY));
+    document.getElementById('cookieModal')?.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeCookieModal = function() {
+    document.getElementById('cookieModal')?.classList.remove('visible');
+    document.body.style.overflow = '';
+  };
+
+  document.getElementById('cookieModal')?.addEventListener('click', function(e) {
+    if (e.target === this) window.closeCookieModal();
+  });
+
+  function toast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(8,18,40,.97);border:1px solid rgba(56,189,248,.28);color:#e2e8f0;border-radius:12px;padding:9px 20px;font-size:.83rem;font-weight:700;z-index:9999999;box-shadow:0 8px 30px rgba(0,0,0,.5);backdrop-filter:blur(14px);opacity:0;transition:opacity 250ms,transform 250ms;white-space:nowrap;';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
+    setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; setTimeout(()=>t.remove(),300); }, 2800);
+  }
+
+  const saved = getCk(KEY);
+  if (saved) {
+    applyPrefs(saved);
+    hideBanner();
+  } else {
+    showBanner();
+  }
+})();
+</script>
+<script>
+// Override the independence PDF generator with a simplified version to prevent syntax errors.
+window.__generateIndependenciaPDF = function() {
+  var age        = document.getElementById('ai_age')?.value || '';
+  var civil      = document.getElementById('ai_civil')?.value || '';
+  var job        = document.getElementById('ai_job')?.value || '';
+  var income     = parseFloat(document.getElementById('ai_income')?.value) || 0;
+  var income2    = parseFloat(document.getElementById('ai_income2')?.value) || 0;
+  var savings    = parseFloat(document.getElementById('ai_savings')?.value) || 0;
+  var monthlySave= parseFloat(document.getElementById('ai_monthly_save')?.value) || 0;
+  var debts      = parseFloat(document.getElementById('ai_debts')?.value) || 0;
+  var familyHelp = parseFloat(document.getElementById('ai_family_help')?.value) || 0;
+  var goal       = document.getElementById('ai_goal')?.value || '';
+  var muniText   = document.getElementById('ai_muni')?.value || '';
+  var rentBudget = parseFloat(document.getElementById('ai_rent_budget')?.value) || 0;
+  var priceNum   = parseFloat(document.getElementById('ai_price')?.value) || 0;
+  var current    = document.getElementById('ai_current')?.value || '';
+  var urgency    = document.getElementById('ai_urgency')?.value || '';
+  var rooms      = document.getElementById('ai_rooms')?.value || '';
+  // Build a simple HTML document summarizing the user's plan.
+  var html = `
+    <!DOCTYPE html>
+    <html lang="ca">
+    <head><meta charset="utf-8"><title>Pla d'Independència Personal</title></head>
+    <body>
+    <h1>Pla d'Independència Personal</h1>
+    <ul>
+      <li><strong>Edat:</strong> ${age}</li>
+      <li><strong>Estat civil:</strong> ${civil}</li>
+      <li><strong>Situació laboral:</strong> ${job}</li>
+      <li><strong>Ingressos totals:</strong> ${income + (civil !== 'single' ? income2 : 0)} € / mes</li>
+      <li><strong>Estalvis disponibles:</strong> ${savings + familyHelp} €</li>
+      <li><strong>Objectiu:</strong> ${goal}</li>
+      <li><strong>Municipi:</strong> ${muniText}</li>
+      <li><strong>Pressupost lloguer:</strong> ${rentBudget} € / mes</li>
+      <li><strong>Preu objectiu compra:</strong> ${priceNum} €</li>
+      <li><strong>Situació actual:</strong> ${current}</li>
+      <li><strong>Urgència:</strong> ${urgency}</li>
+      <li><strong>Habitacions mínimes:</strong> ${rooms}</li>
+    </ul>
+    <p>Aquest document és una versió simplificada de la teva planificació d'independència. Consulta la nostra assessoria per obtenir un informe complet.</p>
+    </body>
+    </html>
+  `;
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Pla_Independencia_' + (muniText || 'Catalunya').replace(/\s+/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+};
+</script>
 </body>
 </html>

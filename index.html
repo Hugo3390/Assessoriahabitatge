@@ -3303,31 +3303,7 @@ body.auth-locked > *:not(#authGate){display:none!important;}
 
 
 
-  <!-- ══ FORMULARI: REP EL RESULTAT PER CORREU ══ -->
-  <div id="emailResultCard" style="margin:18px 0 4px;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.20);border-radius:20px;padding:22px 24px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.5),transparent);"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,rgba(56,189,248,.20),rgba(14,165,233,.10));border:1px solid rgba(56,189,248,.30);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📧</div>
-      <div>
-        <div id="emailFormTitle" style="font-size:.97rem;font-weight:900;color:#e0f2fe;">Rep el resultat al teu correu</div>
-        <div id="emailFormSub" style="font-size:.78rem;color:rgba(186,230,253,.55);">T'enviem el resum complet de l'anàlisi al teu email. Gratis, sense spam.</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
-      <input id="emailResultInput" type="email" placeholder="el-teu@correu.com" autocomplete="email"
-        style="flex:1;min-width:200px;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(56,189,248,.25);background:rgba(4,10,22,.75);color:#eaf1ff;font-size:.93rem;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;"
-        onfocus="this.style.borderColor='#38bdf8';this.style.boxShadow='0 0 0 3px rgba(56,189,248,.18)';"
-        onblur="this.style.borderColor='rgba(56,189,248,.25)';this.style.boxShadow='';">
-      <button id="emailResultBtn" type="button" onclick="window.__sendResultByEmail()"
-        style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#001820;border:none;border-radius:12px;padding:12px 20px;font-weight:900;font-size:.90rem;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 4px 14px rgba(56,189,248,.30);transition:transform .15s,box-shadow .15s;"
-        onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 22px rgba(56,189,248,.45)';"
-        onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(56,189,248,.30)';">
-        <span id="emailResultBtnLbl">📨 Enviar resultat</span>
-      </button>
-    </div>
-    <div id="emailResultMsg" style="min-height:18px;margin-top:10px;font-size:.82rem;font-weight:700;"></div>
-  </div>
-  <!-- ══ FI FORMULARI EMAIL ══ -->
+  <!-- Email result form removed -->
 
     </div>
     <div class="r" style="margin-top:10px;flex-wrap:wrap;gap:10px;">
@@ -4458,7 +4434,9 @@ CA:{
   btnClear:"Netejar",btnUse:"Usar a Exemples reals",btnFitAll:"Veure tot",
   legSel:"Seleccionat",legOk:"Disponible",legHint:"Clica el pin o l'àrea",
   kPrice:"Preu estimat",kRent:"Lloguer estimat",kPay:"Quota hipoteca",kRec:"Recomanació",
-  btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",sumReadable:"Resum clar",sumShort:"Curt",sumLong:"Detallat",
+  btnCopy:"Copiar resum",btnReset:"Reiniciar",btnGoCompare:"📊 Comparador",btnGoExamples:"Anar a Exemples reals",btnAskAI:"💬 Consultar amb AI",
+  btnShare:"🔗 Compartir resultat",btnPdf:"📄 Exportar PDF",shareHint:"Copia l'enllaç o obre'l per comprovar que a l'altra persona li surt directament el resultat.",btnCopyLink:"Copiar",btnOpenLink:"Obrir",shareTip:"Consell: quan algú obre l'enllaç, el programa omple les dades i salta a Resultat.",
+  sumReadable:"Resum clar",sumShort:"Curt",sumLong:"Detallat",
   affTitle:"I amb les meves dades personals, quin habitatge em puc permetre?",affDesc:"Fem un càlcul ràpid i explicat: quanta entrada pots assumir i quina quota mensual et pots permetre, i quin preu d’habitatge encaixa segons el termini de la hipoteca.",affBtn:"Calcular",
   chartEffTitle:"Esforç mensual",chartEffHint:"Línia: 35% ingressos. Barres: hipoteca vs lloguer.",
   chartSensTitle:"Sensibilitat tipus",chartSensHint:"Com canvia la quota si puja el tipus.",chartTipsTitle:"Lectura ràpida",
@@ -13543,16 +13521,22 @@ window.__callAIAdvisor = async function() {
   var muniData = muniPrices[muniKey] || { rent: 750, buy: 160000 };
 
 
-  var systemPrompt = `Ets un amic de confiança que entén molt de finances i habitatge a Catalunya. Parles amb naturalitat, com en una conversa real. Escrius en català col·loquial però correcte.
+      var systemPrompt = `Ets un amic de confiança que entén molt de finances i habitatge a Catalunya. Parles amb naturalitat, com en una conversa real. Escrius en català col·loquial però correcte.
 
 REGLES D'ESTIL IMPORTANTS:
-- Parla directament: "Mira,", "Et dic una cosa,", "Honestament,", "La veritat és que..."
+- Utilitza sempre un to humà i entenedor. Escriu com si parlés amb un amic, amb empatia i sinceritat.
+- Parla directament: "Mira,", "Et dic una cosa,", "Honestament,", "La veritat és que..." per donar proximitat.
 - Frases curtes. Res de paràgrafs interminables.
-- No repeteixes les dades que ja sap — interpreta-les
-- Evita frases com "la teva situació és que", "el que significa que", "no obstant això"
-- Si pot fer-ho ara: "Sí, pots. Aquí tens el pla."
-- Si no pot: digues quan exactament i per què, sense suavitzar
-- Números integrats a frases naturals, no com a llistat de dades
+- No repeteixis les dades que ja sap — interpreta-les amb claredat i contextualitza-les.
+- Evita frases com "la teva situació és que", "el que significa que" o "no obstant això".
+- Si pot fer-ho ara: digues "Sí, pots. Aquí tens el pla." sense adornar.
+- Si no pot: digues quan exactament i per què, de forma directa, sense suavitzar.
+- Números integrats a frases naturals, no com a llistat de dades.
+- No facis servir asteriscs ni marques Markdown (**). Si vols destacar una xifra, utilitza la balisa HTML <b>.
+- Evita enumerar punts amb números i asteriscs (com **1.**). Utilitza llistes HTML (<ul>/<li> o <ol>/<li>) o frases directes sense remarcar els números.
+- Fes servir un llenguatge planer i proper: millor dir "no arribes encara" que "tens una insuficiència de capital".
+ - Fes servir un llenguatge planer i proper: millor dir "no arribes encara" que "tens una insuficiència de capital".
+ - Basat en les xifres i càlculs proporcionats (ingressos, estalvis, ràtios, terminis), fes recomanacions realistes i concretes. Utilitza aquestes dades per donar context i justificar els teus consells.
 
 L'informe ha de tenir EXACTAMENT aquestes seccions en format HTML:
 
@@ -13636,6 +13620,11 @@ Genera el pla complet per a aquesta persona que vol independitzar-se a ${muniTex
       [{ role: 'user', content: systemPrompt + '\n\n' + userMsg }],
       { max_tokens: 1200, temperature: 0.65 }
     );
+    // Elimina marques Markdown i asteriscs dobles que puguin aparèixer a la resposta
+    if (text) {
+      // Substitueix totes les aparicions de ** per cadena buida
+      text = text.replace(/\*\*/g, '');
+    }
     clearInterval(msgInterval);
     if (!text) throw new Error('Resposta buida del servidor');
 
@@ -13703,6 +13692,9 @@ window.__generatePDFReport = async function() {
   var fmtP = function(v){ return v.toFixed(1) + '%'; };
   var mort = function(cap, rY, yrs){ var r=rY/100/12, n=yrs*12; return r===0?cap/n:cap*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1); };
 
+  // Determine language code once for the entire PDF report
+  var lc2 = (window.LANG || 'CA').toString().toUpperCase();
+
   var sc = [
     { label:'Conservador', rate:4.00, years:25 },
     { label:'Recomanat',   rate:3.25, years:25 },
@@ -13763,8 +13755,17 @@ window.__generatePDFReport = async function() {
   var hasAI = (document.getElementById('ai_result')?.innerText || '').length > 50;
   if (!hasAI) {
     try {
-      var pdfSys = 'Ets un assessor immobiliari expert al Baix Pen\u00e8d\u00e8s. Informe professional i honest en catal\u00e0. Format HTML amb <b>, <br>, <ul><li>. Estructura: 1) Diagn\u00f2stic (2 par\u00e0grafs), 2) 3 Fortaleses, 3) 3 Riscos, 4) Recomanaci\u00f3 principal, 5) 3 Passos immediats. Directe, evita frases buides.';
-      var pdfUsr = 'Edat: '+age+' anys. Ingressos: '+income+'\u20ac/mes. Estalvis: '+savings+'\u20ac. Pis: '+price+'\u20ac. Situaci\u00f3: '+(currentLabels[current]||current)+'. Horit\u00f3: '+(urgencyLabels[urgency]||urgency)+'. Esfor\u00e7: '+fmtP(mainSc.effort)+'. Estalvis: '+(savings>=totalNeed?'Suficients':'Falten '+fmtE(totalNeed-savings))+'. Context: '+(context||'No especificat')+'.';
+      var pdfSys, pdfUsr;
+      if (lc2 === 'EN') {
+        pdfSys = 'You are an expert real‑estate advisor in Baix Penedès. Provide a professional and honest report in English. Use HTML with <b>, <br>, <ul><li> tags. Structure: 1) Diagnosis (2 paragraphs), 2) 3 Strengths, 3) 3 Risks, 4) Main recommendation, 5) 3 Immediate steps. Direct, avoid empty sentences.';
+        pdfUsr = 'Age: ' + age + ' years. Income: ' + income + ' €/month. Savings: ' + savings + ' €. Home price: ' + price + ' €. Situation: ' + (currentLabels[current] || current) + '. Horizon: ' + (urgencyLabels[urgency] || urgency) + '. Effort: ' + fmtP(mainSc.effort) + '. Savings: ' + (savings >= totalNeed ? 'Enough' : 'Missing ' + fmtE(totalNeed - savings)) + '. Context: ' + (context || 'Not specified') + '.';
+      } else if (lc2 === 'ES') {
+        pdfSys = 'Eres un asesor inmobiliario experto en el Baix Penedès. Informe profesional y honesto en castellano. Formato HTML con <b>, <br>, <ul><li>. Estructura: 1) Diagnóstico (2 párrafos), 2) 3 Fortalezas, 3) 3 Riesgos, 4) Recomendación principal, 5) 3 Pasos inmediatos. Directo, evita frases vacías.';
+        pdfUsr = 'Edad: ' + age + ' años. Ingresos: ' + income + ' €/mes. Ahorros: ' + savings + ' €. Piso: ' + price + ' €. Situación: ' + (currentLabels[current] || current) + '. Horizonte: ' + (urgencyLabels[urgency] || urgency) + '. Esfuerzo: ' + fmtP(mainSc.effort) + '. Ahorros: ' + (savings >= totalNeed ? 'Suficientes' : 'Faltan ' + fmtE(totalNeed - savings)) + '. Contexto: ' + (context || 'No especificado') + '.';
+      } else {
+        pdfSys = 'Ets un assessor immobiliari expert al Baix Penedès. Informe professional i honest en català. Format HTML amb <b>, <br>, <ul><li>. Estructura: 1) Diagnòstic (2 paràgrafs), 2) 3 Fortaleses, 3) 3 Riscos, 4) Recomanació principal, 5) 3 Passos immediats. Directe, evita frases buides.';
+        pdfUsr = 'Edat: ' + age + ' anys. Ingressos: ' + income + ' €/mes. Estalvis: ' + savings + ' €. Pis: ' + price + ' €. Situació: ' + (currentLabels[current] || current) + '. Horitzó: ' + (urgencyLabels[urgency] || urgency) + '. Esforç: ' + fmtP(mainSc.effort) + '. Estalvis: ' + (savings >= totalNeed ? 'Suficients' : 'Falten ' + fmtE(totalNeed - savings)) + '. Context: ' + (context || 'No especificat') + '.';
+      }
       aiHtml = (await callGroqViaWorker([{role:'user',content:pdfSys+'\n\n'+pdfUsr}],{max_tokens:800,temperature:0.7})) || '<p>Informe IA no disponible.</p>';
     } catch(e) { aiHtml = '<p>Informe IA no disponible.</p>'; }
   }
@@ -13776,7 +13777,7 @@ window.__generatePDFReport = async function() {
   var savOk = savings >= totalNeed;
   var contextHtml = context ? '<div style="margin-top:12px;padding:11px 14px;background:#f0f9ff;border-radius:8px;border-left:3px solid #38bdf8;font-size:11px;color:#0369a1;font-style:italic;">"' + context + '"</div>' : '';
 
-  var html = '<!DOCTYPE html><html lang="ca"><head><meta charset="utf-8"><style>'
+  var html = '<!DOCTYPE html><html lang="' + lc2.toLowerCase() + '"><head><meta charset="utf-8"><style>'
   + '*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Helvetica Neue",Arial,sans-serif;color:#1e293b;background:#fff;font-size:12px;line-height:1.6}'
   + '@page{size:A4;margin:0}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.nb{page-break-inside:avoid}}'
   + '.page{max-width:794px;margin:0 auto}'
@@ -13980,33 +13981,259 @@ window.__generateIndependenciaPDF = function() {
   var rentRatio = totalIncome > 0 ? (rentBudget / totalIncome * 100) : 0;
   var mortgageRatio = totalIncome > 0 ? (quota / totalIncome * 100) : 0;
 
-  var fmtE = function(v){ return Math.round(v).toLocaleString('ca-ES') + ' €'; };
+  // Determine PDF language based on window.LANG (default CA)
+  var langCode = (window.LANG || 'CA').toString().toUpperCase();
+  if (!['CA','ES','EN'].includes(langCode)) langCode = 'CA';
+  var localeMap = { CA:'ca-ES', ES:'es-ES', EN:'en-US' };
+  // Translation dictionary for PDF labels (escape single quotes)
+  var PDF_T = {
+    CA:{
+      hdrLogo:'Assessoria d\'Habitatge · Catalunya',
+      hdrTitle:'Pla d\'Independència Personal',
+      hdrSubPrefix:'Anàlisi personalitzada per a',
+      kpiAge:'Edat',
+      kpiAgeUnit:'anys',
+      kpiIncome:'Ingressos totals',
+      kpiSavings:'Estalvis disponibles',
+      kpiGoal:'Objectiu',
+      profileTitle:'Perfil Personal',
+      civil:'Estat civil',
+      job:'Situació laboral',
+      current:'Situació actual',
+      ownIncome:'Ingressos propis',
+      partnerIncome:'Ingressos parella',
+      monthlySave:'Estalvi mensual',
+      debts:'Deutes mensuals',
+      familyHelp:'Ajuda familiar',
+      urgency:'Urgència',
+      roomsMin:'Habitacions mínimes',
+      indicatorsTitle:'Indicadors Financers Clau',
+      rentIncomeRatio:'Ràtio lloguer/ingressos',
+      healthy:'✅ Saludable',
+      acceptable:'⚠️ Acceptable',
+      high:'❌ Elevat',
+      recommended:'(recomanat <30%)',
+      savingCapacity:'Capacitat estalvi',
+      monthsTo10kPrefix:'En ',
+      monthsTo10kSuffix:' mesos: 10.000€',
+      currentSavings:'Estalvis actuals',
+      includesFamilyHelpPrefix:'Inclou ',
+      includesFamilyHelpSuffix:' ajuda familiar',
+      own100:'Propis al 100%',
+      optionsTitle:'Anàlisi Detallada: Llogar vs Comprar a',
+      rentOptionTitle:'🔑 Opció A — Llogar',
+      rentBudgetLabel:'Pressupost màxim lloguer',
+      depositLabel:'Fiança (2 mesos)',
+      firstMonthLabel:'1r mes + mobles bàsics',
+      totalNow:'Total necessari ara',
+      canRentNow:'✅ Ja pot fer-ho',
+      needRentPrefix:'❌ Falten ',
+      buyOptionTitle:'🏡 Opció B — Comprar',
+      priceLabel:'Preu objectiu',
+      downPaymentLabel:'Entrada (20%)',
+      purchaseCostsLabel:'Despeses compra (~13%)',
+      totalNeeded:'Total necessari',
+      canBuyNow:'✅ Suficients',
+      needBuyPrefix:'❌ Falten ',
+      mortgageQuotaLabel:'Quota hipoteca:',
+      monthsToBuyPrefix:'Podràs comprar: ',
+      monthsToRentPrefix:'Podràs fer-ho: ',
+      marketPricesNotePrefix:'* Preus mercat orientatius a',
+      checkIdealista:'Consulta sempre Idealista/Fotocasa per preus actualitzats.',
+      aiPlanTitle:'Pla Personalitzat — Anàlisi per IA',
+      aiPlanHeaderTitle:'Pla d\'Independència Personal',
+      aiGenerated:'Generat per IA',
+      aiPremiumBadge:'IA Premium',
+      footerText:'Assessoria d\'Habitatge · Catalunya · assesoriahabitatge.com',
+      documentNote:'Document orientatiu'
+    },
+    ES:{
+      hdrLogo:'Assessoria d\'Habitatge · Catalunya',
+      hdrTitle:'Plan de Independencia Personal',
+      hdrSubPrefix:'Análisis personalizado para',
+      kpiAge:'Edad',
+      kpiAgeUnit:'años',
+      kpiIncome:'Ingresos totales',
+      kpiSavings:'Ahorros disponibles',
+      kpiGoal:'Objetivo',
+      profileTitle:'Perfil Personal',
+      civil:'Estado civil',
+      job:'Situación laboral',
+      current:'Situación actual',
+      ownIncome:'Ingresos propios',
+      partnerIncome:'Ingresos pareja',
+      monthlySave:'Ahorro mensual',
+      debts:'Deudas mensuales',
+      familyHelp:'Ayuda familiar',
+      urgency:'Urgencia',
+      roomsMin:'Habitaciones mínimas',
+      indicatorsTitle:'Indicadores Financieros Clave',
+      rentIncomeRatio:'Ratio alquiler/ingresos',
+      healthy:'✅ Saludable',
+      acceptable:'⚠️ Aceptable',
+      high:'❌ Elevado',
+      recommended:'(recomendado <30%)',
+      savingCapacity:'Capacidad de ahorro',
+      monthsTo10kPrefix:'En ',
+      monthsTo10kSuffix:' meses: 10.000€',
+      currentSavings:'Ahorros actuales',
+      includesFamilyHelpPrefix:'Incluye ',
+      includesFamilyHelpSuffix:' ayuda familiar',
+      own100:'Propios al 100%',
+      optionsTitle:'Análisis Detallado: Alquilar vs Comprar en',
+      rentOptionTitle:'🔑 Opción A — Alquilar',
+      rentBudgetLabel:'Presupuesto máximo alquiler',
+      depositLabel:'Fianza (2 meses)',
+      firstMonthLabel:'1º mes + muebles básicos',
+      totalNow:'Total necesario ahora',
+      canRentNow:'✅ Ya puede hacerlo',
+      needRentPrefix:'❌ Faltan ',
+      buyOptionTitle:'🏡 Opción B — Comprar',
+      priceLabel:'Precio objetivo',
+      downPaymentLabel:'Entrada (20%)',
+      purchaseCostsLabel:'Gastos compra (~13%)',
+      totalNeeded:'Total necesario',
+      canBuyNow:'✅ Suficientes',
+      needBuyPrefix:'❌ Faltan ',
+      mortgageQuotaLabel:'Cuota hipoteca:',
+      monthsToBuyPrefix:'Podrás comprar: ',
+      monthsToRentPrefix:'Podrás hacerlo: ',
+      marketPricesNotePrefix:'* Precios mercado orientativos en',
+      checkIdealista:'Consulta siempre Idealista/Fotocasa para precios actualizados.',
+      aiPlanTitle:'Plan Personalizado — Análisis por IA',
+      aiPlanHeaderTitle:'Plan de Independencia Personal',
+      aiGenerated:'Generado por IA',
+      aiPremiumBadge:'IA Premium',
+      footerText:'Assessoria d\'Habitatge · Catalunya · assesoriahabitatge.com',
+      documentNote:'Documento orientativo'
+    },
+    EN:{
+      hdrLogo:'Assessoria d\'Habitatge · Catalunya',
+      hdrTitle:'Personal Independence Plan',
+      hdrSubPrefix:'Personalized analysis for',
+      kpiAge:'Age',
+      kpiAgeUnit:'years',
+      kpiIncome:'Total income',
+      kpiSavings:'Available savings',
+      kpiGoal:'Goal',
+      profileTitle:'Personal Profile',
+      civil:'Civil status',
+      job:'Employment situation',
+      current:'Current situation',
+      ownIncome:'Own income',
+      partnerIncome:'Partner income',
+      monthlySave:'Monthly saving',
+      debts:'Monthly debts',
+      familyHelp:'Family help',
+      urgency:'Urgency',
+      roomsMin:'Minimum rooms',
+      indicatorsTitle:'Key Financial Indicators',
+      rentIncomeRatio:'Rent/income ratio',
+      healthy:'✅ Healthy',
+      acceptable:'⚠️ Fair',
+      high:'❌ High',
+      recommended:'(recommended <30%)',
+      savingCapacity:'Saving capacity',
+      monthsTo10kPrefix:'In ',
+      monthsTo10kSuffix:' months: €10,000',
+      currentSavings:'Current savings',
+      includesFamilyHelpPrefix:'Includes ',
+      includesFamilyHelpSuffix:' family assistance',
+      own100:'Own 100%',
+      optionsTitle:'Detailed Analysis: Rent vs Buy in',
+      rentOptionTitle:'🔑 Option A — Rent',
+      rentBudgetLabel:'Maximum rent budget',
+      depositLabel:'Deposit (2 months)',
+      firstMonthLabel:'1st month + basic furniture',
+      totalNow:'Total needed now',
+      canRentNow:'✅ Can rent now',
+      needRentPrefix:'❌ Missing ',
+      buyOptionTitle:'🏡 Option B — Buy',
+      priceLabel:'Target price',
+      downPaymentLabel:'Down payment (20%)',
+      purchaseCostsLabel:'Purchase costs (~13%)',
+      totalNeeded:'Total needed',
+      canBuyNow:'✅ Enough',
+      needBuyPrefix:'❌ Missing ',
+      mortgageQuotaLabel:'Mortgage payment:',
+      monthsToBuyPrefix:'You can buy: ',
+      monthsToRentPrefix:'You can rent: ',
+      marketPricesNotePrefix:'* Indicative market prices in',
+      checkIdealista:'Always check Idealista/Fotocasa for updated prices.',
+      aiPlanTitle:'Personalized Plan — AI Analysis',
+      aiPlanHeaderTitle:'Personal Independence Plan',
+      aiGenerated:'Generated by AI',
+      aiPremiumBadge:'AI Premium',
+      footerText:'Assessoria d\'Habitatge · Catalunya · assesoriahabitatge.com',
+      documentNote:'Informative document'
+    }
+  };
+  var T = PDF_T[langCode] || PDF_T.CA;
+  var fmtE = function(v){
+    return Math.round(v).toLocaleString(localeMap[langCode]) + '\u00a0€';
+  };
   var fmtP = function(v){ return v.toFixed(1) + '%'; };
-  var today = new Date().toLocaleDateString('ca-ES',{day:'numeric',month:'long',year:'numeric'});
+  var today = new Date().toLocaleDateString(localeMap[langCode],{day:'numeric',month:'long',year:'numeric'});
   var ref = 'IND-' + Date.now().toString(36).toUpperCase().slice(-6);
 
-  var jobLabels = {
+  // Language-specific labels for dropdown values
+  var jobLabelsCA = {
     employee_fixed:'Assalariat/da (fix)', employee_temp:'Assalariat/da (temporal)',
     freelance:'Autònom/a', student_working:'Estudiant + treballa',
     student:'Estudiant', unemployed:'A l\'atur'
   };
-  var goalLabels = { rent:'Llogar', buy:'Comprar', unsure:'Decidir' };
-  var civilLabels = { single:'Sol/a', couple:'En parella', married:'Casat/da' };
-  var currentLabels = { parents:'Amb els pares', renting:'De lloguer', shared:'Pis compartit', partner:'Casa parella' };
-  var urgencyLabels = { now:'Imminent (0-3m)', soon:'Aviat (3-12m)', planning:'Planificant (1-2a)', exploring:'Sense pressa' };
+  var jobLabelsES = {
+    employee_fixed:'Asalariado/a (fijo)', employee_temp:'Asalariado/a (temporal)',
+    freelance:'Autónomo/a', student_working:'Estudiante + trabaja',
+    student:'Estudiante', unemployed:'En paro'
+  };
+  var jobLabelsEN = {
+    employee_fixed:'Employee (permanent)', employee_temp:'Employee (temporary)',
+    freelance:'Self‑employed', student_working:'Student + working',
+    student:'Student', unemployed:'Unemployed'
+  };
+  var goalLabelsCA = { rent:'Llogar', buy:'Comprar', unsure:'Decidir' };
+  var goalLabelsES = { rent:'Alquilar', buy:'Comprar', unsure:'Decidir' };
+  var goalLabelsEN = { rent:'Rent', buy:'Buy', unsure:'Decide' };
+  var civilLabelsCA = { single:'Sol/a', couple:'En parella', married:'Casat/da' };
+  var civilLabelsES = { single:'Soltero/a', couple:'En pareja', married:'Casado/a' };
+  var civilLabelsEN = { single:'Single', couple:'Couple', married:'Married' };
+  var currentLabelsCA = { parents:'Amb els pares', renting:'De lloguer', shared:'Pis compartit', partner:'Casa parella' };
+  var currentLabelsES = { parents:'Con los padres', renting:'De alquiler', shared:'Piso compartido', partner:'Casa de la pareja' };
+  var currentLabelsEN = { parents:'Living with parents', renting:'Renting', shared:'Shared flat', partner:'Partner home' };
+  var urgencyLabelsCA = { now:'Imminent (0-3m)', soon:'Aviat (3-12m)', planning:'Planificant (1-2a)', exploring:'Sense pressa' };
+  var urgencyLabelsES = { now:'Inminente (0-3m)', soon:'Pronto (3-12m)', planning:'Planificando (1-2a)', exploring:'Sin prisa' };
+  var urgencyLabelsEN = { now:'Immediate (0-3m)', soon:'Soon (3-12m)', planning:'Planning (1-2y)', exploring:'No rush' };
+  var jobLabels  = { CA: jobLabelsCA, ES: jobLabelsES, EN: jobLabelsEN }[langCode] || jobLabelsCA;
+  var goalLabels = { CA: goalLabelsCA, ES: goalLabelsES, EN: goalLabelsEN }[langCode] || goalLabelsCA;
+  var civilLabels = { CA: civilLabelsCA, ES: civilLabelsES, EN: civilLabelsEN }[langCode] || civilLabelsCA;
+  var currentLabels = { CA: currentLabelsCA, ES: currentLabelsES, EN: currentLabelsEN }[langCode] || currentLabelsCA;
+  var urgencyLabels = { CA: urgencyLabelsCA, ES: urgencyLabelsES, EN: urgencyLabelsEN }[langCode] || urgencyLabelsCA;
 
   var rentOk = canRentNow ? '#16a34a' : '#dc2626';
-  var rentLabel = canRentNow ? '✅ Ja pot fer-ho' : ('❌ Falten ' + fmtE(moveInCost - totalSavings));
+  // Build dynamic labels using translations
+  var rentLabel = canRentNow ? T.canRentNow : (T.needRentPrefix + fmtE(moveInCost - totalSavings));
   var buyOk = totalSavings >= totalNeed ? '#16a34a' : '#dc2626';
-  var buyLabel = totalSavings >= totalNeed ? '✅ Suficients' : ('❌ Falten ' + fmtE(totalNeed - totalSavings));
+  var buyLabel = totalSavings >= totalNeed ? T.canBuyNow : (T.needBuyPrefix + fmtE(totalNeed - totalSavings));
 
   var targetDate = function(months) {
-    if (months === 0) return 'Ja ara';
+    if (months === 0) {
+      // Return a short string indicating now (remove emoji if present)
+      return (T.canRentNow.replace(/^[^A-Za-z0-9]+\s*/, '')).trim();
+    }
     var d = new Date(); d.setMonth(d.getMonth() + months);
-    return d.toLocaleDateString('ca-ES',{month:'long',year:'numeric'});
+    return d.toLocaleDateString(localeMap[langCode],{month:'long',year:'numeric'});
   };
 
-  var html = '<!DOCTYPE html><html lang="ca"><head><meta charset="utf-8"><title>Pla d\'Independència — ' + muniText + '</title><style>'
+  // Precompute dynamic notes for KPI section
+  var rentNote = (rentRatio <= 30 ? T.healthy : rentRatio <= 40 ? T.acceptable : T.high) + ' ' + T.recommended;
+  var savingsNote = T.monthsTo10kPrefix + (monthlySave > 0 ? Math.round(10000 / monthlySave) : '∞') + T.monthsTo10kSuffix;
+  var thirdNote = familyHelp > 0 ? (T.includesFamilyHelpPrefix + fmtE(familyHelp) + T.includesFamilyHelpSuffix) : T.own100;
+
+  // Room unit suffix per language
+  var roomsSuffix = (langCode === 'EN' ? ' rooms' : ' hab.');
+
+  var html = '<!DOCTYPE html><html lang="' + langCode.toLowerCase() + '"><head><meta charset="utf-8"><title>' + T.hdrTitle + ' — ' + muniText + '</title><style>'
   + '*{box-sizing:border-box;margin:0;padding:0}'
   + 'body{font-family:"Helvetica Neue",Arial,sans-serif;color:#1e293b;background:#fff;font-size:12px;line-height:1.6}'
   + '@page{size:A4;margin:0}'
@@ -14079,94 +14306,94 @@ window.__generateIndependenciaPDF = function() {
 
   // ── HEADER ──
   + '<div class="hdr">'
-  + '<div class="hdr-logo">🏠 Assessoria d\'Habitatge · Catalunya</div>'
-  + '<div class="hdr-title">Pla d\'Independència Personal</div>'
-  + '<div class="hdr-sub">Anàlisi personalitzada per a ' + muniText + ' · ' + today + ' · Ref. ' + ref + '</div>'
+  + '<div class="hdr-logo">🏠 ' + T.hdrLogo + '</div>'
+  + '<div class="hdr-title">' + T.hdrTitle + '</div>'
+  + '<div class="hdr-sub">' + T.hdrSubPrefix + ' ' + muniText + ' · ' + today + ' · Ref. ' + ref + '</div>'
   + '<div class="hdr-grid">'
-  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">Edat</div><div class="hdr-kpi-val">' + age + ' anys</div></div>'
-  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">Ingressos totals</div><div class="hdr-kpi-val">' + fmtE(totalIncome) + '/mes</div></div>'
-  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">Estalvis disponibles</div><div class="hdr-kpi-val">' + fmtE(totalSavings) + '</div></div>'
-  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">Objectiu</div><div class="hdr-kpi-val">' + (goalLabels[goal]||goal) + ' · ' + muniText + '</div></div>'
+  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">' + T.kpiAge + '</div><div class="hdr-kpi-val">' + age + ' ' + T.kpiAgeUnit + '</div></div>'
+  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">' + T.kpiIncome + '</div><div class="hdr-kpi-val">' + fmtE(totalIncome) + '/mes</div></div>'
+  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">' + T.kpiSavings + '</div><div class="hdr-kpi-val">' + fmtE(totalSavings) + '</div></div>'
+  + '<div class="hdr-kpi"><div class="hdr-kpi-lbl">' + T.kpiGoal + '</div><div class="hdr-kpi-val">' + (goalLabels[goal]||goal) + ' · ' + muniText + '</div></div>'
   + '</div></div>'
 
   // ── PERFIL ──
-  + '<div class="sec nb"><div class="sec-title"><span>👤</span> Perfil Personal</div>'
+  + '<div class="sec nb"><div class="sec-title"><span>👤</span> ' + T.profileTitle + '</div>'
   + '<div class="pg">'
-  + '<div class="pr"><div class="pr-lbl">Estat civil</div><div class="pr-val">' + (civilLabels[civil]||civil) + '</div></div>'
-  + '<div class="pr"><div class="pr-lbl">Situació laboral</div><div class="pr-val">' + (jobLabels[job]||job) + '</div></div>'
-  + '<div class="pr"><div class="pr-lbl">Situació actual</div><div class="pr-val">' + (currentLabels[current]||current) + '</div></div>'
-  + '<div class="pr"><div class="pr-lbl">Ingressos propis</div><div class="pr-val">' + fmtE(income) + '/mes</div></div>'
-  + (civil !== 'single' ? '<div class="pr"><div class="pr-lbl">Ingressos parella</div><div class="pr-val">' + fmtE(income2) + '/mes</div></div>' : '')
-  + '<div class="pr"><div class="pr-lbl">Estalvi mensual</div><div class="pr-val">' + fmtE(monthlySave) + '/mes</div></div>'
-  + (debts > 0 ? '<div class="pr"><div class="pr-lbl">Deutes mensuals</div><div class="pr-val">' + fmtE(debts) + '/mes</div></div>' : '')
-  + (familyHelp > 0 ? '<div class="pr"><div class="pr-lbl">Ajuda familiar</div><div class="pr-val">' + fmtE(familyHelp) + '</div></div>' : '')
-  + '<div class="pr"><div class="pr-lbl">Urgència</div><div class="pr-val">' + (urgencyLabels[urgency]||urgency) + '</div></div>'
-  + '<div class="pr"><div class="pr-lbl">Habitacions mínimes</div><div class="pr-val">' + rooms + ' hab.</div></div>'
+  + '<div class="pr"><div class="pr-lbl">' + T.civil + '</div><div class="pr-val">' + (civilLabels[civil]||civil) + '</div></div>'
+  + '<div class="pr"><div class="pr-lbl">' + T.job + '</div><div class="pr-val">' + (jobLabels[job]||job) + '</div></div>'
+  + '<div class="pr"><div class="pr-lbl">' + T.current + '</div><div class="pr-val">' + (currentLabels[current]||current) + '</div></div>'
+  + '<div class="pr"><div class="pr-lbl">' + T.ownIncome + '</div><div class="pr-val">' + fmtE(income) + '/mes</div></div>'
+  + (civil !== 'single' ? '<div class="pr"><div class="pr-lbl">' + T.partnerIncome + '</div><div class="pr-val">' + fmtE(income2) + '/mes</div></div>' : '')
+  + '<div class="pr"><div class="pr-lbl">' + T.monthlySave + '</div><div class="pr-val">' + fmtE(monthlySave) + '/mes</div></div>'
+  + (debts > 0 ? '<div class="pr"><div class="pr-lbl">' + T.debts + '</div><div class="pr-val">' + fmtE(debts) + '/mes</div></div>' : '')
+  + (familyHelp > 0 ? '<div class="pr"><div class="pr-lbl">' + T.familyHelp + '</div><div class="pr-val">' + fmtE(familyHelp) + '</div></div>' : '')
+  + '<div class="pr"><div class="pr-lbl">' + T.urgency + '</div><div class="pr-val">' + (urgencyLabels[urgency]||urgency) + '</div></div>'
+  + '<div class="pr"><div class="pr-lbl">' + T.roomsMin + '</div><div class="pr-val">' + rooms + roomsSuffix + '</div></div>'
   + '</div></div>'
 
   // ── INDICADORS CLAU ──
-  + '<div class="sec nb"><div class="sec-title"><span>📊</span> Indicadors Financers Clau</div>'
+  + '<div class="sec nb"><div class="sec-title"><span>📊</span> ' + T.indicatorsTitle + '</div>'
   + '<div class="kpi-grid">'
   + '<div class="kpi ' + (rentRatio<=30?'g':rentRatio<=40?'':'r') + '">'
-  + '<div class="kpi-lbl">Ràtio lloguer/ingressos</div>'
+  + '<div class="kpi-lbl">' + T.rentIncomeRatio + '</div>'
   + '<div class="kpi-val">' + fmtP(rentRatio) + '</div>'
-  + '<div class="kpi-note">' + (rentRatio<=30?'✅ Saludable':rentRatio<=40?'⚠️ Acceptable':'❌ Elevat') + ' (recomanat <30%)</div>'
+  + '<div class="kpi-note">' + rentNote + '</div>'
   + '<div class="bar-bg"><div class="bar-fill" style="width:' + Math.min(rentRatio*2,100) + '%;background:' + (rentRatio<=30?'#16a34a':rentRatio<=40?'#d97706':'#dc2626') + '"></div></div>'
   + '</div>'
   + '<div class="kpi ' + (monthlySave>=500?'g':monthlySave>=200?'':'r') + '">'
-  + '<div class="kpi-lbl">Capacitat estalvi</div>'
+  + '<div class="kpi-lbl">' + T.savingCapacity + '</div>'
   + '<div class="kpi-val">' + fmtE(monthlySave) + '/mes</div>'
-  + '<div class="kpi-note">En ' + (monthlySave>0?Math.round(10000/monthlySave):'∞') + ' mesos: 10.000€</div>'
+  + '<div class="kpi-note">' + savingsNote + '</div>'
   + '</div>'
   + '<div class="kpi b">'
-  + '<div class="kpi-lbl">Estalvis actuals</div>'
+  + '<div class="kpi-lbl">' + T.currentSavings + '</div>'
   + '<div class="kpi-val">' + fmtE(totalSavings) + '</div>'
-  + '<div class="kpi-note">' + (familyHelp>0?'Inclou '+fmtE(familyHelp)+' ajuda familiar':'Propis al 100%') + '</div>'
+  + '<div class="kpi-note">' + thirdNote + '</div>'
   + '</div>'
   + '</div></div>'
 
   // ── OPCIONS HABITATGE ──
-  + '<div class="sec nb"><div class="sec-title"><span>🏠</span> Anàlisi Detallada: Llogar vs Comprar a ' + muniText + '</div>'
+  + '<div class="sec nb"><div class="sec-title"><span>🏠</span> ' + T.optionsTitle + ' ' + muniText + '</div>'
   + '<div class="dec-grid">'
 
   // Llogar
   + '<div class="dec-card dec-rent">'
-  + '<div class="dec-title" style="color:#15803d;">🔑 Opció A — Llogar</div>'
+  + '<div class="dec-title" style="color:#15803d;">' + T.rentOptionTitle + '</div>'
   + '<div class="dec-amount">' + fmtE(rentBudget) + '<span style="font-size:12px;color:#64748b;">/mes</span></div>'
-  + '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">Pressupost màxim lloguer</div>'
-  + '<div class="dec-row"><span>Fiança (2 mesos)</span><span style="font-weight:700;">' + fmtE(rentBudget*2) + '</span></div>'
-  + '<div class="dec-row"><span>1r mes + mobles bàsics</span><span style="font-weight:700;">' + fmtE(rentBudget+3000) + '</span></div>'
-  + '<div class="dec-row" style="border:none;"><span><b>Total necessari ara</b></span><span style="font-weight:900;font-size:12px;">' + fmtE(moveInCost) + '</span></div>'
+  + '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">' + T.rentBudgetLabel + '</div>'
+  + '<div class="dec-row"><span>' + T.depositLabel + '</span><span style="font-weight:700;">' + fmtE(rentBudget*2) + '</span></div>'
+  + '<div class="dec-row"><span>' + T.firstMonthLabel + '</span><span style="font-weight:700;">' + fmtE(rentBudget+3000) + '</span></div>'
+  + '<div class="dec-row" style="border:none;"><span><b>' + T.totalNow + '</b></span><span style="font-weight:900;font-size:12px;">' + fmtE(moveInCost) + '</span></div>'
   + '<div class="dec-status" style="background:' + (canRentNow?'#dcfce7':'#fee2e2') + ';color:' + rentOk + ';">' + rentLabel + '</div>'
-  + (monthsToRent > 0 ? '<div style="font-size:10px;color:#64748b;margin-top:6px;">Podràs fer-ho: <b>' + targetDate(monthsToRent) + '</b></div>' : '')
+  + (monthsToRent > 0 ? '<div style="font-size:10px;color:#64748b;margin-top:6px;">' + T.monthsToRentPrefix + '<b>' + targetDate(monthsToRent) + '</b></div>' : '')
   + '</div>'
 
   // Comprar
   + '<div class="dec-card dec-buy">'
-  + '<div class="dec-title" style="color:#1d4ed8;">🏡 Opció B — Comprar</div>'
+  + '<div class="dec-title" style="color:#1d4ed8;">' + T.buyOptionTitle + '</div>'
   + '<div class="dec-amount">' + fmtE(priceNum) + '</div>'
-  + '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">Preu objectiu</div>'
-  + '<div class="dec-row"><span>Entrada (20%)</span><span style="font-weight:700;">' + fmtE(entrada) + '</span></div>'
-  + '<div class="dec-row"><span>Despeses compra (~13%)</span><span style="font-weight:700;">' + fmtE(despeses) + '</span></div>'
-  + '<div class="dec-row" style="border:none;"><span><b>Total necessari</b></span><span style="font-weight:900;font-size:12px;">' + fmtE(totalNeed) + '</span></div>'
+  + '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">' + T.priceLabel + '</div>'
+  + '<div class="dec-row"><span>' + T.downPaymentLabel + '</span><span style="font-weight:700;">' + fmtE(entrada) + '</span></div>'
+  + '<div class="dec-row"><span>' + T.purchaseCostsLabel + '</span><span style="font-weight:700;">' + fmtE(despeses) + '</span></div>'
+  + '<div class="dec-row" style="border:none;"><span><b>' + T.totalNeeded + '</b></span><span style="font-weight:900;font-size:12px;">' + fmtE(totalNeed) + '</span></div>'
   + '<div class="dec-status" style="background:' + (totalSavings>=totalNeed?'#dcfce7':'#dbeafe') + ';color:' + buyOk + ';">' + buyLabel + '</div>'
-  + '<div style="font-size:10px;color:#64748b;margin-top:6px;">Quota hipoteca: <b>' + fmtE(quota) + '/mes</b> (25a, 3.25%)</div>'
-  + (monthsToBuy > 0 ? '<div style="font-size:10px;color:#64748b;">Podràs comprar: <b>' + targetDate(monthsToBuy) + '</b></div>' : '')
+  + '<div style="font-size:10px;color:#64748b;margin-top:6px;">' + T.mortgageQuotaLabel + ' <b>' + fmtE(quota) + '/mes</b> (25a, 3.25%)</div>'
+  + (monthsToBuy > 0 ? '<div style="font-size:10px;color:#64748b;">' + T.monthsToBuyPrefix + '<b>' + targetDate(monthsToBuy) + '</b></div>' : '')
   + '</div>'
   + '</div>'
-  + '<div style="font-size:10px;color:#94a3b8;margin-top:8px;">* Preus mercat orientatius a ' + muniText + '. Consulta sempre Idealista/Fotocasa per preus actualitzats.</div>'
+  + '<div style="font-size:10px;color:#94a3b8;margin-top:8px;">' + T.marketPricesNotePrefix + ' ' + muniText + '. ' + T.checkIdealista + '</div>'
   + '</div>'
 
   // ── PLA IA ──
-  + '<div class="sec nb"><div class="sec-title"><span>🤖</span> Pla Personalitzat — Anàlisi per IA</div>'
+  + '<div class="sec nb"><div class="sec-title"><span>🤖</span> ' + T.aiPlanTitle + '</div>'
   + '<div class="ai-box">'
-  + '<div class="ai-hdr"><span style="font-size:1.2rem;">🏠</span><div><div style="font-weight:900;font-size:12px;color:#1e0a3c;">Pla d\'Independència Personal</div><div style="font-size:10px;color:#64748b;">Generat per IA · ' + today + '</div></div><div style="margin-left:auto;"><span class="ai-badge">IA Premium</span></div></div>'
+  + '<div class="ai-hdr"><span style="font-size:1.2rem;">🏠</span><div><div style="font-weight:900;font-size:12px;color:#1e0a3c;">' + T.aiPlanHeaderTitle + '</div><div style="font-size:10px;color:#64748b;">' + T.aiGenerated + ' · ' + today + '</div></div><div style="margin-left:auto;"><span class="ai-badge">' + T.aiPremiumBadge + '</span></div></div>'
   + '<div class="ai-content">' + planContent + '</div>'
   + '</div></div>'
 
   // ── FOOTER ──
-  + '<div class="ftr"><div>Assessoria d\'Habitatge · Catalunya · assesoriahabitatge.com</div>'
-  + '<div>' + today + ' · Ref. ' + ref + ' · Document orientatiu</div></div>'
+  + '<div class="ftr"><div>' + T.footerText + '</div>'
+  + '<div>' + today + ' · Ref. ' + ref + ' · ' + T.documentNote + '</div></div>'
   + '</div></body></html>';
 
   // Descarregar com a fitxer HTML (s'obre al navegador i es pot desar com PDF des de Ctrl+P)
@@ -15343,61 +15570,6 @@ window.__injectVerdict = function() {
     showBanner();
   }
 })();
-</script>
-<script>
-// Override the independence PDF generator with a simplified version to prevent syntax errors.
-window.__generateIndependenciaPDF = function() {
-  var age        = document.getElementById('ai_age')?.value || '';
-  var civil      = document.getElementById('ai_civil')?.value || '';
-  var job        = document.getElementById('ai_job')?.value || '';
-  var income     = parseFloat(document.getElementById('ai_income')?.value) || 0;
-  var income2    = parseFloat(document.getElementById('ai_income2')?.value) || 0;
-  var savings    = parseFloat(document.getElementById('ai_savings')?.value) || 0;
-  var monthlySave= parseFloat(document.getElementById('ai_monthly_save')?.value) || 0;
-  var debts      = parseFloat(document.getElementById('ai_debts')?.value) || 0;
-  var familyHelp = parseFloat(document.getElementById('ai_family_help')?.value) || 0;
-  var goal       = document.getElementById('ai_goal')?.value || '';
-  var muniText   = document.getElementById('ai_muni')?.value || '';
-  var rentBudget = parseFloat(document.getElementById('ai_rent_budget')?.value) || 0;
-  var priceNum   = parseFloat(document.getElementById('ai_price')?.value) || 0;
-  var current    = document.getElementById('ai_current')?.value || '';
-  var urgency    = document.getElementById('ai_urgency')?.value || '';
-  var rooms      = document.getElementById('ai_rooms')?.value || '';
-  // Build a simple HTML document summarizing the user's plan.
-  var html = `
-    <!DOCTYPE html>
-    <html lang="ca">
-    <head><meta charset="utf-8"><title>Pla d'Independència Personal</title></head>
-    <body>
-    <h1>Pla d'Independència Personal</h1>
-    <ul>
-      <li><strong>Edat:</strong> ${age}</li>
-      <li><strong>Estat civil:</strong> ${civil}</li>
-      <li><strong>Situació laboral:</strong> ${job}</li>
-      <li><strong>Ingressos totals:</strong> ${income + (civil !== 'single' ? income2 : 0)} € / mes</li>
-      <li><strong>Estalvis disponibles:</strong> ${savings + familyHelp} €</li>
-      <li><strong>Objectiu:</strong> ${goal}</li>
-      <li><strong>Municipi:</strong> ${muniText}</li>
-      <li><strong>Pressupost lloguer:</strong> ${rentBudget} € / mes</li>
-      <li><strong>Preu objectiu compra:</strong> ${priceNum} €</li>
-      <li><strong>Situació actual:</strong> ${current}</li>
-      <li><strong>Urgència:</strong> ${urgency}</li>
-      <li><strong>Habitacions mínimes:</strong> ${rooms}</li>
-    </ul>
-    <p>Aquest document és una versió simplificada de la teva planificació d'independència. Consulta la nostra assessoria per obtenir un informe complet.</p>
-    </body>
-    </html>
-  `;
-  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'Pla_Independencia_' + (muniText || 'Catalunya').replace(/\s+/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
-};
 </script>
 </body>
 </html>

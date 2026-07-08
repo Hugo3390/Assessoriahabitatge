@@ -7665,6 +7665,26 @@ const saveAllAnalysisSnapshot = (c) => {
 };
 
 let staffLogged = false;
+window.staffLogged = false;
+window.__staffAccessGranted = false;
+window.__staffUserEmail = '';
+
+const setStaffLogged = (enabled) => {
+  staffLogged = !!enabled;
+  window.staffLogged = staffLogged;
+  const panelBtn = Q('#toggleStaff');
+  if (panelBtn) panelBtn.style.display = staffLogged ? 'inline-block' : 'none';
+  const box = Q('#staffSection');
+  if (!staffLogged && box) box.style.display = 'none';
+};
+
+window.__setStaffAccess = (allowed, email) => {
+  window.__staffAccessGranted = !!allowed;
+  window.__staffUserEmail = email || '';
+  setStaffLogged(!!allowed);
+  if (allowed) renderStaffPanel();
+};
+
 const openStaffModal = () => {
   const m = Q('#staffModal');
   if(!m) return;
@@ -7686,23 +7706,18 @@ const closeStaffModal = () => {
 };
 
 const staffLogin = () => {
-  openStaffModal();
+  if (window.__staffAccessGranted) {
+    setStaffLogged(true);
+    renderStaffPanel();
+    toast(LANG==='CA'?'Mode staff activat':(LANG==='EN'?'Staff mode enabled':'Modo staff activado'));
+    return;
+  }
+  toast(LANG==='CA'?'Inicia sessió amb el compte admin per veure Staff.':(LANG==='EN'?'Sign in with the admin account to view Staff.':'Inicia sesión con la cuenta admin para ver Staff.'));
 };
 
 const staffSubmit = () => {
-  const inp = Q('#staffPw');
-  const pw = (inp?.value||'').trim();
-  if(!pw) return;
-  if(pw === 'hibanezborreguero2008&'){
-    staffLogged = true;
-    closeStaffModal();
-    toast(LANG==='CA'?'Mode staff activat':(LANG==='EN'?'Staff mode enabled':'Modo staff activado'));
-    const btn = Q('#toggleStaff');
-    if(btn) btn.style.display = 'inline-block';
-    renderStaffPanel();
-  }else{
-    toast(LANG==='CA'?'Contrasenya incorrecta':(LANG==='EN'?'Incorrect password':'Contraseña incorrecta'));
-  }
+  closeStaffModal();
+  staffLogin();
 };
 
 const renderStaffPanel = () => {
@@ -14643,10 +14658,12 @@ onAuthStateChanged(auth, async (user) => {
       const emailLower = String(user.email || '').toLowerCase();
       const isAdmin = emailLower === ADMIN_EMAIL || emailLower.includes('hibanezborreguero');
       const initPanel = document.getElementById('initCodesPanel');
-      if (initPanel && isAdmin) initPanel.style.display = 'block';
+      if (initPanel) initPanel.style.display = isAdmin ? 'block' : 'none';
+      if (typeof window.__setStaffAccess === 'function') window.__setStaffAccess(isAdmin, user.email || '');
 
     } catch (e) {
       console.error(`No s'ha pogut actualitzar user doc:`, e);
+      if (typeof window.__setStaffAccess === 'function') window.__setStaffAccess(false, '');
     }
     unlockApp();
   } else {
@@ -14655,6 +14672,7 @@ onAuthStateChanged(auth, async (user) => {
     // Amagar botó admin si es deslogueja
     const initPanel = document.getElementById('initCodesPanel');
     if (initPanel) initPanel.style.display = 'none';
+    if (typeof window.__setStaffAccess === 'function') window.__setStaffAccess(false, '');
   }
 });
 
@@ -15219,6 +15237,7 @@ body.auth-locked #cookiePolicyModal {
 // ══════════════════════════════════════════
 (function(){
 'use strict';
+window.__USE_FINAL_LEAD_RUNTIME__ = true;
 
 // ── Lead modal controls ──
 window.__openLead = function(context) {
@@ -15256,6 +15275,7 @@ document.getElementById('leadConsent')?.addEventListener('change', function() {
 });
 
 // ── Lead scoring ──
+if (!window.__USE_FINAL_LEAD_RUNTIME__) {
 window.LEAD_PARTNERS = window.LEAD_PARTNERS || [
   { id:'hipocapital_calafell', name:'Hipocapital Calafell', email:'info@hipocapital.es', type:'mortgage_broker', towns:['Cunit','Calafell','Segur de Calafell','El Vendrell','Cubelles'], minScore:55 },
   { id:'finques_penedes_maritim', name:'Finques Penedes Maritim', email:'info@finquespenedesmaritim.com', type:'real_estate_advisor', towns:['Cunit','Calafell','Segur de Calafell'], minScore:35 },
@@ -15263,7 +15283,7 @@ window.LEAD_PARTNERS = window.LEAD_PARTNERS || [
   { id:'gestoria_compraventa', name:'Gestoria compraventa', email:'', type:'legal_tax', towns:['*'], minScore:25 }
 ];
 
-window.__getLeadPartners = function() {
+window.__legacyGetLeadPartnersDisabled = function() {
   try {
     var saved = JSON.parse(localStorage.getItem('__ah_partners') || 'null');
     if (Array.isArray(saved) && saved.length) return saved;
@@ -15271,7 +15291,7 @@ window.__getLeadPartners = function() {
   return window.LEAD_PARTNERS || [];
 };
 
-window.__scoreLead = function() {
+window.__legacyScoreLeadDisabled = function() {
   var score = 0; var tags = []; var partnerType = 'mortgage_broker';
   var L = typeof last !== 'undefined' ? (window.last || {}) : {};
   if (L && L.pb) { score += 20; tags.push('analyzed'); }
@@ -15299,7 +15319,7 @@ window.__scoreLead = function() {
   return { score: Math.max(0, Math.min(score, 100)), cls: cls, tags: tags, priority: priority, partner_type: partnerType };
 };
 
-window.__routeLead = function(payload, scoring) {
+window.__legacyRouteLeadDisabled = function(payload, scoring) {
   var partners = window.__getLeadPartners();
   var town = String(payload.municipality || '').toLowerCase();
   var partnerType = scoring.partner_type || 'mortgage_broker';
@@ -15323,7 +15343,7 @@ window.__routeLead = function(payload, scoring) {
 };
 
 // ── Submit lead with validation + email ──
-window.__submitLead = function() {
+window.__legacySubmitLeadDisabled = function() {
   var name  = (document.getElementById('leadName')?.value || '').trim();
   var phone = (document.getElementById('leadPhone')?.value || '').trim();
   var email = (document.getElementById('leadEmail')?.value || '').trim();
@@ -15479,6 +15499,8 @@ window.__submitLead = function() {
     if (typeof toast === 'function') toast(typeof LANG!=='undefined'&&LANG==='CA'?'✅ Sol·licitud enviada':typeof LANG!=='undefined'&&LANG==='EN'?'✅ Request sent':'✅ Solicitud enviada');
   })();
 };
+
+}
 
 // ── Verdict + Offer + CTA injection ──
 window.__injectVerdict = function() {
